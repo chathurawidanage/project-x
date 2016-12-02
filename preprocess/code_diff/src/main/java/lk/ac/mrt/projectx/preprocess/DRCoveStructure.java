@@ -97,12 +97,17 @@ public class DRCoveStructure {
             logger.info("Number of Duplicate Modules {}", duplicateIndexes.size());
 
             currentLine = bufferedReader.readLine();
-            System.out.println(currentLine);
+
+            // Get the number of basic blocks
+            // eg : BB Table: 21058 bbs
             result = Pattern.compile("(\\d+)").matcher(currentLine);
             if(result.find()) {
                 noOfBasicBlocks = Integer.parseInt(result.group(0).toString());
             }
             logger.info("Number of Basic Blocks {}", noOfBasicBlocks);
+
+            // Parsing the basic block lines
+            // eg : module[ 21]: 0x000101c4,  13
             for (int i = 0; i < noOfBasicBlocks; i++){
                 currentLine = bufferedReader.readLine();
 //                System.out.println(currentLine);

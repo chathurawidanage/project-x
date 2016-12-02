@@ -15,8 +15,12 @@
         <version>0.0.1</version>
     </parent>
 
-    <modules>
 
-    </modules>
-
+    <build>
+        <resources>
+            <resource>
+                <directory>../../conf</directory>
+            </resource>
+        </resources>
+    </build>
 </project>

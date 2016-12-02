@@ -8,6 +8,30 @@ public class Module {
     private Integer mount;
     private ArrayList<Integer> addresses;
 
+    public Module (){
+        this.name = "";
+        mount = 0;
+        addresses = new ArrayList<Integer>();
+    }
+
+    public Integer LoadByDRCovModuleLine(String line){
+        String [] splitted = line.split(",");
+        this.name = splitted[splitted.length-1];
+        return 1;
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append("Name : ");
+        builder.append(this.name.toString());
+        builder.append(" Mount : ");
+        builder.append(this.mount.toString());
+        builder.append(" Number of Addresses : ");
+        builder.append(this.addresses.size());
+        System.out.println(builder.toString());
+        return builder.toString();
+    }
     public Integer getMount() {
         return mount;
     }

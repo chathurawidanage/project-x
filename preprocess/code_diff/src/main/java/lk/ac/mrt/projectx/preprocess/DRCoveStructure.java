@@ -73,13 +73,21 @@ public class DRCoveStructure {
             result = Pattern.compile("\\d+").matcher(currentLine);
             if(result.find()) {
                 noOfModules = Integer.parseInt(result.group().toString());
-//                System.out.println(noOfModules.toString());
             }
             logger.debug("Number of modules ", noOfModules);
 
+            for (int i = 0; i < noOfModules; i++){
+                currentLine = bufferedReader.readLine();
+                Module module = new Module();
+                module.LoadByDRCovModuleLine(currentLine);
+                module.toString();
+            }
             while ((currentLine = bufferedReader.readLine()) != null) {
+                Module module = new Module();
+                module.LoadByDRCovModuleLine(currentLine);
+                module.toString();
 
-                System.out.println(currentLine);
+//                System.out.println(currentLine);
                 index++;
             }
 

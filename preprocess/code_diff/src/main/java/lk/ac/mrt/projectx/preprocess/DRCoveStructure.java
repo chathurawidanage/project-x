@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -54,7 +55,7 @@ public class DRCoveStructure {
             if(result.find()) {
                 drcovVersion = Integer.parseInt(result.group().toString());
             }
-            logger.debug("DRCov version ", drcovVersion);
+            logger.info("DRCov version ", drcovVersion);
 
             // Only version 2 files include flavour line
             // eg :
@@ -64,7 +65,7 @@ public class DRCoveStructure {
                 if(result.find()) {
                     drcovFlavour = result.group().toString();
                 }
-                logger.debug("DRCov Flavour ", currentLine);
+                logger.info("DRCov Flavour ", currentLine);
             }
 
             // Get the number of modules
@@ -74,18 +75,28 @@ public class DRCoveStructure {
             if(result.find()) {
                 noOfModules = Integer.parseInt(result.group().toString());
             }
-            logger.debug("Number of modules ", noOfModules);
+            logger.info("Number of modules ", noOfModules);
 
+            logger.warn("Parsing line DRCov models assuming second number is decimal");
+            // Read all the module details
+            // eg :  11, 40960, C:\Windows\syswow64\LPK.dll
             for (int i = 0; i < noOfModules; i++){
                 currentLine = bufferedReader.readLine();
                 Module module = new Module();
                 module.LoadByDRCovModuleLine(currentLine);
+                modules.add(module);
+                int foundIndex = modules.indexOf(module);
+                if (foundIndex != -1){
+                    duplicateIndexes.add(i);
+                    module.setOriginalIndex(foundIndex);
+                }
                 module.toString();
             }
+
             while ((currentLine = bufferedReader.readLine()) != null) {
-                Module module = new Module();
-                module.LoadByDRCovModuleLine(currentLine);
-                module.toString();
+//                Module module = new Module();
+//                module.LoadByDRCovModuleLine(currentLine);
+//                module.toString();
 
 //                System.out.println(currentLine);
                 index++;

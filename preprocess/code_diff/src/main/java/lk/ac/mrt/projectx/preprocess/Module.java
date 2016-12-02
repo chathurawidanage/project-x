@@ -1,12 +1,20 @@
 package lk.ac.mrt.projectx.preprocess;
 
 
+import com.sun.org.apache.xpath.internal.functions.FuncContains;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 
 public class Module {
+
+    final static Logger logger = LogManager.getLogger(Module.class);
+
     private String name;
     private Integer mount;
     private ArrayList<Integer> addresses;
+    private Integer originalIndex;
 
     public Module (){
         this.name = "";
@@ -16,8 +24,18 @@ public class Module {
 
     public Integer LoadByDRCovModuleLine(String line){
         String [] splitted = line.split(",");
-        this.name = splitted[splitted.length-1];
+        this.name = splitted[2];
+        this.mount = Integer.parseInt(splitted[0]);
+        addresses.add(Integer.parseInt(splitted[1]));
+        logger.debug("Parsing line DRCov model : ", this.toString());
         return 1;
+    }
+
+    // Trying to find if equal using name
+    @Override
+    public boolean equals (Object o) {
+//        String stringCastedName = (String) o;
+        return o.equals(this.name);
     }
 
     @Override
@@ -54,5 +72,13 @@ public class Module {
 
     public void setAddresses(ArrayList<Integer> addresses) {
         this.addresses = addresses;
+    }
+
+    public Integer getOriginalIndex() {
+        return originalIndex;
+    }
+
+    public void setOriginalIndex(Integer originalIndex) {
+        this.originalIndex = originalIndex;
     }
 }

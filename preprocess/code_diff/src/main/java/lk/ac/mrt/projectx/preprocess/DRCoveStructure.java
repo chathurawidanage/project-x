@@ -78,19 +78,21 @@ public class DRCoveStructure {
             logger.info("Number of modules ", noOfModules);
 
             logger.warn("Parsing line DRCov models assuming second number is decimal");
+            modules = new ArrayList<>();
+            duplicateIndexes = new ArrayList<>();
             // Read all the module details
             // eg :  11, 40960, C:\Windows\syswow64\LPK.dll
-            for (int i = 0; i < noOfModules; i++){
+            for (Integer i = 0; i < noOfModules; i++){
                 currentLine = bufferedReader.readLine();
                 Module module = new Module();
+//                System.out.println(currentLine);
                 module.LoadByDRCovModuleLine(currentLine);
-                modules.add(module);
-                int foundIndex = modules.indexOf(module);
+                Integer foundIndex = modules.indexOf(module);
                 if (foundIndex != -1){
                     duplicateIndexes.add(i);
                     module.setOriginalIndex(foundIndex);
                 }
-                module.toString();
+                modules.add(module);
             }
 
             while ((currentLine = bufferedReader.readLine()) != null) {

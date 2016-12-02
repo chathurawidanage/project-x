@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -49,12 +50,12 @@ public class DRCoveStructure {
             // Read the first line which indicates DRCov version
             // eg : DRCOV VERSION: 1
             currentLine = bufferedReader.readLine();
-            logger.debug("First line",currentLine);
+            logger.debug("First line : {} ",currentLine);
             Matcher result = Pattern.compile("\\d+").matcher(currentLine);
             if(result.find()) {
                 drcovVersion = Integer.parseInt(result.group().toString());
             }
-            logger.debug("DRCov version ", drcovVersion);
+            logger.info("DRCov version : {} ", drcovVersion);
 
             // Only version 2 files include flavour line
             // eg :
@@ -64,7 +65,7 @@ public class DRCoveStructure {
                 if(result.find()) {
                     drcovFlavour = result.group().toString();
                 }
-                logger.debug("DRCov Flavour ", currentLine);
+                logger.info("DRCov Flavour {}", currentLine);
             }
 
             // Get the number of modules
@@ -74,18 +75,47 @@ public class DRCoveStructure {
             if(result.find()) {
                 noOfModules = Integer.parseInt(result.group().toString());
             }
-            logger.debug("Number of modules ", noOfModules);
+            logger.info("Number of modules : {}", noOfModules);
 
+            logger.warn("Parsing line DRCov models assuming second number is decimal");
+            modules = new ArrayList<>();
+            duplicateIndexes = new ArrayList<>();
+            // Read all the module details
+            // eg :  11, 40960, C:\Windows\syswow64\LPK.dll
             for (int i = 0; i < noOfModules; i++){
                 currentLine = bufferedReader.readLine();
                 Module module = new Module();
+//                System.out.println(currentLine);
                 module.LoadByDRCovModuleLine(currentLine);
-                module.toString();
+                Integer foundIndex = modules.indexOf(module);
+                if (foundIndex != -1){
+                    duplicateIndexes.add(i);
+                    module.setOriginalIndex(foundIndex);
+                }
+                modules.add(module);
+            }
+            logger.info("Number of Duplicate Modules {}", duplicateIndexes.size());
+
+            currentLine = bufferedReader.readLine();
+
+            // Get the number of basic blocks
+            // eg : BB Table: 21058 bbs
+            result = Pattern.compile("(\\d+)").matcher(currentLine);
+            if(result.find()) {
+                noOfBasicBlocks = Integer.parseInt(result.group(0).toString());
+            }
+            logger.info("Number of Basic Blocks {}", noOfBasicBlocks);
+
+            // Parsing the basic block lines
+            // eg : module[ 21]: 0x000101c4,  13
+            for (int i = 0; i < noOfBasicBlocks; i++){
+                currentLine = bufferedReader.readLine();
+//                System.out.println(currentLine);
             }
             while ((currentLine = bufferedReader.readLine()) != null) {
-                Module module = new Module();
-                module.LoadByDRCovModuleLine(currentLine);
-                module.toString();
+//                Module module = new Module();
+//                module.LoadByDRCovModuleLine(currentLine);
+//                module.toString();
 
 //                System.out.println(currentLine);
                 index++;

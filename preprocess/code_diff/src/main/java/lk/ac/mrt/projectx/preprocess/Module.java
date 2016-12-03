@@ -3,37 +3,43 @@ package lk.ac.mrt.projectx.preprocess;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.HashSet;
 
-public class Module {
+/**
+ * @author krv
+ */
+public class Module implements Comparable{
 
     final static Logger logger = LogManager.getLogger(Module.class);
 
     private String name;
-    private Integer mount;
+    private Integer id;
     private HashSet<Integer> addresses;
     private Integer originalIndex;
 
     //    Set<String> names = new HashSet<String>();
     public Module() {
         this.name = "";
-        mount = 0;
-        originalIndex = 0;
+        id = 0;
+        originalIndex = -1;
         addresses = new HashSet<Integer>();
     }
 
-    public Module(String name, Integer mount, Integer originalIndex) {
+    public Module(String name, Integer id, Integer originalIndex) {
         this.name = name;
-        this.mount = mount;
+        this.id = id;
         this.originalIndex = originalIndex;
         addresses = new HashSet<>();
     }
 
+    // Read all the module details
+    // eg :  11, 40960, C:\Windowow64\LPK.dll
     public Integer LoadByDRCovModuleLine(String line) {
         try {
             String[] splitted = line.split(",");
             this.name = splitted[2];
-            this.mount = Integer.parseInt(splitted[0].trim());
+            this.id = Integer.parseInt(splitted[0].trim());
             addresses.add(Integer.parseInt(splitted[1].trim()));
             logger.debug("Parsing line DRCov model : ", this.toString());
             return 1;
@@ -60,23 +66,23 @@ public class Module {
         builder.append("Name : ");
         builder.append(this.name.toString());
         builder.append(" Mount : ");
-        builder.append(this.mount.toString());
+        builder.append(this.id.toString());
         builder.append(" Number of Addresses : ");
         builder.append(this.addresses.size());
         return builder.toString();
     }
 
 //    public Integer getMount() {
-//        return mount;
+//        return id;
 //    }
 //
-//    public void setMount(Integer mount) {
-//        this.mount = mount;
+//    public void setMount(Integer id) {
+//        this.id = id;
 //    }
 //
-//    public String getName() {                 V
-//        return name;
-//    }
+    public String getName() {
+        return name;
+    }
 //
 //    public void setName(String name) {
 //        this.name = name;
@@ -94,4 +100,9 @@ public class Module {
         this.originalIndex = originalIndex;
     }
 
+    @Override
+    public int compareTo(Object o) {
+        Module other = (Module) o;
+        return this.name.compareTo(other.name);
+    }
 }

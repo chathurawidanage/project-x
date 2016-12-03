@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * @author krv
  * @version 0.9
  */
-public class DRCoveStructure {
+public class DRCoveStructure implements Cloneable{
     /**
      * @see
      */
@@ -37,17 +37,41 @@ public class DRCoveStructure {
 
     Integer noOfBasicBlocks;
     Integer noOfModules;
-    ArrayList<Module> modules;
-    ArrayList<Integer> duplicateIndexes;
-    ArrayList<Integer> locateOriginals;
     Integer drcovVersion;
     String drcovFlavour;
+    String executable;
+    ArrayList<Module> modules;
+    ArrayList<Integer> duplicateIndexes;
 
-    public DRCoveStructure() {
+    public DRCoveStructure(String executable) {
+        this.executable = executable;
     }
 
-    public DRCoveStructure(String fileName) {
-        LoadFromFile(fileName);
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        DRCoveStructure clone = (DRCoveStructure) super.clone();
+        clone.duplicateIndexes = (ArrayList) duplicateIndexes.clone();
+        clone.modules = (ArrayList) modules.clone();
+        return clone;
+    }
+
+    public ArrayList GetDifference(DRCoveStructure other) {
+        ArrayList<Module> diff = new ArrayList<>();
+
+        // TODO : Check whether the first and second modules can be interchanged
+        for (Module modT : modules) {
+            logger.debug("First Structure loop element");
+            if (modT.getName().contains(executable)) {
+                for (Module modO : other.modules) {
+                    if (modT == modO) {
+                        modT.getAddresses().addAll(modO.getAddresses());
+                    }
+                }
+                diff.add(modT);
+                logger.info("Added to diff {}", modT);
+            }
+        }
+        return diff;
     }
 
     public void LoadFromFile(String fileName) {

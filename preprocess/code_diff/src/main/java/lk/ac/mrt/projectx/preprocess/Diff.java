@@ -18,14 +18,14 @@ public class Diff {
         try {
             // parse the command line arguments
             CommandLine line = parser.parse( cmdLineOptions, test );
-            System.out.println(line.getOptionValue("first"));
-            System.out.println(line.getOptionValue("second"));
-            System.out.println(line.getOptionValue("output"));
-            System.out.println(line.getOptionValue("exec"));
+            logger.info("first file = {}",line.getOptionValue("first"));
+            logger.info("second file = {}",line.getOptionValue("second"));
+            logger.info("output file = {}",line.getOptionValue("output"));
+            logger.info("exec name = {}",line.getOptionValue("exec"));
         }
         catch( ParseException exp ) {
             // oops, something went wrong
-            logger.error(exp.getMessage());
+            logger.fatal(exp.getMessage());
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp( "codediff", cmdLineOptions,true);
         }

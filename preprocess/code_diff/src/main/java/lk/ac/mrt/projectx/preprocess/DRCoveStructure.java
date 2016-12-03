@@ -41,10 +41,10 @@ public class DRCoveStructure {
     Integer drcovVersion;
     String drcovFlavour;
 
-    public DRCoveStructure (){
+    public DRCoveStructure() {
     }
 
-    public DRCoveStructure (String fileName){
+    public DRCoveStructure(String fileName) {
         LoadFromFile(fileName);
     }
 
@@ -53,6 +53,9 @@ public class DRCoveStructure {
         FileReader fileReader = null;
         String currentLine;
         Integer index = 0;
+        Integer invalidModules = 0;
+
+
         try {
             fileReader = new FileReader(fileName);
             bufferedReader = new BufferedReader(fileReader);
@@ -116,6 +119,7 @@ public class DRCoveStructure {
             }
             logger.info("Number of Basic Blocks {}", noOfBasicBlocks);
 
+
             // Parsing the basic block lines
             // eg : module[ 21]: 0x000101c4,  13
             // Module number start_address size
@@ -127,19 +131,25 @@ public class DRCoveStructure {
                 if (result.find()) {
                     moduleNumber = Integer.parseInt(result.group(1).trim());
                     startAddress = Integer.parseInt(result.group(2).substring(2).trim(), 16); //substring coz "0x"
-                    size = 0;//Integer.parseInt(result.group(3).trim());
-                    logger.debug("moduleNumber : {}, startAddress : {} size : {}", moduleNumber, startAddress, size);
+                    size = Integer.parseInt(result.group(3).trim());
+                    if(moduleNumber >= noOfModules){
+                        invalidModules ++;
+                    }else {
+                        // Updating starting addresses
+                        if(duplicateIndexes.contains(moduleNumber)){
+                            int parentIndex = modules.get(moduleNumber).getOriginalIndex();
+                            modules.get(parentIndex).getAddresses().add(startAddress);
+                        }else{
+                            modules.get(moduleNumber).getAddresses().add(startAddress);
+                        }
+
+                    }
+                    logger.debug("Original : {} moduleNumber : {}, startAddress : {} size : {}", currentLine, moduleNumber, startAddress, size);
                 }
             }
-            while ((currentLine = bufferedReader.readLine()) != null) {
-//                Module module = new Module();
-//                module.LoadByDRCovModuleLine(currentLine);
-//                module.toString();
 
-//                System.out.println(currentLine);
-                index++;
-            }
-
+            logger.info("Invalid BBS {}", invalidModules);
+            logger.info("Valid BBS {}", noOfBasicBlocks-invalidModules);
 
         } catch (FileNotFoundException e) {
             logger.fatal(e.getMessage());

@@ -23,6 +23,13 @@ public class Module {
         addresses = new ArrayList<Integer>();
     }
 
+    public Module(String name, Integer mount, Integer originalIndex) {
+        this.name = name;
+        this.mount = mount;
+        this.originalIndex = originalIndex;
+        addresses = new ArrayList<>();
+    }
+
     public Integer LoadByDRCovModuleLine(String line){
         try {
             String[] splitted = line.split(",");

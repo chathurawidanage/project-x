@@ -40,7 +40,6 @@ public class Module {
     // Trying to find if equal using name
     @Override
     public boolean equals (Object o) {
-//        String stringCastedName = (String) o;
         return o.equals(this.name);
     }
 

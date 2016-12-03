@@ -5,17 +5,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author krv
  */
-public class Module implements Comparable{
+public class Module implements Comparable {
 
     final static Logger logger = LogManager.getLogger(Module.class);
 
     private String name;
     private Integer id;
-    private HashSet<Integer> addresses;
+    private Set<Integer> addresses;
     private Integer originalIndex;
 
     //    Set<String> names = new HashSet<String>();
@@ -23,7 +24,7 @@ public class Module implements Comparable{
         this.name = "";
         id = 0;
         originalIndex = -1;
-        addresses = new HashSet<Integer>();
+        addresses = new HashSet<>();
     }
 
     public Module(String name, Integer id, Integer originalIndex) {
@@ -40,7 +41,6 @@ public class Module implements Comparable{
             String[] splitted = line.split(",");
             this.name = splitted[2];
             this.id = Integer.parseInt(splitted[0].trim());
-            addresses.add(Integer.parseInt(splitted[1].trim()));
             logger.debug("Parsing line DRCov model : ", this.toString());
             return 1;
         } catch (NumberFormatException e) {
@@ -72,23 +72,13 @@ public class Module implements Comparable{
         return builder.toString();
     }
 
-//    public Integer getMount() {
-//        return id;
-//    }
-//
-//    public void setMount(Integer id) {
-//        this.id = id;
-//    }
-//
+
     public String getName() {
         return name;
     }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
 
-    public HashSet<Integer> getAddresses() {
+
+    public Set<Integer> getAddresses() {
         return addresses;
     }
 

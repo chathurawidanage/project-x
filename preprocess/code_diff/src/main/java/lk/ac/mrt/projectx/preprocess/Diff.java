@@ -18,7 +18,6 @@ public class Diff {
     public static void main(String[] args) {
         CommandLineParser parser = new DefaultParser();
 
-        //String[] test = {"-first", "file_1", "-second", "file_2", "-output", "/home/krv/Projects/FYP/project-x/preprocess/code_diff/src/test/resources/out.txt", "-exec", "halide_blur_hvscan_test"};
         try {
             // parse the command line arguments
             CommandLine line = parser.parse(cmdLineOptions, args);
@@ -29,8 +28,8 @@ public class Diff {
 
             DRCoveStructure firstStruct = new DRCoveStructure(line.getOptionValue("exec"));
             DRCoveStructure secondtStruct = new DRCoveStructure(line.getOptionValue("exec"));
-            firstStruct.LoadFromFile("/home/krv/Projects/FYP/project-x/preprocess/code_diff/src/test/resources/drcov.halide_blur_hvscan_test.exe.02112.0000.proc.log");
-            secondtStruct.LoadFromFile("/home/krv/Projects/FYP/project-x/preprocess/code_diff/src/test/resources/drcov.halide_blur_hvscan_test.exe.02752.0000.proc.log");
+            firstStruct.LoadFromFile(line.getOptionValue("first"));
+            secondtStruct.LoadFromFile(line.getOptionValue("second"));
             ArrayList<Module> diffModules = firstStruct.GetDifference(secondtStruct);
             printToFile(line.getOptionValue("output"), diffModules);
         } catch (ParseException exp) {

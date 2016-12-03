@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * @author krv
  * @version 0.9
  */
-public class DRCoveStructure implements Cloneable{
+public class DRCoveStructure implements Cloneable {
     /**
      * @see
      */
@@ -45,6 +45,8 @@ public class DRCoveStructure implements Cloneable{
 
     public DRCoveStructure(String executable) {
         this.executable = executable;
+        modules = new ArrayList<>();
+        duplicateIndexes = new ArrayList<>();
     }
 
     @Override
@@ -54,6 +56,15 @@ public class DRCoveStructure implements Cloneable{
         clone.modules = (ArrayList) modules.clone();
         return clone;
     }
+
+    private void CheckStructureIntegrity() {
+        int size = 0;
+        for (Module mod : modules) {
+            size += mod.getAddresses().size();
+        }
+        logger.info("Total BBS : {}", size);
+    }
+
 
     public ArrayList GetDifference(DRCoveStructure other) {
         ArrayList<Module> diff = new ArrayList<>();
@@ -72,6 +83,12 @@ public class DRCoveStructure implements Cloneable{
             }
         }
         return diff;
+    }
+
+    private void CheckStructure() {
+        for (Module mod : modules) {
+            logger.info("BBS  : {} Module {}", mod.getAddresses().size(), mod.getName());
+        }
     }
 
     public void LoadFromFile(String fileName) {
@@ -117,19 +134,18 @@ public class DRCoveStructure implements Cloneable{
             logger.info("Number of modules : {}", noOfModules);
 
             logger.warn("Parsing line DRCov models assuming second number is decimal");
-            modules = new ArrayList<>();
-            duplicateIndexes = new ArrayList<>();
+
             // Read all the module details
             // eg :  11, 40960, C:\Windows\syswow64\LPK.dll
             for (int i = 0; i < noOfModules; i++) {
                 currentLine = bufferedReader.readLine();
                 Module module = new Module();
-//                System.out.println(currentLine);
                 module.LoadByDRCovModuleLine(currentLine);
                 Integer foundIndex = modules.indexOf(module);
-                if (foundIndex != -1) {
+                if (foundIndex != -1) { // Duplicate module name
                     duplicateIndexes.add(i);
                     module.setOriginalIndex(foundIndex);
+                    logger.debug("Module {} is a duplicate of {}", i, foundIndex);
                 }
                 modules.add(module);
             }
@@ -151,13 +167,14 @@ public class DRCoveStructure implements Cloneable{
             // Module number start_address size
             for (int i = 0; i < noOfBasicBlocks; i++) {
                 currentLine = bufferedReader.readLine();
-                result = Pattern.compile("\\[ (\\d+)\\]: (0x[abcdef]*\\d*[abdcdef]*\\d*),.+(\\d+)").matcher(currentLine);
+                result = Pattern.compile("\\[(.*)\\]:.*0x(.*),(.*)").matcher(currentLine);
                 logger.debug("Group Count : {}", result.groupCount());
                 Integer moduleNumber, startAddress, size;
                 if (result.find()) {
                     moduleNumber = Integer.parseInt(result.group(1).trim());
-                    startAddress = Integer.parseInt(result.group(2).substring(2).trim(), 16); //substring coz "0x"
+                    startAddress = Integer.parseInt(result.group(2).trim(), 16); //substring coz "0x"
                     size = Integer.parseInt(result.group(3).trim());
+                    logger.debug("moduleNumber {}, startAddress {}, size {}", moduleNumber, startAddress, size);
                     if (moduleNumber >= noOfModules) {
                         invalidModules++;
                     } else {
@@ -166,9 +183,10 @@ public class DRCoveStructure implements Cloneable{
                             int parentIndex = modules.get(moduleNumber).getOriginalIndex();
                             modules.get(parentIndex).getAddresses().add(startAddress);
                         } else {
-                            modules.get(moduleNumber).getAddresses().add(startAddress);
+                            //TODO : One Liner
+                            Module temp = modules.get(moduleNumber);
+                            temp.getAddresses().add(startAddress);
                         }
-
                     }
                     logger.debug("Original : {} moduleNumber : {}, startAddress : {} size : {}", currentLine, moduleNumber, startAddress, size);
                 }
@@ -183,6 +201,8 @@ public class DRCoveStructure implements Cloneable{
         } catch (IOException e) {
             logger.fatal(e.getMessage());
         }
+
+        CheckStructureIntegrity();
     }
 }
 

@@ -6,6 +6,7 @@
     </Console>
   </Appenders>
   <Loggers>
+    <!--ALL DEBUG ERROR FATAL INFO OFF TRACE WARN-->
     <Root level="info">
       <AppenderRef ref="Console"/>
     </Root>

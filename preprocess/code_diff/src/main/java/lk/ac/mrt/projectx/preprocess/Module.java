@@ -1,11 +1,9 @@
 package lk.ac.mrt.projectx.preprocess;
 
 
-import com.sun.org.apache.xpath.internal.functions.FuncContains;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Module {
 
@@ -13,24 +11,25 @@ public class Module {
 
     private String name;
     private Integer mount;
-    private ArrayList<Integer> addresses;
+    private HashSet<Integer> addresses;
     private Integer originalIndex;
 
-    public Module (){
+    //    Set<String> names = new HashSet<String>();
+    public Module() {
         this.name = "";
         mount = 0;
         originalIndex = 0;
-        addresses = new ArrayList<Integer>();
+        addresses = new HashSet<Integer>();
     }
 
     public Module(String name, Integer mount, Integer originalIndex) {
         this.name = name;
         this.mount = mount;
         this.originalIndex = originalIndex;
-        addresses = new ArrayList<>();
+        addresses = new HashSet<>();
     }
 
-    public Integer LoadByDRCovModuleLine(String line){
+    public Integer LoadByDRCovModuleLine(String line) {
         try {
             String[] splitted = line.split(",");
             this.name = splitted[2];
@@ -38,7 +37,7 @@ public class Module {
             addresses.add(Integer.parseInt(splitted[1].trim()));
             logger.debug("Parsing line DRCov model : ", this.toString());
             return 1;
-        }catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             logger.error(e.getMessage());
         }
         return -1;
@@ -46,12 +45,17 @@ public class Module {
 
     // Trying to find if equal using name
     @Override
-    public boolean equals (Object o) {
+    public boolean equals(Object o) {
         return o.equals(this.name);
     }
 
     @Override
-    public String toString(){
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Name : ");
         builder.append(this.name.toString());
@@ -61,28 +65,25 @@ public class Module {
         builder.append(this.addresses.size());
         return builder.toString();
     }
-    public Integer getMount() {
-        return mount;
-    }
 
-    public void setMount(Integer mount) {
-        this.mount = mount;
-    }
+//    public Integer getMount() {
+//        return mount;
+//    }
+//
+//    public void setMount(Integer mount) {
+//        this.mount = mount;
+//    }
+//
+//    public String getName() {                 V
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ArrayList<Integer> getAddresses() {
+    public HashSet<Integer> getAddresses() {
         return addresses;
-    }
-
-    public void setAddresses(ArrayList<Integer> addresses) {
-        this.addresses = addresses;
     }
 
     public Integer getOriginalIndex() {
@@ -92,4 +93,5 @@ public class Module {
     public void setOriginalIndex(Integer originalIndex) {
         this.originalIndex = originalIndex;
     }
+
 }

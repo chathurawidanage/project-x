@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Set;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -132,14 +134,14 @@ public class DRCoveStructure {
                     moduleNumber = Integer.parseInt(result.group(1).trim());
                     startAddress = Integer.parseInt(result.group(2).substring(2).trim(), 16); //substring coz "0x"
                     size = Integer.parseInt(result.group(3).trim());
-                    if(moduleNumber >= noOfModules){
-                        invalidModules ++;
-                    }else {
+                    if (moduleNumber >= noOfModules) {
+                        invalidModules++;
+                    } else {
                         // Updating starting addresses
-                        if(duplicateIndexes.contains(moduleNumber)){
+                        if (duplicateIndexes.contains(moduleNumber)) {
                             int parentIndex = modules.get(moduleNumber).getOriginalIndex();
                             modules.get(parentIndex).getAddresses().add(startAddress);
-                        }else{
+                        } else {
                             modules.get(moduleNumber).getAddresses().add(startAddress);
                         }
 
@@ -148,9 +150,10 @@ public class DRCoveStructure {
                 }
             }
 
+            bufferedReader.close();
+            fileReader.close();
             logger.info("Invalid BBS {}", invalidModules);
-            logger.info("Valid BBS {}", noOfBasicBlocks-invalidModules);
-
+            logger.info("Valid BBS {}", noOfBasicBlocks - invalidModules);
         } catch (FileNotFoundException e) {
             logger.fatal(e.getMessage());
         } catch (IOException e) {

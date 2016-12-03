@@ -18,10 +18,10 @@ public class Diff {
     public static void main(String[] args) {
         CommandLineParser parser = new DefaultParser();
 
-        String[] test = {"-first", "file_1", "-second", "file_2", "-output", "/home/krv/Projects/FYP/project-x/preprocess/code_diff/src/test/resources/out.txt", "-exec", "halide_blur_hvscan_test"};
+        //String[] test = {"-first", "file_1", "-second", "file_2", "-output", "/home/krv/Projects/FYP/project-x/preprocess/code_diff/src/test/resources/out.txt", "-exec", "halide_blur_hvscan_test"};
         try {
             // parse the command line arguments
-            CommandLine line = parser.parse(cmdLineOptions, test);
+            CommandLine line = parser.parse(cmdLineOptions, args);
             logger.info("first file = {}", line.getOptionValue("first"));
             logger.info("second file = {}", line.getOptionValue("second"));
             logger.info("output file = {}", line.getOptionValue("output"));

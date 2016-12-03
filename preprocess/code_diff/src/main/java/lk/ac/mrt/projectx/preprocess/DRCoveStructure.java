@@ -150,10 +150,10 @@ public class DRCoveStructure {
                 }
             }
 
-            bufferedReader.close();
-            fileReader.close();
             logger.info("Invalid BBS {}", invalidModules);
             logger.info("Valid BBS {}", noOfBasicBlocks - invalidModules);
+            bufferedReader.close();
+            fileReader.close();
         } catch (FileNotFoundException e) {
             logger.fatal(e.getMessage());
         } catch (IOException e) {

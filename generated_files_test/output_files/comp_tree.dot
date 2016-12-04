@@ -1,0 +1,7 @@
+digraph G_comp_1 {
+0 [label="output_1(6,3)\noutput_1(6,4)\noutput_1(10,5)\noutput_1(18,6)\n"];
+1 [label="-1\n-1\n-1\n-1\n"];
+
+0 -> 1;
+
+}

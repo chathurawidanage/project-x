@@ -1,0 +1,225 @@
+1,4096_push   ebp_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4097_mov    ebp, esp_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4099_push   ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4100_push   edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4101_push   esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4102_sub    esp, 0x4c_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4105_mov    edx, dword ptr [ebp+0x08]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4108_test   edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4110_jz     0x00d41145_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4096_push   ebp_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4097_mov    ebp, esp_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4099_push   ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4100_push   edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4101_push   esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4102_sub    esp, 0x4c_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4105_mov    edx, dword ptr [ebp+0x08]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4108_test   edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4110_jz     0x00d41145_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4116_mov    eax, dword ptr [ebp+0x0c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4119_mov    esi, dword ptr [edx+0x08]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4122_mov    ecx, dword ptr [edx]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4124_or     ecx, dword ptr [edx+0x04]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4127_or     ecx, esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4129_setz   cl_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4132_test   eax, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4134_jz     0x00d41152_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4140_mov    dword ptr [ebp-0x24], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4143_mov    esi, dword ptr [edx+0x0c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4146_mov    dword ptr [ebp-0x20], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4149_mov    esi, dword ptr [edx+0x10]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4152_mov    dword ptr [ebp-0x30], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4155_mov    esi, dword ptr [edx+0x1c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4158_mov    dword ptr [ebp-0x3c], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4161_mov    esi, dword ptr [edx+0x20]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4164_mov    dword ptr [ebp-0x44], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4167_mov    edi, dword ptr [eax+0x08]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4170_mov    dword ptr [ebp-0x28], edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4173_mov    esi, dword ptr [eax]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4175_or     esi, dword ptr [eax+0x04]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4178_or     esi, edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4180_mov    edi, dword ptr [edx+0x2c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4183_setz   ch_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4186_mov    esi, dword ptr [edx+0x30]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4189_mov    dword ptr [ebp-0x2c], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4192_mov    esi, dword ptr [edx+0x3c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4195_mov    dword ptr [ebp-0x1c], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4198_mov    esi, dword ptr [eax+0x0c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4201_mov    dword ptr [ebp-0x10], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4204_mov    esi, dword ptr [eax+0x10]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4207_mov    dword ptr [ebp-0x18], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4210_mov    esi, dword ptr [eax+0x1c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4213_mov    dword ptr [ebp-0x38], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4216_mov    esi, dword ptr [eax+0x20]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4219_mov    dword ptr [ebp-0x40], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4222_mov    ebx, dword ptr [eax+0x2c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4225_mov    esi, dword ptr [eax+0x30]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4228_mov    dword ptr [ebp-0x14], esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4231_mov    esi, dword ptr [eax+0x3c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4234_jnz    0x00d410ec_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4332_test   cl, cl_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4334_jz     0x00d4115f_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4447_test   ch, ch_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4449_jnz    0x00d4134b_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4455_cmp    esi, 0x01_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4458_jnz    0x00d4118d_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4460_mov    eax, dword ptr [ebp-0x1c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4463_cmp    eax, 0x01_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4466_jnz    0x00d4119e_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4468_cmp    edi, ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4470_jle    0x00d411af_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4527_mov    eax, dword ptr [ebp-0x10]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4530_lea    eax, [ebx+eax]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4533_mov    ecx, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4535_mov    edx, dword ptr [ebp-0x20]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4538_sub    ecx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4540_cmp    ecx, edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4542_jle    0x00d411da_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4570_mov    eax, dword ptr [ebp-0x14]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4573_mov    esi, dword ptr [ebp-0x2c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4576_cmp    esi, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4578_jle    0x00d411f9_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4601_mov    dword ptr [ebp-0x34], edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4604_mov    edx, dword ptr [ebp-0x18]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4607_lea    edi, [eax+edx]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4610_mov    eax, edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4612_mov    edx, dword ptr [ebp-0x30]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4615_sub    eax, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4617_cmp    eax, esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4619_jle    0x00d41227_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4647_cmp    dword ptr [ebp-0x38], 0x01_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4651_jnz    0x00d41328_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4657_cmp    dword ptr [ebp-0x3c], 0x01_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4661_jnz    0x00d41332_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4667_mov    eax, dword ptr [ebp-0x40]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4670_imul   edx, eax, dword ptr [ebp-0x18]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4673_test   eax, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4675_setns  al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4678_test   edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4680_sets   dl_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4683_jz     0x00d4124f_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4687_test   al, al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4689_jz     0x00d4133c_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4695_mov    eax, dword ptr [ebp-0x18]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4698_imul   edx, eax, dword ptr [ebp-0x10]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4701_mov    ecx, 0x80000000_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4706_cmp    eax, ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4708_setb   al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4711_test   edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4713_sets   dl_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4716_jz     0x00d41270_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4720_test   al, al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4722_jz     0x00d4134f_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4728_mov    dword ptr [ebp-0x1c], edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4731_mov    eax, dword ptr [ebp-0x44]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4734_imul   edx, eax, dword ptr [ebp-0x30]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4737_mov    edi, 0x80000000_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4742_cmp    eax, edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4744_setb   al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4747_test   edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4749_sets   dl_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4752_jz     0x00d41294_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4756_test   al, al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4758_jz     0x00d41359_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4764_mov    eax, dword ptr [ebp-0x30]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4767_imul   edx, eax, dword ptr [ebp-0x20]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4770_mov    ecx, 0x80000000_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4775_cmp    eax, ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4777_setb   al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4780_test   edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4782_sets   dl_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4785_jz     0x00d412b5_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4789_test   al, al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4791_jz     0x00d41363_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4797_cmp    dword ptr [ebp-0x18], 0x00_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4801_mov    ecx, dword ptr [ebp-0x34]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4804_jle    0x00d4134b_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4810_mov    edi, ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4812_mov    edx, ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4814_cmp    dword ptr [ebp-0x10], 0x00_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4818_jle    0x00d41346_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4820_mov    eax, dword ptr [ebp-0x14]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4823_mov    ecx, dword ptr [ebp-0x44]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4826_imul   eax, ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4829_mov    ebx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4831_add    ebx, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4833_mov    eax, esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4835_imul   eax, ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4838_mov    esi, edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4840_add    esi, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4842_sub    ebx, esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4844_xor    edx, edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4846_mov    dword ptr [ebp-0x18], edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4849_mov    ecx, ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4851_mov    esi, dword ptr [ebp-0x10]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4854_mov    eax, dword ptr [ebp-0x24]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4857_movzx  edi, byte ptr [eax+ecx]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4861_mov    al, 0xff_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4863_cmp    edi, 0x65_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4866_jnbe   0x00d41306_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4868_xor    eax, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4870_mov    edi, dword ptr [ebp-0x28]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4873_mov    byte ptr [edi+edx], al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4876_inc    edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4877_inc    ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4878_dec    esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4879_jnz    0x00d412f6_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4854_mov    eax, dword ptr [ebp-0x24]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4857_movzx  edi, byte ptr [eax+ecx]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4861_mov    al, 0xff_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4863_cmp    edi, 0x65_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4866_jnbe   0x00d41306_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4881_mov    eax, dword ptr [ebp-0x14]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4884_inc    eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4885_mov    dword ptr [ebp-0x14], eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4888_mov    edx, dword ptr [ebp-0x18]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4891_add    edx, dword ptr [ebp-0x40]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4894_add    ebx, dword ptr [ebp-0x44]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4897_cmp    eax, dword ptr [ebp-0x1c]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4900_jnz    0x00d412ee_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4846_mov    dword ptr [ebp-0x18], edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4849_mov    ecx, ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4851_mov    esi, dword ptr [ebp-0x10]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4854_mov    eax, dword ptr [ebp-0x24]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4857_movzx  edi, byte ptr [eax+ecx]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4861_mov    al, 0xff_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4863_cmp    edi, 0x65_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4866_jnbe   0x00d41306_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4854_mov    eax, dword ptr [ebp-0x24]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4857_movzx  edi, byte ptr [eax+ecx]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4861_mov    al, 0xff_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4863_cmp    edi, 0x65_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4866_jnbe   0x00d41306_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4868_xor    eax, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4870_mov    edi, dword ptr [ebp-0x28]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4873_mov    byte ptr [edi+edx], al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4876_inc    edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4877_inc    ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4878_dec    esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4879_jnz    0x00d412f6_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4870_mov    edi, dword ptr [ebp-0x28]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4873_mov    byte ptr [edi+edx], al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4876_inc    edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4877_inc    ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4878_dec    esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4879_jnz    0x00d412f6_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4870_mov    edi, dword ptr [ebp-0x28]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4873_mov    byte ptr [edi+edx], al_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4876_inc    edx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4877_inc    ecx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4878_dec    esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4879_jnz    0x00d412f6_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4902_jmp    0x00d4134b_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4939_xor    eax, eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4941_jmp    0x00d4137c_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4988_add    esp, 0x4c_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4991_pop    esi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4992_pop    edi_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4993_pop    ebx_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4994_pop    ebp_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,4995_ret    _C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,6697_add    esp, 0x08_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,6700_lea    eax, [ebp-0x04]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,6703_push   eax_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,6704_mov    ecx, dword ptr [ebp+0x08]_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+1,6707_call   0x00d42640_C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe

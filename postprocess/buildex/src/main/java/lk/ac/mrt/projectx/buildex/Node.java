@@ -16,10 +16,9 @@ public abstract class Node<T> {
     //TODO: operant_t
     Operand<T> synbol;
 
-    List<Node> srcs;
-    List<Node> prev;
-
-    List<Long> pos;
+    List<Node> srcs; ///< forward references also srcs of the destination
+    List<Node> prev; ///< keep the backward references
+    List<Long> pos; ///< position of the parent node's srcs list for this child
 
     Long pc;
     Long line;
@@ -44,13 +43,12 @@ public abstract class Node<T> {
         erased = srcs.remove(ref);
         if (erased) {
             // Updating the reference
-            for (int j = 0; j < ref.pos.size(); j++) {
-                if(ref.prev.get(j) == this && ref.pos.get(j) == idx){
-                    ref.prev.remove(j); //TODO : Removing inside the loop
-                    ref.pos.remove(j);
-                    break;
-                }
+            int jidx = ref.prev.indexOf(this);
+            if(jidx != -1 && ref.pos.get(jidx) == idx){
+                ref.prev.remove(jidx);
+                ref.pos.remove(jidx);
             }
+            // Update backward references of still connected node
         }
 
         return erased;

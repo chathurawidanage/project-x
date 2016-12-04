@@ -18,7 +18,7 @@ public class MainTest {
 
     public static void main(String[] args) {
         MainTest mainTest = new MainTest();
-
+        mainTest.runAlgorithmDiffMode();
     }
 
     public MainTest() {
@@ -39,6 +39,10 @@ public class MainTest {
     public void initialize() {
         readMemtraceAndProfileFiles();
     }
+
+    private final int DIFF_MODE = 1;
+    private final int TWO_IMAGE_MODE = 2;
+    private final int ONE_IMAGE_MODE = 3;
 
     private String outputFolderPath;
     private String imageFolderPath;
@@ -78,6 +82,13 @@ public class MainTest {
             }
         }
 
+    }
+
+    public void runAlgorithmDiffMode() {
+
+        logger.info("Filter function DIFF MODE");
+
+        ModuleInfo module = ModuleInfo.getPopulatedModuleInfo(profileData.get(0));
     }
 
 

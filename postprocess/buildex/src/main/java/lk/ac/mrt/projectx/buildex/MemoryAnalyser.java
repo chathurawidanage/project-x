@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,87 +32,90 @@ public class MemoryAnalyser {
             throw new Exception("Input and output images are equal");
         }*/
 
+
         for (MemoryDumpFile memoryDumpFile : memoryDumpFiles) {
             logger.info("Analyzing file : {}", memoryDumpFile.toString());
             if (!memoryDumpFile.isWrite()) {
-                System.out.println("Write file");
-                forwardAnalysis(memoryDumpFile, inputImage);
-                backwardAnalysis(memoryDumpFile, inputImage);
+                List<Integer> startPoints = forwardAnalysis(memoryDumpFile, inputImage);
+                System.out.println(startPoints);
+                if (startPoints == null)
+                    backwardAnalysis(memoryDumpFile, inputImage, false);
             } else {
-                forwardAnalysis(memoryDumpFile, outputImage);
-                backwardAnalysis(memoryDumpFile, outputImage);
+                List<Integer> startPoints = forwardAnalysis(memoryDumpFile, outputImage);
+                System.out.println(startPoints);
+                if (startPoints == null)
+                    backwardAnalysis(memoryDumpFile, outputImage, true);
             }
         }
     }
 
-    private void backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
-        System.out.println("Backward");
+    //todo invalid implementation
+    private List<Integer> backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image, boolean write) throws IOException {
+        logger.info("Backward analyzing {}", memoryDumpFile.getFile().getName());
         int[] imageBuffer = image.getImageBuffer();
         int[] reversedImageBuffer = new int[imageBuffer.length];
 
         int range = imageBuffer.length / 3 - 1;
         for (int i = 0; i < imageBuffer.length / 3; i++) {
             for (int channel = 0; channel < 3; channel++) {
-                reversedImageBuffer[i + (range * channel)+channel] = imageBuffer[(range * (channel + 1)) + channel - i];
+                reversedImageBuffer[i + (range * channel) + channel] = imageBuffer[(range * (channel + 1)) + channel - i];
             }
         }
 
-        findRegions(image.getImage().getWidth(),
+        if (true) {
+            int[] revereImageBufferCopy = Arrays.copyOf(reversedImageBuffer, reversedImageBuffer.length);
+            int channelGap = (image.getImage().getWidth() * image.getImage().getHeight());
+            int channelLevelIndex = 0;
+            for (int i = 0; i < reversedImageBuffer.length; ) {
+                reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex];
+                reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + channelGap];
+                reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + (2 * channelGap)];
+                channelLevelIndex++;
+            }
+        }
+
+        return findRegions(image.getImage().getWidth(),
                 image.getImage().getHeight(),
                 reversedImageBuffer,
                 memoryDumpFile.getBaseProgramCounter(),
                 memoryDumpFile.getMemoryBuffer()
         );
-        System.out.println("backward done----------------");
     }
 
-    private void forwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
-        System.out.println("Forward");
-        findRegions(image.getImage().getWidth(),
+    private List<Integer> forwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
+        logger.info("Forward analyzing {}", memoryDumpFile.getFile().getName());
+        return findRegions(image.getImage().getWidth(),
                 image.getImage().getHeight(),
                 image.getImageBuffer(),
                 memoryDumpFile.getBaseProgramCounter(),
                 memoryDumpFile.getMemoryBuffer()
         );
-        System.out.println("Forward done----------------");
     }
 
-    private void findRegions(int imageWidth, int imageHeight, int[] imageBuffer, long basePC, byte[] memoryBuffer) {
-        for (int i = 0; i < memoryBuffer.length; i++) {
+    private List<Integer> findRegions(int imageWidth, int imageHeight, int[] imageBuffer, long basePC, byte[] memoryBuffer) {
+        ArrayList<Integer> startPoints = new ArrayList<>();
+        int last = 0;
+        for (int j = 0; j < memoryBuffer.length; ) {
             boolean found = true;
-            for (int j = 0; j < imageWidth; j++) {
-                if (i + j < memoryBuffer.length && (memoryBuffer[i + j]) != imageBuffer[j]) {
+            for (int k = last; k < last + (imageWidth); k++) {
+                if (j + k - last < memoryBuffer.length && (memoryBuffer[j + k - last] & 0xff) != imageBuffer[k]) {
                     found = false;
                     break;
                 }
             }
             if (found) {
-                //System.out.println("PC"+basePC);
-                //System.out.println(i + " Found Forward " + (i + basePC));
-                int start = 0;
-                int last = 0;
-            /* get the starting points of each image line */
-                for (int j = i; j < memoryBuffer.length; j++) {
-                    found = true;
-                    for (int k = last; k < last + (imageWidth); k++) {
-                        if (j + k - last < memoryBuffer.length && (memoryBuffer[j + k - last]) != imageBuffer[k]) {
-                            found = false;
-                            break;
-                        }
-                    }
-                    if (found) {
-                        start = j;
-                        last += (imageWidth);
-                        System.out.println("Found again" + (j + basePC));
-                        if (last == imageWidth * imageHeight * 3) {
-                            System.out.println("Found all");
-                            break;
-                        }
-                    }
+                last += (imageWidth);
+                startPoints.add(j);
+                j += (imageWidth - 1);
+                if (last == imageWidth * imageHeight * 3) {//todo multiply by 3??
+                    logger.info("Scanned whole image");
+                    return startPoints;
                 }
-                break;
+            } else {
+                j++;
             }
         }
+        return null;
     }
 
     private boolean isEqualImages(BufferedImage image1, BufferedImage image2) {

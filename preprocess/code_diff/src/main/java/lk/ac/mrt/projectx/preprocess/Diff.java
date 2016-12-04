@@ -6,7 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by krv on 12/3/16.
@@ -30,7 +30,7 @@ public class Diff {
             DRCoveStructure secondtStruct = new DRCoveStructure(line.getOptionValue("exec"));
             firstStruct.LoadFromFile(line.getOptionValue("first"));
             secondtStruct.LoadFromFile(line.getOptionValue("second"));
-            ArrayList<Module> diffModules = firstStruct.GetDifference(secondtStruct);
+            List<Module> diffModules = firstStruct.GetDifference(secondtStruct);
             printToFile(line.getOptionValue("output"), diffModules);
         } catch (ParseException exp) {
             // oops, something went wrong
@@ -42,17 +42,25 @@ public class Diff {
 
     }
 
-    public static void printToFile(String fileName, ArrayList<Module> diffModules) {
+    public static void printToFile(String fileName, List<Module> diffModules) {
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
+
         try {
             fileWriter = new FileWriter(fileName);
             bufferedWriter = new BufferedWriter(fileWriter);
             for (Module mod : diffModules) {
-                bufferedWriter.write(mod.getName());
+                bufferedWriter.write(mod.getId()+"\n");
+                bufferedWriter.write(mod.getName().trim()+"\n");
                 logger.info(mod.getName());
-                bufferedWriter.write(mod.getAddresses().toString());
-                logger.info(mod.getAddresses().toString());
+                List<Integer> addresses = new ArrayList<>();
+                addresses.addAll(mod.getAddresses());
+                Collections.sort(addresses);
+                for (Integer address: addresses) {
+                    bufferedWriter.write(address.toString()+'\n');
+                    logger.debug("Address {}", address.toString());
+                }
+
             }
             bufferedWriter.close();
             fileWriter.close();

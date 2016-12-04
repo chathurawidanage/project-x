@@ -1,28 +1,18 @@
-
 package lk.ac.mrt.projectx.preprocess;
 
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.regex.Pattern;
 
 /**
  * @author krv
@@ -57,40 +47,60 @@ public class DRCoveStructure implements Cloneable {
         return clone;
     }
 
-    private void CheckStructureIntegrity() {
-        int size = 0;
-        for (Module mod : modules) {
-            size += mod.getAddresses().size();
-        }
-        logger.info("Total BBS : {}", size);
-    }
 
-
-    public ArrayList GetDifference(DRCoveStructure other) {
+    /**
+     * This method will return all the unique modules and unique address of the
+     * Basic Blocks
+     *
+     * @param other Second DRCovStructure extracted from the drcov file
+     * @return List of Modules
+     */
+    public List GetDifference(DRCoveStructure other) {
         ArrayList<Module> diff = new ArrayList<>();
 
         // TODO : Check whether the first and second modules can be interchanged
-        for (Module modT : modules) {
-            logger.debug("First Structure loop element");
-            if (modT.getName().contains(executable)) {
-                for (Module modO : other.modules) {
-                    if (modT == modO) {
-                        modT.getAddresses().addAll(modO.getAddresses());
-                    }
+        for (Module modT : modules) {   // Go  through modules of first structure
+            if (modT.getOriginalIndex() != -1) {
+                continue;
+            }
+            if (modT.getName().contains(executable)) { // Check wheher module name or the program monitored
+                Integer index = other.modules.indexOf(modT); // find a matching module name from second structure
+                if (index != -1) {  // if found a match
+                    Module mod = other.modules.get(index); // get its index
+                    Set<Integer> set1 = mod.getAddresses();
+                    Set<Integer> set2 = modT.getAddresses();
+                    ///TODO: Why not add new basic block on second run ?
+//                    modT.getAddresses().addAll(set1);// merges the addresses of both modules
+//                    set2.removeAll(set1);   // Overlap of addresses of both modules
+                    modT.getAddresses().removeAll(set1);// merges the addresses of both modules
                 }
-                diff.add(modT);
+
+                diff.add(modT); // finally add the module to the diff module list
                 logger.info("Added to diff {}", modT);
             }
         }
         return diff;
     }
 
-    private void CheckStructure() {
+    /**
+     * Print the sum of all the basic block addresses of each module, since using a hash set automatically
+     * removes duplicates. Thus this total won't be same with total basic block count
+     * Also Print the modules along with the basic block addresses belong to them
+     */
+    private void CheckStructureIntegrity() {
+        int size = 0;
         for (Module mod : modules) {
+            size += mod.getAddresses().size();
             logger.info("BBS  : {} Module {}", mod.getAddresses().size(), mod.getName());
         }
+        logger.info("Total BBS : {}", size);
     }
 
+    /**
+     * Parse a drcov DR client output file and fill the DRCovStructure (this) class
+     *
+     * @param fileName Path of the drcov DR client output file
+     */
     public void LoadFromFile(String fileName) {
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;

@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * @author krv
  */
-public class Module implements Comparable {
+public class Module implements Comparable<Module> {
 
     final static Logger logger = LogManager.getLogger(Module.class);
 
@@ -90,9 +90,12 @@ public class Module implements Comparable {
         this.originalIndex = originalIndex;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
     @Override
-    public int compareTo(Object o) {
-        Module other = (Module) o;
-        return this.name.compareTo(other.name);
+    public int compareTo(Module o) {
+        return this.name.compareTo(o.name);
     }
 }

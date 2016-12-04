@@ -7,13 +7,13 @@ import java.util.ArrayList;
  */
 public class BasicBlockInfo {
 
-    private int start_addr; // offset from the start of the module
+    private long startAddress; // offset from the start of the module
     private int size;
     private int frequency;  // number of times it gets executed
     private boolean isRet;
     private boolean isCall;
     private boolean isCallTarget;
-    private int func_addr;  // we are also keeping backward information - specially when global function information is missing
+    private long functionAddress;  // we are also keeping backward information - specially when global function information is missing
 
     private ArrayList<TargetInfo> fromBasicBlocks;  // bbs from which this bb was reached
     private ArrayList<TargetInfo> toBasicBlocks;    // to which basic blocks this bb connects to
@@ -27,12 +27,12 @@ public class BasicBlockInfo {
         this.callers = new ArrayList<>();
     }
 
-    public int getStart_addr() {
-        return start_addr;
+    public long getStartAddress() {
+        return startAddress;
     }
 
-    public void setStart_addr(int start_addr) {
-        this.start_addr = start_addr;
+    public void setStartAddress(long startAddress) {
+        this.startAddress = startAddress;
     }
 
     public int getSize() {
@@ -75,12 +75,12 @@ public class BasicBlockInfo {
         isCallTarget = callTarget;
     }
 
-    public int getFunc_addr() {
-        return func_addr;
+    public long getFunctionAddress() {
+        return functionAddress;
     }
 
-    public void setFunc_addr(int func_addr) {
-        this.func_addr = func_addr;
+    public void setFunctionAddress(long functionAddress) {
+        this.functionAddress = functionAddress;
     }
 
     public ArrayList<TargetInfo> getFromBasicBlocks() {

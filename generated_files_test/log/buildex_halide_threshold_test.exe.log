@@ -1,0 +1,2058 @@
+*************** dump regions ***********
+------------------------------MEM REGIONS ----------------------------
+bytes per color = 1
+start = 4555680
+end = 4556704
+type = extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = 
+-------------------------------------------------------------------
+bytes per color = 1
+start = 4556704
+end = 4557728
+type = extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = 
+-------------------------------------------------------------------
+bytes per color = 1
+start = 4557728
+end = 4558752
+type = extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = 
+-------------------------------------------------------------------
+bytes per color = 1
+start = 4526080
+end = 4527104
+type = extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = 
+-------------------------------------------------------------------
+link_mem_regions_greedy....
+*********** pc_mem_info *************
+app_pc - 4119 mem regions - 1
+type - heap
+dir - input
+start - 4558784
+end - 4558788
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4122 mem regions - 1
+type - heap
+dir - input
+start - 4558776
+end - 4558780
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4124 mem regions - 1
+type - heap
+dir - input
+start - 4558780
+end - 4558784
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4143 mem regions - 1
+type - heap
+dir - input
+start - 4558788
+end - 4558792
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4149 mem regions - 1
+type - heap
+dir - input
+start - 4558792
+end - 4558796
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4155 mem regions - 1
+type - heap
+dir - input
+start - 4558804
+end - 4558808
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4161 mem regions - 1
+type - heap
+dir - input
+start - 4558808
+end - 4558812
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4167 mem regions - 1
+type - heap
+dir - input
+start - 4524048
+end - 4524052
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4173 mem regions - 1
+type - heap
+dir - input
+start - 4524040
+end - 4524044
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4175 mem regions - 1
+type - heap
+dir - input
+start - 4524044
+end - 4524048
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4180 mem regions - 1
+type - heap
+dir - input
+start - 4558820
+end - 4558824
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4186 mem regions - 1
+type - heap
+dir - input
+start - 4558824
+end - 4558828
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4192 mem regions - 1
+type - heap
+dir - input
+start - 4558836
+end - 4558840
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4198 mem regions - 1
+type - heap
+dir - input
+start - 4524052
+end - 4524056
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4204 mem regions - 1
+type - heap
+dir - input
+start - 4524056
+end - 4524060
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4210 mem regions - 1
+type - heap
+dir - input
+start - 4524068
+end - 4524072
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4216 mem regions - 1
+type - heap
+dir - input
+start - 4524072
+end - 4524076
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4222 mem regions - 1
+type - heap
+dir - input
+start - 4524084
+end - 4524088
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4225 mem regions - 1
+type - heap
+dir - input
+start - 4524088
+end - 4524092
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4231 mem regions - 1
+type - heap
+dir - input
+start - 4524100
+end - 4524104
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+app_pc - 4857 mem regions - 1
+type - heap
+dir - input
+start - 4555680
+end - 4556704
+stride (most) - 1
+stride - 1, freq - 1024
+estimated size - 1024
+dims - 1
+dim_no - 1
+stride - 1
+extent - 1024
+--------------------------------------------------------------------------
+app_pc - 4873 mem regions - 1
+type - heap
+dir - output
+
+start - 4526080
+end - 4527104
+stride (most) - 1
+stride - 1, freq - 1024
+estimated size - 1024
+dims - 1
+dim_no - 1
+stride - 1
+extent - 1024
+--------------------------------------------------------------------------
+*********** mem_info *************
+type - heap
+dir - input
+start - 4524040
+end - 4524060
+stride (most) - 4
+stride - 4, freq - 5
+estimated size - 5
+dims - 1
+dim_no - 1
+stride - 4
+extent - 5
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524068
+end - 4524076
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524084
+end - 4524092
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524100
+end - 4524104
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+type - heap
+dir - output
+
+start - 4526080
+end - 4527104
+stride (most) - 1
+stride - 1, freq - 1024
+estimated size - 1024
+dims - 1
+dim_no - 1
+stride - 1
+extent - 1024
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4555680
+end - 4556704
+stride (most) - 1
+stride - 1, freq - 1024
+estimated size - 1024
+dims - 1
+dim_no - 1
+stride - 1
+extent - 1024
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558776
+end - 4558796
+stride (most) - 4
+stride - 4, freq - 5
+estimated size - 5
+dims - 1
+dim_no - 1
+stride - 4
+extent - 5
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558804
+end - 4558812
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558820
+end - 4558828
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558836
+end - 4558840
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+merge opportunities...
+4119 - 
+overlapped - 4558776,
+regions
+4558776,
+4122 - 
+overlapped - 4558776,
+regions
+4558776,
+4124 - 
+overlapped - 4558776,
+regions
+4558776,
+4143 - 
+overlapped - 4558776,
+regions
+4558776,
+4149 - 
+overlapped - 4558776,
+regions
+4558776,
+4155 - 
+overlapped - 4558804,
+regions
+4558804,
+4161 - 
+overlapped - 4558804,
+regions
+4558804,
+4167 - 
+overlapped - 4524040,
+regions
+4524040,
+4173 - 
+overlapped - 4524040,
+regions
+4524040,
+4175 - 
+overlapped - 4524040,
+regions
+4524040,
+4180 - 
+overlapped - 4558820,
+regions
+4558820,
+4186 - 
+overlapped - 4558820,
+regions
+4558820,
+4192 - 
+overlapped - 4558836,
+regions
+4558836,
+4198 - 
+overlapped - 4524040,
+regions
+4524040,
+4204 - 
+overlapped - 4524040,
+regions
+4524040,
+4210 - 
+overlapped - 4524068,
+regions
+4524068,
+4216 - 
+overlapped - 4524068,
+regions
+4524068,
+4222 - 
+overlapped - 4524084,
+regions
+4524084,
+4225 - 
+overlapped - 4524084,
+regions
+4524084,
+4231 - 
+overlapped - 4524100,
+regions
+4524100,
+4857 - 
+overlapped - 4555680,
+regions
+4555680,
+4873 - 
+overlapped - 4526080,
+regions
+4526080,
+final mergable regions...
+merging information
+start main 4524040 4524060
+start main 4524068 4524076
+start main 4524084 4524092
+start main 4524100 4524104
+start main 4526080 4527104
+start main 4555680 4556704
+start main 4558776 4558796
+start main 4558804 4558812
+start main 4558820 4558828
+start main 4558836 4558840
+******************new*******************************
+type - heap
+dir - output
+
+start - 4526080
+end - 4527104
+stride (most) - 1
+stride - 1, freq - 1024
+estimated size - 1024
+dims - 1
+dim_no - 1
+stride - 1
+extent - 1024
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4555680
+end - 4556704
+stride (most) - 1
+stride - 1, freq - 1024
+estimated size - 1024
+dims - 1
+dim_no - 1
+stride - 1
+extent - 1024
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524040
+end - 4524060
+stride (most) - 4
+stride - 4, freq - 5
+estimated size - 5
+dims - 1
+dim_no - 1
+stride - 4
+extent - 5
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558776
+end - 4558796
+stride (most) - 4
+stride - 4, freq - 5
+estimated size - 5
+dims - 1
+dim_no - 1
+stride - 4
+extent - 5
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524068
+end - 4524076
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524084
+end - 4524092
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558804
+end - 4558812
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558820
+end - 4558828
+stride (most) - 4
+stride - 4, freq - 2
+estimated size - 2
+dims - 1
+dim_no - 1
+stride - 4
+extent - 2
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4524100
+end - 4524104
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+type - heap
+dir - input
+start - 4558836
+end - 4558840
+stride (most) - 4
+stride - 4, freq - 1
+estimated size - 1
+dims - 1
+dim_no - 1
+stride - 4
+extent - 1
+--------------------------------------------------------------------------
+push   ebp
+mov    ebp, esp
+push   ebx
+push   edi
+push   esi
+sub    esp, 0x4c
+mov    edx, dword ptr [ebp+0x08]
+test   edx, edx
+jz     0x00d41145
+mov    eax, dword ptr [ebp+0x0c]
+mov    esi, dword ptr [edx+0x08]
+mov    ecx, dword ptr [edx]
+or     ecx, dword ptr [edx+0x04]
+or     ecx, esi
+setz   cl
+test   eax, eax
+jz     0x00d41152
+mov    dword ptr [ebp-0x24], esi
+mov    esi, dword ptr [edx+0x0c]
+mov    dword ptr [ebp-0x20], esi
+mov    esi, dword ptr [edx+0x10]
+mov    dword ptr [ebp-0x30], esi
+mov    esi, dword ptr [edx+0x1c]
+mov    dword ptr [ebp-0x3c], esi
+mov    esi, dword ptr [edx+0x20]
+mov    dword ptr [ebp-0x44], esi
+mov    edi, dword ptr [eax+0x08]
+mov    dword ptr [ebp-0x28], edi
+mov    esi, dword ptr [eax]
+or     esi, dword ptr [eax+0x04]
+or     esi, edi
+mov    edi, dword ptr [edx+0x2c]
+setz   ch
+mov    esi, dword ptr [edx+0x30]
+mov    dword ptr [ebp-0x2c], esi
+mov    esi, dword ptr [edx+0x3c]
+mov    dword ptr [ebp-0x1c], esi
+mov    esi, dword ptr [eax+0x0c]
+mov    dword ptr [ebp-0x10], esi
+mov    esi, dword ptr [eax+0x10]
+mov    dword ptr [ebp-0x18], esi
+mov    esi, dword ptr [eax+0x1c]
+mov    dword ptr [ebp-0x38], esi
+mov    esi, dword ptr [eax+0x20]
+mov    dword ptr [ebp-0x40], esi
+mov    ebx, dword ptr [eax+0x2c]
+mov    esi, dword ptr [eax+0x30]
+mov    dword ptr [ebp-0x14], esi
+mov    esi, dword ptr [eax+0x3c]
+jnz    0x00d410ec
+test   cl, cl
+jz     0x00d4115f
+test   ch, ch
+jnz    0x00d4134b
+cmp    esi, 0x01
+jnz    0x00d4118d
+mov    eax, dword ptr [ebp-0x1c]
+cmp    eax, 0x01
+jnz    0x00d4119e
+cmp    edi, ebx
+jle    0x00d411af
+mov    eax, dword ptr [ebp-0x10]
+lea    eax, [ebx+eax]
+mov    ecx, eax
+mov    edx, dword ptr [ebp-0x20]
+sub    ecx, edx
+cmp    ecx, edi
+jle    0x00d411da
+mov    eax, dword ptr [ebp-0x14]
+mov    esi, dword ptr [ebp-0x2c]
+cmp    esi, eax
+jle    0x00d411f9
+mov    dword ptr [ebp-0x34], edi
+mov    edx, dword ptr [ebp-0x18]
+lea    edi, [eax+edx]
+mov    eax, edi
+mov    edx, dword ptr [ebp-0x30]
+sub    eax, edx
+cmp    eax, esi
+jle    0x00d41227
+cmp    dword ptr [ebp-0x38], 0x01
+jnz    0x00d41328
+cmp    dword ptr [ebp-0x3c], 0x01
+jnz    0x00d41332
+mov    eax, dword ptr [ebp-0x40]
+imul   edx, eax, dword ptr [ebp-0x18]
+test   eax, eax
+setns  al
+test   edx, edx
+sets   dl
+jz     0x00d4124f
+test   al, al
+jz     0x00d4133c
+mov    eax, dword ptr [ebp-0x18]
+imul   edx, eax, dword ptr [ebp-0x10]
+mov    ecx, 0x80000000
+cmp    eax, ecx
+setb   al
+test   edx, edx
+sets   dl
+jz     0x00d41270
+test   al, al
+jz     0x00d4134f
+mov    dword ptr [ebp-0x1c], edi
+mov    eax, dword ptr [ebp-0x44]
+imul   edx, eax, dword ptr [ebp-0x30]
+mov    edi, 0x80000000
+cmp    eax, edi
+setb   al
+test   edx, edx
+sets   dl
+jz     0x00d41294
+test   al, al
+jz     0x00d41359
+mov    eax, dword ptr [ebp-0x30]
+imul   edx, eax, dword ptr [ebp-0x20]
+mov    ecx, 0x80000000
+cmp    eax, ecx
+setb   al
+test   edx, edx
+sets   dl
+jz     0x00d412b5
+test   al, al
+jz     0x00d41363
+cmp    dword ptr [ebp-0x18], 0x00
+mov    ecx, dword ptr [ebp-0x34]
+jle    0x00d4134b
+mov    edi, ecx
+mov    edx, ebx
+cmp    dword ptr [ebp-0x10], 0x00
+jle    0x00d41346
+mov    eax, dword ptr [ebp-0x14]
+mov    ecx, dword ptr [ebp-0x44]
+imul   eax, ecx
+mov    ebx, edx
+add    ebx, eax
+mov    eax, esi
+imul   eax, ecx
+mov    esi, edi
+add    esi, eax
+sub    ebx, esi
+xor    edx, edx
+mov    dword ptr [ebp-0x18], edx
+mov    ecx, ebx
+mov    esi, dword ptr [ebp-0x10]
+mov    eax, dword ptr [ebp-0x24]
+movzx  edi, byte ptr [eax+ecx]
+mov    al, 0xff
+cmp    edi, 0x65
+jnbe   0x00d41306
+xor    eax, eax
+mov    edi, dword ptr [ebp-0x28]
+mov    byte ptr [edi+edx], al
+inc    edx
+inc    ecx
+dec    esi
+jnz    0x00d412f6
+mov    eax, dword ptr [ebp-0x14]
+inc    eax
+mov    dword ptr [ebp-0x14], eax
+mov    edx, dword ptr [ebp-0x18]
+add    edx, dword ptr [ebp-0x40]
+add    ebx, dword ptr [ebp-0x44]
+cmp    eax, dword ptr [ebp-0x1c]
+jnz    0x00d412ee
+jmp    0x00d4134b
+xor    eax, eax
+jmp    0x00d4137c
+add    esp, 0x4c
+pop    esi
+pop    edi
+pop    ebx
+pop    ebp
+ret    
+add    esp, 0x08
+lea    eax, [ebp-0x04]
+push   eax
+mov    ecx, dword ptr [ebp+0x08]
+call   0x00d42640
+overlap for mem region
+mem region:
+start : 4583a0 end : 4587a0
+strides : 1,32,extents : 32,32,
+mem instrace:
+start : 4583a0 end : 4587a0
+found deepest enclosing: start 4555680 end 4556704
+left spread: 0,0,
+right spread: 0,0,
+--------------------------
+dims : 1
+new start : 4555680
+new end : 4556704
+overlap for mem region
+mem region:
+start : 451000 end : 451400
+strides : 1,32,extents : 32,32,
+mem instrace:
+start : 451000 end : 451400
+found deepest enclosing: start 4526080 end 4527104
+left spread: 0,0,
+right spread: 0,0,
+--------------------------
+dims : 1
+new start : 4526080
+new end : 4527104
+image regions ----->
+------------------------------MEM REGIONS ----------------------------
+bytes per color = 1
+start = 4526080
+end = 4527104
+type = image output
+extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = output_1
+-------------------------------------------------------------------
+total memory regions ----->
+------------------------------MEM REGIONS ----------------------------
+bytes per color = 1
+start = 4555680
+end = 4556704
+type = image input
+extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = input_1
+-------------------------------------------------------------------
+bytes per color = 1
+start = 4526080
+end = 4527104
+type = image output
+extents : 
+32
+32
+strides : 
+1
+32
+padding : 
+0
+name = output_1
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4524040
+end = 4524060
+type = image input
+extents : 
+5
+strides : 
+4
+padding : 
+name = input_2
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4524068
+end = 4524076
+type = image input
+extents : 
+2
+strides : 
+4
+padding : 
+name = input_3
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4524084
+end = 4524092
+type = image input
+extents : 
+2
+strides : 
+4
+padding : 
+name = input_4
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4524100
+end = 4524104
+type = image input
+extents : 
+1
+strides : 
+4
+padding : 
+name = input_5
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4558776
+end = 4558796
+type = image input
+extents : 
+5
+strides : 
+4
+padding : 
+name = input_6
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4558804
+end = 4558812
+type = image input
+extents : 
+2
+strides : 
+4
+padding : 
+name = input_7
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4558820
+end = 4558828
+type = image input
+extents : 
+2
+strides : 
+4
+padding : 
+name = input_8
+-------------------------------------------------------------------
+bytes per color = 4
+start = 4558836
+end = 4558840
+type = image input
+extents : 
+1
+strides : 
+4
+padding : 
+name = input_9
+-------------------------------------------------------------------
+dependant analysis-------->
+dependant statements
+indirect dependant statements
+dependant conditionals
+populated cond. instrs
+cluster - 0
+0,0,
+1,0,
+2,0,
+3,0,
+4,0,
+5,0,
+6,0,
+7,0,
+8,0,
+9,0,
+10,0,
+11,0,
+12,0,
+13,0,
+14,0,
+15,0,
+16,0,
+17,0,
+18,0,
+19,0,
+20,0,
+21,0,
+22,0,
+23,0,
+24,0,
+25,0,
+26,0,
+27,0,
+28,0,
+29,0,
+30,0,
+31,0,
+0,1,
+1,1,
+2,1,
+3,1,
+4,1,
+5,1,
+6,1,
+7,1,
+8,1,
+9,1,
+10,1,
+11,1,
+12,1,
+13,1,
+14,1,
+15,1,
+16,1,
+17,1,
+18,1,
+19,1,
+20,1,
+21,1,
+22,1,
+23,1,
+24,1,
+25,1,
+26,1,
+27,1,
+28,1,
+29,1,
+30,1,
+31,1,
+0,2,
+1,2,
+2,2,
+3,2,
+4,2,
+5,2,
+6,2,
+7,2,
+8,2,
+9,2,
+10,2,
+11,2,
+12,2,
+13,2,
+14,2,
+15,2,
+16,2,
+17,2,
+18,2,
+19,2,
+20,2,
+21,2,
+22,2,
+23,2,
+24,2,
+25,2,
+26,2,
+27,2,
+28,2,
+29,2,
+30,2,
+31,2,
+0,3,
+1,3,
+2,3,
+3,3,
+4,3,
+5,3,
+31,7,
+0,8,
+1,8,
+2,8,
+3,8,
+4,8,
+5,8,
+6,8,
+7,8,
+8,8,
+9,8,
+10,8,
+11,8,
+12,8,
+13,8,
+14,8,
+15,8,
+16,8,
+17,8,
+18,8,
+19,8,
+20,8,
+21,8,
+22,8,
+23,8,
+24,8,
+25,8,
+26,8,
+27,8,
+28,8,
+29,8,
+30,8,
+31,8,
+0,9,
+1,9,
+2,9,
+3,9,
+4,9,
+5,9,
+6,9,
+7,9,
+8,9,
+9,9,
+10,9,
+11,9,
+12,9,
+13,9,
+14,9,
+15,9,
+16,9,
+17,9,
+18,9,
+19,9,
+20,9,
+21,9,
+22,9,
+23,9,
+24,9,
+25,9,
+26,9,
+27,9,
+28,9,
+29,9,
+30,9,
+31,9,
+0,10,
+1,10,
+2,10,
+3,10,
+4,10,
+5,10,
+6,10,
+7,10,
+8,10,
+9,10,
+10,10,
+11,10,
+12,10,
+13,10,
+14,10,
+15,10,
+16,10,
+17,10,
+18,10,
+19,10,
+20,10,
+21,10,
+22,10,
+23,10,
+24,10,
+25,10,
+26,10,
+27,10,
+28,10,
+29,10,
+30,10,
+31,10,
+0,11,
+1,11,
+2,11,
+3,11,
+4,11,
+30,15,
+31,15,
+0,16,
+1,16,
+2,16,
+3,16,
+4,16,
+5,16,
+6,16,
+7,16,
+8,16,
+9,16,
+10,16,
+11,16,
+12,16,
+13,16,
+14,16,
+15,16,
+16,16,
+17,16,
+18,16,
+19,16,
+20,16,
+21,16,
+22,16,
+23,16,
+24,16,
+25,16,
+26,16,
+27,16,
+28,16,
+29,16,
+30,16,
+31,16,
+0,17,
+1,17,
+2,17,
+3,17,
+4,17,
+5,17,
+6,17,
+7,17,
+8,17,
+9,17,
+10,17,
+11,17,
+12,17,
+13,17,
+14,17,
+15,17,
+16,17,
+17,17,
+18,17,
+19,17,
+20,17,
+21,17,
+22,17,
+23,17,
+24,17,
+25,17,
+26,17,
+27,17,
+28,17,
+29,17,
+30,17,
+31,17,
+0,18,
+1,18,
+2,18,
+3,18,
+4,18,
+5,18,
+6,18,
+7,18,
+8,18,
+9,18,
+10,18,
+11,18,
+12,18,
+13,18,
+14,18,
+15,18,
+16,18,
+17,18,
+18,18,
+19,18,
+20,18,
+21,18,
+22,18,
+23,18,
+24,18,
+25,18,
+26,18,
+27,18,
+28,18,
+29,18,
+30,18,
+31,18,
+0,19,
+1,19,
+2,19,
+3,19,
+29,23,
+30,23,
+31,23,
+0,24,
+1,24,
+2,24,
+3,24,
+4,24,
+5,24,
+6,24,
+7,24,
+8,24,
+9,24,
+10,24,
+11,24,
+12,24,
+13,24,
+14,24,
+15,24,
+16,24,
+17,24,
+18,24,
+19,24,
+20,24,
+21,24,
+22,24,
+23,24,
+24,24,
+25,24,
+26,24,
+27,24,
+28,24,
+29,24,
+30,24,
+31,24,
+0,25,
+1,25,
+2,25,
+3,25,
+4,25,
+5,25,
+6,25,
+7,25,
+8,25,
+9,25,
+10,25,
+11,25,
+12,25,
+13,25,
+14,25,
+15,25,
+16,25,
+17,25,
+18,25,
+19,25,
+20,25,
+21,25,
+22,25,
+23,25,
+24,25,
+25,25,
+26,25,
+27,25,
+28,25,
+29,25,
+30,25,
+31,25,
+0,26,
+1,26,
+2,26,
+3,26,
+4,26,
+5,26,
+6,26,
+7,26,
+8,26,
+9,26,
+10,26,
+11,26,
+12,26,
+13,26,
+14,26,
+15,26,
+16,26,
+17,26,
+18,26,
+19,26,
+20,26,
+21,26,
+22,26,
+23,26,
+24,26,
+25,26,
+26,26,
+27,26,
+28,26,
+29,26,
+30,26,
+31,26,
+0,27,
+1,27,
+2,27,
+28,31,
+29,31,
+30,31,
+31,31,
+cluster - 1
+6,3,
+7,3,
+8,3,
+9,3,
+10,3,
+11,3,
+12,3,
+13,3,
+14,3,
+15,3,
+16,3,
+17,3,
+18,3,
+19,3,
+20,3,
+21,3,
+22,3,
+23,3,
+24,3,
+25,3,
+26,3,
+27,3,
+28,3,
+29,3,
+30,3,
+31,3,
+0,4,
+1,4,
+2,4,
+3,4,
+4,4,
+5,4,
+6,4,
+7,4,
+8,4,
+9,4,
+10,4,
+11,4,
+12,4,
+13,4,
+14,4,
+15,4,
+16,4,
+17,4,
+18,4,
+19,4,
+20,4,
+21,4,
+22,4,
+23,4,
+24,4,
+25,4,
+26,4,
+27,4,
+28,4,
+29,4,
+30,4,
+31,4,
+0,5,
+1,5,
+2,5,
+3,5,
+4,5,
+5,5,
+6,5,
+7,5,
+8,5,
+9,5,
+10,5,
+11,5,
+12,5,
+13,5,
+14,5,
+15,5,
+16,5,
+17,5,
+18,5,
+19,5,
+20,5,
+21,5,
+22,5,
+23,5,
+24,5,
+25,5,
+26,5,
+27,5,
+28,5,
+29,5,
+30,5,
+31,5,
+0,6,
+1,6,
+2,6,
+3,6,
+4,6,
+5,6,
+6,6,
+7,6,
+8,6,
+9,6,
+10,6,
+11,6,
+12,6,
+13,6,
+14,6,
+15,6,
+16,6,
+17,6,
+18,6,
+19,6,
+20,6,
+21,6,
+22,6,
+23,6,
+24,6,
+25,6,
+26,6,
+27,6,
+28,6,
+29,6,
+30,6,
+31,6,
+0,7,
+1,7,
+2,7,
+3,7,
+4,7,
+5,7,
+6,7,
+7,7,
+8,7,
+9,7,
+10,7,
+11,7,
+12,7,
+13,7,
+14,7,
+15,7,
+16,7,
+17,7,
+18,7,
+19,7,
+20,7,
+21,7,
+22,7,
+23,7,
+24,7,
+25,7,
+26,7,
+27,7,
+28,7,
+29,7,
+30,7,
+5,11,
+6,11,
+7,11,
+8,11,
+9,11,
+10,11,
+11,11,
+12,11,
+13,11,
+14,11,
+15,11,
+16,11,
+17,11,
+18,11,
+19,11,
+20,11,
+21,11,
+22,11,
+23,11,
+24,11,
+25,11,
+26,11,
+27,11,
+28,11,
+29,11,
+30,11,
+31,11,
+0,12,
+1,12,
+2,12,
+3,12,
+4,12,
+5,12,
+6,12,
+7,12,
+8,12,
+9,12,
+10,12,
+11,12,
+12,12,
+13,12,
+14,12,
+15,12,
+16,12,
+17,12,
+18,12,
+19,12,
+20,12,
+21,12,
+22,12,
+23,12,
+24,12,
+25,12,
+26,12,
+27,12,
+28,12,
+29,12,
+30,12,
+31,12,
+0,13,
+1,13,
+2,13,
+3,13,
+4,13,
+5,13,
+6,13,
+7,13,
+8,13,
+9,13,
+10,13,
+11,13,
+12,13,
+13,13,
+14,13,
+15,13,
+16,13,
+17,13,
+18,13,
+19,13,
+20,13,
+21,13,
+22,13,
+23,13,
+24,13,
+25,13,
+26,13,
+27,13,
+28,13,
+29,13,
+30,13,
+31,13,
+0,14,
+1,14,
+2,14,
+3,14,
+4,14,
+5,14,
+6,14,
+7,14,
+8,14,
+9,14,
+10,14,
+11,14,
+12,14,
+13,14,
+14,14,
+15,14,
+16,14,
+17,14,
+18,14,
+19,14,
+20,14,
+21,14,
+22,14,
+23,14,
+24,14,
+25,14,
+26,14,
+27,14,
+28,14,
+29,14,
+30,14,
+31,14,
+0,15,
+1,15,
+2,15,
+3,15,
+4,15,
+5,15,
+6,15,
+7,15,
+8,15,
+9,15,
+10,15,
+11,15,
+12,15,
+13,15,
+14,15,
+15,15,
+16,15,
+17,15,
+18,15,
+19,15,
+20,15,
+21,15,
+22,15,
+23,15,
+24,15,
+25,15,
+26,15,
+27,15,
+28,15,
+29,15,
+4,19,
+5,19,
+6,19,
+7,19,
+8,19,
+9,19,
+10,19,
+11,19,
+12,19,
+13,19,
+14,19,
+15,19,
+16,19,
+17,19,
+18,19,
+19,19,
+20,19,
+21,19,
+22,19,
+23,19,
+24,19,
+25,19,
+26,19,
+27,19,
+28,19,
+29,19,
+30,19,
+31,19,
+0,20,
+1,20,
+2,20,
+3,20,
+4,20,
+5,20,
+6,20,
+7,20,
+8,20,
+9,20,
+10,20,
+11,20,
+12,20,
+13,20,
+14,20,
+15,20,
+16,20,
+17,20,
+18,20,
+19,20,
+20,20,
+21,20,
+22,20,
+23,20,
+24,20,
+25,20,
+26,20,
+27,20,
+28,20,
+29,20,
+30,20,
+31,20,
+0,21,
+1,21,
+2,21,
+3,21,
+4,21,
+5,21,
+6,21,
+7,21,
+8,21,
+9,21,
+10,21,
+11,21,
+12,21,
+13,21,
+14,21,
+15,21,
+16,21,
+17,21,
+18,21,
+19,21,
+20,21,
+21,21,
+22,21,
+23,21,
+24,21,
+25,21,
+26,21,
+27,21,
+28,21,
+29,21,
+30,21,
+31,21,
+0,22,
+1,22,
+2,22,
+3,22,
+4,22,
+5,22,
+6,22,
+7,22,
+8,22,
+9,22,
+10,22,
+11,22,
+12,22,
+13,22,
+14,22,
+15,22,
+16,22,
+17,22,
+18,22,
+19,22,
+20,22,
+21,22,
+22,22,
+23,22,
+24,22,
+25,22,
+26,22,
+27,22,
+28,22,
+29,22,
+30,22,
+31,22,
+0,23,
+1,23,
+2,23,
+3,23,
+4,23,
+5,23,
+6,23,
+7,23,
+8,23,
+9,23,
+10,23,
+11,23,
+12,23,
+13,23,
+14,23,
+15,23,
+16,23,
+17,23,
+18,23,
+19,23,
+20,23,
+21,23,
+22,23,
+23,23,
+24,23,
+25,23,
+26,23,
+27,23,
+28,23,
+3,27,
+4,27,
+5,27,
+6,27,
+7,27,
+8,27,
+9,27,
+10,27,
+11,27,
+12,27,
+13,27,
+14,27,
+15,27,
+16,27,
+17,27,
+18,27,
+19,27,
+20,27,
+21,27,
+22,27,
+23,27,
+24,27,
+25,27,
+26,27,
+27,27,
+28,27,
+29,27,
+30,27,
+31,27,
+0,28,
+1,28,
+2,28,
+3,28,
+4,28,
+5,28,
+6,28,
+7,28,
+8,28,
+9,28,
+10,28,
+11,28,
+12,28,
+13,28,
+14,28,
+15,28,
+16,28,
+17,28,
+18,28,
+19,28,
+20,28,
+21,28,
+22,28,
+23,28,
+24,28,
+25,28,
+26,28,
+27,28,
+28,28,
+29,28,
+30,28,
+31,28,
+0,29,
+1,29,
+2,29,
+3,29,
+4,29,
+5,29,
+6,29,
+7,29,
+8,29,
+9,29,
+10,29,
+11,29,
+12,29,
+13,29,
+14,29,
+15,29,
+16,29,
+17,29,
+18,29,
+19,29,
+20,29,
+21,29,
+22,29,
+23,29,
+24,29,
+25,29,
+26,29,
+27,29,
+28,29,
+29,29,
+30,29,
+31,29,
+0,30,
+1,30,
+2,30,
+3,30,
+4,30,
+5,30,
+6,30,
+7,30,
+8,30,
+9,30,
+10,30,
+11,30,
+12,30,
+13,30,
+14,30,
+15,30,
+16,30,
+17,30,
+18,30,
+19,30,
+20,30,
+21,30,
+22,30,
+23,30,
+24,30,
+25,30,
+26,30,
+27,30,
+28,30,
+29,30,
+30,30,
+31,30,
+0,31,
+1,31,
+2,31,
+3,31,
+4,31,
+5,31,
+6,31,
+7,31,
+8,31,
+9,31,
+10,31,
+11,31,
+12,31,
+13,31,
+14,31,
+15,31,
+16,31,
+17,31,
+18,31,
+19,31,
+20,31,
+21,31,
+22,31,
+23,31,
+24,31,
+25,31,
+26,31,
+27,31,

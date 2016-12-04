@@ -1,0 +1,9 @@
+digraph G_alg_0 {
+0 [label="output_1(x_0,x_1)"];
+1 [label="FO"];
+2 [label="0"];
+
+0 -> 1;
+1 -> 2;
+
+}

@@ -3,7 +3,6 @@ package lk.ac.mrt.projectx.buildex;
 import com.sun.org.apache.xpath.internal.operations.String;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 public abstract class Node<T> {
     final static Logger logger = LogManager.getLogger(Node.class);
 
-    Operation operation;  // Operation of this node
+    X86Analysis.Operation operation;  // Operation of this node
     Boolean sign;   // Signed operation or not
     Boolean minus;
     String functionName;
@@ -52,7 +51,7 @@ public abstract class Node<T> {
         visited = false;
     }
 
-    public static Boolean isOperationAssociative(Operation operation) {
+    public static Boolean isOperationAssociative(X86Analysis.Operation operation) {
         Boolean result;
         switch (operation) {
             case op_add:
@@ -72,6 +71,15 @@ public abstract class Node<T> {
 
     public abstract String getSimpleString();
 
+
+    public int removeForwardReference(Node ref) {
+        int count = 0;
+        while (removeForwardReferenceSingle(ref)) {
+            count++;
+        }
+        return count;
+    }
+
     /**
      * This function is removing a one forward reference, forward references are in the srcs list
      * Because pos list contains backward references parents srcs lists positions for a node after every update of srcs
@@ -90,7 +98,7 @@ public abstract class Node<T> {
                 ref.prev.remove(jidx);
                 ref.pos.remove(jidx);
             } else {
-                logger.error("backward reference not found from deleted node");
+                logger.warn("backward reference not found from deleted node");
             }
             // Update backward references of still connected nodes
             // Need to update pos list indexes of others connected to this
@@ -102,7 +110,7 @@ public abstract class Node<T> {
                 if (thisPosition != -1) {
                     curSrcNode.pos.set(thisPosition, i);
                 } else {
-                    logger.error("backward reference not found from src");
+                    logger.warn("backward reference not found from src");
                 }
                 //TODO: Check why Chairth has used a difference logic
 //                for (int j = 0; j < prev.size(); j++) {
@@ -118,15 +126,7 @@ public abstract class Node<T> {
         return false;
     }
 
-    public int forwardReference(Node ref) {
-        int count = 0;
-        while (removeForwardReferenceSingle(ref)) {
-            count++;
-        }
-        return count;
-    }
-
-    public int removeBackwardReference(Node ref) {
+     public int removeBackwardReference(Node ref) {
         int count = 0;
         while (removeBackwardReferenceSingle(ref)) {
             count++;
@@ -145,7 +145,7 @@ public abstract class Node<T> {
     }
 
     /**
-     * Adding a node srcs (forward) list
+     * Adding a node to srcs (forward) list
      *
      * @param ref node to be added
      */
@@ -170,44 +170,58 @@ public abstract class Node<T> {
         }
     }
 
-    //canonicalized operations
-    public enum Operation {
-        op_assign,
-        op_add,
-        op_sub,
-        op_mul,
-        op_div,
-        op_mod,
-        op_lsh,
-        op_rsh,
-        op_not,
-        op_xor,
-        op_and,
-        op_or,
+    /**
+     * This operation will carry out the below logic at the end
+     * (dst -> this) => (dst -> src)
+     * @param dst dst Node
+     * @param src src Node
+     */
+    private void changeReference(Node dst, Node src){
+        /* In place forward reference and push back back ward reference
+	        replacing it at the exact same location is important for
+	        non-associative operations*/
+        //TODO : Check whether need to run a loop and do this to many srcs of dst, currently doing it only to idx index
 
-        /*support operations*/
-        op_split_h,
-        op_split_l,
-        op_concat,
-        op_signex,
-
-        /* to cater to different widths */
-        op_partial_overlap,
-        op_full_overlap,
-
-        /* logical operations */
-        op_ge,
-        op_gt,
-        op_le,
-        op_lt,
-        op_eq,
-        op_neq,
-
-        /*address dependancy*/
-        op_indirect,
-
-        /*call*/
-        op_call,
-        op_unknown
+        int idx = dst.srcs.indexOf(this);
+        if(idx != -1){
+            dst.srcs.set(idx, src);
+            src.prev.add(dst);
+            src.pos.add(idx);
+        }
+//        dst.forwardReference(this); // Redundant
     }
+
+    /**
+     * Check whether this node refrence to any node having a indirect operation
+     * @return if found a node with indirect operation return the index, -1 otherwise
+     */
+    public int isIndirect(){
+        for(int i = 0 ; i < srcs.size(); i++){
+            Node node = srcs.get(i);
+            if(node.operation == X86Analysis.Operation.op_indirect){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Remove all srcs
+     */
+    public void removeAllForwardSrcs(){
+        for(Node node : srcs){
+            this.removeForwardReference(node);
+        }
+    }
+
+    /**
+     * (dst -> this -> src)  => (dst -> src)
+     * @param dst
+     * @param src
+     */
+    public void removeIntermediateNode(Node dst, Node src){
+        this.changeReference(dst, src);
+        this.removeForwardReference(src);
+    }
+
 }

@@ -3,11 +3,16 @@ package lk.ac.mrt.projectx.preprocess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import lk.ac.mrt.projectx.buildex.ProjectXImage;
+
+import javax.imageio.ImageIO;
 
 /**
  * Created by Lasantha on 02-Dec-16.
@@ -18,7 +23,11 @@ public class MainTest {
 
     public static void main(String[] args) {
         MainTest mainTest = new MainTest();
-        mainTest.runAlgorithmDiffMode();
+        try {
+            mainTest.runAlgorithmDiffMode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public MainTest() {
@@ -84,11 +93,20 @@ public class MainTest {
 
     }
 
-    public void runAlgorithmDiffMode() {
+    public void runAlgorithmDiffMode() throws IOException {
 
         logger.info("Filter function DIFF MODE");
 
         ModuleInfo module = ModuleInfo.getPopulatedModuleInfo(profileData.get(0));
+
+        ProjectXImage inImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+inImageFileName)));
+        logger.info("Input Image Read Done! - {}",imageFolderPath+"\\"+inImageFileName);
+
+        ProjectXImage outImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+outImageFileName)));
+        logger.info("Output Image Read Done! - {}",imageFolderPath+"\\"+outImageFileName);
+
+
+
     }
 
 
@@ -102,4 +120,5 @@ public class MainTest {
         }
         return data;
     }
+
 }

@@ -41,9 +41,9 @@ public class Diff {
             logger.fatal(exp.getMessage());
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("codediff", cmdLineOptions, true);
+        } catch (IOException e) {
+            logger.fatal(e.getMessage());
         }
-
-
     }
 
     public static void printToFile(String fileName, List<Module> diffModules) {

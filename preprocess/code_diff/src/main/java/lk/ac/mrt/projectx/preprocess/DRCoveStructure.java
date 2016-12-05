@@ -101,7 +101,7 @@ public class DRCoveStructure implements Cloneable {
      *
      * @param fileName Path of the drcov DR client output file
      */
-    public void LoadFromFile(String fileName) {
+    public void LoadFromFile(String fileName) throws IOException {
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;
         String currentLine;
@@ -209,8 +209,10 @@ public class DRCoveStructure implements Cloneable {
             fileReader.close();
         } catch (FileNotFoundException e) {
             logger.fatal(e.getMessage());
+            throw e;
         } catch (IOException e) {
             logger.fatal(e.getMessage());
+            throw e;
         }
 
         CheckStructureIntegrity();

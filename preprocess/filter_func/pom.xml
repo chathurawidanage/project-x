@@ -19,4 +19,30 @@
 
     </modules>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>../../conf/</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!--Commons CLI-->
+        <dependency>
+            <groupId>lk.ac.mrt</groupId>
+            <artifactId>projectx-postprocess-buildex</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
 </project>

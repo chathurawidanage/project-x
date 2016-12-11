@@ -105,7 +105,29 @@ public class MainTest {
         ProjectXImage outImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+outImageFileName)));
         logger.info("Output Image Read Done! - {}",imageFolderPath+"\\"+outImageFileName);
 
+        // getting the highest executed basic block
+        logger.info("Finding the highest executed basic block...");
 
+        ModuleInfo maxModule = null;
+        ModuleInfo tempModule = module;
+        int maxFrequency = 0;
+        long maxStartAddress = 0;
+        while (tempModule!=null){
+            ArrayList<FunctionInfo> functions = tempModule.getFunctions();
+            for (int i = 0; i < functions.size(); i++) {
+                ArrayList<BasicBlockInfo> bbs = functions.get(i).getBasicBlocks();
+                for (int j = 0; j < bbs.size(); j++) {
+                    BasicBlockInfo bb = bbs.get(j);
+                    if(bb.getFrequency()>maxFrequency){
+                        maxFrequency = bb.getFrequency();
+                        maxStartAddress = bb.getStartAddress();
+                        maxModule = tempModule;
+                    }
+                }
+            }
+            tempModule = tempModule.getNext();
+        }
+        logger.info("max module - {}, max start addr - {}",maxModule.getName(),maxStartAddress);
 
     }
 

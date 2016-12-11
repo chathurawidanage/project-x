@@ -113,6 +113,7 @@ public class ModuleInfo {
                     functionInfo = new FunctionInfo();
                 }
 
+                functions.add(functionInfo);    // add the function info
                 functionInfo.setStartAddress(funcStartAddress);
                 BasicBlockInfo basicBlockInfo = new BasicBlockInfo();
                 functionInfo.getBasicBlocks().add(basicBlockInfo);

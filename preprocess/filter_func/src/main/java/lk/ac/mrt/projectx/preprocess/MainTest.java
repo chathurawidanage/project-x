@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import lk.ac.mrt.projectx.buildex.ProjectXImage;
 
@@ -111,7 +114,7 @@ public class MainTest {
         ModuleInfo maxModule = null;
         ModuleInfo tempModule = module;
         int maxFrequency = 0;
-        long maxStartAddress = 0;
+        BasicBlockInfo maxBasicBlock = null;
         while (tempModule!=null){
             ArrayList<FunctionInfo> functions = tempModule.getFunctions();
             for (int i = 0; i < functions.size(); i++) {
@@ -120,17 +123,98 @@ public class MainTest {
                     BasicBlockInfo bb = bbs.get(j);
                     if(bb.getFrequency()>maxFrequency){
                         maxFrequency = bb.getFrequency();
-                        maxStartAddress = bb.getStartAddress();
+                        maxBasicBlock = bb;
                         maxModule = tempModule;
                     }
                 }
             }
             tempModule = tempModule.getNext();
         }
-        logger.info("max module - {}, max start addr - {}",maxModule.getName(),maxStartAddress);
+        logger.info("max module - {}, max start addr - {}",maxModule.getName(),maxBasicBlock.getStartAddress());
+
+        long maxFunction = 0;
+        logger.info("Finding the probable function...");
+
+        if(maxBasicBlock!=null){
+            RetAddress retAddress = new RetAddress((int)maxBasicBlock.getStartAddress(),0);
+            LinkedList<RetAddress> queue = new LinkedList<>();
+            queue.add(retAddress);
+            ArrayList<Integer> processed = new ArrayList<>();
+            maxFunction = getProbableFuncEntrypoint(maxModule,queue,processed,0);
+        }
+        logger.info("Enclosed function = {}",maxFunction);
+
+        /* parsing memtrace files to pc_mem_regions */
+
+        logger.info("getting memory region information...");
+
+
 
     }
 
+
+    private static final int MAX_RECURSE = 200;
+    private static long getProbableFuncEntrypoint(ModuleInfo current,LinkedList<RetAddress> bbStart, ArrayList<Integer> processed, int maxRecurse){
+        if(maxRecurse>MAX_RECURSE){
+            logger.warn("WARNING: max recursion limit reached!");
+            return 0;
+        }
+
+        if(bbStart.isEmpty()){
+            return 0;
+        }
+
+        RetAddress retAddress = bbStart.poll();
+        processed.add(retAddress.address);
+
+        BasicBlockInfo bbinfo = findBbExact(current, retAddress.address);
+        if(bbinfo==null){
+            return getProbableFuncEntrypoint(current,bbStart,processed,maxRecurse+1);
+        }
+
+        if(bbinfo.isCallTarget()){
+            retAddress.ret--;
+        }
+        if(retAddress.ret<0){
+            return bbinfo.getStartAddress();
+        }
+
+        if(bbinfo.isRet() && maxRecurse>0){
+            retAddress.ret++;
+        }
+
+        logger.info("Addr : {} , ret : {} , Freq : {}",retAddress.address, retAddress.ret, bbinfo.getFrequency());
+
+        for (int i = 0; i < bbinfo.getFromBasicBlocks().size(); i++) {
+            if(!processed.contains(bbinfo.getFromBasicBlocks().get(i).getTarget())){
+                bbStart.add(new RetAddress(bbinfo.getFromBasicBlocks().get(i).getTarget(),retAddress.ret));
+            }
+        }
+        return getProbableFuncEntrypoint(current,bbStart,processed,maxRecurse+1);
+    }
+
+    private static BasicBlockInfo findBbExact(ModuleInfo module, long addr){
+        for (int i = 0; i < module.getFunctions().size(); i++){
+            FunctionInfo func = module.getFunctions().get(i);
+            for (int j = 0; j < func.getBasicBlocks().size(); j++){
+                BasicBlockInfo bb = func.getBasicBlocks().get(j);
+                if (bb.getStartAddress() == addr){
+                    return bb;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static class RetAddress{
+        int ret;
+        int address;
+
+        public RetAddress( int address,int ret) {
+            this.ret = ret;
+            this.address = address;
+        }
+    }
 
     private byte[] getFileContent(String filename) {
         byte[] data = null;

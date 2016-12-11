@@ -4,9 +4,13 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by krv on 12/3/16.
@@ -37,9 +41,9 @@ public class Diff {
             logger.fatal(exp.getMessage());
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("codediff", cmdLineOptions, true);
+        } catch (IOException e) {
+            logger.fatal(e.getMessage());
         }
-
-
     }
 
     public static void printToFile(String fileName, List<Module> diffModules) {
@@ -50,14 +54,14 @@ public class Diff {
             fileWriter = new FileWriter(fileName);
             bufferedWriter = new BufferedWriter(fileWriter);
             for (Module mod : diffModules) {
-                bufferedWriter.write(mod.getId()+"\n");
-                bufferedWriter.write(mod.getName().trim()+"\n");
+                bufferedWriter.write(mod.getId() + "\n");
+                bufferedWriter.write(mod.getName().trim() + "\n");
                 logger.info(mod.getName());
-                List<Integer> addresses = new ArrayList<>();
+                List<Long> addresses = new ArrayList<>();
                 addresses.addAll(mod.getAddresses());
                 Collections.sort(addresses);
-                for (Integer address: addresses) {
-                    bufferedWriter.write(address.toString()+'\n');
+                for (Long address : addresses) {
+                    bufferedWriter.write(address.toString() + '\n');
                     logger.debug("Address {}", address.toString());
                 }
 

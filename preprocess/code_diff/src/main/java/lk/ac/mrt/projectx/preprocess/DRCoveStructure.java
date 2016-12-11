@@ -67,8 +67,8 @@ public class DRCoveStructure implements Cloneable {
                 Integer index = other.modules.indexOf(modT); // find a matching module name from second structure
                 if (index != -1) {  // if found a match
                     Module mod = other.modules.get(index); // get its index
-                    Set<Integer> set1 = mod.getAddresses();
-                    Set<Integer> set2 = modT.getAddresses();
+                    Set<Long> set1 = mod.getAddresses();
+                    Set<Long> set2 = modT.getAddresses();
                     ///TODO: Why not add new basic block on second run ?
 //                    modT.getAddresses().addAll(set1);// merges the addresses of both modules
 //                    set2.removeAll(set1);   // Overlap of addresses of both modules
@@ -101,7 +101,7 @@ public class DRCoveStructure implements Cloneable {
      *
      * @param fileName Path of the drcov DR client output file
      */
-    public void LoadFromFile(String fileName) {
+    public void LoadFromFile(String fileName) throws IOException {
         BufferedReader bufferedReader = null;
         FileReader fileReader = null;
         String currentLine;
@@ -179,10 +179,11 @@ public class DRCoveStructure implements Cloneable {
                 currentLine = bufferedReader.readLine();
                 result = Pattern.compile("\\[(.*)\\]:.*0x(.*),(.*)").matcher(currentLine);
                 logger.debug("Group Count : {}", result.groupCount());
-                Integer moduleNumber, startAddress, size;
+                Integer moduleNumber,size;
+                Long startAddress;
                 if (result.find()) {
                     moduleNumber = Integer.parseInt(result.group(1).trim());
-                    startAddress = Integer.parseInt(result.group(2).trim(), 16); //substring coz "0x"
+                    startAddress = Long.parseLong(result.group(2).trim(), 16); //substring coz "0x"
                     size = Integer.parseInt(result.group(3).trim());
                     logger.debug("moduleNumber {}, startAddress {}, size {}", moduleNumber, startAddress, size);
                     if (moduleNumber >= noOfModules) {
@@ -208,8 +209,10 @@ public class DRCoveStructure implements Cloneable {
             fileReader.close();
         } catch (FileNotFoundException e) {
             logger.fatal(e.getMessage());
+            throw e;
         } catch (IOException e) {
             logger.fatal(e.getMessage());
+            throw e;
         }
 
         CheckStructureIntegrity();

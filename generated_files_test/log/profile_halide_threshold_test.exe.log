@@ -1,0 +1,4142 @@
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6833
+TAG  0x00291ab1
+ +0    L3              51                   push   ecx
+ +1    L3              8b cc                mov    ecx, esp
+ +3    L3              8d 55 f4             lea    edx, [ebp-0x0c]
+ +6    L3              52                   push   edx
+ +7    L3              e8 83 0b 00 00       call   0x00292640
+END 0x00291ab1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6845
+TAG  0x00291abd
+ +0    L3              8d 45 f8             lea    eax, [ebp-0x08]
+ +3    L3              50                   push   eax
+ +4    L3              e8 2a ff ff ff       call   0x002919f0
+END 0x00291abd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6640
+TAG  0x002919f0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              6a 00                push   0x00
+ +6    L3              6a 00                push   0x00
+ +8    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +11   L3              e8 60 38 00 00       call   0x00295260
+END 0x002919f0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21088
+TAG  0x00295260
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +12   L3              e8 7f fb ff ff       call   0x00294df0
+END 0x00295260
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19952
+TAG  0x00294df0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d f8             mov    dword ptr [ebp-0x08], ecx
+ +9    L3              c7 45 fc 00 00 00 00 mov    dword ptr [ebp-0x04], 0x00000000
+ +16   L3              eb 09                jmp    0x00294e0b
+END 0x00294df0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19979
+TAG  0x00294e0b
+ +0    L3              83 7d fc 04          cmp    dword ptr [ebp-0x04], 0x04
+ +4    L3              7d 16                jnl    0x00294e27
+END 0x00294e0b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19985
+TAG  0x00294e11
+ +0    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +3    L3              8b 11                mov    edx, dword ptr [ecx]
+ +5    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +8    L3              83 7c 82 0c 00       cmp    dword ptr [edx+eax*4+0x0c], 0x00
+ +13   L3              75 05                jnz    0x00294e25
+END 0x00294e11
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 20005
+TAG  0x00294e25
+ +0    L3              eb db                jmp    0x00294e02
+END 0x00294e25
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19970
+TAG  0x00294e02
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              83 c0 01             add    eax, 0x01
+ +6    L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +9    L3              83 7d fc 04          cmp    dword ptr [ebp-0x04], 0x04
+ +13   L3              7d 16                jnl    0x00294e27
+END 0x00294e02
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 20000
+TAG  0x00294e20
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              eb 07                jmp    0x00294e2c
+END 0x00294e20
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 20012
+TAG  0x00294e2c
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c3                   ret    
+END 0x00294e2c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21105
+TAG  0x00295271
+ +0    L3              83 f8 01             cmp    eax, 0x01
+ +3    L3              7e 16                jle    0x0029528c
+END 0x00295271
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21110
+TAG  0x00295276
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b 08                mov    ecx, dword ptr [eax]
+ +5    L3              ba 04 00 00 00       mov    edx, 0x00000004
+ +10   L3              c1 e2 00             shl    edx, 0x00
+ +13   L3              8b 44 11 0c          mov    eax, dword ptr [ecx+edx+0x0c]
+ +17   L3              89 45 f8             mov    dword ptr [ebp-0x08], eax
+ +20   L3              eb 07                jmp    0x00295293
+END 0x00295276
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21139
+TAG  0x00295293
+ +0    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x00295293
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6656
+TAG  0x00291a00
+ +0    L3              50                   push   eax
+ +1    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +4    L3              e8 27 40 00 00       call   0x00295a30
+END 0x00291a00
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23088
+TAG  0x00295a30
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +12   L3              e8 af f3 ff ff       call   0x00294df0
+END 0x00295a30
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23105
+TAG  0x00295a41
+ +0    L3              85 c0                test   eax, eax
+ +2    L3              7e 16                jle    0x00295a5b
+END 0x00295a41
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23109
+TAG  0x00295a45
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b 08                mov    ecx, dword ptr [eax]
+ +5    L3              ba 04 00 00 00       mov    edx, 0x00000004
+ +10   L3              6b c2 00             imul   eax, edx, 0x00
+ +13   L3              8b 4c 01 0c          mov    ecx, dword ptr [ecx+eax+0x0c]
+ +17   L3              89 4d f8             mov    dword ptr [ebp-0x08], ecx
+ +20   L3              eb 07                jmp    0x00295a62
+END 0x00295a45
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23138
+TAG  0x00295a62
+ +0    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x00295a62
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6665
+TAG  0x00291a09
+ +0    L3              50                   push   eax
+ +1    L3              8d 4d fc             lea    ecx, [ebp-0x04]
+ +4    L3              e8 6e 0c 00 00       call   0x00292680
+END 0x00291a09
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21391
+TAG  0x0029538f
+ +0    L3              83 7d 14 00          cmp    dword ptr [ebp+0x14], 0x00
+ +4    L3              74 0a                jz     0x0029539f
+END 0x0029538f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6674
+TAG  0x00291a12
+ +0    L3              8d 4d fc             lea    ecx, [ebp-0x04]
+ +3    L3              e8 a6 3f 00 00       call   0x002959c0
+END 0x00291a12
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 22976
+TAG  0x002959c0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +10   L3              8b 00                mov    eax, dword ptr [eax]
+ +12   L3              8b e5                mov    esp, ebp
+ +14   L3              5d                   pop    ebp
+ +15   L3              c3                   ret    
+END 0x002959c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6682
+TAG  0x00291a1a
+ +0    L3              50                   push   eax
+ +1    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +4    L3              e8 9d 3f 00 00       call   0x002959c0
+END 0x00291a1a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6691
+TAG  0x00291a23
+ +0    L3              50                   push   eax
+ +1    L3              e8 d7 f5 ff ff       call   0x00291000
+END 0x00291a23
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4096
+TAG  0x00291000
+ +0    L3              55                   push   ebp
+ +1    L3              89 e5                mov    ebp, esp
+ +3    L3              53                   push   ebx
+ +4    L3              57                   push   edi
+ +5    L3              56                   push   esi
+ +6    L3              83 ec 4c             sub    esp, 0x4c
+ +9    L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +12   L3              85 d2                test   edx, edx
+ +14   L3              0f 84 31 01 00 00    jz     0x00291145
+END 0x00291000
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4116
+TAG  0x00291014
+ +0    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +3    L3              8b 72 08             mov    esi, dword ptr [edx+0x08]
+ +6    L3              8b 0a                mov    ecx, dword ptr [edx]
+ +8    L3              0b 4a 04             or     ecx, dword ptr [edx+0x04]
+ +11   L3              09 f1                or     ecx, esi
+ +13   L3              0f 94 c1             setz   cl
+ +16   L3              85 c0                test   eax, eax
+ +18   L3              0f 84 26 01 00 00    jz     0x00291152
+END 0x00291014
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4140
+TAG  0x0029102c
+ +0    L3              89 75 dc             mov    dword ptr [ebp-0x24], esi
+ +3    L3              8b 72 0c             mov    esi, dword ptr [edx+0x0c]
+ +6    L3              89 75 e0             mov    dword ptr [ebp-0x20], esi
+ +9    L3              8b 72 10             mov    esi, dword ptr [edx+0x10]
+ +12   L3              89 75 d0             mov    dword ptr [ebp-0x30], esi
+ +15   L3              8b 72 1c             mov    esi, dword ptr [edx+0x1c]
+ +18   L3              89 75 c4             mov    dword ptr [ebp-0x3c], esi
+ +21   L3              8b 72 20             mov    esi, dword ptr [edx+0x20]
+ +24   L3              89 75 bc             mov    dword ptr [ebp-0x44], esi
+ +27   L3              8b 78 08             mov    edi, dword ptr [eax+0x08]
+ +30   L3              89 7d d8             mov    dword ptr [ebp-0x28], edi
+ +33   L3              8b 30                mov    esi, dword ptr [eax]
+ +35   L3              0b 70 04             or     esi, dword ptr [eax+0x04]
+ +38   L3              09 fe                or     esi, edi
+ +40   L3              8b 7a 2c             mov    edi, dword ptr [edx+0x2c]
+ +43   L3              0f 94 c5             setz   ch
+ +46   L3              8b 72 30             mov    esi, dword ptr [edx+0x30]
+ +49   L3              89 75 d4             mov    dword ptr [ebp-0x2c], esi
+ +52   L3              8b 72 3c             mov    esi, dword ptr [edx+0x3c]
+ +55   L3              89 75 e4             mov    dword ptr [ebp-0x1c], esi
+ +58   L3              8b 70 0c             mov    esi, dword ptr [eax+0x0c]
+ +61   L3              89 75 f0             mov    dword ptr [ebp-0x10], esi
+ +64   L3              8b 70 10             mov    esi, dword ptr [eax+0x10]
+ +67   L3              89 75 e8             mov    dword ptr [ebp-0x18], esi
+ +70   L3              8b 70 1c             mov    esi, dword ptr [eax+0x1c]
+ +73   L3              89 75 c8             mov    dword ptr [ebp-0x38], esi
+ +76   L3              8b 70 20             mov    esi, dword ptr [eax+0x20]
+ +79   L3              89 75 c0             mov    dword ptr [ebp-0x40], esi
+ +82   L3              8b 58 2c             mov    ebx, dword ptr [eax+0x2c]
+ +85   L3              8b 70 30             mov    esi, dword ptr [eax+0x30]
+ +88   L3              89 75 ec             mov    dword ptr [ebp-0x14], esi
+ +91   L3              8b 70 3c             mov    esi, dword ptr [eax+0x3c]
+ +94   L3              75 60                jnz    0x002910ec
+END 0x0029102c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4332
+TAG  0x002910ec
+ +0    L3              84 c9                test   cl, cl
+ +2    L3              74 6f                jz     0x0029115f
+END 0x002910ec
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4447
+TAG  0x0029115f
+ +0    L3              84 ed                test   ch, ch
+ +2    L3              0f 85 e4 01 00 00    jnz    0x0029134b
+END 0x0029115f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4455
+TAG  0x00291167
+ +0    L3              83 fe 01             cmp    esi, 0x01
+ +3    L3              75 21                jnz    0x0029118d
+END 0x00291167
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4460
+TAG  0x0029116c
+ +0    L3              8b 45 e4             mov    eax, dword ptr [ebp-0x1c]
+ +3    L3              83 f8 01             cmp    eax, 0x01
+ +6    L3              75 2a                jnz    0x0029119e
+END 0x0029116c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4468
+TAG  0x00291174
+ +0    L3              39 df                cmp    edi, ebx
+ +2    L3              7e 37                jle    0x002911af
+END 0x00291174
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4527
+TAG  0x002911af
+ +0    L3              8b 45 f0             mov    eax, dword ptr [ebp-0x10]
+ +3    L3              8d 04 03             lea    eax, [ebx+eax]
+ +6    L3              89 c1                mov    ecx, eax
+ +8    L3              8b 55 e0             mov    edx, dword ptr [ebp-0x20]
+ +11   L3              29 d1                sub    ecx, edx
+ +13   L3              39 f9                cmp    ecx, edi
+ +15   L3              7e 1a                jle    0x002911da
+END 0x002911af
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4570
+TAG  0x002911da
+ +0    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +3    L3              8b 75 d4             mov    esi, dword ptr [ebp-0x2c]
+ +6    L3              39 c6                cmp    esi, eax
+ +8    L3              7e 15                jle    0x002911f9
+END 0x002911da
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4601
+TAG  0x002911f9
+ +0    L3              89 7d cc             mov    dword ptr [ebp-0x34], edi
+ +3    L3              8b 55 e8             mov    edx, dword ptr [ebp-0x18]
+ +6    L3              8d 3c 10             lea    edi, [eax+edx]
+ +9    L3              89 f8                mov    eax, edi
+ +11   L3              8b 55 d0             mov    edx, dword ptr [ebp-0x30]
+ +14   L3              29 d0                sub    eax, edx
+ +16   L3              39 f0                cmp    eax, esi
+ +18   L3              7e 1a                jle    0x00291227
+END 0x002911f9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4647
+TAG  0x00291227
+ +0    L3              83 7d c8 01          cmp    dword ptr [ebp-0x38], 0x01
+ +4    L3              0f 85 f7 00 00 00    jnz    0x00291328
+END 0x00291227
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4657
+TAG  0x00291231
+ +0    L3              83 7d c4 01          cmp    dword ptr [ebp-0x3c], 0x01
+ +4    L3              0f 85 f7 00 00 00    jnz    0x00291332
+END 0x00291231
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4667
+TAG  0x0029123b
+ +0    L3              8b 45 c0             mov    eax, dword ptr [ebp-0x40]
+ +3    L3              f7 6d e8             imul   edx, eax, dword ptr [ebp-0x18]
+ +6    L3              85 c0                test   eax, eax
+ +8    L3              0f 99 c0             setns  al
+ +11   L3              85 d2                test   edx, edx
+ +13   L3              0f 98 c2             sets   dl
+ +16   L3              74 02                jz     0x0029124f
+END 0x0029123b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4687
+TAG  0x0029124f
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 e5 00 00 00    jz     0x0029133c
+END 0x0029124f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4695
+TAG  0x00291257
+ +0    L3              8b 45 e8             mov    eax, dword ptr [ebp-0x18]
+ +3    L3              f7 6d f0             imul   edx, eax, dword ptr [ebp-0x10]
+ +6    L3              b9 00 00 00 80       mov    ecx, 0x80000000
+ +11   L3              39 c8                cmp    eax, ecx
+ +13   L3              0f 92 c0             setb   al
+ +16   L3              85 d2                test   edx, edx
+ +18   L3              0f 98 c2             sets   dl
+ +21   L3              74 02                jz     0x00291270
+END 0x00291257
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4720
+TAG  0x00291270
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 d7 00 00 00    jz     0x0029134f
+END 0x00291270
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4728
+TAG  0x00291278
+ +0    L3              89 7d e4             mov    dword ptr [ebp-0x1c], edi
+ +3    L3              8b 45 bc             mov    eax, dword ptr [ebp-0x44]
+ +6    L3              f7 6d d0             imul   edx, eax, dword ptr [ebp-0x30]
+ +9    L3              bf 00 00 00 80       mov    edi, 0x80000000
+ +14   L3              39 f8                cmp    eax, edi
+ +16   L3              0f 92 c0             setb   al
+ +19   L3              85 d2                test   edx, edx
+ +21   L3              0f 98 c2             sets   dl
+ +24   L3              74 02                jz     0x00291294
+END 0x00291278
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4756
+TAG  0x00291294
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 bd 00 00 00    jz     0x00291359
+END 0x00291294
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4764
+TAG  0x0029129c
+ +0    L3              8b 45 d0             mov    eax, dword ptr [ebp-0x30]
+ +3    L3              f7 6d e0             imul   edx, eax, dword ptr [ebp-0x20]
+ +6    L3              b9 00 00 00 80       mov    ecx, 0x80000000
+ +11   L3              39 c8                cmp    eax, ecx
+ +13   L3              0f 92 c0             setb   al
+ +16   L3              85 d2                test   edx, edx
+ +18   L3              0f 98 c2             sets   dl
+ +21   L3              74 02                jz     0x002912b5
+END 0x0029129c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4789
+TAG  0x002912b5
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 a6 00 00 00    jz     0x00291363
+END 0x002912b5
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4797
+TAG  0x002912bd
+ +0    L3              83 7d e8 00          cmp    dword ptr [ebp-0x18], 0x00
+ +4    L3              8b 4d cc             mov    ecx, dword ptr [ebp-0x34]
+ +7    L3              0f 8e 81 00 00 00    jle    0x0029134b
+END 0x002912bd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4810
+TAG  0x002912ca
+ +0    L3              89 cf                mov    edi, ecx
+ +2    L3              89 da                mov    edx, ebx
+ +4    L3              83 7d f0 00          cmp    dword ptr [ebp-0x10], 0x00
+ +8    L3              7e 72                jle    0x00291346
+END 0x002912ca
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4820
+TAG  0x002912d4
+ +0    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +3    L3              8b 4d bc             mov    ecx, dword ptr [ebp-0x44]
+ +6    L3              0f af c1             imul   eax, ecx
+ +9    L3              89 d3                mov    ebx, edx
+ +11   L3              01 c3                add    ebx, eax
+ +13   L3              89 f0                mov    eax, esi
+ +15   L3              0f af c1             imul   eax, ecx
+ +18   L3              89 fe                mov    esi, edi
+ +20   L3              01 c6                add    esi, eax
+ +22   L3              29 f3                sub    ebx, esi
+ +24   L3              31 d2                xor    edx, edx
+ +26   L3              89 55 e8             mov    dword ptr [ebp-0x18], edx
+ +29   L3              89 d9                mov    ecx, ebx
+ +31   L3              8b 75 f0             mov    esi, dword ptr [ebp-0x10]
+ +34   L3              8b 45 dc             mov    eax, dword ptr [ebp-0x24]
+ +37   L3              0f b6 3c 08          movzx  edi, byte ptr [eax+ecx]
+ +41   L3              b0 ff                mov    al, 0xff
+ +43   L3              83 ff 65             cmp    edi, 0x65
+ +46   L3              77 02                jnbe   0x00291306
+END 0x002912d4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4868
+TAG  0x00291304
+ +0    L3              31 c0                xor    eax, eax
+ +2    L3              8b 7d d8             mov    edi, dword ptr [ebp-0x28]
+ +5    L3              88 04 17             mov    byte ptr [edi+edx], al
+ +8    L3              42                   inc    edx
+ +9    L3              41                   inc    ecx
+ +10   L3              4e                   dec    esi
+ +11   L3              75 e5                jnz    0x002912f6
+END 0x00291304
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4854
+TAG  0x002912f6
+ +0    L3              8b 45 dc             mov    eax, dword ptr [ebp-0x24]
+ +3    L3              0f b6 3c 08          movzx  edi, byte ptr [eax+ecx]
+ +7    L3              b0 ff                mov    al, 0xff
+ +9    L3              83 ff 65             cmp    edi, 0x65
+ +12   L3              77 02                jnbe   0x00291306
+END 0x002912f6
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4881
+TAG  0x00291311
+ +0    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +3    L3              40                   inc    eax
+ +4    L3              89 45 ec             mov    dword ptr [ebp-0x14], eax
+ +7    L3              8b 55 e8             mov    edx, dword ptr [ebp-0x18]
+ +10   L3              03 55 c0             add    edx, dword ptr [ebp-0x40]
+ +13   L3              03 5d bc             add    ebx, dword ptr [ebp-0x44]
+ +16   L3              3b 45 e4             cmp    eax, dword ptr [ebp-0x1c]
+ +19   L3              75 c8                jnz    0x002912ee
+END 0x00291311
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4846
+TAG  0x002912ee
+ +0    L3              89 55 e8             mov    dword ptr [ebp-0x18], edx
+ +3    L3              89 d9                mov    ecx, ebx
+ +5    L3              8b 75 f0             mov    esi, dword ptr [ebp-0x10]
+ +8    L3              8b 45 dc             mov    eax, dword ptr [ebp-0x24]
+ +11   L3              0f b6 3c 08          movzx  edi, byte ptr [eax+ecx]
+ +15   L3              b0 ff                mov    al, 0xff
+ +17   L3              83 ff 65             cmp    edi, 0x65
+ +20   L3              77 02                jnbe   0x00291306
+END 0x002912ee
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4854
+TAG  0x002912f6
+ +0    L3              8b 45 dc             mov    eax, dword ptr [ebp-0x24]
+ +3    L3              0f b6 3c 08          movzx  edi, byte ptr [eax+ecx]
+ +7    L3              b0 ff                mov    al, 0xff
+ +9    L3              83 ff 65             cmp    edi, 0x65
+ +12   L3              77 02                jnbe   0x00291306
+END 0x002912f6
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4868
+TAG  0x00291304
+ +0    L3              31 c0                xor    eax, eax
+ +2    L3              8b 7d d8             mov    edi, dword ptr [ebp-0x28]
+ +5    L3              88 04 17             mov    byte ptr [edi+edx], al
+ +8    L3              42                   inc    edx
+ +9    L3              41                   inc    ecx
+ +10   L3              4e                   dec    esi
+ +11   L3              75 e5                jnz    0x002912f6
+END 0x00291304
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4870
+TAG  0x00291306
+ +0    L3              8b 7d d8             mov    edi, dword ptr [ebp-0x28]
+ +3    L3              88 04 17             mov    byte ptr [edi+edx], al
+ +6    L3              42                   inc    edx
+ +7    L3              41                   inc    ecx
+ +8    L3              4e                   dec    esi
+ +9    L3              75 e5                jnz    0x002912f6
+END 0x00291306
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4870
+TAG  0x00291306
+ +0    L3              8b 7d d8             mov    edi, dword ptr [ebp-0x28]
+ +3    L3              88 04 17             mov    byte ptr [edi+edx], al
+ +6    L3              42                   inc    edx
+ +7    L3              41                   inc    ecx
+ +8    L3              4e                   dec    esi
+ +9    L3              75 e5                jnz    0x002912f6
+END 0x00291306
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4902
+TAG  0x00291326
+ +0    L3              eb 23                jmp    0x0029134b
+END 0x00291326
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4939
+TAG  0x0029134b
+ +0    L3              31 c0                xor    eax, eax
+ +2    L3              eb 2d                jmp    0x0029137c
+END 0x0029134b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 4988
+TAG  0x0029137c
+ +0    L3              83 c4 4c             add    esp, 0x4c
+ +3    L3              5e                   pop    esi
+ +4    L3              5f                   pop    edi
+ +5    L3              5b                   pop    ebx
+ +6    L3              5d                   pop    ebp
+ +7    L3              c3                   ret    
+END 0x0029137c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6697
+TAG  0x00291a29
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              8d 45 fc             lea    eax, [ebp-0x04]
+ +6    L3              50                   push   eax
+ +7    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +10   L3              e8 08 0c 00 00       call   0x00292640
+END 0x00291a29
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6712
+TAG  0x00291a38
+ +0    L3              8d 4d fc             lea    ecx, [ebp-0x04]
+ +3    L3              e8 b0 15 00 00       call   0x00292ff0
+END 0x00291a38
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6720
+TAG  0x00291a40
+ +0    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +3    L3              e8 a8 15 00 00       call   0x00292ff0
+END 0x00291a40
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6728
+TAG  0x00291a48
+ +0    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x00291a48
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6854
+TAG  0x00291ac6
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              51                   push   ecx
+ +4    L3              8b cc                mov    ecx, esp
+ +6    L3              8d 55 f8             lea    edx, [ebp-0x08]
+ +9    L3              52                   push   edx
+ +10   L3              e8 6b 0b 00 00       call   0x00292640
+END 0x00291ac6
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6869
+TAG  0x00291ad5
+ +0    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +3    L3              50                   push   eax
+ +4    L3              e8 02 09 00 00       call   0x002923e0
+END 0x00291ad5
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9184
+TAG  0x002923e0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 40             sub    esp, 0x40
+ +6    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +9    L3              e8 42 36 00 00       call   0x00295a30
+END 0x002923e0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9198
+TAG  0x002923ee
+ +0    L3              89 45 d4             mov    dword ptr [ebp-0x2c], eax
+ +3    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +6    L3              e8 67 2e 00 00       call   0x00295260
+END 0x002923ee
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9209
+TAG  0x002923f9
+ +0    L3              89 45 d8             mov    dword ptr [ebp-0x28], eax
+ +3    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +6    L3              e8 2c 26 00 00       call   0x00294a30
+END 0x002923f9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18992
+TAG  0x00294a30
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +12   L3              e8 af 03 00 00       call   0x00294df0
+END 0x00294a30
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19009
+TAG  0x00294a41
+ +0    L3              83 f8 02             cmp    eax, 0x02
+ +3    L3              7e 15                jle    0x00294a5b
+END 0x00294a41
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19035
+TAG  0x00294a5b
+ +0    L3              c7 45 f8 01 00 00 00 mov    dword ptr [ebp-0x08], 0x00000001
+ +7    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +10   L3              8b e5                mov    esp, ebp
+ +12   L3              5d                   pop    ebp
+ +13   L3              c3                   ret    
+END 0x00294a5b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9220
+TAG  0x00292404
+ +0    L3              89 45 d0             mov    dword ptr [ebp-0x30], eax
+ +3    L3              6a 10                push   0x10
+ +5    L3              e8 e2 0f 00 00       call   0x002933f0
+END 0x00292404
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9230
+TAG  0x0029240e
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              89 45 e0             mov    dword ptr [ebp-0x20], eax
+ +6    L3              83 7d e0 00          cmp    dword ptr [ebp-0x20], 0x00
+ +10   L3              74 1a                jz     0x00292434
+END 0x0029240e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9242
+TAG  0x0029241a
+ +0    L3              68 0a 20 26 00       push   0x0026200a
+ +5    L3              8b 45 d8             mov    eax, dword ptr [ebp-0x28]
+ +8    L3              50                   push   eax
+ +9    L3              8b 4d d4             mov    ecx, dword ptr [ebp-0x2c]
+ +12   L3              51                   push   ecx
+ +13   L3              8b 4d e0             mov    ecx, dword ptr [ebp-0x20]
+ +16   L3              e8 a1 04 00 00       call   0x002928d0
+END 0x0029241a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10448
+TAG  0x002928d0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +12   L3              e8 8f 01 00 00       call   0x00292a70
+END 0x002928d0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10465
+TAG  0x002928e1
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              c7 00 44 d4 2a 00    mov    dword ptr [eax], 0x002ad444
+ +9    L3              c7 45 f8 00 00 00 00 mov    dword ptr [ebp-0x08], 0x00000000
+ +16   L3              8d 4d f8             lea    ecx, [ebp-0x08]
+ +19   L3              51                   push   ecx
+ +20   L3              6a 00                push   0x00
+ +22   L3              8b 55 10             mov    edx, dword ptr [ebp+0x10]
+ +25   L3              52                   push   edx
+ +26   L3              6a 00                push   0x00
+ +28   L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +31   L3              50                   push   eax
+ +32   L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +35   L3              51                   push   ecx
+ +36   L3              e8 fc 31 00 00       call   0x00295b06
+END 0x002928e1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23302
+TAG  0x00295b06
+ +0    L3              ff 25 20 d1 2a 00    jmp    dword ptr [0x002ad120]
+END 0x00295b06
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10506
+TAG  0x0029290a
+ +0    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +3    L3              89 42 08             mov    dword ptr [edx+0x08], eax
+ +6    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +9    L3              50                   push   eax
+ +10   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +13   L3              e8 64 12 00 00       call   0x00293b80
+END 0x0029290a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10524
+TAG  0x0029291c
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 0c 00             ret    0x000c
+END 0x0029291c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9263
+TAG  0x0029242f
+ +0    L3              89 45 dc             mov    dword ptr [ebp-0x24], eax
+ +3    L3              eb 07                jmp    0x0029243b
+END 0x0029242f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9275
+TAG  0x0029243b
+ +0    L3              8b 55 dc             mov    edx, dword ptr [ebp-0x24]
+ +3    L3              89 55 e8             mov    dword ptr [ebp-0x18], edx
+ +6    L3              c7 45 f0 00 00 00 00 mov    dword ptr [ebp-0x10], 0x00000000
+ +13   L3              eb 09                jmp    0x00292453
+END 0x0029243b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9299
+TAG  0x00292453
+ +0    L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +3    L3              3b 4d d8             cmp    ecx, dword ptr [ebp-0x28]
+ +6    L3              0f 8d ca 00 00 00    jnl    0x00292529
+END 0x00292453
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9311
+TAG  0x0029245f
+ +0    L3              c7 45 ec 00 00 00 00 mov    dword ptr [ebp-0x14], 0x00000000
+ +7    L3              eb 09                jmp    0x00292471
+END 0x0029245f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9329
+TAG  0x00292471
+ +0    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +3    L3              3b 45 d4             cmp    eax, dword ptr [ebp-0x2c]
+ +6    L3              0f 8d a7 00 00 00    jnl    0x00292524
+END 0x00292471
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9341
+TAG  0x0029247d
+ +0    L3              8d 4d c8             lea    ecx, [ebp-0x38]
+ +3    L3              e8 1b 05 00 00       call   0x002929a0
+END 0x0029247d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9349
+TAG  0x00292485
+ +0    L3              c7 45 f4 00 00 00 00 mov    dword ptr [ebp-0x0c], 0x00000000
+ +7    L3              8b 4d f4             mov    ecx, dword ptr [ebp-0x0c]
+ +10   L3              81 c9 00 00 00 ff    or     ecx, 0xff000000
+ +16   L3              89 4d f4             mov    dword ptr [ebp-0x0c], ecx
+ +19   L3              c7 45 f8 00 00 00 00 mov    dword ptr [ebp-0x08], 0x00000000
+ +26   L3              eb 09                jmp    0x002924aa
+END 0x00292485
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9386
+TAG  0x002924aa
+ +0    L3              83 7d f8 03          cmp    dword ptr [ebp-0x08], 0x03
+ +4    L3              7d 4f                jnl    0x002924ff
+END 0x002924aa
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9392
+TAG  0x002924b0
+ +0    L3              8b 45 d0             mov    eax, dword ptr [ebp-0x30]
+ +3    L3              3b 45 f8             cmp    eax, dword ptr [ebp-0x08]
+ +6    L3              7f 0b                jnle   0x002924c3
+END 0x002924b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9411
+TAG  0x002924c3
+ +0    L3              8b 55 f8             mov    edx, dword ptr [ebp-0x08]
+ +3    L3              89 55 cc             mov    dword ptr [ebp-0x34], edx
+ +6    L3              6a 00                push   0x00
+ +8    L3              8b 45 cc             mov    eax, dword ptr [ebp-0x34]
+ +11   L3              50                   push   eax
+ +12   L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +15   L3              51                   push   ecx
+ +16   L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +19   L3              52                   push   edx
+ +20   L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +23   L3              e8 71 10 00 00       call   0x00293550
+END 0x002924c3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9439
+TAG  0x002924df
+ +0    L3              8a 00                mov    al, byte ptr [eax]
+ +2    L3              88 45 ff             mov    byte ptr [ebp-0x01], al
+ +5    L3              0f b6 55 ff          movzx  edx, byte ptr [ebp-0x01]
+ +9    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +12   L3              c1 e0 03             shl    eax, 0x03
+ +15   L3              b9 10 00 00 00       mov    ecx, 0x00000010
+ +20   L3              2b c8                sub    ecx, eax
+ +22   L3              d3 e2                shl    edx, cl
+ +24   L3              0b 55 f4             or     edx, dword ptr [ebp-0x0c]
+ +27   L3              89 55 f4             mov    dword ptr [ebp-0x0c], edx
+ +30   L3              eb a2                jmp    0x002924a1
+END 0x002924df
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9377
+TAG  0x002924a1
+ +0    L3              8b 55 f8             mov    edx, dword ptr [ebp-0x08]
+ +3    L3              83 c2 01             add    edx, 0x01
+ +6    L3              89 55 f8             mov    dword ptr [ebp-0x08], edx
+ +9    L3              83 7d f8 03          cmp    dword ptr [ebp-0x08], 0x03
+ +13   L3              7d 4f                jnl    0x002924ff
+END 0x002924a1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9400
+TAG  0x002924b8
+ +0    L3              8b 4d d0             mov    ecx, dword ptr [ebp-0x30]
+ +3    L3              83 e9 01             sub    ecx, 0x01
+ +6    L3              89 4d cc             mov    dword ptr [ebp-0x34], ecx
+ +9    L3              eb 06                jmp    0x002924c9
+END 0x002924b8
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9417
+TAG  0x002924c9
+ +0    L3              6a 00                push   0x00
+ +2    L3              8b 45 cc             mov    eax, dword ptr [ebp-0x34]
+ +5    L3              50                   push   eax
+ +6    L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +9    L3              51                   push   ecx
+ +10   L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +13   L3              52                   push   edx
+ +14   L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +17   L3              e8 71 10 00 00       call   0x00293550
+END 0x002924c9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9471
+TAG  0x002924ff
+ +0    L3              8b 4d f4             mov    ecx, dword ptr [ebp-0x0c]
+ +3    L3              51                   push   ecx
+ +4    L3              8d 4d c8             lea    ecx, [ebp-0x38]
+ +7    L3              e8 05 17 00 00       call   0x00293c10
+END 0x002924ff
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9483
+TAG  0x0029250b
+ +0    L3              8d 55 c8             lea    edx, [ebp-0x38]
+ +3    L3              52                   push   edx
+ +4    L3              8b 45 f0             mov    eax, dword ptr [ebp-0x10]
+ +7    L3              50                   push   eax
+ +8    L3              8b 4d ec             mov    ecx, dword ptr [ebp-0x14]
+ +11   L3              51                   push   ecx
+ +12   L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +15   L3              e8 81 16 00 00       call   0x00293ba0
+END 0x0029250b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15264
+TAG  0x00293ba0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 4d 10             mov    ecx, dword ptr [ebp+0x10]
+ +10   L3              e8 11 1e 00 00       call   0x002959c0
+END 0x00293ba0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15279
+TAG  0x00293baf
+ +0    L3              50                   push   eax
+ +1    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +4    L3              50                   push   eax
+ +5    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +8    L3              51                   push   ecx
+ +9    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +12   L3              8b 42 04             mov    eax, dword ptr [edx+0x04]
+ +15   L3              50                   push   eax
+ +16   L3              e8 4e 1f 00 00       call   0x00295b12
+END 0x00293baf
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23314
+TAG  0x00295b12
+ +0    L3              ff 25 18 d1 2a 00    jmp    dword ptr [0x002ad118]
+END 0x00295b12
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15300
+TAG  0x00293bc4
+ +0    L3              50                   push   eax
+ +1    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +4    L3              e8 13 00 00 00       call   0x00293be0
+END 0x00293bc4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15309
+TAG  0x00293bcd
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 0c 00             ret    0x000c
+END 0x00293bcd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9503
+TAG  0x0029251f
+ +0    L3              e9 44 ff ff ff       jmp    0x00292468
+END 0x0029251f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9320
+TAG  0x00292468
+ +0    L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +3    L3              83 c2 01             add    edx, 0x01
+ +6    L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +9    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +12   L3              3b 45 d4             cmp    eax, dword ptr [ebp-0x2c]
+ +15   L3              0f 8d a7 00 00 00    jnl    0x00292524
+END 0x00292468
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9377
+TAG  0x002924a1
+ +0    L3              8b 55 f8             mov    edx, dword ptr [ebp-0x08]
+ +3    L3              83 c2 01             add    edx, 0x01
+ +6    L3              89 55 f8             mov    dword ptr [ebp-0x08], edx
+ +9    L3              83 7d f8 03          cmp    dword ptr [ebp-0x08], 0x03
+ +13   L3              7d 4f                jnl    0x002924ff
+END 0x002924a1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9392
+TAG  0x002924b0
+ +0    L3              8b 45 d0             mov    eax, dword ptr [ebp-0x30]
+ +3    L3              3b 45 f8             cmp    eax, dword ptr [ebp-0x08]
+ +6    L3              7f 0b                jnle   0x002924c3
+END 0x002924b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9400
+TAG  0x002924b8
+ +0    L3              8b 4d d0             mov    ecx, dword ptr [ebp-0x30]
+ +3    L3              83 e9 01             sub    ecx, 0x01
+ +6    L3              89 4d cc             mov    dword ptr [ebp-0x34], ecx
+ +9    L3              eb 06                jmp    0x002924c9
+END 0x002924b8
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9417
+TAG  0x002924c9
+ +0    L3              6a 00                push   0x00
+ +2    L3              8b 45 cc             mov    eax, dword ptr [ebp-0x34]
+ +5    L3              50                   push   eax
+ +6    L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +9    L3              51                   push   ecx
+ +10   L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +13   L3              52                   push   edx
+ +14   L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +17   L3              e8 71 10 00 00       call   0x00293550
+END 0x002924c9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9439
+TAG  0x002924df
+ +0    L3              8a 00                mov    al, byte ptr [eax]
+ +2    L3              88 45 ff             mov    byte ptr [ebp-0x01], al
+ +5    L3              0f b6 55 ff          movzx  edx, byte ptr [ebp-0x01]
+ +9    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +12   L3              c1 e0 03             shl    eax, 0x03
+ +15   L3              b9 10 00 00 00       mov    ecx, 0x00000010
+ +20   L3              2b c8                sub    ecx, eax
+ +22   L3              d3 e2                shl    edx, cl
+ +24   L3              0b 55 f4             or     edx, dword ptr [ebp-0x0c]
+ +27   L3              89 55 f4             mov    dword ptr [ebp-0x0c], edx
+ +30   L3              eb a2                jmp    0x002924a1
+END 0x002924df
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9508
+TAG  0x00292524
+ +0    L3              e9 21 ff ff ff       jmp    0x0029244a
+END 0x00292524
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9290
+TAG  0x0029244a
+ +0    L3              8b 45 f0             mov    eax, dword ptr [ebp-0x10]
+ +3    L3              83 c0 01             add    eax, 0x01
+ +6    L3              89 45 f0             mov    dword ptr [ebp-0x10], eax
+ +9    L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +12   L3              3b 4d d8             cmp    ecx, dword ptr [ebp-0x28]
+ +15   L3              0f 8d ca 00 00 00    jnl    0x00292529
+END 0x0029244a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15300
+TAG  0x00293bc4
+ +0    L3              50                   push   eax
+ +1    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +4    L3              e8 13 00 00 00       call   0x00293be0
+END 0x00293bc4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15309
+TAG  0x00293bcd
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 0c 00             ret    0x000c
+END 0x00293bcd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9503
+TAG  0x0029251f
+ +0    L3              e9 44 ff ff ff       jmp    0x00292468
+END 0x0029251f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9320
+TAG  0x00292468
+ +0    L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +3    L3              83 c2 01             add    edx, 0x01
+ +6    L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +9    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +12   L3              3b 45 d4             cmp    eax, dword ptr [ebp-0x2c]
+ +15   L3              0f 8d a7 00 00 00    jnl    0x00292524
+END 0x00292468
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9341
+TAG  0x0029247d
+ +0    L3              8d 4d c8             lea    ecx, [ebp-0x38]
+ +3    L3              e8 1b 05 00 00       call   0x002929a0
+END 0x0029247d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9349
+TAG  0x00292485
+ +0    L3              c7 45 f4 00 00 00 00 mov    dword ptr [ebp-0x0c], 0x00000000
+ +7    L3              8b 4d f4             mov    ecx, dword ptr [ebp-0x0c]
+ +10   L3              81 c9 00 00 00 ff    or     ecx, 0xff000000
+ +16   L3              89 4d f4             mov    dword ptr [ebp-0x0c], ecx
+ +19   L3              c7 45 f8 00 00 00 00 mov    dword ptr [ebp-0x08], 0x00000000
+ +26   L3              eb 09                jmp    0x002924aa
+END 0x00292485
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9386
+TAG  0x002924aa
+ +0    L3              83 7d f8 03          cmp    dword ptr [ebp-0x08], 0x03
+ +4    L3              7d 4f                jnl    0x002924ff
+END 0x002924aa
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9392
+TAG  0x002924b0
+ +0    L3              8b 45 d0             mov    eax, dword ptr [ebp-0x30]
+ +3    L3              3b 45 f8             cmp    eax, dword ptr [ebp-0x08]
+ +6    L3              7f 0b                jnle   0x002924c3
+END 0x002924b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9471
+TAG  0x002924ff
+ +0    L3              8b 4d f4             mov    ecx, dword ptr [ebp-0x0c]
+ +3    L3              51                   push   ecx
+ +4    L3              8d 4d c8             lea    ecx, [ebp-0x38]
+ +7    L3              e8 05 17 00 00       call   0x00293c10
+END 0x002924ff
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9483
+TAG  0x0029250b
+ +0    L3              8d 55 c8             lea    edx, [ebp-0x38]
+ +3    L3              52                   push   edx
+ +4    L3              8b 45 f0             mov    eax, dword ptr [ebp-0x10]
+ +7    L3              50                   push   eax
+ +8    L3              8b 4d ec             mov    ecx, dword ptr [ebp-0x14]
+ +11   L3              51                   push   ecx
+ +12   L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +15   L3              e8 81 16 00 00       call   0x00293ba0
+END 0x0029250b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15264
+TAG  0x00293ba0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 4d 10             mov    ecx, dword ptr [ebp+0x10]
+ +10   L3              e8 11 1e 00 00       call   0x002959c0
+END 0x00293ba0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 22976
+TAG  0x002959c0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +10   L3              8b 00                mov    eax, dword ptr [eax]
+ +12   L3              8b e5                mov    esp, ebp
+ +14   L3              5d                   pop    ebp
+ +15   L3              c3                   ret    
+END 0x002959c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15279
+TAG  0x00293baf
+ +0    L3              50                   push   eax
+ +1    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +4    L3              50                   push   eax
+ +5    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +8    L3              51                   push   ecx
+ +9    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +12   L3              8b 42 04             mov    eax, dword ptr [edx+0x04]
+ +15   L3              50                   push   eax
+ +16   L3              e8 4e 1f 00 00       call   0x00295b12
+END 0x00293baf
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23314
+TAG  0x00295b12
+ +0    L3              ff 25 18 d1 2a 00    jmp    dword ptr [0x002ad118]
+END 0x00295b12
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9411
+TAG  0x002924c3
+ +0    L3              8b 55 f8             mov    edx, dword ptr [ebp-0x08]
+ +3    L3              89 55 cc             mov    dword ptr [ebp-0x34], edx
+ +6    L3              6a 00                push   0x00
+ +8    L3              8b 45 cc             mov    eax, dword ptr [ebp-0x34]
+ +11   L3              50                   push   eax
+ +12   L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +15   L3              51                   push   ecx
+ +16   L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +19   L3              52                   push   edx
+ +20   L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +23   L3              e8 71 10 00 00       call   0x00293550
+END 0x002924c3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9439
+TAG  0x002924df
+ +0    L3              8a 00                mov    al, byte ptr [eax]
+ +2    L3              88 45 ff             mov    byte ptr [ebp-0x01], al
+ +5    L3              0f b6 55 ff          movzx  edx, byte ptr [ebp-0x01]
+ +9    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +12   L3              c1 e0 03             shl    eax, 0x03
+ +15   L3              b9 10 00 00 00       mov    ecx, 0x00000010
+ +20   L3              2b c8                sub    ecx, eax
+ +22   L3              d3 e2                shl    edx, cl
+ +24   L3              0b 55 f4             or     edx, dword ptr [ebp-0x0c]
+ +27   L3              89 55 f4             mov    dword ptr [ebp-0x0c], edx
+ +30   L3              eb a2                jmp    0x002924a1
+END 0x002924df
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9513
+TAG  0x00292529
+ +0    L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +3    L3              52                   push   edx
+ +4    L3              8b 45 e8             mov    eax, dword ptr [ebp-0x18]
+ +7    L3              50                   push   eax
+ +8    L3              e8 ea f2 ff ff       call   0x00291820
+END 0x00292529
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6176
+TAG  0x00291820
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 58             sub    esp, 0x58
+ +6    L3              a1 c0 61 2b 00       mov    eax, dword ptr [0x002b61c0]
+ +11   L3              33 c5                xor    eax, ebp
+ +13   L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +16   L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +19   L3              50                   push   eax
+ +20   L3              e8 f7 7b 00 00       call   0x00299430
+END 0x00291820
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6201
+TAG  0x00291839
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              83 c0 01             add    eax, 0x01
+ +6    L3              33 c9                xor    ecx, ecx
+ +8    L3              ba 02 00 00 00       mov    edx, 0x00000002
+ +13   L3              f7 e2                mul    edx, eax, edx
+ +15   L3              0f 90 c1             seto   cl
+ +18   L3              f7 d9                neg    ecx
+ +20   L3              0b c8                or     ecx, eax
+ +22   L3              51                   push   ecx
+ +23   L3              e8 81 43 00 00       call   0x00295bd6
+END 0x00291839
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6229
+TAG  0x00291855
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              89 45 a8             mov    dword ptr [ebp-0x58], eax
+ +6    L3              8b 45 a8             mov    eax, dword ptr [ebp-0x58]
+ +9    L3              89 45 ac             mov    dword ptr [ebp-0x54], eax
+ +12   L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +15   L3              51                   push   ecx
+ +16   L3              e8 c6 7b 00 00       call   0x00299430
+END 0x00291855
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6250
+TAG  0x0029186a
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              83 c0 01             add    eax, 0x01
+ +6    L3              50                   push   eax
+ +7    L3              8b 55 0c             mov    edx, dword ptr [ebp+0x0c]
+ +10   L3              52                   push   edx
+ +11   L3              8b 45 ac             mov    eax, dword ptr [ebp-0x54]
+ +14   L3              50                   push   eax
+ +15   L3              e8 8b 85 00 00       call   0x00299e09
+END 0x0029186a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6270
+TAG  0x0029187e
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +6    L3              51                   push   ecx
+ +7    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +10   L3              e8 c3 0f 00 00       call   0x00292850
+END 0x0029187e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10320
+TAG  0x00292850
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d f8             mov    dword ptr [ebp-0x08], ecx
+ +9    L3              8d 4d ff             lea    ecx, [ebp-0x01]
+ +12   L3              e8 2f ff ff ff       call   0x00292790
+END 0x00292850
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10128
+TAG  0x00292790
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +10   L3              8b e5                mov    esp, ebp
+ +12   L3              5d                   pop    ebp
+ +13   L3              c3                   ret    
+END 0x00292790
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10337
+TAG  0x00292861
+ +0    L3              50                   push   eax
+ +1    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +4    L3              e8 46 fe ff ff       call   0x002926b0
+END 0x00292861
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9904
+TAG  0x002926b0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +10   L3              e8 11 00 00 00       call   0x002926d0
+END 0x002926b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9936
+TAG  0x002926d0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +10   L3              c7 40 10 00 00 00 00 mov    dword ptr [eax+0x10], 0x00000000
+ +17   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +20   L3              c7 41 14 00 00 00 00 mov    dword ptr [ecx+0x14], 0x00000000
+ +27   L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +30   L3              8b e5                mov    esp, ebp
+ +32   L3              5d                   pop    ebp
+ +33   L3              c3                   ret    
+END 0x002926d0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9919
+TAG  0x002926bf
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x002926bf
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10346
+TAG  0x0029286a
+ +0    L3              6a 00                push   0x00
+ +2    L3              6a 00                push   0x00
+ +4    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +7    L3              e8 aa 1b 00 00       call   0x00294420
+END 0x0029286a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17440
+TAG  0x00294420
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 0c             sub    esp, 0x0c
+ +6    L3              89 4d f8             mov    dword ptr [ebp-0x08], ecx
+ +9    L3              0f b6 45 08          movzx  eax, byte ptr [ebp+0x08]
+ +13   L3              85 c0                test   eax, eax
+ +15   L3              75 02                jnz    0x00294433
+END 0x00294420
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17457
+TAG  0x00294431
+ +0    L3              eb 6c                jmp    0x0029449f
+END 0x00294431
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17567
+TAG  0x0029449f
+ +0    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +3    L3              c7 41 14 0f 00 00 00 mov    dword ptr [ecx+0x14], 0x0000000f
+ +10   L3              8b 55 0c             mov    edx, dword ptr [ebp+0x0c]
+ +13   L3              52                   push   edx
+ +14   L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +17   L3              e8 2b fa ff ff       call   0x00293ee0
+END 0x0029449f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16096
+TAG  0x00293ee0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d f8             mov    dword ptr [ebp-0x08], ecx
+ +9    L3              c6 45 ff 00          mov    byte ptr [ebp-0x01], 0x00
+ +13   L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +16   L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +19   L3              89 48 10             mov    dword ptr [eax+0x10], ecx
+ +22   L3              8d 55 ff             lea    edx, [ebp-0x01]
+ +25   L3              52                   push   edx
+ +26   L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +29   L3              e8 6e 03 00 00       call   0x00294270
+END 0x00293ee0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17008
+TAG  0x00294270
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +12   L3              83 78 14 10          cmp    dword ptr [eax+0x14], 0x10
+ +16   L3              72 13                jb     0x00294295
+END 0x00294270
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17045
+TAG  0x00294295
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              89 45 f8             mov    dword ptr [ebp-0x08], eax
+ +6    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +9    L3              8b e5                mov    esp, ebp
+ +11   L3              5d                   pop    ebp
+ +12   L3              c3                   ret    
+END 0x00294295
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16130
+TAG  0x00293f02
+ +0    L3              03 45 08             add    eax, dword ptr [ebp+0x08]
+ +3    L3              50                   push   eax
+ +4    L3              e8 65 0a 00 00       call   0x00294970
+END 0x00293f02
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18800
+TAG  0x00294970
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +6    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +9    L3              8a 11                mov    dl, byte ptr [ecx]
+ +11   L3              88 10                mov    byte ptr [eax], dl
+ +13   L3              5d                   pop    ebp
+ +14   L3              c3                   ret    
+END 0x00294970
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16139
+TAG  0x00293f0b
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x00293f0b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17589
+TAG  0x002944b5
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 08 00             ret    0x0008
+END 0x002944b5
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10358
+TAG  0x00292876
+ +0    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +7    L3              e8 1e 20 00 00       call   0x002948a0
+END 0x00292876
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18592
+TAG  0x002948a0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +10   L3              50                   push   eax
+ +11   L3              e8 a0 0b 00 00       call   0x00295450
+END 0x002948a0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18608
+TAG  0x002948b0
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +7    L3              51                   push   ecx
+ +8    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +11   L3              e8 10 00 00 00       call   0x002948d0
+END 0x002948b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18640
+TAG  0x002948d0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +10   L3              50                   push   eax
+ +11   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +14   L3              e8 dd f8 ff ff       call   0x002941c0
+END 0x002948d0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16832
+TAG  0x002941c0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              83 7d 08 00          cmp    dword ptr [ebp+0x08], 0x00
+ +11   L3              74 20                jz     0x002941ed
+END 0x002941c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16845
+TAG  0x002941cd
+ +0    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +3    L3              e8 9b 00 00 00       call   0x00294270
+END 0x002941cd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16853
+TAG  0x002941d5
+ +0    L3              39 45 08             cmp    dword ptr [ebp+0x08], eax
+ +3    L3              72 13                jb     0x002941ed
+END 0x002941d5
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16877
+TAG  0x002941ed
+ +0    L3              32 c0                xor    al, al
+ +2    L3              eb 04                jmp    0x002941f5
+END 0x002941ed
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16885
+TAG  0x002941f5
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 04 00             ret    0x0004
+END 0x002941f5
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18659
+TAG  0x002948e3
+ +0    L3              0f b6 c8             movzx  ecx, al
+ +3    L3              85 c9                test   ecx, ecx
+ +5    L3              74 20                jz     0x0029490a
+END 0x002948e3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18698
+TAG  0x0029490a
+ +0    L3              6a 00                push   0x00
+ +2    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +5    L3              50                   push   eax
+ +6    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +9    L3              e8 88 f7 ff ff       call   0x002940a0
+END 0x0029490a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16544
+TAG  0x002940a0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 0c             sub    esp, 0x0c
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +12   L3              e8 2f 14 00 00       call   0x002954e0
+END 0x002940a0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21728
+TAG  0x002954e0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 10             sub    esp, 0x10
+ +6    L3              89 4d f0             mov    dword ptr [ebp-0x10], ecx
+ +9    L3              8d 45 ff             lea    eax, [ebp-0x01]
+ +12   L3              50                   push   eax
+ +13   L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +16   L3              e8 2b ea ff ff       call   0x00293f20
+END 0x002954e0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16160
+TAG  0x00293f20
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +10   L3              e8 f1 e7 ff ff       call   0x00292720
+END 0x00293f20
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10016
+TAG  0x00292720
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +10   L3              e8 61 00 00 00       call   0x00292790
+END 0x00292720
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10031
+TAG  0x0029272f
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x0029272f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16175
+TAG  0x00293f2f
+ +0    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x00293f2f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21749
+TAG  0x002954f5
+ +0    L3              8b c8                mov    ecx, eax
+ +2    L3              e8 a4 ff ff ff       call   0x002954a0
+END 0x002954f5
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21664
+TAG  0x002954a0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +10   L3              50                   push   eax
+ +11   L3              e8 20 00 00 00       call   0x002954d0
+END 0x002954a0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21712
+TAG  0x002954d0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +6    L3              e8 e5 ff ff ff       call   0x002954c0
+END 0x002954d0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21696
+TAG  0x002954c0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              83 c8 ff             or     eax, 0xff
+ +10   L3              8b e5                mov    esp, ebp
+ +12   L3              5d                   pop    ebp
+ +13   L3              c3                   ret    
+END 0x002954c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21723
+TAG  0x002954db
+ +0    L3              5d                   pop    ebp
+ +1    L3              c3                   ret    
+END 0x002954db
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21680
+TAG  0x002954b0
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x002954b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21756
+TAG  0x002954fc
+ +0    L3              89 45 f8             mov    dword ptr [ebp-0x08], eax
+ +3    L3              83 7d f8 01          cmp    dword ptr [ebp-0x08], 0x01
+ +7    L3              77 09                jnbe   0x0029550e
+END 0x002954fc
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21774
+TAG  0x0029550e
+ +0    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +3    L3              83 e9 01             sub    ecx, 0x01
+ +6    L3              89 4d f4             mov    dword ptr [ebp-0x0c], ecx
+ +9    L3              8b 45 f4             mov    eax, dword ptr [ebp-0x0c]
+ +12   L3              8b e5                mov    esp, ebp
+ +14   L3              5d                   pop    ebp
+ +15   L3              c3                   ret    
+END 0x0029550e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16561
+TAG  0x002940b1
+ +0    L3              3b 45 08             cmp    eax, dword ptr [ebp+0x08]
+ +3    L3              73 08                jnb    0x002940be
+END 0x002940b1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16574
+TAG  0x002940be
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b 48 14             mov    ecx, dword ptr [eax+0x14]
+ +6    L3              3b 4d 08             cmp    ecx, dword ptr [ebp+0x08]
+ +9    L3              73 15                jnb    0x002940de
+END 0x002940be
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16585
+TAG  0x002940c9
+ +0    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +3    L3              8b 42 10             mov    eax, dword ptr [edx+0x10]
+ +6    L3              50                   push   eax
+ +7    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +10   L3              51                   push   ecx
+ +11   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +14   L3              e8 24 fc ff ff       call   0x00293d00
+END 0x002940c9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15616
+TAG  0x00293d00
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              6a ff                push   0xff
+ +5    L3              68 d0 c4 2a 00       push   0x002ac4d0
+ +10   L3              64 a1 00 00 00 00    mov    eax, dword ptr [fs:0x00]
+ +16   L3              50                   push   eax
+ +17   L3              51                   push   ecx
+ +18   L3              83 ec 10             sub    esp, 0x10
+ +21   L3              53                   push   ebx
+ +22   L3              56                   push   esi
+ +23   L3              57                   push   edi
+ +24   L3              a1 c0 61 2b 00       mov    eax, dword ptr [0x002b61c0]
+ +29   L3              33 c5                xor    eax, ebp
+ +31   L3              50                   push   eax
+ +32   L3              8d 45 f4             lea    eax, [ebp-0x0c]
+ +35   L3              64 a3 00 00 00 00    mov    dword ptr [fs:0x00], eax
+ +41   L3              89 65 f0             mov    dword ptr [ebp-0x10], esp
+ +44   L3              89 4d e8             mov    dword ptr [ebp-0x18], ecx
+ +47   L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +50   L3              83 c8 0f             or     eax, 0x0f
+ +53   L3              89 45 e4             mov    dword ptr [ebp-0x1c], eax
+ +56   L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +59   L3              e8 a0 17 00 00       call   0x002954e0
+END 0x00293d00
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15680
+TAG  0x00293d40
+ +0    L3              3b 45 e4             cmp    eax, dword ptr [ebp-0x1c]
+ +3    L3              73 08                jnb    0x00293d4d
+END 0x00293d40
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15693
+TAG  0x00293d4d
+ +0    L3              8b 55 e8             mov    edx, dword ptr [ebp-0x18]
+ +3    L3              8b 4a 14             mov    ecx, dword ptr [edx+0x14]
+ +6    L3              d1 e9                shr    ecx, 0x01
+ +8    L3              8b 45 e4             mov    eax, dword ptr [ebp-0x1c]
+ +11   L3              33 d2                xor    edx, edx
+ +13   L3              be 03 00 00 00       mov    esi, 0x00000003
+ +18   L3              f7 f6                div    edx, eax, esi
+ +20   L3              3b c8                cmp    ecx, eax
+ +22   L3              77 02                jnbe   0x00293d67
+END 0x00293d4d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15717
+TAG  0x00293d65
+ +0    L3              eb 38                jmp    0x00293d9f
+END 0x00293d65
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15775
+TAG  0x00293d9f
+ +0    L3              c7 45 fc 00 00 00 00 mov    dword ptr [ebp-0x04], 0x00000000
+ +7    L3              8b 45 e4             mov    eax, dword ptr [ebp-0x1c]
+ +10   L3              83 c0 01             add    eax, 0x01
+ +13   L3              50                   push   eax
+ +14   L3              8d 4d ef             lea    ecx, [ebp-0x11]
+ +17   L3              51                   push   ecx
+ +18   L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +21   L3              e8 67 01 00 00       call   0x00293f20
+END 0x00293d9f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15801
+TAG  0x00293db9
+ +0    L3              8b c8                mov    ecx, eax
+ +2    L3              e8 a0 07 00 00       call   0x00294560
+END 0x00293db9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17760
+TAG  0x00294560
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +10   L3              50                   push   eax
+ +11   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +14   L3              e8 0d 00 00 00       call   0x00294580
+END 0x00294560
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17792
+TAG  0x00294580
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              6a 00                push   0x00
+ +9    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +12   L3              50                   push   eax
+ +13   L3              e8 fe da ff ff       call   0x00292090
+END 0x00294580
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8336
+TAG  0x00292090
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              c7 45 fc 00 00 00 00 mov    dword ptr [ebp-0x04], 0x00000000
+ +11   L3              83 7d 08 00          cmp    dword ptr [ebp+0x08], 0x00
+ +15   L3              75 02                jnz    0x002920a3
+END 0x00292090
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8355
+TAG  0x002920a3
+ +0    L3              83 7d 08 ff          cmp    dword ptr [ebp+0x08], 0xff
+ +4    L3              77 15                jnbe   0x002920be
+END 0x002920a3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8361
+TAG  0x002920a9
+ +0    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +3    L3              50                   push   eax
+ +4    L3              e8 86 53 00 00       call   0x00297438
+END 0x002920a9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8370
+TAG  0x002920b2
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +6    L3              83 7d fc 00          cmp    dword ptr [ebp-0x04], 0x00
+ +10   L3              75 05                jnz    0x002920c3
+END 0x002920b2
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8387
+TAG  0x002920c3
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x002920c3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17810
+TAG  0x00294592
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x00294592
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17779
+TAG  0x00294573
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 04 00             ret    0x0004
+END 0x00294573
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15808
+TAG  0x00293dc0
+ +0    L3              89 45 e0             mov    dword ptr [ebp-0x20], eax
+ +3    L3              eb 5d                jmp    0x00293e22
+END 0x00293dc0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15906
+TAG  0x00293e22
+ +0    L3              c7 45 fc ff ff ff ff mov    dword ptr [ebp-0x04], 0xffffffff
+ +7    L3              eb 07                jmp    0x00293e32
+END 0x00293e22
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15922
+TAG  0x00293e32
+ +0    L3              83 7d 0c 00          cmp    dword ptr [ebp+0x0c], 0x00
+ +4    L3              76 19                jbe    0x00293e51
+END 0x00293e32
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15953
+TAG  0x00293e51
+ +0    L3              6a 00                push   0x00
+ +2    L3              6a 01                push   0x01
+ +4    L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +7    L3              e8 c3 05 00 00       call   0x00294420
+END 0x00293e51
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17459
+TAG  0x00294433
+ +0    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +3    L3              83 79 14 10          cmp    dword ptr [ecx+0x14], 0x10
+ +7    L3              72 63                jb     0x0029449f
+END 0x00294433
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15965
+TAG  0x00293e5d
+ +0    L3              8d 4d e0             lea    ecx, [ebp-0x20]
+ +3    L3              51                   push   ecx
+ +4    L3              8b 55 e8             mov    edx, dword ptr [ebp-0x18]
+ +7    L3              52                   push   edx
+ +8    L3              8d 45 ed             lea    eax, [ebp-0x13]
+ +11   L3              50                   push   eax
+ +12   L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +15   L3              e8 af 00 00 00       call   0x00293f20
+END 0x00293e5d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15985
+TAG  0x00293e71
+ +0    L3              8b c8                mov    ecx, eax
+ +2    L3              e8 68 e2 ff ff       call   0x002920e0
+END 0x00293e71
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8416
+TAG  0x002920e0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +10   L3              50                   push   eax
+ +11   L3              e8 e0 ff ff ff       call   0x002920d0
+END 0x002920e0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8400
+TAG  0x002920d0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +6    L3              5d                   pop    ebp
+ +7    L3              c3                   ret    
+END 0x002920d0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8432
+TAG  0x002920f0
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +7    L3              51                   push   ecx
+ +8    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +11   L3              52                   push   edx
+ +12   L3              e8 5f 00 00 00       call   0x00292160
+END 0x002920f0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8544
+TAG  0x00292160
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 10             mov    eax, dword ptr [ebp+0x10]
+ +6    L3              50                   push   eax
+ +7    L3              e8 64 ff ff ff       call   0x002920d0
+END 0x00292160
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8556
+TAG  0x0029216c
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +7    L3              51                   push   ecx
+ +8    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +11   L3              e8 94 ff ff ff       call   0x00292110
+END 0x0029216c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8464
+TAG  0x00292110
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 0c             sub    esp, 0x0c
+ +6    L3              89 4d f4             mov    dword ptr [ebp-0x0c], ecx
+ +9    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +12   L3              50                   push   eax
+ +13   L3              6a 04                push   0x04
+ +15   L3              e8 bc 12 00 00       call   0x002933e0
+END 0x00292110
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 13280
+TAG  0x002933e0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +6    L3              5d                   pop    ebp
+ +7    L3              c3                   ret    
+END 0x002933e0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8484
+TAG  0x00292124
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +6    L3              83 7d fc 00          cmp    dword ptr [ebp-0x04], 0x00
+ +10   L3              74 1b                jz     0x0029214b
+END 0x00292124
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8496
+TAG  0x00292130
+ +0    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +3    L3              51                   push   ecx
+ +4    L3              e8 97 ff ff ff       call   0x002920d0
+END 0x00292130
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8505
+TAG  0x00292139
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +6    L3              8b 00                mov    eax, dword ptr [eax]
+ +8    L3              89 02                mov    dword ptr [edx], eax
+ +10   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +13   L3              89 4d f8             mov    dword ptr [ebp-0x08], ecx
+ +16   L3              eb 07                jmp    0x00292152
+END 0x00292139
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8530
+TAG  0x00292152
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 08 00             ret    0x0008
+END 0x00292152
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8572
+TAG  0x0029217c
+ +0    L3              5d                   pop    ebp
+ +1    L3              c3                   ret    
+END 0x0029217c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8449
+TAG  0x00292101
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 08 00             ret    0x0008
+END 0x00292101
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15992
+TAG  0x00293e78
+ +0    L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +3    L3              8b 55 e4             mov    edx, dword ptr [ebp-0x1c]
+ +6    L3              89 51 14             mov    dword ptr [ecx+0x14], edx
+ +9    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +12   L3              50                   push   eax
+ +13   L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +16   L3              e8 53 00 00 00       call   0x00293ee0
+END 0x00293e78
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17026
+TAG  0x00294282
+ +0    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +3    L3              8b 11                mov    edx, dword ptr [ecx]
+ +5    L3              52                   push   edx
+ +6    L3              e8 43 de ff ff       call   0x002920d0
+END 0x00294282
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17037
+TAG  0x0029428d
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              89 45 f8             mov    dword ptr [ebp-0x08], eax
+ +6    L3              eb 06                jmp    0x0029429b
+END 0x0029428d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17051
+TAG  0x0029429b
+ +0    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x0029429b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16013
+TAG  0x00293e8d
+ +0    L3              8b 4d f4             mov    ecx, dword ptr [ebp-0x0c]
+ +3    L3              64 89 0d 00 00 00 00 mov    dword ptr [fs:0x00], ecx
+ +10   L3              59                   pop    ecx
+ +11   L3              5f                   pop    edi
+ +12   L3              5e                   pop    esi
+ +13   L3              5b                   pop    ebx
+ +14   L3              8b e5                mov    esp, ebp
+ +16   L3              5d                   pop    ebp
+ +17   L3              c2 08 00             ret    0x0008
+END 0x00293e8d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16604
+TAG  0x002940dc
+ +0    L3              eb 4a                jmp    0x00294128
+END 0x002940dc
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16680
+TAG  0x00294128
+ +0    L3              83 7d 08 00          cmp    dword ptr [ebp+0x08], 0x00
+ +4    L3              76 09                jbe    0x00294137
+END 0x00294128
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16686
+TAG  0x0029412e
+ +0    L3              c7 45 f4 01 00 00 00 mov    dword ptr [ebp-0x0c], 0x00000001
+ +7    L3              eb 07                jmp    0x0029413e
+END 0x0029412e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16702
+TAG  0x0029413e
+ +0    L3              8a 45 f4             mov    al, byte ptr [ebp-0x0c]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 08 00             ret    0x0008
+END 0x0029413e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18712
+TAG  0x00294918
+ +0    L3              0f b6 c8             movzx  ecx, al
+ +3    L3              85 c9                test   ecx, ecx
+ +5    L3              74 25                jz     0x00294944
+END 0x00294918
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18719
+TAG  0x0029491f
+ +0    L3              8b 55 0c             mov    edx, dword ptr [ebp+0x0c]
+ +3    L3              52                   push   edx
+ +4    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +7    L3              50                   push   eax
+ +8    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +11   L3              e8 41 f9 ff ff       call   0x00294270
+END 0x0029491f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18735
+TAG  0x0029492f
+ +0    L3              50                   push   eax
+ +1    L3              e8 9b 03 00 00       call   0x00294cd0
+END 0x0029492f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19664
+TAG  0x00294cd0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              83 7d 10 00          cmp    dword ptr [ebp+0x10], 0x00
+ +8    L3              75 08                jnz    0x00294ce2
+END 0x00294cd0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19682
+TAG  0x00294ce2
+ +0    L3              8b 4d 10             mov    ecx, dword ptr [ebp+0x10]
+ +3    L3              51                   push   ecx
+ +4    L3              8b 55 0c             mov    edx, dword ptr [ebp+0x0c]
+ +7    L3              52                   push   edx
+ +8    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +11   L3              50                   push   eax
+ +12   L3              e8 5d 40 00 00       call   0x00298d50
+END 0x00294ce2
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 36932
+TAG  0x00299044
+ +0    L3              8b 44 8e e8          mov    eax, dword ptr [esi+ecx*4-0x18]
+ +4    L3              89 44 8f e8          mov    dword ptr [edi+ecx*4-0x18], eax
+ +8    L3              8b 44 8e ec          mov    eax, dword ptr [esi+ecx*4-0x14]
+ +12   L3              89 44 8f ec          mov    dword ptr [edi+ecx*4-0x14], eax
+ +16   L3              8b 44 8e f0          mov    eax, dword ptr [esi+ecx*4-0x10]
+ +20   L3              89 44 8f f0          mov    dword ptr [edi+ecx*4-0x10], eax
+ +24   L3              8b 44 8e f4          mov    eax, dword ptr [esi+ecx*4-0x0c]
+ +28   L3              89 44 8f f4          mov    dword ptr [edi+ecx*4-0x0c], eax
+ +32   L3              8b 44 8e f8          mov    eax, dword ptr [esi+ecx*4-0x08]
+ +36   L3              89 44 8f f8          mov    dword ptr [edi+ecx*4-0x08], eax
+ +40   L3              8b 44 8e fc          mov    eax, dword ptr [esi+ecx*4-0x04]
+ +44   L3              89 44 8f fc          mov    dword ptr [edi+ecx*4-0x04], eax
+ +48   L3              8d 04 8d 00 00 00 00 lea    eax, [ecx*4+0x00]
+ +55   L3              03 f0                add    esi, eax
+ +57   L3              03 f8                add    edi, eax
+ +59   L3              ff 24 95 88 90 29 00 jmp    dword ptr [edx*4+0x00299088]
+END 0x00299044
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 37056
+TAG  0x002990c0
+ +0    L3              8a 06                mov    al, byte ptr [esi]
+ +2    L3              88 07                mov    byte ptr [edi], al
+ +4    L3              8a 46 01             mov    al, byte ptr [esi+0x01]
+ +7    L3              88 47 01             mov    byte ptr [edi+0x01], al
+ +10   L3              8a 46 02             mov    al, byte ptr [esi+0x02]
+ +13   L3              88 47 02             mov    byte ptr [edi+0x02], al
+ +16   L3              8b 44 24 0c          mov    eax, dword ptr [esp+0x0c]
+ +20   L3              5e                   pop    esi
+ +21   L3              5f                   pop    edi
+ +22   L3              c3                   ret    
+END 0x002990c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19699
+TAG  0x00294cf3
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +6    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +9    L3              8b e5                mov    esp, ebp
+ +11   L3              5d                   pop    ebp
+ +12   L3              c3                   ret    
+END 0x00294cf3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18741
+TAG  0x00294935
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +6    L3              51                   push   ecx
+ +7    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +10   L3              e8 9c f5 ff ff       call   0x00293ee0
+END 0x00294935
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18756
+TAG  0x00294944
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 08 00             ret    0x0008
+END 0x00294944
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18624
+TAG  0x002948c0
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 04 00             ret    0x0004
+END 0x002948c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 10370
+TAG  0x00292882
+ +0    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x00292882
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6285
+TAG  0x0029188d
+ +0    L3              68 e0 d1 2a 00       push   0x002ad1e0
+ +5    L3              8d 4d cc             lea    ecx, [ebp-0x34]
+ +8    L3              e8 b6 0f 00 00       call   0x00292850
+END 0x0029188d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21598
+TAG  0x0029545e
+ +0    L3              c7 45 fc 00 00 00 00 mov    dword ptr [ebp-0x04], 0x00000000
+ +7    L3              eb 0f                jmp    0x00295476
+END 0x0029545e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 21622
+TAG  0x00295476
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x00295476
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16606
+TAG  0x002940de
+ +0    L3              0f b6 55 0c          movzx  edx, byte ptr [ebp+0x0c]
+ +4    L3              85 d2                test   edx, edx
+ +6    L3              74 32                jz     0x00294118
+END 0x002940de
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16664
+TAG  0x00294118
+ +0    L3              83 7d 08 00          cmp    dword ptr [ebp+0x08], 0x00
+ +4    L3              75 0a                jnz    0x00294128
+END 0x00294118
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16670
+TAG  0x0029411e
+ +0    L3              6a 00                push   0x00
+ +2    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +5    L3              e8 b8 fd ff ff       call   0x00293ee0
+END 0x0029411e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 16695
+TAG  0x00294137
+ +0    L3              c7 45 f4 00 00 00 00 mov    dword ptr [ebp-0x0c], 0x00000000
+ +7    L3              8a 45 f4             mov    al, byte ptr [ebp-0x0c]
+ +10   L3              8b e5                mov    esp, ebp
+ +12   L3              5d                   pop    ebp
+ +13   L3              c2 08 00             ret    0x0008
+END 0x00294137
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6298
+TAG  0x0029189a
+ +0    L3              c7 45 b0 ff ff ff ff mov    dword ptr [ebp-0x50], 0xffffffff
+ +7    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +10   L3              e8 17 40 00 00       call   0x002958c0
+END 0x0029189a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 22720
+TAG  0x002958c0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +10   L3              8b 40 10             mov    eax, dword ptr [eax+0x10]
+ +13   L3              8b e5                mov    esp, ebp
+ +15   L3              5d                   pop    ebp
+ +16   L3              c3                   ret    
+END 0x002958c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6313
+TAG  0x002918a9
+ +0    L3              83 e8 01             sub    eax, 0x01
+ +3    L3              89 45 b8             mov    dword ptr [ebp-0x48], eax
+ +6    L3              eb 09                jmp    0x002918ba
+END 0x002918a9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6330
+TAG  0x002918ba
+ +0    L3              83 7d b8 00          cmp    dword ptr [ebp-0x48], 0x00
+ +4    L3              7c 21                jl     0x002918e1
+END 0x002918ba
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6336
+TAG  0x002918c0
+ +0    L3              8b 45 b8             mov    eax, dword ptr [ebp-0x48]
+ +3    L3              50                   push   eax
+ +4    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +7    L3              e8 f4 1b 00 00       call   0x002934c0
+END 0x002918c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 13504
+TAG  0x002934c0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +10   L3              e8 a1 0d 00 00       call   0x00294270
+END 0x002934c0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 13519
+TAG  0x002934cf
+ +0    L3              03 45 08             add    eax, dword ptr [ebp+0x08]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x002934cf
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6348
+TAG  0x002918cc
+ +0    L3              0f be 08             movsx  ecx, byte ptr [eax]
+ +3    L3              83 f9 2e             cmp    ecx, 0x2e
+ +6    L3              75 0b                jnz    0x002918df
+END 0x002918cc
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6367
+TAG  0x002918df
+ +0    L3              eb d0                jmp    0x002918b1
+END 0x002918df
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6321
+TAG  0x002918b1
+ +0    L3              8b 55 b8             mov    edx, dword ptr [ebp-0x48]
+ +3    L3              83 ea 01             sub    edx, 0x01
+ +6    L3              89 55 b8             mov    dword ptr [ebp-0x48], edx
+ +9    L3              83 7d b8 00          cmp    dword ptr [ebp-0x48], 0x00
+ +13   L3              7c 21                jl     0x002918e1
+END 0x002918b1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6356
+TAG  0x002918d4
+ +0    L3              8b 55 b8             mov    edx, dword ptr [ebp-0x48]
+ +3    L3              83 c2 01             add    edx, 0x01
+ +6    L3              89 55 b0             mov    dword ptr [ebp-0x50], edx
+ +9    L3              eb 02                jmp    0x002918e1
+END 0x002918d4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6369
+TAG  0x002918e1
+ +0    L3              83 7d b0 ff          cmp    dword ptr [ebp-0x50], 0xff
+ +4    L3              74 3a                jz     0x00291921
+END 0x002918e1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6375
+TAG  0x002918e7
+ +0    L3              8b 45 b0             mov    eax, dword ptr [ebp-0x50]
+ +3    L3              89 45 b4             mov    dword ptr [ebp-0x4c], eax
+ +6    L3              eb 09                jmp    0x002918f8
+END 0x002918e7
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6392
+TAG  0x002918f8
+ +0    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +3    L3              e8 c0 3f 00 00       call   0x002958c0
+END 0x002918f8
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6400
+TAG  0x00291900
+ +0    L3              39 45 b4             cmp    dword ptr [ebp-0x4c], eax
+ +3    L3              73 1c                jnb    0x00291921
+END 0x00291900
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6405
+TAG  0x00291905
+ +0    L3              8b 55 b4             mov    edx, dword ptr [ebp-0x4c]
+ +3    L3              52                   push   edx
+ +4    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +7    L3              e8 af 1b 00 00       call   0x002934c0
+END 0x00291905
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6417
+TAG  0x00291911
+ +0    L3              8a 00                mov    al, byte ptr [eax]
+ +2    L3              0f b6 c8             movzx  ecx, al
+ +5    L3              51                   push   ecx
+ +6    L3              8d 4d cc             lea    ecx, [ebp-0x34]
+ +9    L3              e8 21 1d 00 00       call   0x00293640
+END 0x00291911
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 13888
+TAG  0x00293640
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              0f b6 45 08          movzx  eax, byte ptr [ebp+0x08]
+ +11   L3              50                   push   eax
+ +12   L3              6a 01                push   0x01
+ +14   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +17   L3              e8 3a 10 00 00       call   0x00294690
+END 0x00293640
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18064
+TAG  0x00294690
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 08             sub    esp, 0x08
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +12   L3              8b 0d 8c d2 2a 00    mov    ecx, dword ptr [0x002ad28c]
+ +18   L3              2b 48 10             sub    ecx, dword ptr [eax+0x10]
+ +21   L3              3b 4d 08             cmp    ecx, dword ptr [ebp+0x08]
+ +24   L3              77 08                jnbe   0x002946b2
+END 0x00294690
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18098
+TAG  0x002946b2
+ +0    L3              83 7d 08 00          cmp    dword ptr [ebp+0x08], 0x00
+ +4    L3              76 45                jbe    0x002946fd
+END 0x002946b2
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18104
+TAG  0x002946b8
+ +0    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +3    L3              8b 42 10             mov    eax, dword ptr [edx+0x10]
+ +6    L3              03 45 08             add    eax, dword ptr [ebp+0x08]
+ +9    L3              89 45 f8             mov    dword ptr [ebp-0x08], eax
+ +12   L3              6a 00                push   0x00
+ +14   L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +17   L3              51                   push   ecx
+ +18   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +21   L3              e8 ce f9 ff ff       call   0x002940a0
+END 0x002946b8
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18130
+TAG  0x002946d2
+ +0    L3              0f b6 d0             movzx  edx, al
+ +3    L3              85 d2                test   edx, edx
+ +5    L3              74 24                jz     0x002946fd
+END 0x002946d2
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18137
+TAG  0x002946d9
+ +0    L3              0f b6 45 0c          movzx  eax, byte ptr [ebp+0x0c]
+ +4    L3              50                   push   eax
+ +5    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +8    L3              51                   push   ecx
+ +9    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +12   L3              8b 42 10             mov    eax, dword ptr [edx+0x10]
+ +15   L3              50                   push   eax
+ +16   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +19   L3              e8 bf f5 ff ff       call   0x00293cb0
+END 0x002946d9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15536
+TAG  0x00293cb0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              83 7d 0c 01          cmp    dword ptr [ebp+0x0c], 0x01
+ +11   L3              75 1a                jnz    0x00293cd7
+END 0x00293cb0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15549
+TAG  0x00293cbd
+ +0    L3              8d 45 10             lea    eax, [ebp+0x10]
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +7    L3              e8 a7 05 00 00       call   0x00294270
+END 0x00293cbd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15561
+TAG  0x00293cc9
+ +0    L3              03 45 08             add    eax, dword ptr [ebp+0x08]
+ +3    L3              50                   push   eax
+ +4    L3              e8 9e 0c 00 00       call   0x00294970
+END 0x00293cc9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15570
+TAG  0x00293cd2
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              eb 1d                jmp    0x00293cf4
+END 0x00293cd2
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15604
+TAG  0x00293cf4
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 0c 00             ret    0x000c
+END 0x00293cf4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18161
+TAG  0x002946f1
+ +0    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +3    L3              51                   push   ecx
+ +4    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +7    L3              e8 e3 f7 ff ff       call   0x00293ee0
+END 0x002946f1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 18173
+TAG  0x002946fd
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 08 00             ret    0x0008
+END 0x002946fd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 13910
+TAG  0x00293656
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 04 00             ret    0x0004
+END 0x00293656
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6431
+TAG  0x0029191f
+ +0    L3              eb ce                jmp    0x002918ef
+END 0x0029191f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6383
+TAG  0x002918ef
+ +0    L3              8b 4d b4             mov    ecx, dword ptr [ebp-0x4c]
+ +3    L3              83 c1 01             add    ecx, 0x01
+ +6    L3              89 4d b4             mov    dword ptr [ebp-0x4c], ecx
+ +9    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +12   L3              e8 c0 3f 00 00       call   0x002958c0
+END 0x002918ef
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6433
+TAG  0x00291921
+ +0    L3              68 e4 d1 2a 00       push   0x002ad1e4
+ +5    L3              8d 4d cc             lea    ecx, [ebp-0x34]
+ +8    L3              e8 32 33 00 00       call   0x00294c60
+END 0x00291921
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19552
+TAG  0x00294c60
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +10   L3              50                   push   eax
+ +11   L3              e8 e0 07 00 00       call   0x00295450
+END 0x00294c60
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19568
+TAG  0x00294c70
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +7    L3              51                   push   ecx
+ +8    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +11   L3              8b 42 10             mov    eax, dword ptr [edx+0x10]
+ +14   L3              50                   push   eax
+ +15   L3              6a 00                push   0x00
+ +17   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +20   L3              e8 17 ff ff ff       call   0x00294ba0
+END 0x00294c70
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19360
+TAG  0x00294ba0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 18             sub    esp, 0x18
+ +6    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +9    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +12   L3              8b 48 10             mov    ecx, dword ptr [eax+0x10]
+ +15   L3              3b 4d 08             cmp    ecx, dword ptr [ebp+0x08]
+ +18   L3              73 08                jnb    0x00294bbc
+END 0x00294ba0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19388
+TAG  0x00294bbc
+ +0    L3              8b 55 fc             mov    edx, dword ptr [ebp-0x04]
+ +3    L3              8b 42 10             mov    eax, dword ptr [edx+0x10]
+ +6    L3              2b 45 08             sub    eax, dword ptr [ebp+0x08]
+ +9    L3              3b 45 0c             cmp    eax, dword ptr [ebp+0x0c]
+ +12   L3              73 0c                jnb    0x00294bd6
+END 0x00294bbc
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19414
+TAG  0x00294bd6
+ +0    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +3    L3              3b 45 14             cmp    eax, dword ptr [ebp+0x14]
+ +6    L3              73 08                jnb    0x00294be6
+END 0x00294bd6
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19430
+TAG  0x00294be6
+ +0    L3              8b 55 14             mov    edx, dword ptr [ebp+0x14]
+ +3    L3              89 55 f8             mov    dword ptr [ebp-0x08], edx
+ +6    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +9    L3              50                   push   eax
+ +10   L3              8b 4d 10             mov    ecx, dword ptr [ebp+0x10]
+ +13   L3              51                   push   ecx
+ +14   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +17   L3              e8 74 f6 ff ff       call   0x00294270
+END 0x00294be6
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19452
+TAG  0x00294bfc
+ +0    L3              03 45 08             add    eax, dword ptr [ebp+0x08]
+ +3    L3              50                   push   eax
+ +4    L3              e8 8b 00 00 00       call   0x00294c90
+END 0x00294bfc
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19600
+TAG  0x00294c90
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              83 7d 10 00          cmp    dword ptr [ebp+0x10], 0x00
+ +8    L3              75 09                jnz    0x00294ca3
+END 0x00294c90
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19619
+TAG  0x00294ca3
+ +0    L3              8b 45 10             mov    eax, dword ptr [ebp+0x10]
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +7    L3              51                   push   ecx
+ +8    L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +11   L3              52                   push   edx
+ +12   L3              e8 1a 29 00 00       call   0x002975ce
+END 0x00294ca3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 30158
+TAG  0x002975ce
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              53                   push   ebx
+ +4    L3              8b 5d 10             mov    ebx, dword ptr [ebp+0x10]
+ +7    L3              8b c3                mov    eax, ebx
+ +9    L3              56                   push   esi
+ +10   L3              83 e8 00             sub    eax, 0x00
+ +13   L3              0f 84 dd 16 00 00    jz     0x00298cbe
+END 0x002975ce
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 30177
+TAG  0x002975e1
+ +0    L3              48                   dec    eax
+ +1    L3              0f 84 c5 16 00 00    jz     0x00298cad
+END 0x002975e1
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 30184
+TAG  0x002975e8
+ +0    L3              48                   dec    eax
+ +1    L3              0f 84 8f 16 00 00    jz     0x00298c7e
+END 0x002975e8
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 30191
+TAG  0x002975ef
+ +0    L3              48                   dec    eax
+ +1    L3              0f 84 3e 16 00 00    jz     0x00298c34
+END 0x002975ef
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 35892
+TAG  0x00298c34
+ +0    L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +3    L3              8b 75 0c             mov    esi, dword ptr [ebp+0x0c]
+ +6    L3              0f b6 0a             movzx  ecx, byte ptr [edx]
+ +9    L3              0f b6 06             movzx  eax, byte ptr [esi]
+ +12   L3              2b c8                sub    ecx, eax
+ +14   L3              74 12                jz     0x00298c56
+END 0x00298c34
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 35908
+TAG  0x00298c44
+ +0    L3              33 c0                xor    eax, eax
+ +2    L3              85 c9                test   ecx, ecx
+ +4    L3              0f 9f c0             setnle al
+ +7    L3              8d 04 45 ff ff ff ff lea    eax, [eax*2-0x01]
+ +14   L3              85 c0                test   eax, eax
+ +16   L3              75 6a                jnz    0x00298cc0
+END 0x00298c44
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 36032
+TAG  0x00298cc0
+ +0    L3              5e                   pop    esi
+ +1    L3              5b                   pop    ebx
+ +2    L3              5d                   pop    ebp
+ +3    L3              c3                   ret    
+END 0x00298cc0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19636
+TAG  0x00294cb4
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +6    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +9    L3              8b e5                mov    esp, ebp
+ +11   L3              5d                   pop    ebp
+ +12   L3              c3                   ret    
+END 0x00294cb4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19461
+TAG  0x00294c05
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              89 45 f4             mov    dword ptr [ebp-0x0c], eax
+ +6    L3              83 7d f4 00          cmp    dword ptr [ebp-0x0c], 0x00
+ +10   L3              74 08                jz     0x00294c19
+END 0x00294c05
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19473
+TAG  0x00294c11
+ +0    L3              8b 55 f4             mov    edx, dword ptr [ebp-0x0c]
+ +3    L3              89 55 e8             mov    dword ptr [ebp-0x18], edx
+ +6    L3              eb 35                jmp    0x00294c4e
+END 0x00294c11
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19534
+TAG  0x00294c4e
+ +0    L3              8b 45 e8             mov    eax, dword ptr [ebp-0x18]
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 10 00             ret    0x0010
+END 0x00294c4e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19593
+TAG  0x00294c89
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 04 00             ret    0x0004
+END 0x00294c89
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6446
+TAG  0x0029192e
+ +0    L3              85 c0                test   eax, eax
+ +2    L3              75 13                jnz    0x00291945
+END 0x0029192e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6469
+TAG  0x00291945
+ +0    L3              68 00 d2 2a 00       push   0x002ad200
+ +5    L3              8d 4d cc             lea    ecx, [ebp-0x34]
+ +8    L3              e8 0e 33 00 00       call   0x00294c60
+END 0x00291945
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 35926
+TAG  0x00298c56
+ +0    L3              0f b6 4a 01          movzx  ecx, byte ptr [edx+0x01]
+ +4    L3              0f b6 46 01          movzx  eax, byte ptr [esi+0x01]
+ +8    L3              2b c8                sub    ecx, eax
+ +10   L3              74 12                jz     0x00298c74
+END 0x00298c56
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 35956
+TAG  0x00298c74
+ +0    L3              0f b6 4a 02          movzx  ecx, byte ptr [edx+0x02]
+ +4    L3              0f b6 46 02          movzx  eax, byte ptr [esi+0x02]
+ +8    L3              eb 9d                jmp    0x00298c1b
+END 0x00298c74
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 35867
+TAG  0x00298c1b
+ +0    L3              2b c8                sub    ecx, eax
+ +2    L3              74 0e                jz     0x00298c2d
+END 0x00298c1b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 35885
+TAG  0x00298c2d
+ +0    L3              8b c1                mov    eax, ecx
+ +2    L3              e9 8c 00 00 00       jmp    0x00298cc0
+END 0x00298c2d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19481
+TAG  0x00294c19
+ +0    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +3    L3              3b 45 14             cmp    eax, dword ptr [ebp+0x14]
+ +6    L3              73 09                jnb    0x00294c2a
+END 0x00294c19
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19498
+TAG  0x00294c2a
+ +0    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +3    L3              3b 4d 14             cmp    ecx, dword ptr [ebp+0x14]
+ +6    L3              75 09                jnz    0x00294c3b
+END 0x00294c2a
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19506
+TAG  0x00294c32
+ +0    L3              c7 45 f0 00 00 00 00 mov    dword ptr [ebp-0x10], 0x00000000
+ +7    L3              eb 07                jmp    0x00294c42
+END 0x00294c32
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19522
+TAG  0x00294c42
+ +0    L3              8b 55 f0             mov    edx, dword ptr [ebp-0x10]
+ +3    L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +6    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +9    L3              89 45 e8             mov    dword ptr [ebp-0x18], eax
+ +12   L3              8b 45 e8             mov    eax, dword ptr [ebp-0x18]
+ +15   L3              8b e5                mov    esp, ebp
+ +17   L3              5d                   pop    ebp
+ +18   L3              c2 10 00             ret    0x0010
+END 0x00294c42
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6482
+TAG  0x00291952
+ +0    L3              85 c0                test   eax, eax
+ +2    L3              75 13                jnz    0x00291969
+END 0x00291952
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6486
+TAG  0x00291956
+ +0    L3              8d 45 bc             lea    eax, [ebp-0x44]
+ +3    L3              50                   push   eax
+ +4    L3              68 04 d2 2a 00       push   0x002ad204
+ +9    L3              e8 cc fd ff ff       call   0x00291730
+END 0x00291956
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 5936
+TAG  0x00291730
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              83 ec 10             sub    esp, 0x10
+ +6    L3              c7 45 f0 00 00 00 00 mov    dword ptr [ebp-0x10], 0x00000000
+ +13   L3              c7 45 f4 00 00 00 00 mov    dword ptr [ebp-0x0c], 0x00000000
+ +20   L3              c7 45 fc 00 00 00 00 mov    dword ptr [ebp-0x04], 0x00000000
+ +27   L3              8d 45 f4             lea    eax, [ebp-0x0c]
+ +30   L3              50                   push   eax
+ +31   L3              8d 4d f0             lea    ecx, [ebp-0x10]
+ +34   L3              51                   push   ecx
+ +35   L3              e8 18 23 00 00       call   0x00293a70
+END 0x00291730
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 14960
+TAG  0x00293a70
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +6    L3              50                   push   eax
+ +7    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +10   L3              51                   push   ecx
+ +11   L3              e8 98 20 00 00       call   0x00295b18
+END 0x00293a70
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23320
+TAG  0x00295b18
+ +0    L3              ff 25 14 d1 2a 00    jmp    dword ptr [0x002ad114]
+END 0x00295b18
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 14976
+TAG  0x00293a80
+ +0    L3              5d                   pop    ebp
+ +1    L3              c3                   ret    
+END 0x00293a80
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 5976
+TAG  0x00291758
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              83 7d f4 00          cmp    dword ptr [ebp-0x0c], 0x00
+ +7    L3              75 08                jnz    0x00291769
+END 0x00291758
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 5993
+TAG  0x00291769
+ +0    L3              8b 55 f4             mov    edx, dword ptr [ebp-0x0c]
+ +3    L3              52                   push   edx
+ +4    L3              e8 15 87 00 00       call   0x00299e87
+END 0x00291769
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6002
+TAG  0x00291772
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              89 45 fc             mov    dword ptr [ebp-0x04], eax
+ +6    L3              83 7d fc 00          cmp    dword ptr [ebp-0x04], 0x00
+ +10   L3              75 08                jnz    0x00291786
+END 0x00291772
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6022
+TAG  0x00291786
+ +0    L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +3    L3              50                   push   eax
+ +4    L3              8b 4d f4             mov    ecx, dword ptr [ebp-0x0c]
+ +7    L3              51                   push   ecx
+ +8    L3              8b 55 f0             mov    edx, dword ptr [ebp-0x10]
+ +11   L3              52                   push   edx
+ +12   L3              e8 b9 22 00 00       call   0x00293a50
+END 0x00291786
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 14928
+TAG  0x00293a50
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 10             mov    eax, dword ptr [ebp+0x10]
+ +6    L3              50                   push   eax
+ +7    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +10   L3              51                   push   ecx
+ +11   L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +14   L3              52                   push   edx
+ +15   L3              e8 ba 20 00 00       call   0x00295b1e
+END 0x00293a50
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23326
+TAG  0x00295b1e
+ +0    L3              ff 25 10 d1 2a 00    jmp    dword ptr [0x002ad110]
+END 0x00295b1e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 14948
+TAG  0x00293a64
+ +0    L3              5d                   pop    ebp
+ +1    L3              c3                   ret    
+END 0x00293a64
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6039
+TAG  0x00291797
+ +0    L3              83 c4 0c             add    esp, 0x0c
+ +3    L3              c7 45 f8 00 00 00 00 mov    dword ptr [ebp-0x08], 0x00000000
+ +10   L3              eb 09                jmp    0x002917ac
+END 0x00291797
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6060
+TAG  0x002917ac
+ +0    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +3    L3              3b 4d f0             cmp    ecx, dword ptr [ebp-0x10]
+ +6    L3              73 4f                jnb    0x00291803
+END 0x002917ac
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6068
+TAG  0x002917b4
+ +0    L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +3    L3              52                   push   edx
+ +4    L3              6b 45 f8 4c          imul   eax, dword ptr [ebp-0x08], 0x4c
+ +8    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +11   L3              8b 54 01 30          mov    edx, dword ptr [ecx+eax+0x30]
+ +15   L3              52                   push   edx
+ +16   L3              e8 3b 83 00 00       call   0x00299b04
+END 0x002917b4
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 39732
+TAG  0x00299b34
+ +0    L3              83 c9 ff             or     ecx, 0xff
+ +3    L3              eb 05                jmp    0x00299b3e
+END 0x00299b34
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6089
+TAG  0x002917c9
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              85 c0                test   eax, eax
+ +5    L3              75 31                jnz    0x00291801
+END 0x002917c9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6145
+TAG  0x00291801
+ +0    L3              eb a0                jmp    0x002917a3
+END 0x00291801
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6051
+TAG  0x002917a3
+ +0    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +3    L3              83 c0 01             add    eax, 0x01
+ +6    L3              89 45 f8             mov    dword ptr [ebp-0x08], eax
+ +9    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +12   L3              3b 4d f0             cmp    ecx, dword ptr [ebp-0x10]
+ +15   L3              73 4f                jnb    0x00291803
+END 0x002917a3
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 39739
+TAG  0x00299b3b
+ +0    L3              33 c9                xor    ecx, ecx
+ +2    L3              41                   inc    ecx
+ +3    L3              8b c1                mov    eax, ecx
+ +5    L3              5d                   pop    ebp
+ +6    L3              c3                   ret    
+END 0x00299b3b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6096
+TAG  0x002917d0
+ +0    L3              6b 45 f8 4c          imul   eax, dword ptr [ebp-0x08], 0x4c
+ +4    L3              03 45 fc             add    eax, dword ptr [ebp-0x04]
+ +7    L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +10   L3              8b 10                mov    edx, dword ptr [eax]
+ +12   L3              89 11                mov    dword ptr [ecx], edx
+ +14   L3              8b 50 04             mov    edx, dword ptr [eax+0x04]
+ +17   L3              89 51 04             mov    dword ptr [ecx+0x04], edx
+ +20   L3              8b 50 08             mov    edx, dword ptr [eax+0x08]
+ +23   L3              89 51 08             mov    dword ptr [ecx+0x08], edx
+ +26   L3              8b 40 0c             mov    eax, dword ptr [eax+0x0c]
+ +29   L3              89 41 0c             mov    dword ptr [ecx+0x0c], eax
+ +32   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +35   L3              51                   push   ecx
+ +36   L3              e8 56 86 00 00       call   0x00299e4f
+END 0x002917d0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6137
+TAG  0x002917f9
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +6    L3              eb 10                jmp    0x00291811
+END 0x002917f9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6161
+TAG  0x00291811
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c3                   ret    
+END 0x00291811
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6500
+TAG  0x00291964
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              eb 54                jmp    0x002919bd
+END 0x00291964
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6589
+TAG  0x002919bd
+ +0    L3              6a 00                push   0x00
+ +2    L3              8d 55 bc             lea    edx, [ebp-0x44]
+ +5    L3              52                   push   edx
+ +6    L3              8b 45 ac             mov    eax, dword ptr [ebp-0x54]
+ +9    L3              50                   push   eax
+ +10   L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +13   L3              e8 81 21 00 00       call   0x00293b50
+END 0x002919bd
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15184
+TAG  0x00293b50
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 10             mov    eax, dword ptr [ebp+0x10]
+ +10   L3              50                   push   eax
+ +11   L3              8b 4d 0c             mov    ecx, dword ptr [ebp+0x0c]
+ +14   L3              51                   push   ecx
+ +15   L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +18   L3              52                   push   edx
+ +19   L3              8b 45 fc             mov    eax, dword ptr [ebp-0x04]
+ +22   L3              8b 48 04             mov    ecx, dword ptr [eax+0x04]
+ +25   L3              51                   push   ecx
+ +26   L3              e8 79 1f 00 00       call   0x00295ae8
+END 0x00293b50
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 23272
+TAG  0x00295ae8
+ +0    L3              ff 25 34 d1 2a 00    jmp    dword ptr [0x002ad134]
+END 0x00295ae8
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15215
+TAG  0x00293b6f
+ +0    L3              50                   push   eax
+ +1    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +4    L3              e8 68 00 00 00       call   0x00293be0
+END 0x00293b6f
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 15224
+TAG  0x00293b78
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 0c 00             ret    0x000c
+END 0x00293b78
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6607
+TAG  0x002919cf
+ +0    L3              8d 4d cc             lea    ecx, [ebp-0x34]
+ +3    L3              e8 a9 16 00 00       call   0x00293080
+END 0x002919cf
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 12416
+TAG  0x00293080
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              6a 00                push   0x00
+ +9    L3              6a 01                push   0x01
+ +11   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +14   L3              e8 8d 13 00 00       call   0x00294420
+END 0x00293080
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 12435
+TAG  0x00293093
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c3                   ret    
+END 0x00293093
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6615
+TAG  0x002919d7
+ +0    L3              8d 4d e4             lea    ecx, [ebp-0x1c]
+ +3    L3              e8 a1 16 00 00       call   0x00293080
+END 0x002919d7
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17468
+TAG  0x0029443c
+ +0    L3              8b 55 f8             mov    edx, dword ptr [ebp-0x08]
+ +3    L3              8b 02                mov    eax, dword ptr [edx]
+ +5    L3              89 45 f4             mov    dword ptr [ebp-0x0c], eax
+ +8    L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +11   L3              51                   push   ecx
+ +12   L3              8d 55 ff             lea    edx, [ebp-0x01]
+ +15   L3              52                   push   edx
+ +16   L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +19   L3              e8 cc fa ff ff       call   0x00293f20
+END 0x0029443c
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17492
+TAG  0x00294454
+ +0    L3              8b c8                mov    ecx, eax
+ +2    L3              e8 25 dd ff ff       call   0x00292180
+END 0x00294454
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8576
+TAG  0x00292180
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +10   L3              50                   push   eax
+ +11   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +14   L3              51                   push   ecx
+ +15   L3              e8 1c 00 00 00       call   0x002921b0
+END 0x00292180
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8624
+TAG  0x002921b0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +6    L3              50                   push   eax
+ +7    L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +10   L3              e8 e1 ff ff ff       call   0x002921a0
+END 0x002921b0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8608
+TAG  0x002921a0
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b e5                mov    esp, ebp
+ +9    L3              5d                   pop    ebp
+ +10   L3              c2 04 00             ret    0x0004
+END 0x002921a0
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8639
+TAG  0x002921bf
+ +0    L3              5d                   pop    ebp
+ +1    L3              c3                   ret    
+END 0x002921bf
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 8596
+TAG  0x00292194
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 04 00             ret    0x0004
+END 0x00292194
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17499
+TAG  0x0029445b
+ +0    L3              83 7d 0c 00          cmp    dword ptr [ebp+0x0c], 0x00
+ +4    L3              76 1d                jbe    0x0029447e
+END 0x0029445b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17534
+TAG  0x0029447e
+ +0    L3              8b 45 f8             mov    eax, dword ptr [ebp-0x08]
+ +3    L3              8b 48 14             mov    ecx, dword ptr [eax+0x14]
+ +6    L3              83 c1 01             add    ecx, 0x01
+ +9    L3              51                   push   ecx
+ +10   L3              8b 55 f4             mov    edx, dword ptr [ebp-0x0c]
+ +13   L3              52                   push   edx
+ +14   L3              8d 45 fe             lea    eax, [ebp-0x02]
+ +17   L3              50                   push   eax
+ +18   L3              8b 4d f8             mov    ecx, dword ptr [ebp-0x08]
+ +21   L3              e8 88 fa ff ff       call   0x00293f20
+END 0x0029447e
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 17560
+TAG  0x00294498
+ +0    L3              8b c8                mov    ecx, eax
+ +2    L3              e8 81 08 00 00       call   0x00294d20
+END 0x00294498
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19744
+TAG  0x00294d20
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +10   L3              50                   push   eax
+ +11   L3              8b 4d 08             mov    ecx, dword ptr [ebp+0x08]
+ +14   L3              51                   push   ecx
+ +15   L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +18   L3              e8 09 00 00 00       call   0x00294d40
+END 0x00294d20
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19776
+TAG  0x00294d40
+ +0    L3              55                   push   ebp
+ +1    L3              8b ec                mov    ebp, esp
+ +3    L3              51                   push   ecx
+ +4    L3              89 4d fc             mov    dword ptr [ebp-0x04], ecx
+ +7    L3              8b 45 08             mov    eax, dword ptr [ebp+0x08]
+ +10   L3              50                   push   eax
+ +11   L3              e8 39 27 00 00       call   0x00297489
+END 0x00294d40
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19792
+TAG  0x00294d50
+ +0    L3              83 c4 04             add    esp, 0x04
+ +3    L3              8b e5                mov    esp, ebp
+ +5    L3              5d                   pop    ebp
+ +6    L3              c2 08 00             ret    0x0008
+END 0x00294d50
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 19767
+TAG  0x00294d37
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c2 08 00             ret    0x0008
+END 0x00294d37
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6623
+TAG  0x002919df
+ +0    L3              8b 4d fc             mov    ecx, dword ptr [ebp-0x04]
+ +3    L3              33 cd                xor    ecx, ebp
+ +5    L3              e8 ab 86 00 00       call   0x0029a094
+END 0x002919df
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6633
+TAG  0x002919e9
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c3                   ret    
+END 0x002919e9
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9526
+TAG  0x00292536
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +6    L3              89 4d c4             mov    dword ptr [ebp-0x3c], ecx
+ +9    L3              8b 55 c4             mov    edx, dword ptr [ebp-0x3c]
+ +12   L3              89 55 e4             mov    dword ptr [ebp-0x1c], edx
+ +15   L3              83 7d e4 00          cmp    dword ptr [ebp-0x1c], 0x00
+ +19   L3              74 13                jz     0x0029255e
+END 0x00292536
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9547
+TAG  0x0029254b
+ +0    L3              6a 01                push   0x01
+ +2    L3              8b 45 e4             mov    eax, dword ptr [ebp-0x1c]
+ +5    L3              8b 10                mov    edx, dword ptr [eax]
+ +7    L3              8b 4d e4             mov    ecx, dword ptr [ebp-0x1c]
+ +10   L3              8b 02                mov    eax, dword ptr [edx]
+ +12   L3              ff d0                call   eax
+END 0x0029254b
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9561
+TAG  0x00292559
+ +0    L3              89 45 c0             mov    dword ptr [ebp-0x40], eax
+ +3    L3              eb 07                jmp    0x00292565
+END 0x00292559
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9573
+TAG  0x00292565
+ +0    L3              8d 4d 0c             lea    ecx, [ebp+0x0c]
+ +3    L3              e8 83 0a 00 00       call   0x00292ff0
+END 0x00292565
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 9581
+TAG  0x0029256d
+ +0    L3              8b e5                mov    esp, ebp
+ +2    L3              5d                   pop    ebp
+ +3    L3              c3                   ret    
+END 0x0029256d
+
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe 6878
+TAG  0x00291ade
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              8d 4d f8             lea    ecx, [ebp-0x08]
+ +6    L3              e8 07 15 00 00       call   0x00292ff0
+END 0x00291ade
+
+20
+C:\Windows\syswow64\kernel32.dll
+213b5bcc
+111
+133b8
+13509
+11450
+111f8
+11725
+114e9
+134b0
+11222
+14d28
+14f2b
+14208
+14d40
+151b3
+13531
+151a1
+151e3
+1170d
+151cb
+111c0
+11252
+111a9
+1179c
+14493
+15189
+1192e
+11946
+947f1
+114b1
+114c9
+187c9
+11328
+11282
+13ed3
+14a2d
+149ca
+13519
+15235
+11245
+13e8e
+1719c
+1745e
+13777
+11400
+113f0
+11484
+132a9
+15063
+1328c
+149d7
+134d5
+1110c
+132d3
+1168c
+140d4
+13f5c
+159e2
+11909
+118f1
+11826
+11410
+12d3c
+11462
+153ae
+117d1
+111e0
+1196e
+15506
+13299
+14407
+1588e
+114fb
+2d0a7
+2d16f
+2cfdf
+1492b
+13c42
+14891
+1199e
+11916
+148e5
+11ae5
+1233b
+11ca5
+2c17c
+11cf0
+2b7df
+1372a
+12081
+2e127
+2cdc5
+2ce2e
+11748
+149ad
+1472f
+14759
+133a0
+11809
+1195e
+15929
+11700
+2d5cd
+116c5
+11136
+2d582
+135b7
+14a6f
+17a10
+13587
+1359f
+134c8
+1111e
+C:\Users\FYP\Desktop\Tests\halide_threshold_test.exe
+6c6c642e
+136
+ae86
+a53d
+748e
+a5b4
+e4d4
+ec07
+134ad
+161d
+16ac
+166a
+4150
+164b
+3eb0
+4f50
+16a2
+16ce
+16c2
+1633
+163f
+1610
+1600
+1520
+1540
+1560
+1580
+15a0
+15c0
+15e0
+688d
+719a
+6a5d
+68f6
+3690
+2640
+19f0
+5260
+4df0
+5a30
+2680
+59c0
+1000
+2ff0
+23e0
+4a30
+33f0
+28d0
+2a70
+5b06
+3b80
+29a0
+3550
+3c10
+3ba0
+5b12
+3be0
+1820
+9430
+5bd6
+9e09
+2850
+2790
+26b0
+26d0
+4420
+3ee0
+4270
+4970
+48a0
+5450
+48d0
+41c0
+40a0
+54e0
+3f20
+2720
+54a0
+54d0
+54c0
+3d00
+4560
+4580
+2090
+7438
+20e0
+20d0
+2160
+2110
+33e0
+4cd0
+8d50
+58c0
+34c0
+3640
+4690
+3cb0
+4c60
+4ba0
+4c90
+75ce
+1730
+3a70
+5b18
+9e87
+3a50
+5b1e
+9b04
+9e4f
+3b50
+5ae8
+3080
+2180
+21b0
+21a0
+4d20
+4d40
+7489
+a094
+1c690
+1c680
+1c670
+1c6b3
+1c6a9
+3660
+1c6db
+6280
+1c6e5
+1c6bd
+1c6c7
+608b
+1c6d1
+1c69f
+130dd
+f644
+1bd35
+a627
+f342
+C:\Windows\SysWOW64\ntdll.dll
+642e4553
+140
+40fcb
+2e208
+2fcf7
+2eb35
+2e198
+301aa
+2e691
+2e66d
+361ed
+222ef
+347a6
+3ea63
+2e026
+222b0
+22270
+37f47
+37f5e
+2df85
+36b95
+36c3c
+2e126
+1fbc8
+329f1
+329ab
+39d35
+33002
+40249
+32c42
+1fda0
+1fac8
+3873a
+36ac8
+32740
+2f79b
+3692e
+210b0
+1fb98
+1f9d0
+1fa18
+1fa98
+37d73
+3c43a
+3a921
+200a4
+3a901
+1ff94
+1fc40
+2ebdc
+383fc
+1f8c8
+1ff64
+20894
+39f73
+3b988
+20058
+3ad15
+3a942
+399a7
+2e7f3
+1fa00
+1fc70
+2e545
+423cf
+33164
+1ff7c
+1fc28
+2ec78
+1f8e0
+5aabd
+345f5
+423fa
+3261b
+2e819
+41f2d
+325d2
+221f1
+424e0
+22159
+32626
+3260a
+3814c
+38200
+77a7f
+5cff2
+380ee
+381cb
+393e2
+1fbe0
+1fec8
+3931b
+42c94
+42e73
+42ec1
+42d21
+42e50
+42cc2
+20218
+4241f
+3da15
+20138
+325e8
+329d5
+3e8f0
+40d76
+37de3
+393b2
+3b141
+385cb
+38626
+1fa80
+3855f
+21008
+41f6e
+64654
+1fab0
+2078c
+1f8ac
+1fb7c
+38242
+3e8bd
+2e6b5
+39953
+1fa30
+1f918
+1f9b4
+411d7
+5d598
+5d5fa
+49d8e
+58de8
+5931d
+1f99c
+592cd
+5941a
+59241
+5939e
+5938a
+595a0
+593d9
+38456
+C:\Windows\syswow64\KERNELBASE.dll
+642e4553
+16
+35e3c
+35e48
+ec0b
+7478
+12e1a
+12e59
+6a50
+1c06c
+1d76b
+13fa7
+1c05b
+6a64
+13e61
+10c05
+6a8c
+6a78
+C:\Windows\syswow64\GDI32.dll
+6c6c642e
+19
+177cf
+17c2e
+14de0
+154f4
+17bcc
+14eb8
+15f49
+16001
+15689
+1d753
+1d71e
+16143
+15e5c
+1795a
+15a86
+155d3
+158b3
+16368
+16343
+C:\Windows\WinSxS\x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80\gdiplus.dll
+6c6c642e
+104
+5b153
+b75d9
+b741a
+47832
+478ca
+9867c
+9835b
+987ff
+98506
+988b8
+98376
+98a6e
+5ed3b
+69107
+5f0d2
+10d206
+10f9a1
+10f8c6
+4756e
+10bb0d
+10adaa
+10abc1
+10ad98
+11a235
+10fa7b
+10b655
+10ac1a
+5a994
+10d97b
+119380
+11beb0
+10a20f
+10b756
+11a28c
+609ef
+62624
+625f5
+61fb9
+10d9d3
+11bcdc
+10f1d7
+11bd14
+10f204
+11c142
+10ed15
+10eea4
+10f526
+10eeeb
+10f610
+1191f9
+10df89
+10f746
+60172
+64455
+62cf2
+10d221
+10da7b
+119180
+10b6db
+645f4
+10f703
+5aaab
+10e8bf
+67b3d
+1178bb
+10ac2a
+10abde
+1120de
+5a943
+11684a
+115100
+10abea
+104768
+10efce
+111a97
+10adbc
+10f2a2
+111903
+1180f8
+1168ab
+117ead
+110dca
+117b5e
+1153fe
+110531
+1160a7
+115157
+11089d
+1111ef
+1106e2
+115f26
+11225b
+112375
+10ad52
+7ba64
+9fbc8
+5970d
+b7933
+b6cf5
+b653e
+59777
+b3d1b
+79dd8
+9d026
+C:\Windows\syswow64\USER32.dll
+6c6c642e
+34
+2451a
+244d7
+24413
+24572
+17d2f
+17c55
+16c3c
+2434b
+1a244
+19d7d
+20afa
+1d22e
+1810b
+19ebd
+1b6d2
+243bc
+1a6d8
+172a4
+16e19
+1b142
+188f7
+1b17d
+1b422
+185e8
+172c4
+17446
+20b4a
+19a55
+199f4
+1dced
+18d26
+1b238
+19f84
+1b6ed
+C:\Windows\syswow64\msvcrt.dll
+642e4553
+9
+a472
+9cee
+aae3
+9e12
+a850
+9894
+13595
+135c9
+1362b
+C:\Windows\syswow64\ADVAPI32.dll
+642e4553
+11
+149e5
+149ff
+1468d
+1469d
+148cc
+20e5d
+20eca
+20e7d
+20ee7
+20f19
+20ea3
+C:\Windows\syswow64\RPCRT4.dll
+6c6c642e
+1
+10569
+C:\Windows\syswow64\CRYPTBASE.dll
+642e4553
+1
+10e1
+C:\Windows\syswow64\ole32.dll
+6c642e65
+48
+4ba3d
+4ea4c
+4ea2d
+56f41
+56e4e
+2363b
+422ec
+23e5e
+1e819
+1e389
+24019
+238bd
+23879
+43d79
+3e965
+3e984
+3e974
+3ebe8
+3e922
+3eb96
+3ebb8
+3e913
+3e904
+3e8f5
+3e8e6
+3e8d7
+3e8cf
+3eb77
+3e8c7
+3e8b8
+3e8a9
+3e89a
+3e88b
+3e87c
+3e86d
+3e85e
+3e84f
+3e840
+3e831
+3e822
+3e813
+3e804
+3e7f5
+3e7e6
+3e7d7
+3e7c8
+3e7b9
+3eb55
+C:\Windows\system32\IMM32.DLL
+642e4553
+5
+1158f
+115d0
+1163c
+11888
+1197a
+C:\Windows\syswow64\MSCTF.dll
+642e4553
+5
+168b
+291e
+290f
+2900
+28f1
+C:\Windows\SysWOW64\WindowsCodecs.dll
+642e4553
+236
+117e1
+11f7d
+122db
+1200a
+1201b
+1202c
+123ba
+12046
+1208d
+120d5
+1211d
+12165
+121a9
+1223e
+12248
+12267
+11000
+240d
+2355
+242c
+10f4d
+11199
+111b8
+10f8d
+10fa8
+10f66
+7113
+6f91
+11141
+1dc5
+1ab86
+1308b
+89cd
+12c5d
+a111
+a280
+107c7
+a23b
+1ecf2
+8b1d
+12b19
+11325
+10a70
+10aef
+11352
+1122d
+89c1
+1a260
+1a401
+2901
+1b21e
+107b8
+1e01
+11736
+6fff
+1179a
+3025
+3318
+117c8
+19ba4
+1b22e
+70a1
+70b7
+1069b
+1aa61
+1a95a
+1b5a3
+10c98
+11248
+1bc22
+133d3
+1014d
+a24a
+a36a
+a1ca
+a1ff
+3309
+1a0a6
+1a5a5
+1a5df
+1ba9a
+291d
+1bbd1
+1a492
+1a49e
+1a4bf
+2de8a
+19fae
+19d3e
+19f40
+19cc8
+1a019
+19da5
+19ab5
+1a736
+1cda0
+1ad8c
+1acf7
+1bec9
+1bf33
+1ad2e
+1acb8
+10652
+19965
+1b0db
+1b178
+1ac25
+10c29
+29914
+154b5
+15d8c
+15bdf
+154d6
+15c24
+3c646
+15cc3
+3cab0
+29e39
+262c
+29b88
+29af0
+3dd4c
+287e3
+378f6
+2e0a0
+2e0aa
+35ac
+15b6a
+359d
+29c87
+29c4e
+29c78
+1578d
+39043
+29b38
+377d4
+3dcd3
+3dd17
+157f3
+390a5
+15884
+15ffe
+15941
+15e99
+390d0
+15a5d
+156ab
+37aa1
+37afc
+3bf78
+3813b
+3878b
+382bd
+2ee64
+38779
+38359
+31eae
+38f64
+387d1
+385ed
+2a162
+13e40
+2892b
+13c8e
+10a7c
+28134
+a28c
+2a13c
+29f26
+29f17
+13f89
+29f47
+28101
+280dd
+27da3
+27b50
+28125
+3b36d
+27e2a
+388c7
+2a88c
+38e56
+2e80a
+27b35
+33045
+330da
+2aa88
+27ea9
+3c84d
+27f2f
+27ef4
+2ab7d
+38e27
+27d00
+2fb1b
+38fc9
+388d2
+38ea1
+3c91d
+38e7a
+2a48a
+27ce1
+28375
+2a93c
+27e82
+2a923
+283ad
+38e61
+13997
+14faf
+29d59
+38d47
+2a3d5
+29ed1
+2a9c5
+3c7de
+2061b
+3c885
+14f33
+37c6b
+3abd3
+39f08
+1553b
+20472
+14ecd
+15625
+3cbad
+38eac
+153bd
+2501
+3cc7c
+3893e
+388dd
+3c94f
+3c69d
+29c96
+C:\Windows\SysWOW64\oleaut32.dll
+6365646f
+5
+3fb1
+1fc29
+3ed5
+3eae
+48f1
+C:\Windows\SysWOW64\sechost.dll
+6c6c642e
+1
+4975
+C:\Windows\syswow64\SspiCli.dll
+6c6c642e
+1
+1a3b3
+C:\Windows\syswow64\LPK.dll
+6c642e45
+1
+36a0
+C:\Windows\syswow64\USP10.dll
+6b636150
+1
+33fd7

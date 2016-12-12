@@ -149,6 +149,7 @@ public class MainTest {
         logger.info("Getting memory region information...");
         ArrayList<PcMemoryRegion> pcMems = PcMemoryRegion.getMemRegionFromMemTrace(memtraceData, module);
 
+        logger.info("linking memory regions together...");
 
 
     }

@@ -202,4 +202,16 @@ public class ModuleInfo {
         return head;
     }
 
+
+    /* mining information from the module structure */
+    public static ModuleInfo findModule(ModuleInfo head,  long startAddress){
+        while (head != null){
+            if (head.getStartAddress()==startAddress){
+                return head;
+            }
+            head = head.getNext();
+        }
+        return null;
+    }
+
 }

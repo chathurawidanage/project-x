@@ -96,4 +96,6 @@ public class MemoryInfo {
     public void setOrder(int order) {
         this.order = order;
     }
+
+
 }

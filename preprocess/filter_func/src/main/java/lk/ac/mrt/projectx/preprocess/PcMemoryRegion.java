@@ -4,6 +4,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -346,6 +348,96 @@ public class PcMemoryRegion {
         }
         return null;
 
+    }
+
+    public void linkMemRegions(ArrayList<PcMemoryRegion> pc_mems, int mode){
+
+        for (int i = 0; i < pc_mems.size(); i++){
+
+            if (mode == 2){  // DYNAMIC_PROG
+                // TODO not implemented yet.
+            }
+            else if(mode == 1){    // GREEDY
+                linkMemRegionsGreedy(pc_mems.get(i).getRegions());
+            }
+
+        }
+    }
+
+    private boolean linkMemRegionsGreedy(ArrayList<MemoryInfo> mem){
+
+        logger.info("link_mem_regions_greedy...");
+
+        Collections.sort(mem,new MemInfoComparator());
+
+        boolean ret = true;
+
+        while (ret){
+
+            ret = false;
+            for (int i = 0; i < mem.size(); i++){
+
+                if (i + 2 >= mem.size()) continue; //at least three regions should be connected
+                long gapFirst = mem.get(i + 1).getStart() - mem.get(i).getEnd();
+                long gapSecond = mem.get(i + 2).getStart() - mem.get(i + 1).getEnd();
+
+                if (gapFirst == gapSecond){ /* ok we can now merge the regions */
+                    long gap = gapFirst;
+                    mem.get(i).setEnd(mem.get(i+2).getEnd());
+                    mergeInfoToFirst(mem.get(i),mem.get(i+1));
+                    mergeInfoToFirst(mem.get(i),mem.get(i+2));
+
+                    int index = i + 2;
+                    for (int j = i + 3; j < mem.size(); j++){
+                        long gapNow = mem.get(j).getStart() - mem.get(i).getEnd();
+
+                        if (gapNow == gap){
+                            mem.get(i).setEnd(mem.get(j).getEnd());
+                            mergeInfoToFirst(mem.get(i),mem.get(j));
+                            index = j;
+                        }
+                        else{
+                            break;
+                        }
+                    }
+
+
+                    for (int j = i + 1; j <= index; j++){
+                        mem.remove(i+1);
+                    }
+
+                    ret = true;
+
+
+                }
+            }
+        }
+
+        logger.info("link_mem_regions_greedy - done");
+
+        return ret;
+    }
+
+    private void mergeInfoToFirst(MemoryInfo first, MemoryInfo second){
+
+        first.setDirection(first.getDirection()|second.getDirection());
+        updateStrideFromVector(first.getStrideFreqs(),second.getStrideFreqs());
+        first.setProbStride(getMostProbableStride(first.getStrideFreqs()));
+
+    }
+
+    private class MemInfoComparator implements Comparator<MemoryInfo>{
+
+        @Override
+        public int compare(MemoryInfo o1, MemoryInfo o2) {
+            if(o1.getStart()==o2.getStart()){
+                return 0;
+            }else if(o1.getStart()<o2.getStart()){
+                return 1;
+            }else {
+                return -1;
+            }
+        }
     }
 
 }

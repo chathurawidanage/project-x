@@ -84,7 +84,7 @@ public class ModuleInfo {
             logger.info("Module{} name = {}", i, current.getName());
 
             // module start address
-            current.setStartAddress(Long.parseLong(data.nextLine()));
+            current.setStartAddress(Long.parseLong(data.nextLine(),16));
             logger.info("Module{} start address = {}", i, current.getStartAddress());
 
             //number of bbs
@@ -122,9 +122,9 @@ public class ModuleInfo {
                 basicBlockInfo.setStartAddress(Long.parseLong(line[index++], 16));
                 basicBlockInfo.setSize(Integer.parseInt(line[index++]));
                 basicBlockInfo.setFrequency(Integer.parseInt(line[index++]));
-                basicBlockInfo.setCall(Integer.parseInt(line[index++]) == 0 ? false : true);
-                basicBlockInfo.setRet(Integer.parseInt(line[index++]) == 0 ? false : true);
-                basicBlockInfo.setCallTarget(Integer.parseInt(line[index++]) == 0 ? false : true);
+                basicBlockInfo.setCall(Integer.parseInt(line[index++]) == 1);
+                basicBlockInfo.setRet(Integer.parseInt(line[index++]) == 1);
+                basicBlockInfo.setCallTarget(Integer.parseInt(line[index++]) == 1);
                 basicBlockInfo.setFunctionAddress(0);
 
                 int fromBBs = Integer.parseInt(line[index++]);

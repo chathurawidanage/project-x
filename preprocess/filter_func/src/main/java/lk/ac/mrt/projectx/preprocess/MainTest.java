@@ -146,7 +146,8 @@ public class MainTest {
 
         /* parsing memtrace files to pc_mem_regions */
 
-        logger.info("getting memory region information...");
+        logger.info("Getting memory region information...");
+        ArrayList<PcMemoryRegion> pcMems = PcMemoryRegion.getMemRegionFromMemTrace(memtraceData, module);
 
 
 

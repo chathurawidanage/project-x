@@ -7,6 +7,11 @@ public class StrideFrequencyPair {
     private int stride;
     private int frequency;
 
+    public StrideFrequencyPair(int stride, int frequency) {
+        this.stride = stride;
+        this.frequency = frequency;
+    }
+
     public int getStride() {
         return stride;
     }

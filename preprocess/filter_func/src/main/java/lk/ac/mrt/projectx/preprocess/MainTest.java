@@ -150,8 +150,9 @@ public class MainTest {
         ArrayList<PcMemoryRegion> pcMems = PcMemoryRegion.getMemRegionFromMemTrace(memtraceData, module);
 
         logger.info("linking memory regions together...");
+        PcMemoryRegion.linkMemRegions(pcMems,1);    //TODO not tested
 
-
+        logger.info("filtering out insignificant regions...");
     }
 
 

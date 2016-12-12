@@ -350,7 +350,7 @@ public class PcMemoryRegion {
 
     }
 
-    public void linkMemRegions(ArrayList<PcMemoryRegion> pc_mems, int mode){
+    public static void linkMemRegions(ArrayList<PcMemoryRegion> pc_mems, int mode){
 
         for (int i = 0; i < pc_mems.size(); i++){
 
@@ -364,9 +364,9 @@ public class PcMemoryRegion {
         }
     }
 
-    private boolean linkMemRegionsGreedy(ArrayList<MemoryInfo> mem){
+    private static boolean linkMemRegionsGreedy(ArrayList<MemoryInfo> mem){
 
-        logger.info("link_mem_regions_greedy...");
+        //logger.info("link_mem_regions_greedy...");
 
         Collections.sort(mem,new MemInfoComparator());
 
@@ -413,12 +413,12 @@ public class PcMemoryRegion {
             }
         }
 
-        logger.info("link_mem_regions_greedy - done");
+        //logger.info("link_mem_regions_greedy - done");
 
         return ret;
     }
 
-    private void mergeInfoToFirst(MemoryInfo first, MemoryInfo second){
+    private static void mergeInfoToFirst(MemoryInfo first, MemoryInfo second){
 
         first.setDirection(first.getDirection()|second.getDirection());
         updateStrideFromVector(first.getStrideFreqs(),second.getStrideFreqs());
@@ -426,7 +426,7 @@ public class PcMemoryRegion {
 
     }
 
-    private class MemInfoComparator implements Comparator<MemoryInfo>{
+    private static class MemInfoComparator implements Comparator<MemoryInfo>{
 
         @Override
         public int compare(MemoryInfo o1, MemoryInfo o2) {

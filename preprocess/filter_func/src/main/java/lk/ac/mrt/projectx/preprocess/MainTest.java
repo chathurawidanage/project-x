@@ -153,6 +153,16 @@ public class MainTest {
         PcMemoryRegion.linkMemRegions(pcMems,1);    //TODO not tested
 
         logger.info("filtering out insignificant regions...");
+        /* all memory related information */
+        /************* Skipped because not using this ***********/
+
+        if (bufferSize == 0){
+            PcMemoryRegion.filterMemRegions(pcMems,inImage,outImage,threshold);
+        }
+        else{
+            //TODO not implemented because not using here
+            //filter_mem_regions_total(pc_mems, total_size, threshold);
+        }
     }
 
 

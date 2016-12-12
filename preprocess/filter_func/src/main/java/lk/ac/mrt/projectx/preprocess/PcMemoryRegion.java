@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.preprocess;
 
+import lk.ac.mrt.projectx.buildex.ProjectXImage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -438,6 +439,43 @@ public class PcMemoryRegion {
                 return -1;
             }
         }
+    }
+
+
+    /* pc_mem_region filtering */
+    public static void filterMemRegions(ArrayList<PcMemoryRegion> pcMems, ProjectXImage inImage, ProjectXImage outImage, int minThreshold){
+
+        for (int i = 0; i < pcMems.size(); i++){
+            filterMemRegionsMeminfo(pcMems.get(i).getRegions(), inImage, outImage, minThreshold);
+            if (pcMems.get(i).getRegions().size() == 0){
+                pcMems.remove(i);
+                i--;
+            }
+        }
+
+    }
+
+    /* meminfo filtering */
+    private static void filterMemRegionsMeminfo(ArrayList<MemoryInfo> mems, ProjectXImage inImage, ProjectXImage outImage, int minThreshold){
+
+	/* use a conservative guess to filter out unnecessary memory regions */
+        int in_image_area = inImage.getImage().getWidth() * inImage.getImage().getHeight();
+        int out_image_area = outImage.getImage().getWidth() * outImage.getImage().getHeight();
+
+        int min_area = in_image_area;
+        if(min_area>out_image_area){
+            min_area = out_image_area;
+        }
+
+        for (int i = 0; i < mems.size(); i++){
+            long size = mems.get(i).getEnd() - mems.get(i).getStart();
+            //if (size < 10){
+            if (size <  (min_area * minThreshold / 100) ){
+                mems.remove(i);
+                i--;
+            }
+        }
+
     }
 
 }

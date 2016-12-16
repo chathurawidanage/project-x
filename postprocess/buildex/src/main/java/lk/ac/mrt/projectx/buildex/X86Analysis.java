@@ -3,7 +3,7 @@ package lk.ac.mrt.projectx.buildex;
 /**
  * Created by krv on 12/5/2016.
  */
-public final class X86Analysis {
+public class X86Analysis {
     //canonicalized operations
     public enum Operation {
         op_assign,

@@ -12,16 +12,17 @@ import java.util.List;
 public abstract class Node<T> {
     final static Logger logger = LogManager.getLogger(Node.class);
 
-    X86Analysis.Operation operation;  // Operation of this node
+    //TODO : Check access modifiers later
+    public X86Analysis.Operation operation;  // Operation of this node
     Boolean sign;   // Signed operation or not
     Boolean minus;
     String functionName;
 
     Operand<T> symbol;
 
-    List<Node> srcs; ///< forward references also srcs of the destination
-    List<Node> prev; ///< keep the backward references
-    List<Long> pos; ///< position of the parent node's srcs list for this child
+    public List<Node> srcs; ///< forward references also srcs of the destination
+    public List<Node> prev; ///< keep the backward references
+    public List<Long> pos; ///< position of the parent node's srcs list for this child
 
     Long pc;
     Long line;

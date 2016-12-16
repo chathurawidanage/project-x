@@ -16,7 +16,7 @@ public class Module implements Comparable<Module> {
 
     private String name;
     private Integer id;
-    private Set<Integer> addresses;
+    private Set<Long> addresses;
     private Integer originalIndex;
 
     //    Set<String> names = new HashSet<String>();
@@ -78,7 +78,7 @@ public class Module implements Comparable<Module> {
     }
 
 
-    public Set<Integer> getAddresses() {
+    public Set<Long> getAddresses() {
         return addresses;
     }
 

@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * @author Chathura Widanage
+ * @see https://msdn.microsoft.com/en-us/library/windows/desktop/aa473780(v=vs.85).aspx
  */
 public class MemoryAnalyser {
     private static final Logger logger = LogManager.getLogger(MemoryAnalyser.class);
@@ -29,7 +30,7 @@ public class MemoryAnalyser {
     public void getImageRegion(List<MemoryDumpFile> memoryDumpFiles, ProjectXImage inputImage, ProjectXImage outputImage) throws IOException {
         /*if (this.isEqualImages(inputImage, outputImage)) {
             logger.error("Input and output images are equal");
-            throw new Exception("Input and output images are equal");
+            //throw new Exception("Input and output images are equal");
         }*/
 
 
@@ -52,17 +53,15 @@ public class MemoryAnalyser {
     //todo invalid implementation
     private List<Integer> backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image, boolean write) throws IOException {
         logger.info("Backward analyzing {}", memoryDumpFile.getFile().getName());
-        int[] imageBuffer = image.getImageBuffer();
+        int[] imageBuffer = image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR);
         int[] reversedImageBuffer = new int[imageBuffer.length];
 
-        int range = imageBuffer.length / 3 - 1;
-        for (int i = 0; i < imageBuffer.length / 3; i++) {
-            for (int channel = 0; channel < 3; channel++) {
-                reversedImageBuffer[i + (range * channel) + channel] = imageBuffer[(range * (channel + 1)) + channel - i];
-            }
+        //this is just for PLANAR
+        for (int i = 0; i < imageBuffer.length; i += image.getImage().getWidth()) {
+            int swapPosition = (image.getImage().getWidth()*image.getImage().getHeight()*3) - i - image.getImage().getWidth();
+            System.arraycopy(imageBuffer,i,reversedImageBuffer,swapPosition,image.getImage().getWidth());
         }
-
-        if (true) {
+     /*   if (true) {
             int[] revereImageBufferCopy = Arrays.copyOf(reversedImageBuffer, reversedImageBuffer.length);
             int channelGap = (image.getImage().getWidth() * image.getImage().getHeight());
             int channelLevelIndex = 0;
@@ -72,7 +71,7 @@ public class MemoryAnalyser {
                 reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + (2 * channelGap)];
                 channelLevelIndex++;
             }
-        }
+        }*/
 
         return findRegions(image.getImage().getWidth(),
                 image.getImage().getHeight(),
@@ -86,7 +85,7 @@ public class MemoryAnalyser {
         logger.info("Forward analyzing {}", memoryDumpFile.getFile().getName());
         return findRegions(image.getImage().getWidth(),
                 image.getImage().getHeight(),
-                image.getImageBuffer(),
+                image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR),
                 memoryDumpFile.getBaseProgramCounter(),
                 memoryDumpFile.getMemoryBuffer()
         );
@@ -108,17 +107,20 @@ public class MemoryAnalyser {
                 startPoints.add(j);
                 j += (imageWidth - 1);
                 if (last == imageWidth * imageHeight * 3) {//todo multiply by 3??
-                    logger.info("Scanned whole image");
+                    logger.info("Scanned whole image {}",startPoints.size());
                     return startPoints;
                 }
             } else {
                 j++;
             }
         }
+        System.out.println(startPoints.size());
         return null;
     }
 
-    private boolean isEqualImages(BufferedImage image1, BufferedImage image2) {
+    private boolean isEqualImages(ProjectXImage i1, ProjectXImage i2) {
+        BufferedImage image1 = i1.getImage();
+        BufferedImage image2 = i2.getImage();
         if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
             return false;
         }

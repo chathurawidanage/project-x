@@ -20,8 +20,6 @@ public class Buildex {
     public static void main(String[] args) throws IOException {
         File outputFolder = new File("generated_files_test\\output_files");//Configurations.getOutputFolder();
         File[] files = outputFolder.listFiles();
-
-
         ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\output_files\\arith.png")));
         ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\output_files\\aritht.png")));
 
@@ -45,14 +43,12 @@ public class Buildex {
         System.out.println("-------");
         int[] imageBuffer = {1, 2, 3, 4, 5, 6, 7, 8, 9};
         int[] reversedImageBuffer = new int[9];
-        int range = imageBuffer.length / 3 - 1;
-        for (int i = 0; i < imageBuffer.length / 3; i++) {
-            for (int channel = 0; channel < 3; channel++) {
-                reversedImageBuffer[i + (range * channel) + channel] = imageBuffer[(range * (channel + 1)) + channel - i];
-            }
+        for (int i = 0; i < imageBuffer.length; i += 3) {
+            int swapPosition = (3*3) - i - 3;
+            System.arraycopy(imageBuffer,i,reversedImageBuffer,swapPosition,3);
         }
 
-        int[] revereImageBufferCopy = Arrays.copyOf(reversedImageBuffer, reversedImageBuffer.length);
+       /* int[] revereImageBufferCopy = Arrays.copyOf(reversedImageBuffer, reversedImageBuffer.length);
         int channelGap = 3;
         int channelLevelIndex = 0;
         for (int i = 0; i < reversedImageBuffer.length; ) {
@@ -60,7 +56,7 @@ public class Buildex {
             reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + channelGap];
             reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + (2 * channelGap)];
             channelLevelIndex++;
-        }
+        }*/
         for (int x : reversedImageBuffer) {
             System.out.print(x + ",");
         }

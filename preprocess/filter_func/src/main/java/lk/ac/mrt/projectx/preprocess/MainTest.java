@@ -163,6 +163,10 @@ public class MainTest {
             //TODO not implemented because not using here
             //filter_mem_regions_total(pc_mems, total_size, threshold);
         }
+
+        logger.info("Memory regions filtering - DONE!");
+
+
     }
 
 

@@ -6,6 +6,13 @@
     <groupId>lk.ac.mrt</groupId>
     <artifactId>projectx-postprocess-buildex</artifactId>
     <version>0.0.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.2</version>
+        </dependency>
+    </dependencies>
     <packaging>pom</packaging>
     <name>ProjectX Buildex</name>
 

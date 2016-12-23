@@ -233,6 +233,19 @@ public class MainTest {
         }
     }
 
+    private static class InternalFunctionInfo{
+        String name;
+        int address;
+        int frequency;
+        ArrayList<Integer> candidateInstructions;
+        ArrayList<Integer> bbStart;
+
+        public InternalFunctionInfo() {
+            this.candidateInstructions = new ArrayList<>();
+            this.bbStart = new ArrayList<>();
+        }
+    }
+
     private byte[] getFileContent(String filename) {
         byte[] data = null;
         logger.info("Reading file {}", filename);

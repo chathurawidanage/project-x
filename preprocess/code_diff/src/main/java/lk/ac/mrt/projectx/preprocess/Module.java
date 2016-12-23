@@ -39,7 +39,7 @@ public class Module implements Comparable<Module> {
     public Integer LoadByDRCovModuleLine(String line) {
         try {
             String[] splitted = line.split(",");
-            this.name = splitted[2];
+            this.name = splitted[2].trim();
             this.id = Integer.parseInt(splitted[0].trim());
             logger.debug("Parsing line DRCov model : ", this.toString());
             return 1;

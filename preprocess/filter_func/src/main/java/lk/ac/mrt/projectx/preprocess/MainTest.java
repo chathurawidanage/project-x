@@ -3,11 +3,19 @@ package lk.ac.mrt.projectx.preprocess;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+import lk.ac.mrt.projectx.buildex.ProjectXImage;
+
+import javax.imageio.ImageIO;
 
 /**
  * Created by Lasantha on 02-Dec-16.
@@ -18,7 +26,11 @@ public class MainTest {
 
     public static void main(String[] args) {
         MainTest mainTest = new MainTest();
-
+        try {
+            mainTest.runAlgorithmDiffMode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public MainTest() {
@@ -39,6 +51,10 @@ public class MainTest {
     public void initialize() {
         readMemtraceAndProfileFiles();
     }
+
+    private final int DIFF_MODE = 1;
+    private final int TWO_IMAGE_MODE = 2;
+    private final int ONE_IMAGE_MODE = 3;
 
     private String outputFolderPath;
     private String imageFolderPath;
@@ -80,6 +96,138 @@ public class MainTest {
 
     }
 
+    public void runAlgorithmDiffMode() throws IOException {
+
+        logger.info("Filter function DIFF MODE");
+
+        ModuleInfo module = ModuleInfo.getPopulatedModuleInfo(profileData.get(0));
+
+        ProjectXImage inImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+inImageFileName)));
+        logger.info("Input Image Read Done! - {}",imageFolderPath+"\\"+inImageFileName);
+
+        ProjectXImage outImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+outImageFileName)));
+        logger.info("Output Image Read Done! - {}",imageFolderPath+"\\"+outImageFileName);
+
+        // getting the highest executed basic block
+        logger.info("Finding the highest executed basic block...");
+
+        ModuleInfo maxModule = null;
+        ModuleInfo tempModule = module;
+        int maxFrequency = 0;
+        BasicBlockInfo maxBasicBlock = null;
+        while (tempModule!=null){
+            ArrayList<FunctionInfo> functions = tempModule.getFunctions();
+            for (int i = 0; i < functions.size(); i++) {
+                ArrayList<BasicBlockInfo> bbs = functions.get(i).getBasicBlocks();
+                for (int j = 0; j < bbs.size(); j++) {
+                    BasicBlockInfo bb = bbs.get(j);
+                    if(bb.getFrequency()>maxFrequency){
+                        maxFrequency = bb.getFrequency();
+                        maxBasicBlock = bb;
+                        maxModule = tempModule;
+                    }
+                }
+            }
+            tempModule = tempModule.getNext();
+        }
+        logger.info("max module - {}, max start addr - {}",maxModule.getName(),maxBasicBlock.getStartAddress());
+
+        long maxFunction = 0;
+        logger.info("Finding the probable function...");
+
+        if(maxBasicBlock!=null){
+            RetAddress retAddress = new RetAddress((int)maxBasicBlock.getStartAddress(),0);
+            LinkedList<RetAddress> queue = new LinkedList<>();
+            queue.add(retAddress);
+            ArrayList<Integer> processed = new ArrayList<>();
+            maxFunction = getProbableFuncEntrypoint(maxModule,queue,processed,0);
+        }
+        logger.info("Enclosed function = {}",maxFunction);
+
+        /* parsing memtrace files to pc_mem_regions */
+
+        logger.info("Getting memory region information...");
+        ArrayList<PcMemoryRegion> pcMems = PcMemoryRegion.getMemRegionFromMemTrace(memtraceData, module);
+
+        logger.info("linking memory regions together...");
+        PcMemoryRegion.linkMemRegions(pcMems,1);    //TODO not tested
+
+        logger.info("filtering out insignificant regions...");
+        /* all memory related information */
+        /************* Skipped because not using this ***********/
+
+        if (bufferSize == 0){
+            PcMemoryRegion.filterMemRegions(pcMems,inImage,outImage,threshold);
+        }
+        else{
+            //TODO not implemented because not using here
+            //filter_mem_regions_total(pc_mems, total_size, threshold);
+        }
+    }
+
+
+    private static final int MAX_RECURSE = 200;
+    private static long getProbableFuncEntrypoint(ModuleInfo current,LinkedList<RetAddress> bbStart, ArrayList<Integer> processed, int maxRecurse){
+        if(maxRecurse>MAX_RECURSE){
+            logger.warn("WARNING: max recursion limit reached!");
+            return 0;
+        }
+
+        if(bbStart.isEmpty()){
+            return 0;
+        }
+
+        RetAddress retAddress = bbStart.poll();
+        processed.add(retAddress.address);
+
+        BasicBlockInfo bbinfo = findBbExact(current, retAddress.address);
+        if(bbinfo==null){
+            return getProbableFuncEntrypoint(current,bbStart,processed,maxRecurse+1);
+        }
+
+        if(bbinfo.isCallTarget()){
+            retAddress.ret--;
+        }
+        if(retAddress.ret<0){
+            return bbinfo.getStartAddress();
+        }
+
+        if(bbinfo.isRet() && maxRecurse>0){
+            retAddress.ret++;
+        }
+
+        logger.info("Addr : {} , ret : {} , Freq : {}",retAddress.address, retAddress.ret, bbinfo.getFrequency());
+
+        for (int i = 0; i < bbinfo.getFromBasicBlocks().size(); i++) {
+            if(!processed.contains(bbinfo.getFromBasicBlocks().get(i).getTarget())){
+                bbStart.add(new RetAddress(bbinfo.getFromBasicBlocks().get(i).getTarget(),retAddress.ret));
+            }
+        }
+        return getProbableFuncEntrypoint(current,bbStart,processed,maxRecurse+1);
+    }
+
+    private static BasicBlockInfo findBbExact(ModuleInfo module, long addr){
+        for (int i = 0; i < module.getFunctions().size(); i++){
+            FunctionInfo func = module.getFunctions().get(i);
+            for (int j = 0; j < func.getBasicBlocks().size(); j++){
+                BasicBlockInfo bb = func.getBasicBlocks().get(j);
+                if (bb.getStartAddress() == addr){
+                    return bb;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static class RetAddress{
+        int ret;
+        int address;
+
+        public RetAddress( int address,int ret) {
+            this.ret = ret;
+            this.address = address;
+        }
+    }
 
     private byte[] getFileContent(String filename) {
         byte[] data = null;
@@ -91,4 +239,5 @@ public class MainTest {
         }
         return data;
     }
+
 }

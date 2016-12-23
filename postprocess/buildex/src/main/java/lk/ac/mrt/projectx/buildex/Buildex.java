@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,12 +18,10 @@ public class Buildex {
     private static final Logger logger = LogManager.getLogger(Buildex.class);
 
     public static void main(String[] args) throws IOException {
-        File outputFolder = Configurations.getOutputFolder();
+        File outputFolder = new File("generated_files_test\\output_files");//Configurations.getOutputFolder();
         File[] files = outputFolder.listFiles();
-
-
-        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("F:\\engineering\\fyp\\gens\\generated_files\\output_files\\arith.png")));
-        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("F:\\engineering\\fyp\\gens\\generated_files\\output_files\\aritht.png")));
+        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\output_files\\arith.png")));
+        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\output_files\\aritht.png")));
 
 
         List<MemoryDumpFile> memoryDumpFileList = new ArrayList<>();
@@ -44,15 +41,23 @@ public class Buildex {
 
 
         System.out.println("-------");
-        byte[] imageBuffer = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-        byte[] reversedImageBuffer = new byte[9];
-        int range = imageBuffer.length / 3 - 1;
-        for (int i = 0; i < imageBuffer.length / 3; i++) {//todo wrong reversion
-            for (int channel = 0; channel < 3; channel++) {
-                reversedImageBuffer[i + (range * channel)+channel] = imageBuffer[(range * (channel + 1)) + channel - i];
-            }
+        int[] imageBuffer = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        int[] reversedImageBuffer = new int[9];
+        for (int i = 0; i < imageBuffer.length; i += 3) {
+            int swapPosition = (3*3) - i - 3;
+            System.arraycopy(imageBuffer,i,reversedImageBuffer,swapPosition,3);
         }
-        for (byte x : reversedImageBuffer) {
+
+       /* int[] revereImageBufferCopy = Arrays.copyOf(reversedImageBuffer, reversedImageBuffer.length);
+        int channelGap = 3;
+        int channelLevelIndex = 0;
+        for (int i = 0; i < reversedImageBuffer.length; ) {
+            reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex];
+            reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + channelGap];
+            reversedImageBuffer[i++] = revereImageBufferCopy[channelLevelIndex + (2 * channelGap)];
+            channelLevelIndex++;
+        }*/
+        for (int x : reversedImageBuffer) {
             System.out.print(x + ",");
         }
 

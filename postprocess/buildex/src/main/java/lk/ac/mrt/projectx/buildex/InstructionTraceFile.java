@@ -25,13 +25,16 @@ public class InstructionTraceFile extends File {
         super(uri);
     }
 
+    public static InstructionTraceFile fromFile(File file) {
+        return new InstructionTraceFile(file.toURI());
+    }
     public static InstructionTraceFile getInstructionTraceFile(final String executableName, final String imageName, int threadId) {
         long maxlen = 0;
         InstructionTraceFile selectedFile = null;
         File[] files = Configurations.getOutputFolder().listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.getName().matches("instrace_" + executableName + "_" + imageName + "_instr\\d+\\.log");
+                return pathname.getName().matches("instrace_" + executableName + "_" + imageName + "_instr_\\d+\\.log");
             }
         });
 
@@ -46,21 +49,22 @@ public class InstructionTraceFile extends File {
     }
     public static InstructionTraceFile getDisassemblyInstructionTrace(final String executableName, final String imageName, int threadId) {
         long maxlen = 0;
-        InstructionTraceFile selectedFile = null;
+        File selectedFile = null;
         File[] files = Configurations.getOutputFolder().listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
-                return pathname.getName().matches("instrace_" + executableName + "_" + imageName + "_asm_instr\\d+\\.log");
+                String filename = new File(pathname.getName()).getName();
+                return filename.matches("instrace_" + executableName + "_" + imageName + "_asm_instr_\\d+\\.log");
             }
         });
 
         for (File file : files
                 ) {
             if(file != null && file.length() > maxlen) {
-                selectedFile = (InstructionTraceFile) file;
+                selectedFile = file;
                 maxlen = file.length();
             }
         }
-        return selectedFile;
+        return InstructionTraceFile.fromFile(selectedFile);
     }
 }

@@ -132,16 +132,10 @@ public class MainTest {
         }
         logger.info("max module - {}, max start addr - {}", maxModule.getName(), maxBasicBlock.getStartAddress());
 
-        long maxFunction = 0;
         logger.info("Finding the probable function...");
 
-        if (maxBasicBlock != null) {
-            RetAddress retAddress = new RetAddress((int) maxBasicBlock.getStartAddress(), 0);
-            LinkedList<RetAddress> queue = new LinkedList<>();
-            queue.add(retAddress);
-            ArrayList<Integer> processed = new ArrayList<>();
-            maxFunction = getProbableFuncEntrypoint(maxModule, queue, processed, 0);
-        }
+        long maxFunction = getProbableFunction(maxModule,maxBasicBlock.getStartAddress());
+
         logger.info("Enclosed function = {}", maxFunction);
 
         /* parsing memtrace files to pc_mem_regions */
@@ -180,7 +174,7 @@ public class MainTest {
                 logger.error("ERROR: bbinfo should be present");
             }
 
-            uint32_t func_start = get_probable_func(module, md, bbinfo -> start_addr);
+            long funcStart = getProbableFunction(md, bbInfo.getStartAddress());
 
         }
 
@@ -264,9 +258,9 @@ public class MainTest {
         }
     }
 
-    private static long getProbableFunction(ModuleInfo head, ModuleInfo current, long start_addr) {
+    private static long getProbableFunction(ModuleInfo current, long startAddr) {
 
-        BasicBlockInfo bb = BasicBlockInfo.findBasicBlock(current, start_addr);
+        BasicBlockInfo bb = BasicBlockInfo.findBasicBlock(current, startAddr);
         if (bb != null) {
             RetAddress retAddress = new RetAddress((int) bb.getStartAddress(), 0);
             LinkedList<RetAddress> queue = new LinkedList<>();

@@ -8,10 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 import lk.ac.mrt.projectx.buildex.ProjectXImage;
 
@@ -218,6 +215,12 @@ public class MainTest {
             }
         }
 
+        /* sort the probable function locations */
+        Collections.sort(funcInfo);
+        logger.info("Sorting the probable function locations - DONE!");
+
+
+
     }
 
 
@@ -285,7 +288,7 @@ public class MainTest {
         }
     }
 
-    private static class InternalFunctionInfo {
+    private static class InternalFunctionInfo implements Comparable{
         String name;
         long address;
         int frequency;
@@ -295,6 +298,18 @@ public class MainTest {
         public InternalFunctionInfo() {
             this.candidateInstructions = new ArrayList<>();
             this.bbStart = new ArrayList<>();
+        }
+
+        @Override
+        public int compareTo(Object o) {
+            InternalFunctionInfo other = (InternalFunctionInfo) o;
+            if(this.frequency>other.frequency){
+                return -1;
+            }else if(this.frequency<other.frequency){
+                return 1;
+            }else{
+                return 0;
+            }
         }
     }
 

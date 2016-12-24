@@ -227,6 +227,11 @@ public class MainTest {
         appPcData.setCandidateInstructions(funcInfo.get(0).candidateInstructions);
         appPcData.saveDataToFile();
 
+        // filter data file writing
+        FilterData filterData = new FilterData(filterFilesFolderPath+"\\"+exeFileName+".log");
+        filterData.setModuleName(funcInfo.get(0).name);
+        filterData.setFunctionAddress(funcInfo.get(0).address);
+        filterData.saveDataToFile();
 
 
     }

@@ -11,11 +11,12 @@ import java.util.ArrayList;
 /**
  * Created by Lasantha on 03-Dec-16.
  */
-public class AppPcData extends FilterData{
+public class AppPcData{
 
     private static final Logger logger = LogManager.getLogger(AppPcData.class);
 
     private String modulename;
+    private String fileName;
     private ArrayList<Integer> candidateInstructions;
 
     public AppPcData(String fileName) {
@@ -36,6 +37,14 @@ public class AppPcData extends FilterData{
 
     public void setCandidateInstructions(ArrayList<Integer> candidateInstructions) {
         this.candidateInstructions = candidateInstructions;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public void saveDataToFile(){

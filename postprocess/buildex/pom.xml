@@ -14,7 +14,7 @@
         </dependency>
     </dependencies>
     <packaging>pom</packaging>
-    <name>ProjectX Buildex</name>
+    <moduleName>ProjectX Buildex</moduleName>
 
     <parent>
         <groupId>lk.ac.mrt</groupId>

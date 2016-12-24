@@ -5,6 +5,16 @@ package lk.ac.mrt.projectx.preprocess;
  */
 public class FilterData {
     private String exeFileName;
+    private String fileName;
+
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public String getExeFileName() {
         return exeFileName;

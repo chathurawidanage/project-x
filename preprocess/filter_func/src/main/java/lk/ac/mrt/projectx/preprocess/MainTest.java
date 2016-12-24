@@ -102,11 +102,11 @@ public class MainTest {
 
         ModuleInfo module = ModuleInfo.getPopulatedModuleInfo(profileData.get(0));
 
-        ProjectXImage inImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+inImageFileName)));
-        logger.info("Input Image Read Done! - {}",imageFolderPath+"\\"+inImageFileName);
+        ProjectXImage inImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath + "\\" + inImageFileName)));
+        logger.info("Input Image Read Done! - {}", imageFolderPath + "\\" + inImageFileName);
 
-        ProjectXImage outImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath+"\\"+outImageFileName)));
-        logger.info("Output Image Read Done! - {}",imageFolderPath+"\\"+outImageFileName);
+        ProjectXImage outImage = new ProjectXImage(ImageIO.read(new File(imageFolderPath + "\\" + outImageFileName)));
+        logger.info("Output Image Read Done! - {}", imageFolderPath + "\\" + outImageFileName);
 
         // getting the highest executed basic block
         logger.info("Finding the highest executed basic block...");
@@ -115,13 +115,13 @@ public class MainTest {
         ModuleInfo tempModule = module;
         int maxFrequency = 0;
         BasicBlockInfo maxBasicBlock = null;
-        while (tempModule!=null){
+        while (tempModule != null) {
             ArrayList<FunctionInfo> functions = tempModule.getFunctions();
             for (int i = 0; i < functions.size(); i++) {
                 ArrayList<BasicBlockInfo> bbs = functions.get(i).getBasicBlocks();
                 for (int j = 0; j < bbs.size(); j++) {
                     BasicBlockInfo bb = bbs.get(j);
-                    if(bb.getFrequency()>maxFrequency){
+                    if (bb.getFrequency() > maxFrequency) {
                         maxFrequency = bb.getFrequency();
                         maxBasicBlock = bb;
                         maxModule = tempModule;
@@ -130,19 +130,19 @@ public class MainTest {
             }
             tempModule = tempModule.getNext();
         }
-        logger.info("max module - {}, max start addr - {}",maxModule.getName(),maxBasicBlock.getStartAddress());
+        logger.info("max module - {}, max start addr - {}", maxModule.getName(), maxBasicBlock.getStartAddress());
 
         long maxFunction = 0;
         logger.info("Finding the probable function...");
 
-        if(maxBasicBlock!=null){
-            RetAddress retAddress = new RetAddress((int)maxBasicBlock.getStartAddress(),0);
+        if (maxBasicBlock != null) {
+            RetAddress retAddress = new RetAddress((int) maxBasicBlock.getStartAddress(), 0);
             LinkedList<RetAddress> queue = new LinkedList<>();
             queue.add(retAddress);
             ArrayList<Integer> processed = new ArrayList<>();
-            maxFunction = getProbableFuncEntrypoint(maxModule,queue,processed,0);
+            maxFunction = getProbableFuncEntrypoint(maxModule, queue, processed, 0);
         }
-        logger.info("Enclosed function = {}",maxFunction);
+        logger.info("Enclosed function = {}", maxFunction);
 
         /* parsing memtrace files to pc_mem_regions */
 
@@ -150,34 +150,51 @@ public class MainTest {
         ArrayList<PcMemoryRegion> pcMems = PcMemoryRegion.getMemRegionFromMemTrace(memtraceData, module);
 
         logger.info("linking memory regions together...");
-        PcMemoryRegion.linkMemRegions(pcMems,1);    //TODO not tested
+        PcMemoryRegion.linkMemRegions(pcMems, 1);    //TODO not tested
 
         logger.info("filtering out insignificant regions...");
         /* all memory related information */
         /************* Skipped because not using this ***********/
 
-        if (bufferSize == 0){
-            PcMemoryRegion.filterMemRegions(pcMems,inImage,outImage,threshold);
-        }
-        else{
+        if (bufferSize == 0) {
+            PcMemoryRegion.filterMemRegions(pcMems, inImage, outImage, threshold);
+        } else {
             //TODO not implemented because not using here
             //filter_mem_regions_total(pc_mems, total_size, threshold);
         }
 
         logger.info("Memory regions filtering - DONE!");
 
+        ArrayList<InternalFunctionInfo> funcInfo = new ArrayList<>();
+
+        /* get the pc_mems and there functional info as well as filter the pc_mems which are not in the func */
+        for (int i = 0; i < pcMems.size(); i++) {
+            logger.info("Entered finding funcs...");
+            ModuleInfo md = ModuleInfo.findModuleByName(module, pcMems.get(i).getModule());
+            if (md == null) {
+                logger.error("ERROR: the module should be present");
+            }
+
+            BasicBlockInfo bbInfo = BasicBlockInfo.findBasicBlock(md, pcMems.get(i).getPc());
+            if(bbInfo==null){
+                logger.error("ERROR: bbinfo should be present");
+            }
+
+
+        }
 
     }
 
 
     private static final int MAX_RECURSE = 200;
-    private static long getProbableFuncEntrypoint(ModuleInfo current,LinkedList<RetAddress> bbStart, ArrayList<Integer> processed, int maxRecurse){
-        if(maxRecurse>MAX_RECURSE){
+
+    private static long getProbableFuncEntrypoint(ModuleInfo current, LinkedList<RetAddress> bbStart, ArrayList<Integer> processed, int maxRecurse) {
+        if (maxRecurse > MAX_RECURSE) {
             logger.warn("WARNING: max recursion limit reached!");
             return 0;
         }
 
-        if(bbStart.isEmpty()){
+        if (bbStart.isEmpty()) {
             return 0;
         }
 
@@ -185,37 +202,37 @@ public class MainTest {
         processed.add(retAddress.address);
 
         BasicBlockInfo bbinfo = findBbExact(current, retAddress.address);
-        if(bbinfo==null){
-            return getProbableFuncEntrypoint(current,bbStart,processed,maxRecurse+1);
+        if (bbinfo == null) {
+            return getProbableFuncEntrypoint(current, bbStart, processed, maxRecurse + 1);
         }
 
-        if(bbinfo.isCallTarget()){
+        if (bbinfo.isCallTarget()) {
             retAddress.ret--;
         }
-        if(retAddress.ret<0){
+        if (retAddress.ret < 0) {
             return bbinfo.getStartAddress();
         }
 
-        if(bbinfo.isRet() && maxRecurse>0){
+        if (bbinfo.isRet() && maxRecurse > 0) {
             retAddress.ret++;
         }
 
-        logger.info("Addr : {} , ret : {} , Freq : {}",retAddress.address, retAddress.ret, bbinfo.getFrequency());
+        logger.info("Addr : {} , ret : {} , Freq : {}", retAddress.address, retAddress.ret, bbinfo.getFrequency());
 
         for (int i = 0; i < bbinfo.getFromBasicBlocks().size(); i++) {
-            if(!processed.contains(bbinfo.getFromBasicBlocks().get(i).getTarget())){
-                bbStart.add(new RetAddress(bbinfo.getFromBasicBlocks().get(i).getTarget(),retAddress.ret));
+            if (!processed.contains(bbinfo.getFromBasicBlocks().get(i).getTarget())) {
+                bbStart.add(new RetAddress(bbinfo.getFromBasicBlocks().get(i).getTarget(), retAddress.ret));
             }
         }
-        return getProbableFuncEntrypoint(current,bbStart,processed,maxRecurse+1);
+        return getProbableFuncEntrypoint(current, bbStart, processed, maxRecurse + 1);
     }
 
-    private static BasicBlockInfo findBbExact(ModuleInfo module, long addr){
-        for (int i = 0; i < module.getFunctions().size(); i++){
+    private static BasicBlockInfo findBbExact(ModuleInfo module, long addr) {
+        for (int i = 0; i < module.getFunctions().size(); i++) {
             FunctionInfo func = module.getFunctions().get(i);
-            for (int j = 0; j < func.getBasicBlocks().size(); j++){
+            for (int j = 0; j < func.getBasicBlocks().size(); j++) {
                 BasicBlockInfo bb = func.getBasicBlocks().get(j);
-                if (bb.getStartAddress() == addr){
+                if (bb.getStartAddress() == addr) {
                     return bb;
                 }
             }
@@ -223,17 +240,17 @@ public class MainTest {
         return null;
     }
 
-    private static class RetAddress{
+    private static class RetAddress {
         int ret;
         int address;
 
-        public RetAddress( int address,int ret) {
+        public RetAddress(int address, int ret) {
             this.ret = ret;
             this.address = address;
         }
     }
 
-    private static class InternalFunctionInfo{
+    private static class InternalFunctionInfo {
         String name;
         int address;
         int frequency;

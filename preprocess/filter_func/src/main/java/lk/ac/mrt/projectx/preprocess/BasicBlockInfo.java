@@ -118,13 +118,13 @@ public class BasicBlockInfo {
     /* find the bb having the addr from a module
      * addr - any valid app_pc
      */
-    public static BasicBlockInfo findBasicBlock(ModuleInfo module, long addr) {
+    public static BasicBlockInfo findBasicBlock(ModuleInfo module, long address) {
 
         for (int i = 0; i < module.getFunctions().size(); i++) {
             FunctionInfo func = module.getFunctions().get(i);
             for (int j = 0; j < func.getBasicBlocks().size(); j++) {
                 BasicBlockInfo bb = func.getBasicBlocks().get(j);
-                if ((bb.getStartAddress() <= addr) && (addr < (bb.getStartAddress() + bb.getSize()))) {
+                if ((bb.getStartAddress() <= address) && (address < (bb.getStartAddress() + bb.getSize()))) {
                     return bb;
                 }
 

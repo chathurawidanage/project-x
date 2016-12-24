@@ -134,7 +134,7 @@ public class MainTest {
 
         logger.info("Finding the probable function...");
 
-        long maxFunction = getProbableFunction(maxModule,maxBasicBlock.getStartAddress());
+        long maxFunction = getProbableFunction(maxModule, maxBasicBlock.getStartAddress());
 
         logger.info("Enclosed function = {}", maxFunction);
 
@@ -176,6 +176,46 @@ public class MainTest {
 
             long funcStart = getProbableFunction(md, bbInfo.getStartAddress());
 
+            if (funcStart == 0) {
+                continue;
+            }
+
+            logger.info("module - {}, start - {} (in dec)",pcMems.get(i).getModule(),funcStart);
+
+            boolean isThere = false;
+            int index = 0;
+            for (int j = 0; j < funcInfo.size(); j++){
+                InternalFunctionInfo func = funcInfo.get(j);
+                if (func.address == funcStart && func.name.equals(md.getName())){
+                    isThere = true;
+                    index = j;
+                    break;
+                }
+            }
+
+            if (!isThere){
+                InternalFunctionInfo newFunc = new InternalFunctionInfo();
+                newFunc.name = md.getName();
+                newFunc.address = funcStart;
+                newFunc.frequency = 1;
+                newFunc.candidateInstructions.add(pcMems.get(i).getPc());
+                newFunc.bbStart.add(bbInfo.getStartAddress());
+                funcInfo.add(newFunc);
+            }
+            else{
+                funcInfo.get(index).frequency++;
+                boolean found = false;
+                for (int j = 0; j < funcInfo.get(index).candidateInstructions.size(); j++){
+                    if (pcMems.get(i).getPc() == funcInfo.get(index).candidateInstructions.get(j)){
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found){
+                    funcInfo.get(index).candidateInstructions.add(pcMems.get(i).getPc());
+                    funcInfo.get(index).bbStart.add(bbInfo.getStartAddress());
+                }
+            }
         }
 
     }
@@ -247,10 +287,10 @@ public class MainTest {
 
     private static class InternalFunctionInfo {
         String name;
-        int address;
+        long address;
         int frequency;
         ArrayList<Integer> candidateInstructions;
-        ArrayList<Integer> bbStart;
+        ArrayList<Long> bbStart;
 
         public InternalFunctionInfo() {
             this.candidateInstructions = new ArrayList<>();

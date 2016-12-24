@@ -33,7 +33,7 @@ public class MainTest {
     public MainTest() {
         this.outputFolderPath = "E:\\FYP\\Java Ported\\Test Files\\output_files";
         this.imageFolderPath = "E:\\FYP\\Java Ported\\Test Files\\images";
-        this.filterFilesFolderPath =  "E:\\FYP\\Java Ported\\Test Files\\filter_files";
+        this.filterFilesFolderPath = "E:\\FYP\\Java Ported\\Test Files\\filter_files";
         this.inImageFileName = "arith.png";
         this.outImageFileName = "aritht.png";
         this.exeFileName = "halide_threshold_test.exe";
@@ -179,20 +179,20 @@ public class MainTest {
                 continue;
             }
 
-            logger.info("module - {}, start - {} (in dec)",pcMems.get(i).getModule(),funcStart);
+            logger.info("module - {}, start - {} (in dec)", pcMems.get(i).getModule(), funcStart);
 
             boolean isThere = false;
             int index = 0;
-            for (int j = 0; j < funcInfo.size(); j++){
+            for (int j = 0; j < funcInfo.size(); j++) {
                 InternalFunctionInfo func = funcInfo.get(j);
-                if (func.address == funcStart && func.name.equals(md.getName())){
+                if (func.address == funcStart && func.name.equals(md.getName())) {
                     isThere = true;
                     index = j;
                     break;
                 }
             }
 
-            if (!isThere){
+            if (!isThere) {
                 InternalFunctionInfo newFunc = new InternalFunctionInfo();
                 newFunc.name = md.getName();
                 newFunc.address = funcStart;
@@ -200,17 +200,16 @@ public class MainTest {
                 newFunc.candidateInstructions.add(pcMems.get(i).getPc());
                 newFunc.bbStart.add(bbInfo.getStartAddress());
                 funcInfo.add(newFunc);
-            }
-            else{
+            } else {
                 funcInfo.get(index).frequency++;
                 boolean found = false;
-                for (int j = 0; j < funcInfo.get(index).candidateInstructions.size(); j++){
-                    if (pcMems.get(i).getPc() == funcInfo.get(index).candidateInstructions.get(j)){
+                for (int j = 0; j < funcInfo.get(index).candidateInstructions.size(); j++) {
+                    if (pcMems.get(i).getPc() == funcInfo.get(index).candidateInstructions.get(j)) {
                         found = true;
                         break;
                     }
                 }
-                if (!found){
+                if (!found) {
                     funcInfo.get(index).candidateInstructions.add(pcMems.get(i).getPc());
                     funcInfo.get(index).bbStart.add(bbInfo.getStartAddress());
                 }
@@ -222,17 +221,41 @@ public class MainTest {
         logger.info("Sorting the probable function locations - DONE!");
 
         // app pc data file writing.
-        AppPcData appPcData = new AppPcData(filterFilesFolderPath+"\\"+exeFileName+"_app_pc.log");
+        AppPcData appPcData = new AppPcData(filterFilesFolderPath + "\\" + exeFileName + "_app_pc.log");
         appPcData.setModuleName(funcInfo.get(0).name);
         appPcData.setCandidateInstructions(funcInfo.get(0).candidateInstructions);
         appPcData.saveDataToFile();
 
         // filter data file writing
-        FilterData filterData = new FilterData(filterFilesFolderPath+"\\"+exeFileName+".log");
+        FilterData filterData = new FilterData(filterFilesFolderPath + "\\" + exeFileName + ".log");
         filterData.setModuleName(funcInfo.get(0).name);
         filterData.setFunctionAddress(funcInfo.get(0).address);
         filterData.saveDataToFile();
 
+        /* print out the summary */
+        System.out.println("**********************Summary of localization**************************************");
+
+		/* print out the maximum executed basic block summary */
+        System.out.println("1. maximum executed basic block summary");
+        System.out.println(" module name - " + maxModule.getName());
+        System.out.println(" bb start addr - " + maxBasicBlock.getStartAddress());
+        System.out.println(" bb freq - " + maxBasicBlock.getFrequency());
+        System.out.println(" enclosed function - " + maxFunction);
+
+        System.out.println("2. functions accessing candidate instructions ");
+        /*print out the function with the most number of candidate instructions */
+        for (int i = 0; i < funcInfo.size(); i++) {
+            System.out.println((i + 1) + " - function");
+            System.out.println(" func addr - " + funcInfo.get(i).address);
+            System.out.println(" module name - " + funcInfo.get(i).name);
+            System.out.println(" amount of candidate instructions - " + funcInfo.get(i).frequency);
+            System.out.println(" candidate instructions - ");
+
+            ArrayList<Integer> candidateInstructions = funcInfo.get(i).candidateInstructions;
+            for (int j = 0; j < candidateInstructions.size(); j++) {
+                System.out.println("\t" + candidateInstructions.get(j) + " - " + funcInfo.get(i).bbStart.get(j));
+            }
+        }
 
     }
 
@@ -301,7 +324,7 @@ public class MainTest {
         }
     }
 
-    private static class InternalFunctionInfo implements Comparable{
+    private static class InternalFunctionInfo implements Comparable {
         String name;
         long address;
         int frequency;
@@ -316,11 +339,11 @@ public class MainTest {
         @Override
         public int compareTo(Object o) {
             InternalFunctionInfo other = (InternalFunctionInfo) o;
-            if(this.frequency>other.frequency){
+            if (this.frequency > other.frequency) {
                 return -1;
-            }else if(this.frequency<other.frequency){
+            } else if (this.frequency < other.frequency) {
                 return 1;
-            }else{
+            } else {
                 return 0;
             }
         }

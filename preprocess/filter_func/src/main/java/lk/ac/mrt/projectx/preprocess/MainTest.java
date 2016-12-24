@@ -176,10 +176,11 @@ public class MainTest {
             }
 
             BasicBlockInfo bbInfo = BasicBlockInfo.findBasicBlock(md, pcMems.get(i).getPc());
-            if(bbInfo==null){
+            if (bbInfo == null) {
                 logger.error("ERROR: bbinfo should be present");
             }
 
+            uint32_t func_start = get_probable_func(module, md, bbinfo -> start_addr);
 
         }
 
@@ -260,6 +261,21 @@ public class MainTest {
         public InternalFunctionInfo() {
             this.candidateInstructions = new ArrayList<>();
             this.bbStart = new ArrayList<>();
+        }
+    }
+
+    private static long getProbableFunction(ModuleInfo head, ModuleInfo current, long start_addr) {
+
+        BasicBlockInfo bb = BasicBlockInfo.findBasicBlock(current, start_addr);
+        if (bb != null) {
+            RetAddress retAddress = new RetAddress((int) bb.getStartAddress(), 0);
+            LinkedList<RetAddress> queue = new LinkedList<>();
+            queue.add(retAddress);
+            ArrayList<Integer> processed = new ArrayList<>();
+
+            return getProbableFuncEntrypoint(current, queue, processed, 0);
+        } else {
+            return 0;
         }
     }
 

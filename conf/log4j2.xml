@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
   <Appenders>
-    <Console moduleName="Console" target="SYSTEM_OUT">
+    <Console name="Console" target="SYSTEM_OUT">
       <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
     </Console>
-    <RollingFile moduleName="RollingFile" filename="log/helium.log"
+    <RollingFile name="RollingFile" filename="log/helium.log"
                  filepattern="${logPath}/%d{yyyy-MM-dd HH:mm:ss:SS}-helium.log">
       <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p %c{1}:%L - %msg%n" />
       <Policies>

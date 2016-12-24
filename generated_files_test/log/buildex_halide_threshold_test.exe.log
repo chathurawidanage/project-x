@@ -11,7 +11,7 @@ strides :
 32
 padding : 
 0
-moduleName =
+name =
 -------------------------------------------------------------------
 bytes per color = 1
 start = 4556704
@@ -24,7 +24,7 @@ strides :
 32
 padding : 
 0
-moduleName =
+name =
 -------------------------------------------------------------------
 bytes per color = 1
 start = 4557728
@@ -37,7 +37,7 @@ strides :
 32
 padding : 
 0
-moduleName =
+name =
 -------------------------------------------------------------------
 bytes per color = 1
 start = 4526080
@@ -50,7 +50,7 @@ strides :
 32
 padding : 
 0
-moduleName =
+name =
 -------------------------------------------------------------------
 link_mem_regions_greedy....
 *********** pc_mem_info *************
@@ -905,7 +905,7 @@ strides :
 32
 padding : 
 0
-moduleName = output_1
+name = output_1
 -------------------------------------------------------------------
 total memory regions ----->
 ------------------------------MEM REGIONS ----------------------------
@@ -921,7 +921,7 @@ strides :
 32
 padding : 
 0
-moduleName = input_1
+name = input_1
 -------------------------------------------------------------------
 bytes per color = 1
 start = 4526080
@@ -935,7 +935,7 @@ strides :
 32
 padding : 
 0
-moduleName = output_1
+name = output_1
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4524040
@@ -946,7 +946,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_2
+name = input_2
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4524068
@@ -957,7 +957,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_3
+name = input_3
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4524084
@@ -968,7 +968,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_4
+name = input_4
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4524100
@@ -979,7 +979,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_5
+name = input_5
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4558776
@@ -990,7 +990,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_6
+name = input_6
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4558804
@@ -1001,7 +1001,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_7
+name = input_7
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4558820
@@ -1012,7 +1012,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_8
+name = input_8
 -------------------------------------------------------------------
 bytes per color = 4
 start = 4558836
@@ -1023,7 +1023,7 @@ extents :
 strides : 
 4
 padding : 
-moduleName = input_9
+name = input_9
 -------------------------------------------------------------------
 dependant analysis-------->
 dependant statements

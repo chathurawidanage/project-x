@@ -33,6 +33,7 @@ public class MainTest {
     public MainTest() {
         this.outputFolderPath = "E:\\FYP\\Java Ported\\Test Files\\output_files";
         this.imageFolderPath = "E:\\FYP\\Java Ported\\Test Files\\images";
+        this.filterFilesFolderPath =  "E:\\FYP\\Java Ported\\Test Files\\filter_files";
         this.inImageFileName = "arith.png";
         this.outImageFileName = "aritht.png";
         this.exeFileName = "halide_threshold_test.exe";
@@ -54,6 +55,7 @@ public class MainTest {
     private final int ONE_IMAGE_MODE = 3;
 
     private String outputFolderPath;
+    private String filterFilesFolderPath;
     private String imageFolderPath;
     private String inImageFileName;
     private String outImageFileName;
@@ -218,6 +220,12 @@ public class MainTest {
         /* sort the probable function locations */
         Collections.sort(funcInfo);
         logger.info("Sorting the probable function locations - DONE!");
+
+        // app pc data file writing.
+        AppPcData appPcData = new AppPcData(filterFilesFolderPath+"\\"+exeFileName+"_app_pc.log");
+        appPcData.setModuleName(funcInfo.get(0).name);
+        appPcData.setCandidateInstructions(funcInfo.get(0).candidateInstructions);
+        appPcData.saveDataToFile();
 
 
 

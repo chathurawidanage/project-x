@@ -7,7 +7,7 @@
     <artifactId>preprocess-code-diff</artifactId>
     <version>0.0.1</version>
     <packaging>pom</packaging>
-    <moduleName>ProjectX Code Diff</moduleName>
+    <name>ProjectX Code Diff</name>
 
     <parent>
         <groupId>lk.ac.mrt</groupId>

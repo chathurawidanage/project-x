@@ -15,7 +15,7 @@ public class AppPcData extends FilterData{
 
     private static final Logger logger = LogManager.getLogger(AppPcData.class);
 
-    private String moduleName;
+    private String modulename;
     private ArrayList<Integer> candidateInstructions;
 
     public AppPcData(String fileName) {
@@ -23,11 +23,11 @@ public class AppPcData extends FilterData{
     }
 
     public String getModuleName() {
-        return moduleName;
+        return modulename;
     }
 
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
+    public void setModuleName(String name) {
+        this.modulename = name;
     }
 
     public ArrayList<Integer> getCandidateInstructions() {
@@ -46,7 +46,7 @@ public class AppPcData extends FilterData{
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.append("1");
             bufferedWriter.newLine();
-            bufferedWriter.append("\""+moduleName+"\"");
+            bufferedWriter.append("\""+ modulename +"\"");
             bufferedWriter.newLine();
             bufferedWriter.append(candidateInstructions.size()+"");
             bufferedWriter.newLine();

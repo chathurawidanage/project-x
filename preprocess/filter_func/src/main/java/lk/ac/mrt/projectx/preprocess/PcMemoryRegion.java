@@ -459,18 +459,18 @@ public class PcMemoryRegion {
     private static void filterMemRegionsMeminfo(ArrayList<MemoryInfo> mems, ProjectXImage inImage, ProjectXImage outImage, int minThreshold){
 
 	/* use a conservative guess to filter out unnecessary memory regions */
-        int in_image_area = inImage.getImage().getWidth() * inImage.getImage().getHeight();
-        int out_image_area = outImage.getImage().getWidth() * outImage.getImage().getHeight();
+        int inImageArea = inImage.getImage().getWidth() * inImage.getImage().getHeight();
+        int outImageArea = outImage.getImage().getWidth() * outImage.getImage().getHeight();
 
-        int min_area = in_image_area;
-        if(min_area>out_image_area){
-            min_area = out_image_area;
+        int minArea = inImageArea;
+        if(minArea>outImageArea){
+            minArea = outImageArea;
         }
 
         for (int i = 0; i < mems.size(); i++){
             long size = mems.get(i).getEnd() - mems.get(i).getStart();
             //if (size < 10){
-            if (size <  (min_area * minThreshold / 100) ){
+            if (size <  (minArea * minThreshold / 100) ){
                 mems.remove(i);
                 i--;
             }

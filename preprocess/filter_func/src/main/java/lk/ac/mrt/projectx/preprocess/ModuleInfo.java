@@ -214,4 +214,14 @@ public class ModuleInfo {
         return null;
     }
 
+    public static ModuleInfo findModuleByName(ModuleInfo head, String name){
+        while (head != null){
+            if (head.getName().equals(name)){
+                return head;
+            }
+            head = head.getNext();
+        }
+        return null;
+    }
+
 }

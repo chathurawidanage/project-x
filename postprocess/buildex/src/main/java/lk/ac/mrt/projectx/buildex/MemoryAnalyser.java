@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,13 +51,36 @@ public class MemoryAnalyser {
         }
     }
 
+    private void findAnyWhere(MemoryDumpFile memoryDumpFile,ProjectXImage image) throws IOException {
+        int[] imageBuffer = image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR);
+        byte[] memoryBuffer = memoryDumpFile.getMemoryBuffer();
+
+        ArrayList<Integer> locs=new ArrayList<>();
+        for(int pix:imageBuffer){
+            boolean found=false;
+            int pos=0;
+            for(byte x:memoryBuffer){
+                if((x & 0xff)==pix){locs.add(pos);
+                    found=true;
+                    break;
+                }
+                pos++;
+            }
+            if(!found){
+                System.out.println("Pixel not found");
+            }
+        }
+        Collections.sort(locs);
+        System.out.println(locs);
+    }
+
     //todo invalid implementation
     private List<Integer> backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image, boolean write) throws IOException {
         logger.info("Backward analyzing {}", memoryDumpFile.getFile().getName());
         int[] imageBuffer = image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR);
         int[] reversedImageBuffer = new int[imageBuffer.length];
 
-        //this is just for PLANAR
+        //todo this is just for PLANAR, will not work for INTERLEAVED
         for (int i = 0; i < imageBuffer.length; i += image.getImage().getWidth()) {
             int swapPosition = (image.getImage().getWidth()*image.getImage().getHeight()*3) - i - image.getImage().getWidth();
             System.arraycopy(imageBuffer,i,reversedImageBuffer,swapPosition,image.getImage().getWidth());
@@ -106,7 +130,7 @@ public class MemoryAnalyser {
                 last += (imageWidth);
                 startPoints.add(j);
                 j += (imageWidth - 1);
-                if (last == imageWidth * imageHeight * 3) {//todo multiply by 3??
+                if (last == imageWidth * imageHeight * 3) {//todo multiply by 3?? OK for planar, interleaved not required
                     logger.info("Scanned whole image {}",startPoints.size());
                     return startPoints;
                 }

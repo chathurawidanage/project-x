@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex;
 import com.sun.org.apache.xpath.internal.operations.String;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,7 +128,7 @@ public abstract class Node<T> {
         return false;
     }
 
-     public int removeBackwardReference(Node ref) {
+    public int removeBackwardReference(Node ref) {
         int count = 0;
         while (removeBackwardReferenceSingle(ref)) {
             count++;
@@ -174,17 +175,18 @@ public abstract class Node<T> {
     /**
      * This operation will carry out the below logic at the end
      * (dst -> this) => (dst -> src)
+     *
      * @param dst dst Node
      * @param src src Node
      */
-    private void changeReference(Node dst, Node src){
+    private void changeReference(Node dst, Node src) {
         /* In place forward reference and push back back ward reference
-	        replacing it at the exact same location is important for
+            replacing it at the exact same location is important for
 	        non-associative operations*/
         //TODO : Check whether need to run a loop and do this to many srcs of dst, currently doing it only to idx index
 
         int idx = dst.srcs.indexOf(this);
-        if(idx != -1){
+        if (idx != -1) {
             dst.srcs.set(idx, src);
             src.prev.add(dst);
             src.pos.add(idx);
@@ -194,12 +196,13 @@ public abstract class Node<T> {
 
     /**
      * Check whether this node refrence to any node having a indirect operation
+     *
      * @return if found a node with indirect operation return the index, -1 otherwise
      */
-    public int isIndirect(){
-        for(int i = 0 ; i < srcs.size(); i++){
+    public int isIndirect() {
+        for (int i = 0; i < srcs.size(); i++) {
             Node node = srcs.get(i);
-            if(node.operation == X86Analysis.Operation.op_indirect){
+            if (node.operation == X86Analysis.Operation.op_indirect) {
                 return i;
             }
         }
@@ -209,20 +212,25 @@ public abstract class Node<T> {
     /**
      * Remove all srcs
      */
-    public void removeAllForwardSrcs(){
-        for(Node node : srcs){
+    public void removeAllForwardSrcs() {
+        for (Node node : srcs) {
             this.removeForwardReference(node);
         }
     }
 
     /**
      * (dst -> this -> src)  => (dst -> src)
+     *
      * @param dst
      * @param src
      */
-    public void removeIntermediateNode(Node dst, Node src){
+    public void removeIntermediateNode(Node dst, Node src) {
         this.changeReference(dst, src);
         this.removeForwardReference(src);
     }
 
+    public Boolean CongregateNode() {
+
+        return false;
+    }
 }

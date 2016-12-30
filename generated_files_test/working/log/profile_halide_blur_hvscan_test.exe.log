@@ -1,0 +1,1376 @@
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 6884
+TAG  0x01351ae4
+ +0    L3              8d 4d f4             lea    ecx, [ebp-0x0c]
+ +3    L3              e8 74 3c 00 00       call   0x01355760
+END 0x01351ae4
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 6892
+TAG  0x01351aec
+ +0    L3              50                   push   eax
+ +1    L3              8d 4d f8             lea    ecx, [ebp-0x08]
+ +4    L3              e8 6b 3c 00 00       call   0x01355760
+END 0x01351aec
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 6901
+TAG  0x01351af5
+ +0    L3              50                   push   eax
+ +1    L3              e8 05 f5 ff ff       call   0x01351000
+END 0x01351af5
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4096
+TAG  0x01351000
+ +0    L3              55                   push   ebp
+ +1    L3              89 e5                mov    ebp, esp
+ +3    L3              53                   push   ebx
+ +4    L3              57                   push   edi
+ +5    L3              56                   push   esi
+ +6    L3              83 ec 4c             sub    esp, 0x4c
+ +9    L3              8b 55 08             mov    edx, dword ptr [ebp+0x08]
+ +12   L3              85 d2                test   edx, edx
+ +14   L3              0f 84 31 01 00 00    jz     0x01351145
+END 0x01351000
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4116
+TAG  0x01351014
+ +0    L3              8b 45 0c             mov    eax, dword ptr [ebp+0x0c]
+ +3    L3              8b 72 08             mov    esi, dword ptr [edx+0x08]
+ +6    L3              8b 0a                mov    ecx, dword ptr [edx]
+ +8    L3              0b 4a 04             or     ecx, dword ptr [edx+0x04]
+ +11   L3              09 f1                or     ecx, esi
+ +13   L3              0f 94 c1             setz   cl
+ +16   L3              85 c0                test   eax, eax
+ +18   L3              0f 84 26 01 00 00    jz     0x01351152
+END 0x01351014
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4140
+TAG  0x0135102c
+ +0    L3              89 75 bc             mov    dword ptr [ebp-0x44], esi
+ +3    L3              8b 72 0c             mov    esi, dword ptr [edx+0x0c]
+ +6    L3              89 75 e0             mov    dword ptr [ebp-0x20], esi
+ +9    L3              8b 72 10             mov    esi, dword ptr [edx+0x10]
+ +12   L3              89 75 d4             mov    dword ptr [ebp-0x2c], esi
+ +15   L3              8b 72 1c             mov    esi, dword ptr [edx+0x1c]
+ +18   L3              89 75 cc             mov    dword ptr [ebp-0x34], esi
+ +21   L3              8b 72 20             mov    esi, dword ptr [edx+0x20]
+ +24   L3              89 75 c0             mov    dword ptr [ebp-0x40], esi
+ +27   L3              8b 78 08             mov    edi, dword ptr [eax+0x08]
+ +30   L3              89 7d dc             mov    dword ptr [ebp-0x24], edi
+ +33   L3              8b 30                mov    esi, dword ptr [eax]
+ +35   L3              0b 70 04             or     esi, dword ptr [eax+0x04]
+ +38   L3              09 fe                or     esi, edi
+ +40   L3              8b 72 2c             mov    esi, dword ptr [edx+0x2c]
+ +43   L3              89 75 e4             mov    dword ptr [ebp-0x1c], esi
+ +46   L3              0f 94 c5             setz   ch
+ +49   L3              8b 72 30             mov    esi, dword ptr [edx+0x30]
+ +52   L3              89 75 d8             mov    dword ptr [ebp-0x28], esi
+ +55   L3              8b 72 3c             mov    esi, dword ptr [edx+0x3c]
+ +58   L3              89 75 e8             mov    dword ptr [ebp-0x18], esi
+ +61   L3              8b 70 0c             mov    esi, dword ptr [eax+0x0c]
+ +64   L3              89 75 f0             mov    dword ptr [ebp-0x10], esi
+ +67   L3              8b 70 10             mov    esi, dword ptr [eax+0x10]
+ +70   L3              89 75 ec             mov    dword ptr [ebp-0x14], esi
+ +73   L3              8b 70 1c             mov    esi, dword ptr [eax+0x1c]
+ +76   L3              89 75 d0             mov    dword ptr [ebp-0x30], esi
+ +79   L3              8b 70 20             mov    esi, dword ptr [eax+0x20]
+ +82   L3              89 75 c8             mov    dword ptr [ebp-0x38], esi
+ +85   L3              8b 58 2c             mov    ebx, dword ptr [eax+0x2c]
+ +88   L3              8b 78 30             mov    edi, dword ptr [eax+0x30]
+ +91   L3              8b 70 3c             mov    esi, dword ptr [eax+0x3c]
+ +94   L3              75 5d                jnz    0x013510e9
+END 0x0135102c
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4329
+TAG  0x013510e9
+ +0    L3              84 c9                test   cl, cl
+ +2    L3              74 72                jz     0x0135115f
+END 0x013510e9
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4447
+TAG  0x0135115f
+ +0    L3              84 ed                test   ch, ch
+ +2    L3              0f 85 8a 02 00 00    jnz    0x013513f1
+END 0x0135115f
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4455
+TAG  0x01351167
+ +0    L3              83 fe 01             cmp    esi, 0x01
+ +3    L3              75 24                jnz    0x01351190
+END 0x01351167
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4460
+TAG  0x0135116c
+ +0    L3              8b 45 e8             mov    eax, dword ptr [ebp-0x18]
+ +3    L3              83 f8 01             cmp    eax, 0x01
+ +6    L3              75 2d                jnz    0x013511a1
+END 0x0135116c
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4468
+TAG  0x01351174
+ +0    L3              8b 55 e4             mov    edx, dword ptr [ebp-0x1c]
+ +3    L3              39 da                cmp    edx, ebx
+ +5    L3              7e 37                jle    0x013511b2
+END 0x01351174
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4530
+TAG  0x013511b2
+ +0    L3              8b 45 f0             mov    eax, dword ptr [ebp-0x10]
+ +3    L3              8d 04 03             lea    eax, [ebx+eax]
+ +6    L3              b9 02 00 00 00       mov    ecx, 0x00000002
+ +11   L3              8b 75 e0             mov    esi, dword ptr [ebp-0x20]
+ +14   L3              29 f1                sub    ecx, esi
+ +16   L3              01 c1                add    ecx, eax
+ +18   L3              39 d1                cmp    ecx, edx
+ +20   L3              7e 1a                jle    0x013511e2
+END 0x013511b2
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4578
+TAG  0x013511e2
+ +0    L3              8b 4d d8             mov    ecx, dword ptr [ebp-0x28]
+ +3    L3              39 f9                cmp    ecx, edi
+ +5    L3              7e 15                jle    0x013511fe
+END 0x013511e2
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4606
+TAG  0x013511fe
+ +0    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +3    L3              8d 34 07             lea    esi, [edi+eax]
+ +6    L3              b8 02 00 00 00       mov    eax, 0x00000002
+ +11   L3              8b 55 d4             mov    edx, dword ptr [ebp-0x2c]
+ +14   L3              29 d0                sub    eax, edx
+ +16   L3              01 f0                add    eax, esi
+ +18   L3              39 c8                cmp    eax, ecx
+ +20   L3              7e 1a                jle    0x0135122e
+END 0x013511fe
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4654
+TAG  0x0135122e
+ +0    L3              83 7d d0 01          cmp    dword ptr [ebp-0x30], 0x01
+ +4    L3              0f 85 96 01 00 00    jnz    0x013513ce
+END 0x0135122e
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4664
+TAG  0x01351238
+ +0    L3              83 7d cc 01          cmp    dword ptr [ebp-0x34], 0x01
+ +4    L3              0f 85 96 01 00 00    jnz    0x013513d8
+END 0x01351238
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4674
+TAG  0x01351242
+ +0    L3              8b 45 c8             mov    eax, dword ptr [ebp-0x38]
+ +3    L3              f7 6d ec             imul   edx, eax, dword ptr [ebp-0x14]
+ +6    L3              85 c0                test   eax, eax
+ +8    L3              0f 99 c0             setns  al
+ +11   L3              85 d2                test   edx, edx
+ +13   L3              0f 98 c1             sets   cl
+ +16   L3              74 02                jz     0x01351256
+END 0x01351242
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4694
+TAG  0x01351256
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 84 01 00 00    jz     0x013513e2
+END 0x01351256
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4702
+TAG  0x0135125e
+ +0    L3              b9 00 00 00 80       mov    ecx, 0x80000000
+ +5    L3              8b 45 ec             mov    eax, dword ptr [ebp-0x14]
+ +8    L3              f7 6d f0             imul   edx, eax, dword ptr [ebp-0x10]
+ +11   L3              39 c8                cmp    eax, ecx
+ +13   L3              0f 92 c0             setb   al
+ +16   L3              85 d2                test   edx, edx
+ +18   L3              0f 98 c2             sets   dl
+ +21   L3              74 02                jz     0x01351277
+END 0x0135125e
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4727
+TAG  0x01351277
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 76 01 00 00    jz     0x013513f5
+END 0x01351277
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4735
+TAG  0x0135127f
+ +0    L3              89 75 b8             mov    dword ptr [ebp-0x48], esi
+ +3    L3              8b 45 c0             mov    eax, dword ptr [ebp-0x40]
+ +6    L3              f7 6d d4             imul   edx, eax, dword ptr [ebp-0x2c]
+ +9    L3              39 c8                cmp    eax, ecx
+ +11   L3              0f 92 c0             setb   al
+ +14   L3              85 d2                test   edx, edx
+ +16   L3              0f 98 c2             sets   dl
+ +19   L3              74 02                jz     0x01351296
+END 0x0135127f
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4758
+TAG  0x01351296
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 61 01 00 00    jz     0x013513ff
+END 0x01351296
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4766
+TAG  0x0135129e
+ +0    L3              8b 45 d4             mov    eax, dword ptr [ebp-0x2c]
+ +3    L3              f7 6d e0             imul   edx, eax, dword ptr [ebp-0x20]
+ +6    L3              39 c8                cmp    eax, ecx
+ +8    L3              0f 92 c0             setb   al
+ +11   L3              85 d2                test   edx, edx
+ +13   L3              0f 98 c1             sets   cl
+ +16   L3              74 02                jz     0x013512b2
+END 0x0135129e
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4786
+TAG  0x013512b2
+ +0    L3              84 c0                test   al, al
+ +2    L3              0f 84 4f 01 00 00    jz     0x01351409
+END 0x013512b2
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4794
+TAG  0x013512ba
+ +0    L3              83 7d ec 00          cmp    dword ptr [ebp-0x14], 0x00
+ +4    L3              0f 8e 2d 01 00 00    jle    0x013513f1
+END 0x013512ba
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4804
+TAG  0x013512c4
+ +0    L3              89 5d c4             mov    dword ptr [ebp-0x3c], ebx
+ +3    L3              89 f9                mov    ecx, edi
+ +5    L3              83 7d f0 00          cmp    dword ptr [ebp-0x10], 0x00
+ +9    L3              0f 8e 19 01 00 00    jle    0x013513ec
+END 0x013512c4
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4819
+TAG  0x013512d3
+ +0    L3              8b 45 c0             mov    eax, dword ptr [ebp-0x40]
+ +3    L3              8b 7d d8             mov    edi, dword ptr [ebp-0x28]
+ +6    L3              0f af f8             imul   edi, eax
+ +9    L3              8b 75 e4             mov    esi, dword ptr [ebp-0x1c]
+ +12   L3              01 fe                add    esi, edi
+ +14   L3              89 ca                mov    edx, ecx
+ +16   L3              0f af d0             imul   edx, eax
+ +19   L3              29 f2                sub    edx, esi
+ +21   L3              89 55 d8             mov    dword ptr [ebp-0x28], edx
+ +24   L3              8d 51 01             lea    edx, [ecx+0x01]
+ +27   L3              0f af d0             imul   edx, eax
+ +30   L3              29 f2                sub    edx, esi
+ +32   L3              89 55 d4             mov    dword ptr [ebp-0x2c], edx
+ +35   L3              8d 51 02             lea    edx, [ecx+0x02]
+ +38   L3              0f af d0             imul   edx, eax
+ +41   L3              29 f2                sub    edx, esi
+ +43   L3              89 55 e0             mov    dword ptr [ebp-0x20], edx
+ +46   L3              31 f6                xor    esi, esi
+ +48   L3              8b 45 c4             mov    eax, dword ptr [ebp-0x3c]
+ +51   L3              89 75 cc             mov    dword ptr [ebp-0x34], esi
+ +54   L3              89 45 c4             mov    dword ptr [ebp-0x3c], eax
+ +57   L3              41                   inc    ecx
+ +58   L3              89 4d d0             mov    dword ptr [ebp-0x30], ecx
+ +61   L3              89 75 ec             mov    dword ptr [ebp-0x14], esi
+ +64   L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +67   L3              8b 75 bc             mov    esi, dword ptr [ebp-0x44]
+ +70   L3              89 4d e8             mov    dword ptr [ebp-0x18], ecx
+ +73   L3              8b 4d e0             mov    ecx, dword ptr [ebp-0x20]
+ +76   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +79   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +84   L3              0f b6 5c 0e 01       movzx  ebx, byte ptr [esi+ecx+0x01]
+ +89   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +93   L3              01 d3                add    ebx, edx
+ +95   L3              01 cb                add    ebx, ecx
+ +97   L3              8b 4d d4             mov    ecx, dword ptr [ebp-0x2c]
+ +100  L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +103  L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +108  L3              0f b6 7c 0e 01       movzx  edi, byte ptr [esi+ecx+0x01]
+ +113  L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +117  L3              01 d7                add    edi, edx
+ +119  L3              01 cf                add    edi, ecx
+ +121  L3              8b 4d d8             mov    ecx, dword ptr [ebp-0x28]
+ +124  L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +127  L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +132  L3              89 55 e4             mov    dword ptr [ebp-0x1c], edx
+ +135  L3              0f b6 54 0e 01       movzx  edx, byte ptr [esi+ecx+0x01]
+ +140  L3              03 55 e4             add    edx, dword ptr [ebp-0x1c]
+ +143  L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +147  L3              01 ca                add    edx, ecx
+ +149  L3              0f b7 cb             movzx  ecx, bx
+ +152  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +158  L3              c1 e9 11             shr    ecx, 0x11
+ +161  L3              0f b7 ff             movzx  edi, di
+ +164  L3              69 ff ab aa 00 00    imul   edi, edi, 0x0000aaab
+ +170  L3              c1 ef 11             shr    edi, 0x11
+ +173  L3              01 cf                add    edi, ecx
+ +175  L3              0f b7 ca             movzx  ecx, dx
+ +178  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +184  L3              c1 e9 11             shr    ecx, 0x11
+ +187  L3              01 cf                add    edi, ecx
+ +189  L3              0f b7 cf             movzx  ecx, di
+ +192  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +198  L3              c1 e9 11             shr    ecx, 0x11
+ +201  L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +204  L3              8b 7d dc             mov    edi, dword ptr [ebp-0x24]
+ +207  L3              88 0c 17             mov    byte ptr [edi+edx], cl
+ +210  L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +213  L3              42                   inc    edx
+ +214  L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +217  L3              40                   inc    eax
+ +218  L3              49                   dec    ecx
+ +219  L3              0f 85 65 ff ff ff    jnz    0x01351319
+END 0x013512d3
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4889
+TAG  0x01351319
+ +0    L3              89 4d e8             mov    dword ptr [ebp-0x18], ecx
+ +3    L3              8b 4d e0             mov    ecx, dword ptr [ebp-0x20]
+ +6    L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +9    L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +14   L3              0f b6 5c 0e 01       movzx  ebx, byte ptr [esi+ecx+0x01]
+ +19   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +23   L3              01 d3                add    ebx, edx
+ +25   L3              01 cb                add    ebx, ecx
+ +27   L3              8b 4d d4             mov    ecx, dword ptr [ebp-0x2c]
+ +30   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +33   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +38   L3              0f b6 7c 0e 01       movzx  edi, byte ptr [esi+ecx+0x01]
+ +43   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +47   L3              01 d7                add    edi, edx
+ +49   L3              01 cf                add    edi, ecx
+ +51   L3              8b 4d d8             mov    ecx, dword ptr [ebp-0x28]
+ +54   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +57   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +62   L3              89 55 e4             mov    dword ptr [ebp-0x1c], edx
+ +65   L3              0f b6 54 0e 01       movzx  edx, byte ptr [esi+ecx+0x01]
+ +70   L3              03 55 e4             add    edx, dword ptr [ebp-0x1c]
+ +73   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +77   L3              01 ca                add    edx, ecx
+ +79   L3              0f b7 cb             movzx  ecx, bx
+ +82   L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +88   L3              c1 e9 11             shr    ecx, 0x11
+ +91   L3              0f b7 ff             movzx  edi, di
+ +94   L3              69 ff ab aa 00 00    imul   edi, edi, 0x0000aaab
+ +100  L3              c1 ef 11             shr    edi, 0x11
+ +103  L3              01 cf                add    edi, ecx
+ +105  L3              0f b7 ca             movzx  ecx, dx
+ +108  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +114  L3              c1 e9 11             shr    ecx, 0x11
+ +117  L3              01 cf                add    edi, ecx
+ +119  L3              0f b7 cf             movzx  ecx, di
+ +122  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +128  L3              c1 e9 11             shr    ecx, 0x11
+ +131  L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +134  L3              8b 7d dc             mov    edi, dword ptr [ebp-0x24]
+ +137  L3              88 0c 17             mov    byte ptr [edi+edx], cl
+ +140  L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +143  L3              42                   inc    edx
+ +144  L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +147  L3              40                   inc    eax
+ +148  L3              49                   dec    ecx
+ +149  L3              0f 85 65 ff ff ff    jnz    0x01351319
+END 0x01351319
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 5044
+TAG  0x013513b4
+ +0    L3              8b 75 cc             mov    esi, dword ptr [ebp-0x34]
+ +3    L3              03 75 c8             add    esi, dword ptr [ebp-0x38]
+ +6    L3              8b 45 c4             mov    eax, dword ptr [ebp-0x3c]
+ +9    L3              03 45 c0             add    eax, dword ptr [ebp-0x40]
+ +12   L3              8b 4d d0             mov    ecx, dword ptr [ebp-0x30]
+ +15   L3              3b 4d b8             cmp    ecx, dword ptr [ebp-0x48]
+ +18   L3              0f 85 3a ff ff ff    jnz    0x01351306
+END 0x013513b4
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4870
+TAG  0x01351306
+ +0    L3              89 75 cc             mov    dword ptr [ebp-0x34], esi
+ +3    L3              89 45 c4             mov    dword ptr [ebp-0x3c], eax
+ +6    L3              41                   inc    ecx
+ +7    L3              89 4d d0             mov    dword ptr [ebp-0x30], ecx
+ +10   L3              89 75 ec             mov    dword ptr [ebp-0x14], esi
+ +13   L3              8b 4d f0             mov    ecx, dword ptr [ebp-0x10]
+ +16   L3              8b 75 bc             mov    esi, dword ptr [ebp-0x44]
+ +19   L3              89 4d e8             mov    dword ptr [ebp-0x18], ecx
+ +22   L3              8b 4d e0             mov    ecx, dword ptr [ebp-0x20]
+ +25   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +28   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +33   L3              0f b6 5c 0e 01       movzx  ebx, byte ptr [esi+ecx+0x01]
+ +38   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +42   L3              01 d3                add    ebx, edx
+ +44   L3              01 cb                add    ebx, ecx
+ +46   L3              8b 4d d4             mov    ecx, dword ptr [ebp-0x2c]
+ +49   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +52   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +57   L3              0f b6 7c 0e 01       movzx  edi, byte ptr [esi+ecx+0x01]
+ +62   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +66   L3              01 d7                add    edi, edx
+ +68   L3              01 cf                add    edi, ecx
+ +70   L3              8b 4d d8             mov    ecx, dword ptr [ebp-0x28]
+ +73   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +76   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +81   L3              89 55 e4             mov    dword ptr [ebp-0x1c], edx
+ +84   L3              0f b6 54 0e 01       movzx  edx, byte ptr [esi+ecx+0x01]
+ +89   L3              03 55 e4             add    edx, dword ptr [ebp-0x1c]
+ +92   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +96   L3              01 ca                add    edx, ecx
+ +98   L3              0f b7 cb             movzx  ecx, bx
+ +101  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +107  L3              c1 e9 11             shr    ecx, 0x11
+ +110  L3              0f b7 ff             movzx  edi, di
+ +113  L3              69 ff ab aa 00 00    imul   edi, edi, 0x0000aaab
+ +119  L3              c1 ef 11             shr    edi, 0x11
+ +122  L3              01 cf                add    edi, ecx
+ +124  L3              0f b7 ca             movzx  ecx, dx
+ +127  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +133  L3              c1 e9 11             shr    ecx, 0x11
+ +136  L3              01 cf                add    edi, ecx
+ +138  L3              0f b7 cf             movzx  ecx, di
+ +141  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +147  L3              c1 e9 11             shr    ecx, 0x11
+ +150  L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +153  L3              8b 7d dc             mov    edi, dword ptr [ebp-0x24]
+ +156  L3              88 0c 17             mov    byte ptr [edi+edx], cl
+ +159  L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +162  L3              42                   inc    edx
+ +163  L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +166  L3              40                   inc    eax
+ +167  L3              49                   dec    ecx
+ +168  L3              0f 85 65 ff ff ff    jnz    0x01351319
+END 0x01351306
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 4889
+TAG  0x01351319
+ +0    L3              89 4d e8             mov    dword ptr [ebp-0x18], ecx
+ +3    L3              8b 4d e0             mov    ecx, dword ptr [ebp-0x20]
+ +6    L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +9    L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +14   L3              0f b6 5c 0e 01       movzx  ebx, byte ptr [esi+ecx+0x01]
+ +19   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +23   L3              01 d3                add    ebx, edx
+ +25   L3              01 cb                add    ebx, ecx
+ +27   L3              8b 4d d4             mov    ecx, dword ptr [ebp-0x2c]
+ +30   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +33   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +38   L3              0f b6 7c 0e 01       movzx  edi, byte ptr [esi+ecx+0x01]
+ +43   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +47   L3              01 d7                add    edi, edx
+ +49   L3              01 cf                add    edi, ecx
+ +51   L3              8b 4d d8             mov    ecx, dword ptr [ebp-0x28]
+ +54   L3              8d 0c 01             lea    ecx, [ecx+eax]
+ +57   L3              0f b6 54 0e 02       movzx  edx, byte ptr [esi+ecx+0x02]
+ +62   L3              89 55 e4             mov    dword ptr [ebp-0x1c], edx
+ +65   L3              0f b6 54 0e 01       movzx  edx, byte ptr [esi+ecx+0x01]
+ +70   L3              03 55 e4             add    edx, dword ptr [ebp-0x1c]
+ +73   L3              0f b6 0c 0e          movzx  ecx, byte ptr [esi+ecx]
+ +77   L3              01 ca                add    edx, ecx
+ +79   L3              0f b7 cb             movzx  ecx, bx
+ +82   L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +88   L3              c1 e9 11             shr    ecx, 0x11
+ +91   L3              0f b7 ff             movzx  edi, di
+ +94   L3              69 ff ab aa 00 00    imul   edi, edi, 0x0000aaab
+ +100  L3              c1 ef 11             shr    edi, 0x11
+ +103  L3              01 cf                add    edi, ecx
+ +105  L3              0f b7 ca             movzx  ecx, dx
+ +108  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +114  L3              c1 e9 11             shr    ecx, 0x11
+ +117  L3              01 cf                add    edi, ecx
+ +119  L3              0f b7 cf             movzx  ecx, di
+ +122  L3              69 c9 ab aa 00 00    imul   ecx, ecx, 0x0000aaab
+ +128  L3              c1 e9 11             shr    ecx, 0x11
+ +131  L3              8b 55 ec             mov    edx, dword ptr [ebp-0x14]
+ +134  L3              8b 7d dc             mov    edi, dword ptr [ebp-0x24]
+ +137  L3              88 0c 17             mov    byte ptr [edi+edx], cl
+ +140  L3              8b 4d e8             mov    ecx, dword ptr [ebp-0x18]
+ +143  L3              42                   inc    edx
+ +144  L3              89 55 ec             mov    dword ptr [ebp-0x14], edx
+ +147  L3              40                   inc    eax
+ +148  L3              49                   dec    ecx
+ +149  L3              0f 85 65 ff ff ff    jnz    0x01351319
+END 0x01351319
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 5068
+TAG  0x013513cc
+ +0    L3              eb 23                jmp    0x013513f1
+END 0x013513cc
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 5105
+TAG  0x013513f1
+ +0    L3              31 c0                xor    eax, eax
+ +2    L3              eb 2d                jmp    0x01351422
+END 0x013513f1
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 5154
+TAG  0x01351422
+ +0    L3              83 c4 4c             add    esp, 0x4c
+ +3    L3              5e                   pop    esi
+ +4    L3              5f                   pop    edi
+ +5    L3              5b                   pop    ebx
+ +6    L3              5d                   pop    ebp
+ +7    L3              c3                   ret    
+END 0x01351422
+
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe 6907
+TAG  0x01351afb
+ +0    L3              83 c4 08             add    esp, 0x08
+ +3    L3              51                   push   ecx
+ +4    L3              8b cc                mov    ecx, esp
+ +6    L3              8d 55 f4             lea    edx, [ebp-0x0c]
+ +9    L3              52                   push   edx
+ +10   L3              e8 d6 08 00 00       call   0x013523e0
+END 0x01351afb
+
+20
+C:\Windows\syswow64\kernel32.dll
+2141e680
+111
+133b8
+13509
+11450
+111f8
+11725
+114e9
+134b0
+11222
+14d28
+14f2b
+14208
+14d40
+151b3
+13531
+151a1
+151e3
+1170d
+151cb
+111c0
+11252
+111a9
+1179c
+14493
+15189
+1192e
+11946
+947f1
+114b1
+114c9
+187c9
+14a2d
+149ca
+13519
+15235
+11245
+13e8e
+1719c
+1745e
+13777
+11400
+113f0
+11484
+132a9
+15063
+1328c
+149d7
+134d5
+1110c
+11328
+132d3
+13ed3
+11462
+111e0
+13299
+1168c
+114fb
+13c42
+1199e
+140d4
+13f5c
+159e2
+11909
+118f1
+11826
+11410
+12d3c
+153ae
+117d1
+1196e
+15506
+14407
+1588e
+2d0a7
+2d16f
+2cfdf
+1492b
+14891
+11916
+148e5
+11ae5
+1233b
+11ca5
+2c17c
+11cf0
+2b7df
+1372a
+12081
+2e127
+2cdc5
+2ce2e
+11748
+149ad
+1472f
+14759
+133a0
+11809
+1195e
+15929
+11700
+2d5cd
+11282
+116c5
+11136
+2d582
+135b7
+14a6f
+17a10
+13587
+1359f
+134c8
+1111e
+C:\Users\FYP\Downloads\SundayMeeting\halide_blur_hvscan_test.exe
+6c6c642e
+51
+ac26
+a2dd
+722b
+a354
+e274
+e9a7
+1324e
+16bd
+174c
+170a
+3ef0
+16eb
+3c50
+4cf0
+1742
+176e
+1762
+16d3
+16df
+16b0
+16a0
+15c0
+15e0
+1600
+1620
+1640
+1660
+1680
+3430
+5760
+1000
+23e0
+1c420
+1c410
+1c400
+1c443
+1c439
+3400
+1c46b
+6020
+1c475
+1c44d
+1c457
+5e2b
+1c461
+1c42f
+12e7d
+f3e4
+1bae5
+a3c7
+f0e2
+C:\Windows\SysWOW64\ntdll.dll
+642e4553
+140
+40fcb
+2e208
+2fcf7
+2eb35
+2e198
+301aa
+2e691
+2e66d
+361ed
+222ef
+347a6
+3ea63
+2e026
+222b0
+22270
+37f47
+37f5e
+2df85
+36b95
+36c3c
+2e126
+1fbc8
+329f1
+329ab
+39d35
+33002
+40249
+32c42
+1fda0
+1fac8
+3873a
+36ac8
+32740
+2f79b
+3692e
+210b0
+1fb98
+1f9d0
+1fa18
+1fa98
+37d73
+3c43a
+3a921
+200a4
+3a901
+1ff94
+1fc40
+2ebdc
+383fc
+1f8c8
+1ff64
+20894
+39f73
+3b988
+20058
+399a7
+2e545
+423cf
+33164
+2ec78
+5aabd
+423fa
+3261b
+2e819
+41f2d
+325d2
+221f1
+424e0
+22159
+32626
+3260a
+77a7f
+393e2
+1fbe0
+1fec8
+3931b
+42c94
+42e73
+42ec1
+42d21
+42e50
+42cc2
+20218
+4241f
+20138
+3ad15
+3a942
+2e7f3
+1fa00
+1fc70
+1ff7c
+1fc28
+1f8e0
+345f5
+3814c
+38200
+5cff2
+380ee
+381cb
+3da15
+325e8
+329d5
+3e8f0
+40d76
+37de3
+393b2
+3b141
+385cb
+38626
+1fa80
+3855f
+21008
+41f6e
+64654
+1fab0
+2078c
+1f8ac
+1fb7c
+38242
+3e8bd
+2e6b5
+39953
+1fa30
+1f918
+1f9b4
+411d7
+5d598
+5d5fa
+49d8e
+58de8
+5931d
+1f99c
+592cd
+5941a
+59241
+5939e
+5938a
+595a0
+593d9
+38456
+C:\Windows\syswow64\KERNELBASE.dll
+642e4553
+16
+35e3c
+35e48
+ec0b
+7478
+12e1a
+12e59
+6a50
+1c06c
+1d76b
+1c05b
+13fa7
+6a64
+13e61
+10c05
+6a8c
+6a78
+C:\Windows\syswow64\GDI32.dll
+6c6c642e
+19
+177cf
+17c2e
+14de0
+154f4
+17bcc
+14eb8
+15f49
+16001
+15689
+16143
+15e5c
+1795a
+15a86
+155d3
+1d753
+1d71e
+158b3
+16368
+16343
+C:\Windows\WinSxS\x86_microsoft.windows.gdiplus_6595b64144ccf1df_1.1.7601.17514_none_72d18a4386696c80\gdiplus.dll
+6c6c642e
+104
+5b153
+b75d9
+b741a
+47832
+478ca
+4756e
+9867c
+9835b
+987ff
+98506
+988b8
+98376
+98a6e
+5ed3b
+69107
+5f0d2
+10d206
+10f9a1
+10f8c6
+10bb0d
+10adaa
+10abc1
+10ad98
+11a235
+10fa7b
+10b655
+10ac1a
+5a994
+10d97b
+119380
+11beb0
+10a20f
+10b756
+11a28c
+609ef
+62624
+625f5
+61fb9
+10d9d3
+11bcdc
+10f1d7
+11bd14
+10f204
+11c142
+10ed15
+10eea4
+10f526
+10eeeb
+10f610
+1191f9
+10df89
+10f746
+60172
+64455
+62cf2
+10d221
+10da7b
+119180
+10b6db
+645f4
+10f703
+5aaab
+10e8bf
+67b3d
+1178bb
+10ac2a
+10abde
+1120de
+5a943
+11684a
+115100
+10abea
+104768
+10efce
+111a97
+10adbc
+10f2a2
+111903
+1180f8
+1168ab
+117ead
+110dca
+117b5e
+1153fe
+110531
+1160a7
+115157
+11089d
+1111ef
+1106e2
+115f26
+11225b
+112375
+10ad52
+7ba64
+9fbc8
+5970d
+b7933
+b6cf5
+b653e
+59777
+b3d1b
+79dd8
+9d026
+C:\Windows\syswow64\USER32.dll
+6c6c642e
+34
+2451a
+244d7
+24413
+24572
+17d2f
+17c55
+16c3c
+2434b
+1a244
+19d7d
+20afa
+1d22e
+1810b
+19ebd
+1b6d2
+243bc
+1a6d8
+172a4
+16e19
+1b142
+188f7
+1b17d
+1b422
+185e8
+172c4
+17446
+20b4a
+19a55
+199f4
+1dced
+18d26
+1b238
+19f84
+1b6ed
+C:\Windows\syswow64\msvcrt.dll
+642e4553
+9
+a472
+9cee
+aae3
+9e12
+a850
+9894
+13595
+135c9
+1362b
+C:\Windows\syswow64\ADVAPI32.dll
+642e4553
+11
+149e5
+149ff
+1468d
+1469d
+148cc
+20e5d
+20eca
+20e7d
+20ee7
+20f19
+20ea3
+C:\Windows\syswow64\RPCRT4.dll
+6c6c642e
+1
+10569
+C:\Windows\syswow64\CRYPTBASE.dll
+6c6c642e
+1
+10e1
+C:\Windows\syswow64\ole32.dll
+6c642e65
+48
+4ba3d
+4ea4c
+4ea2d
+56f41
+56e4e
+2363b
+422ec
+23e5e
+1e819
+1e389
+24019
+238bd
+23879
+43d79
+3e965
+3e984
+3e974
+3ebe8
+3e922
+3eb96
+3ebb8
+3e913
+3e904
+3e8f5
+3e8e6
+3e8d7
+3e8cf
+3eb77
+3e8c7
+3e8b8
+3e8a9
+3e89a
+3e88b
+3e87c
+3e86d
+3e85e
+3e84f
+3e840
+3e831
+3e822
+3e813
+3e804
+3e7f5
+3e7e6
+3e7d7
+3e7c8
+3e7b9
+3eb55
+C:\Windows\system32\IMM32.DLL
+6c642e45
+5
+1158f
+115d0
+1163c
+11888
+1197a
+C:\Windows\syswow64\MSCTF.dll
+6c642e45
+5
+168b
+291e
+290f
+2900
+28f1
+C:\Windows\SysWOW64\WindowsCodecs.dll
+6c6c642e
+236
+117e1
+11f7d
+122db
+1200a
+1201b
+1202c
+123ba
+12046
+1208d
+120d5
+1211d
+12165
+121a9
+1223e
+12248
+12267
+11000
+240d
+2355
+242c
+10f4d
+11199
+111b8
+10f8d
+10fa8
+10f66
+7113
+6f91
+11141
+1dc5
+1ab86
+1308b
+89cd
+12c5d
+a111
+a280
+107c7
+a23b
+1ecf2
+8b1d
+12b19
+11325
+10a70
+10aef
+11352
+1122d
+89c1
+1a260
+1a401
+2901
+1b21e
+107b8
+1e01
+11736
+6fff
+1179a
+3025
+3318
+117c8
+19ba4
+1b22e
+70a1
+70b7
+1069b
+1aa61
+1a95a
+1b5a3
+10c98
+11248
+1bc22
+133d3
+1014d
+a24a
+a36a
+a1ca
+a1ff
+3309
+1a0a6
+1a5a5
+1a5df
+1ba9a
+291d
+1bbd1
+1a492
+1a49e
+1a4bf
+2de8a
+19fae
+19d3e
+19f40
+19cc8
+1a019
+19da5
+19ab5
+1a736
+1cda0
+1ad8c
+1acf7
+1bec9
+1bf33
+1ad2e
+1acb8
+10652
+19965
+1b0db
+1b178
+1ac25
+10c29
+29914
+154b5
+15d8c
+15bdf
+154d6
+15c24
+3c646
+15cc3
+3cab0
+29e39
+262c
+29b88
+29af0
+3dd4c
+287e3
+378f6
+2e0a0
+2e0aa
+35ac
+15b6a
+359d
+29c87
+29c4e
+29c78
+1578d
+39043
+29b38
+377d4
+3dcd3
+3dd17
+157f3
+390a5
+15884
+15ffe
+15941
+15e99
+390d0
+15a5d
+156ab
+37aa1
+37afc
+3bf78
+3813b
+3878b
+382bd
+2ee64
+38779
+38359
+31eae
+38f64
+387d1
+385ed
+2a162
+13e40
+2892b
+13c8e
+10a7c
+28134
+a28c
+2a13c
+29f26
+29f17
+13f89
+29f47
+28101
+280dd
+27da3
+27b50
+28125
+3b36d
+27e2a
+388c7
+2a88c
+38e56
+2e80a
+27b35
+33045
+330da
+2aa88
+27ea9
+3c84d
+27f2f
+27ef4
+2ab7d
+38e27
+27d00
+2fb1b
+38fc9
+388d2
+38ea1
+3c91d
+38e7a
+2a48a
+27ce1
+28375
+2a93c
+27e82
+2a923
+283ad
+38e61
+13997
+14faf
+29d59
+38d47
+2a3d5
+29ed1
+2a9c5
+3c7de
+2061b
+3c885
+14f33
+37c6b
+3abd3
+39f08
+1553b
+20472
+14ecd
+15625
+3cbad
+38eac
+153bd
+2501
+3cc7c
+3893e
+388dd
+3c94f
+3c69d
+29c96
+C:\Windows\SysWOW64\oleaut32.dll
+6365646f
+5
+3fb1
+1fc29
+3ed5
+3eae
+48f1
+C:\Windows\SysWOW64\sechost.dll
+6c6c642e
+1
+4975
+C:\Windows\syswow64\SspiCli.dll
+6c6c642e
+1
+1a3b3
+C:\Windows\syswow64\LPK.dll
+6c642e45
+1
+36a0
+C:\Windows\syswow64\USP10.dll
+6b636150
+1
+33fd7

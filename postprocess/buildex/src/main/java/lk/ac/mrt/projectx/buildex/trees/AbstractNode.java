@@ -1,6 +1,5 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import com.sun.org.apache.xpath.internal.operations.String;
 import com.sun.org.glassfish.gmbal.AMXMBeanInterface;
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
@@ -31,20 +30,28 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     //region private variables
 
     private AbstractNodeType type;
-    private Integer dimenstions;
+    private Integer dimensions;
     private Integer headDiemensions;
     private ArrayList<ArrayList<Integer>> indexes;
     private ArrayList<Integer> pos;
-    private ArrayList<MemoryRegion> associatedMem;
+    private MemoryRegion associatedMem;
 
     //endregion private variables
-
 
 
     //region public methods
 
     public String GetMemString() {
-        return null;
+        StringBuilder memSt = new StringBuilder();
+        memSt.append(this.associatedMem.getName());
+        memSt.append("(");
+        for (int i = 0 ; i < this.dimensions - 1 ; i++) {
+            memSt.append(this.pos.get(i));
+            memSt.append(",");
+        }
+        memSt.append(this.pos.get(this.dimensions - 1));
+        memSt.append(")");
+        return memSt.toString();
     }
 
     //region overridden methods

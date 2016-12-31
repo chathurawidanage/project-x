@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex.trees;
 import com.sun.org.glassfish.gmbal.AMXMBeanInterface;
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
+import sun.invoke.empty.Empty;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -86,7 +87,17 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
     @Override
     public String getNodeString() {
-        return null;
+        if(this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
+                || this.type == AbstractNodeType.INTERMEDIATE_NODE){
+            return GetMemString();
+        }else if(this.type == AbstractNodeType.IMMEDIATE_INT || this.type == AbstractNodeType.IMMEDIATE_FLOAT){
+            return this.symbol.value.toString();
+        }else if(this.type == AbstractNodeType.OPERATION_ONLY){
+            return this.operation.toString();
+        }else if(this.type == AbstractNodeType.PARAMETER){
+            return "p_" + this.para_num.toString();
+        }
+        return "";
     }
 
     @Override

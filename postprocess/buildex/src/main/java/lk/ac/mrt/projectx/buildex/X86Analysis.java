@@ -42,6 +42,46 @@ public class X86Analysis {
 
         /*call*/
         op_call,
-        op_unknown
+        op_unknown;
+
+        @Override
+        public String toString() {
+            String ret;
+            switch (this){
+                case op_add: ret = "+" ; break;
+                case op_and: ret = "&" ; break;
+                case op_assign: ret = "=" ; break;
+                case op_call: ret = "call" ; break;
+                case op_concat: ret = "," ; break;
+                case op_div: ret = "/" ; break;
+                case op_eq: ret = "==" ; break;
+                case op_full_overlap: ret = "FO" ; break;
+                case op_ge: ret = ">=" ; break;
+                case op_gt: ret = ">" ; break;
+                case op_indirect: ret = "indirect" ; break;
+                case op_le: ret = "<=" ; break;
+                case op_lsh: ret = "<<" ; break;
+                case op_lt: ret = "<" ; break;
+                case op_mod: ret = "%" ; break;
+                case op_mul: ret = "*" ; break;
+                case op_neq: ret = "!=" ; break;
+                case op_not: ret = "~" ; break;
+                case op_or: ret = "||" ; break;
+                case op_partial_overlap: ret = "PO" ; break;
+                case op_rsh: ret = ">>" ; break;
+                case op_signex: ret = "SE" ; break;
+                case op_split_h: ret = "SH" ; break;
+                case op_split_l: ret = "SL" ; break;
+                case op_sub: ret = "-" ; break;
+                case op_unknown: ret = "__" ; break;
+                case op_xor: ret = "^" ; break;
+                default:
+                    ret ="__";
+                    break;
+            }
+            return ret;
+        }
     }
+
+
 }

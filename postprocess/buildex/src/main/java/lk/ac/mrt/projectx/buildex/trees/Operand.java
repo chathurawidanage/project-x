@@ -4,6 +4,7 @@ package lk.ac.mrt.projectx.buildex.trees;
  * Created by krv on 12/4/2016.
  */
 //TODO : index sort comparable (check output.h line 24-33), this may be a linked list
+//TODO : DUPLICATE CLASS IN InstructionTraceUnit
 public class Operand<T> implements Comparable {
     Long type = null;
     Long width = null;

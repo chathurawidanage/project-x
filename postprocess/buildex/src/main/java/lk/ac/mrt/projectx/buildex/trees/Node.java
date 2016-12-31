@@ -11,21 +11,29 @@ import java.util.List;
 /**
  * Created by krv on 12/4/2016.
  */
-public abstract class Node<T> {
+public abstract class Node <T> {
+
     final static Logger logger = LogManager.getLogger(Node.class);
 
     //TODO : Check access modifiers later
     //region Variables
+
+    //region public variables
+
     public X86Analysis.Operation operation;  // Operation of this node
+    public List<Node> srcs; ///< forward references also srcs of the destination
+    public List<Node> prev; ///< keep the backward references
+    public List<Long> pos; ///< position of the parent node's srcs list for this child
+
+    //endregion public variables
+
+    //region unclassified variables
+
     Boolean sign;   // Signed operation or not
     Boolean minus;
     String functionName;
 
     Operand<T> symbol;
-
-    public List<Node> srcs; ///< forward references also srcs of the destination
-    public List<Node> prev; ///< keep the backward references
-    public List<Long> pos; ///< position of the parent node's srcs list for this child
 
     Long pc;
     Long line;
@@ -37,7 +45,9 @@ public abstract class Node<T> {
     Boolean is_double;
 
     Boolean visited;
-    //endregion
+    //endregion unclassified variables
+
+    //endregion Variables
 
     //region public constructors
     public Node() {
@@ -141,7 +151,7 @@ public abstract class Node<T> {
      * @return if found a node with indirect operation return the index, -1 otherwise
      */
     public int isIndirect() {
-        for (int i = 0; i < srcs.size(); i++) {
+        for (int i = 0 ; i < srcs.size() ; i++) {
             Node node = srcs.get(i);
             if (node.operation == X86Analysis.Operation.op_indirect) {
                 return i;
@@ -173,19 +183,20 @@ public abstract class Node<T> {
 
     /**
      * This method remove the current node and lift its children up
+     *
      * @return whether a congregation happened
      */
     public Boolean CongregateNode() {
         //TODO: logic is really bad (messing with loop variable)
         logger.debug("Entered Canonical node");
         boolean ret = false;
-        for (int i = 0; i < this.prev.size(); i++) {
-            if(this.isOperationAssociative() && this.operation == this.prev.get(i).operation ){
+        for (int i = 0 ; i < this.prev.size() ; i++) {
+            if (this.isOperationAssociative() && this.operation == this.prev.get(i).operation) {
                 logger.debug("Canonical opportunity");
                 Node pre_node = this.prev.get(i);
                 int rem = pre_node.removeForwardReference(this);
-                if(rem > 0){
-                    for (int j = 0; j < this.srcs.size(); j++) {
+                if (rem > 0) {
+                    for (int j = 0 ; j < this.srcs.size() ; j++) {
                         pre_node.addForwardRefrence(this.srcs.get(j));
                     }
                     i--;
@@ -256,7 +267,7 @@ public abstract class Node<T> {
             // Need to update pos list indexes of others connected to this
             //Since src list is changed
             // TODO : Check the possibility of being a own function
-            for (int i = 0; i < srcs.size(); i++) {
+            for (int i = 0 ; i < srcs.size() ; i++) {
                 Node curSrcNode = srcs.get(i);
                 int thisPosition = curSrcNode.prev.indexOf(this);
                 if (thisPosition != -1) {

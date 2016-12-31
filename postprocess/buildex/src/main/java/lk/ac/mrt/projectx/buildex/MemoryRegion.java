@@ -23,6 +23,8 @@ public class MemoryRegion {
     /* physical demarcations of the memory regions */
     private long startMemory, endMemory;
 
+    private String name; // krv - needed in AbstractNode
+
     //halide buffer_t emulation
     private long extents[];
     private long strides[];
@@ -168,6 +170,10 @@ public class MemoryRegion {
     public void setReferingPCs(List<Long> referingPCs) {
         this.referingPCs = referingPCs;
     }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 
     /**
      * Memory read/write or both

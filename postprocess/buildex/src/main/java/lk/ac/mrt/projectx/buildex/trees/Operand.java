@@ -1,4 +1,4 @@
-package lk.ac.mrt.projectx.buildex;
+package lk.ac.mrt.projectx.buildex.trees;
 
 /**
  * Created by krv on 12/4/2016.

@@ -6,7 +6,17 @@ package lk.ac.mrt.projectx.buildex.trees;
 //TODO : index sort comparable (check output.h line 24-33), this may be a linked list
 //TODO : DUPLICATE CLASS IN InstructionTraceUnit
 public class Operand<T> implements Comparable {
-    Long type = null;
+
+    public static enum OperandType {
+        REG_TYPE,
+        MEM_STACK_TYPE,
+        MEM_HEAP_TYPE,
+        IMM_FLOAT_TYPE,
+        IMM_INT_TYPE,
+        DEFAULT_TYPE;
+    }
+
+    OperandType type = null;
     Long width = null;
     T value = null;
     Operand addr = null;

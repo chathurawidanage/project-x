@@ -26,6 +26,14 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         SUBTREE_BOUNDARY,
     }
 
+    //region pubclic constructors
+
+    public AbstractNode() throws ClassNotFoundException {
+        throw new ClassNotFoundException("CocreteNode");
+    }
+
+    //endregion pubclic constructors
+
     //region private variables
 
     private AbstractNodeType type;
@@ -55,6 +63,8 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     public String GetSymbolicString(List<String> vars) {
         throw new NotImplementedException();
     }
+
+    //endregion public methods
 
     //region overridden methods
 
@@ -112,8 +122,6 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     }
 
     //endregion overridden methods
-
-    //endregion public methods
 
     //region private methods
 

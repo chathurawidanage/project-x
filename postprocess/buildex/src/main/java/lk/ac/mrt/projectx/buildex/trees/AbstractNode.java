@@ -171,7 +171,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         for (int i = 0 ; i < dimensions ; i++) {
             if (headDiemensions == i) {
                 stringBuilder.append(indexes.get(0).get(i).toString());
-            }else if(0 != indexes.get(0).get(i)){
+            } else if (0 != indexes.get(0).get(i)) {
                 stringBuilder.append(indexes.get(0).get(i).toString());
                 stringBuilder.append(" * ");
                 stringBuilder.append(vars.get(i));
@@ -179,6 +179,19 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
             }
         }
         return stringBuilder.toString();
+    }
+
+    private String getSymbolicString(List<String> vars) {
+        String stRet;
+        if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
+                || this.type == AbstractNodeType.INTERMEDIATE_NODE) {
+            stRet = getMemString(vars);
+        } else if (this.type == AbstractNodeType.IMMEDIATE_INT) {
+            stRet = getImmediateString(vars);
+        } else {
+            stRet = getNodeString();
+        }
+        return stRet;
     }
 
     //endregion private methods

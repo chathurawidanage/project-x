@@ -1,15 +1,12 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import com.sun.org.glassfish.gmbal.AMXMBeanInterface;
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
-import sun.invoke.empty.Empty;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.abs;
 
 /**
  * Created by krv on 12/30/16.
@@ -113,36 +110,39 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     public String getSimpleString() {
         throw new NotImplementedException();
     }
+
     //endregion overridden methods
+
     //endregion public methods
 
     //region private methods
+
     private String getMemString(List<String> vars) {
-        StringBuilder retSt = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         String in_string = (this.associatedMem.getDirection() == MemoryRegion.Direction.MEM_OUTPUT) ? "_buf_in" : "";
 
-        retSt.append(this.associatedMem.getName());
-        retSt.append(in_string);
-        retSt.append("(");
+        stringBuilder.append(this.associatedMem.getName());
+        stringBuilder.append(in_string);
+        stringBuilder.append("(");
         boolean first = true;
 
         for (int i = 0 ; i < this.dimensions ; i++) {
             for (int j = 0 ; j < this.headDiemensions ; j++) {
                 if (this.indexes.get(i).get(j) == 1) {
                     if (!first) {
-                        retSt.append("+");
+                        stringBuilder.append("+");
                     }
-                    retSt.append(vars.get(j));
+                    stringBuilder.append(vars.get(j));
                     first = false;
                 } else if (this.indexes.get(i).get(j) != 0) {
                     if (!first) {
-                        retSt.append("+");
+                        stringBuilder.append("+");
                     }
-                    retSt.append("(");
-                    retSt.append(this.indexes.get(i).get(j).toString());
-                    retSt.append(")");
-                    retSt.append("*");
-                    retSt.append(vars.get(j));
+                    stringBuilder.append("(");
+                    stringBuilder.append(this.indexes.get(i).get(j).toString());
+                    stringBuilder.append(")");
+                    stringBuilder.append("*");
+                    stringBuilder.append(vars.get(j));
                     first = false;
 
                 }
@@ -150,19 +150,37 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
             if (!first) {
                 if (this.indexes.get(i).get(this.headDiemensions) != 0) {
-                    retSt.append("+");
-                    retSt.append(this.indexes.get(i).get(this.headDiemensions).toString());
+                    stringBuilder.append("+");
+                    stringBuilder.append(this.indexes.get(i).get(this.headDiemensions).toString());
                 }
             } else {
-                retSt.append(this.indexes.get(i).get(this.headDiemensions).toString());
+                stringBuilder.append(this.indexes.get(i).get(this.headDiemensions).toString());
             }
 
             if (this.dimensions - 1 != i) {
-                retSt.append(",");
+                stringBuilder.append(",");
             } else {
-                retSt.append(")");
+                stringBuilder.append(")");
             }
         }
-        return retSt.toString();
+        return stringBuilder.toString();
     }
+
+    private String getImmediateString(List<String> vars) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0 ; i < dimensions ; i++) {
+            if (headDiemensions == i) {
+                stringBuilder.append(indexes.get(0).get(i).toString());
+            }else if(0 != indexes.get(0).get(i)){
+                stringBuilder.append(indexes.get(0).get(i).toString());
+                stringBuilder.append(" * ");
+                stringBuilder.append(vars.get(i));
+                stringBuilder.append(" + ");
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    //endregion private methods
+
 }

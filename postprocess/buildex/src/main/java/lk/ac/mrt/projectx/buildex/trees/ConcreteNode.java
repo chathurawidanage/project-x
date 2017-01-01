@@ -49,6 +49,10 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
 
     @Override
     public String getNodeString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(this.operation.toString());
+        stringBuilder.append("\\n");
+        stringBuilder.append("\\n");
         return null;
     }
 

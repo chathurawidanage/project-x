@@ -177,9 +177,10 @@ public class MemoryRegion {
 
     /**
      * Memory read/write or both
+     * TODO: check the better convention READ, WRITE .. convention or INPUT, OUTPUT...
      */
     public enum Direction {
-        READ, WRITE, BOTH_READ_WRITE
-    }
+        READ, WRITE, BOTH_READ_WRITE, MEM_INPUT, MEM_OUTPUT, MEM_INTERMEDIATE
+    } // krv - added input, output and intermediate coz Helium seems to be using this convention words
 
 }

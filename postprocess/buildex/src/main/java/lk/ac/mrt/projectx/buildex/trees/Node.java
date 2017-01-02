@@ -83,33 +83,6 @@ public abstract class Node <T> {
     //endregion public constructors
 
     //region public methods
-    public static Boolean isOperationAssociative(X86Analysis.Operation operation) {
-        Boolean result;
-        switch (operation) {
-            case op_add:
-            case op_mul:
-                result = true;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
-
-    public Boolean isOperationAssociative() {
-        Boolean result;
-        switch (this.operation) {
-            case op_add:
-            case op_mul:
-                result = true;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
 
     public abstract String getNodeString();
 
@@ -194,7 +167,6 @@ public abstract class Node <T> {
         this.removeForwardReference(src);
     }
 
-
     /**
      * This method remove the current node and lift its children up
      *
@@ -205,7 +177,7 @@ public abstract class Node <T> {
         logger.debug("Entered Canonical node");
         boolean ret = false;
         for (int i = 0 ; i < this.prev.size() ; i++) {
-            if (this.isOperationAssociative() && this.operation == this.prev.get(i).operation) {
+            if (this.operation.isOperationAssociative() && this.operation == this.prev.get(i).operation) {
                 logger.debug("Canonical opportunity");
                 Node pre_node = this.prev.get(i);
                 int rem = pre_node.removeForwardReference(this);

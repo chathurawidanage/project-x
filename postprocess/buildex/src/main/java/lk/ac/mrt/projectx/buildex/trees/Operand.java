@@ -12,13 +12,20 @@ import static lk.ac.mrt.projectx.buildex.X86Analysis.MAX_SIZE_OF_REG;
 //TODO : DUPLICATE CLASS IN InstructionTraceUnit
 public class Operand <T> implements Comparable {
 
+    //region public enum
+
     OperandType type = null;
+
+    //endregion public enum
+
+    //region variables
     Long width = null;
     T value = null;
     Operand addr = null;
 
     @Override
     public int compareTo(Object other) {
+        //TODO : not complete but similar to Helium
         if (!(other instanceof Operand))
             throw new ClassCastException("A Operand object expected.");
         if (this.value instanceof Float) {
@@ -32,18 +39,40 @@ public class Operand <T> implements Comparable {
         }
     }
 
+    //endregion variables
+
+    //region public methods
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         if (type == OperandType.REG_TYPE) {
-            int offset = (Integer) value - ((Integer) value / MAX_SIZE_OF_REG) * MAX_SIZE_OF_REG;
+            Integer offset = (Integer) value - ((Integer) value / MAX_SIZE_OF_REG) * MAX_SIZE_OF_REG;
             stringBuilder.append(((Integer) value).toString());
             stringBuilder.append(":r[");
-            stringBuilder.append(":r[");
-
+            stringBuilder.append(this.getRegName());
+            stringBuilder.append(":");
+            stringBuilder.append(offset.toString());
+        } else {
+            if (this.type == OperandType.IMM_FLOAT_TYPE || this.type == OperandType.IMM_INT_TYPE) {
+                stringBuilder.append("imm[");
+            } else if (this.type == OperandType.MEM_STACK_TYPE) {
+                stringBuilder.append("ms[");
+            } else if (this.type == OperandType.MEM_HEAP_TYPE) {
+                stringBuilder.append("mh[");
+            }
+            stringBuilder.append(this.value.toString());
         }
+        stringBuilder.append("]");
+        stringBuilder.append("{");
+        stringBuilder.append(this.width.toString());
+        stringBuilder.append("}");
         return super.toString();
     }
+
+    //endregion public methods
+
+    //region overridden methods
 
     public String getRegName() {
         DefinesDotH.Registers reg;
@@ -51,8 +80,6 @@ public class Operand <T> implements Comparable {
         String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
         return name.toLowerCase();
     }
-
-    //region private methods
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
     // TODO 1 contd. : But currently project-x gets the same value in the enum as you see
@@ -71,6 +98,10 @@ public class Operand <T> implements Comparable {
         return ret;
     }
 
+    //endregion overridden methods
+
+    //region private methods
+
     public static enum OperandType {
         REG_TYPE,
         MEM_STACK_TYPE,
@@ -79,6 +110,7 @@ public class Operand <T> implements Comparable {
         IMM_INT_TYPE,
         DEFAULT_TYPE;
     }
+
     //endregion private methods
 }
 

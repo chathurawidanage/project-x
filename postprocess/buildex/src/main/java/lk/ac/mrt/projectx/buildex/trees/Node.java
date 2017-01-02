@@ -1,8 +1,10 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,7 +174,7 @@ public abstract class Node <T> {
      *
      * @return whether a congregation happened
      */
-    public Boolean CongregateNode() {
+    public boolean CongregateNode() {
         //TODO: logic is really bad (messing with loop variable)
         logger.debug("Entered Canonical node");
         boolean ret = false;
@@ -193,6 +195,21 @@ public abstract class Node <T> {
         return ret;
     }
 
+    public static boolean isNodesSimilar(List<Node> nodes){
+        boolean ans = true;
+        if(nodes.isEmpty()){
+            ans = true;
+        }else{
+            Node firstNode = nodes.get(0);
+            for (Node node:nodes.subList(1, nodes.size() -1)) {
+                if(node != firstNode){
+                    ans = false;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
     //endregion public methods
 
     //region private methods

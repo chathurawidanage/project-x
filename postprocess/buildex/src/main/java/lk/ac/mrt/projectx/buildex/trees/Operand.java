@@ -14,34 +14,59 @@ public class Operand <T> implements Comparable {
 
     //region public enum
 
-    OperandType type = null;
+    public static enum OperandType {
+        REG_TYPE,
+        MEM_STACK_TYPE,
+        MEM_HEAP_TYPE,
+        IMM_FLOAT_TYPE,
+        IMM_INT_TYPE,
+        DEFAULT_TYPE;
+    }
 
     //endregion public enum
 
     //region variables
-    Long width = null;
-    T value = null;
-    Operand addr = null;
 
-    @Override
-    public int compareTo(Object other) {
-        //TODO : not complete but similar to Helium
-        if (!(other instanceof Operand))
-            throw new ClassCastException("A Operand object expected.");
-        if (this.value instanceof Float) {
-            Float f1 = (Float) this.value;
-            Float f2 = (Float) ((Operand) other).value;
-            return Float.compare(f1, f2);
-        } else {
-            Integer f1 = (Integer) this.value;
-            Integer f2 = (Integer) ((Operand) other).value;
-            return Integer.compare(f1, f2);
-        }
-    }
+    OperandType type;
+    Integer width;
+    T value;
+    Operand addr;
 
     //endregion variables
 
+    //region public constructors
+
+    public Operand() {
+        this.type = null;
+        this.width = null;
+        this.value = null;
+        this.addr = null;
+    }
+
+    public Operand(Operand operand) {
+        this(operand.type, (T) operand.value, operand.width);
+    }
+
+    public Operand(Operand.OperandType type, T value, Integer width) {
+        this.type = type;
+        this.value = value;
+        this.width = width;
+    }
+
+    //endregion public constructors
+
     //region public methods
+
+    public String getRegName() {
+        DefinesDotH.Registers reg;
+        reg = memRangeToRegister();
+        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
+        return name.toLowerCase();
+    }
+
+    //endregion public methods
+
+    //region overridden methods
 
     @Override
     public String toString() {
@@ -70,16 +95,24 @@ public class Operand <T> implements Comparable {
         return super.toString();
     }
 
-    //endregion public methods
-
-    //region overridden methods
-
-    public String getRegName() {
-        DefinesDotH.Registers reg;
-        reg = memRangeToRegister();
-        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
-        return name.toLowerCase();
+    @Override
+    public int compareTo(Object other) {
+        //TODO : not complete but similar to Helium
+        if (!(other instanceof Operand))
+            throw new ClassCastException("A Operand object expected.");
+        if (this.value instanceof Float) {
+            Float f1 = (Float) this.value;
+            Float f2 = (Float) ((Operand) other).value;
+            return Float.compare(f1, f2);
+        } else {
+            Integer f1 = (Integer) this.value;
+            Integer f2 = (Integer) ((Operand) other).value;
+            return Integer.compare(f1, f2);
+        }
     }
+    //endregion overridden methods
+
+    //region private methods
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
     // TODO 1 contd. : But currently project-x gets the same value in the enum as you see
@@ -96,19 +129,6 @@ public class Operand <T> implements Comparable {
             ret = DR_REG_INVALID;
         }
         return ret;
-    }
-
-    //endregion overridden methods
-
-    //region private methods
-
-    public static enum OperandType {
-        REG_TYPE,
-        MEM_STACK_TYPE,
-        MEM_HEAP_TYPE,
-        IMM_FLOAT_TYPE,
-        IMM_INT_TYPE,
-        DEFAULT_TYPE;
     }
 
     //endregion private methods

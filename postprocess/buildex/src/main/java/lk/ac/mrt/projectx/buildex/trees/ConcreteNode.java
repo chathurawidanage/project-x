@@ -1,6 +1,5 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import com.sun.org.apache.regexp.internal.RE;
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -52,8 +51,12 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(this.operation.toString());
         stringBuilder.append("\\n");
-        stringBuilder.append("\\n");
-        return null;
+        stringBuilder.append(this.symbol.toString());
+        stringBuilder.append("\n");
+        stringBuilder.append(this.pc.toString());
+        stringBuilder.append(" ");
+        stringBuilder.append(this.line.toString());
+        return stringBuilder.toString();
     }
 
     @Override

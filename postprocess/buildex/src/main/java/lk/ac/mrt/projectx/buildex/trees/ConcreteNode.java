@@ -1,7 +1,10 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.List;
 
 /**
  * Created by krv on 1/1/17.
@@ -10,6 +13,32 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
 
     //region pubclic constructors
 
+    public ConcreteNode(Operand symbol){
+        this.symbol = symbol;
+        this.operation = X86Analysis.Operation.op_unknown;
+        this.order_num = -1;
+        this.is_para = false;
+        this.is_double = false;
+        this.line = 0L;
+        this.pc = 0L;
+        this.region = null;
+    }
+
+    public ConcreteNode(Operand.OperandType type, T value, Integer width){
+        this.symbol = new Operand<>(type, value, width);
+        this.operation = X86Analysis.Operation.op_unknown;
+        this.order_num = -1;
+        this.is_para = false;
+        this.is_double = false;
+        this.line = 0L;
+        this.pc = 0L;
+        this.region = null;
+    }
+
+    public ConcreteNode(Operand symbol, List<MemoryRegion> regions){
+        this.symbol = symbol;
+        assignMemRegion(regions);
+    }
 
     //endregion pubclic constructors
 
@@ -20,7 +49,6 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
     //endregion private variables
 
     //region public methods
-
     //endregion public methods
 
     //region overridden methods
@@ -72,6 +100,14 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
     //endregion overridden methods
 
     //region private methods
+
+    private void assignMemRegion(List<MemoryRegion> regions){
+        if(this.symbol.type == Operand.OperandType.MEM_HEAP_TYPE ||
+                this.symbol.type == Operand.OperandType.MEM_STACK_TYPE){
+//            this.region = getMemRegion(this.symbol.value, regions);
+            throw new NoSuchMethodError("getMemRegion(ConcreteNode, List<MemoryRegion>");
+        }
+    }
 
     //endregion private methods
 

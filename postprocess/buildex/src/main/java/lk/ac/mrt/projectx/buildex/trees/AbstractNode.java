@@ -7,12 +7,17 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.MEM_HEAP_TYPE;
+import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.MEM_STACK_TYPE;
+
 
 /**
  * Created by krv on 12/30/16.
  * Depends on classes: Node, MemoryRegion
  */
 public class AbstractNode <T> extends Node<T> implements Comparable {
+
+    //region public enum
 
     public static enum AbstractNodeType {
         OPERATION_ONLY,
@@ -26,13 +31,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         SUBTREE_BOUNDARY,
     }
 
-    //region pubclic constructors
-
-    public AbstractNode() throws ClassNotFoundException {
-        throw new ClassNotFoundException("CocreteNode");
-    }
-
-    //endregion pubclic constructors
+    //endregion public enum
 
     //region private variables
 
@@ -45,7 +44,56 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
     //endregion private variables
 
+    //region public constructors
+
+    public AbstractNode() {
+        super();
+    }
+
+    public AbstractNode(ConcreteNode head, ConcreteNode concreteNode, List<MemoryRegion> memRegions){
+        //TODO : Finish it refer (abs_node.cpp)
+        super(concreteNode);
+        this.minus = false;
+        this.operation = concreteNode.operation;
+        this.para_num = concreteNode.para_num;
+        this.symbol = concreteNode.symbol;
+        this.functionName = concreteNode.functionName;
+
+        boolean filer = false;
+        if(concreteNode == head){
+            filer = true;
+        }else if(concreteNode.srcs.isEmpty()){
+            filer = true;
+        }else{
+            for (Object nd: concreteNode.srcs) {
+                Node node = (Node)nd;
+                if(node.operation == X86Analysis.Operation.op_indirect){
+                    filer = true;
+                    //TODO : No break here in Helium
+                    break;
+                }
+            }
+        }
+
+        this.associatedMem = null;
+        MemoryRegion mem = null;
+        if(concreteNode.symbol.type == MEM_STACK_TYPE || concreteNode.symbol.type == MEM_HEAP_TYPE){
+            mem = MemoryRegion.getMemRegion((Integer)concreteNode.symbol.value, memRegions);
+        }
+
+        if((mem != null) && filer){
+
+        }
+        throw new NotImplementedException();
+    }
+
+    //endregion public constructors
+
     //region public methods
+
+    public AbstractNodeType getType() {
+        return type;
+    }
 
     public String GetMemString() {
         StringBuilder memSt = new StringBuilder();
@@ -63,10 +111,6 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     public String GetSymbolicString(List<String> vars) {
         throw new NotImplementedException();
     }
-
-    //endregion public methods
-
-    //region overridden methods
 
     @Override
     public int compareTo(Object o) {
@@ -121,7 +165,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         throw new NotImplementedException();
     }
 
-    //endregion overridden methods
+    //endregion public methods
 
     //region private methods
 

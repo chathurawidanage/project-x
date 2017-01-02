@@ -64,10 +64,6 @@ public class Operand <T> implements Comparable {
         return name.toLowerCase();
     }
 
-    //endregion public methods
-
-    //region overridden methods
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -110,7 +106,8 @@ public class Operand <T> implements Comparable {
             return Integer.compare(f1, f2);
         }
     }
-    //endregion overridden methods
+
+    //endregion public methods
 
     //region private methods
 

@@ -1,8 +1,10 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,7 @@ public abstract class Node <T> {
     //endregion Variables
 
     //region public constructors
+
     public Node() {
         operation = null;
         sign = null;
@@ -65,36 +68,23 @@ public abstract class Node <T> {
         is_para = null;
         visited = false;
     }
+
+    public Node(Node node){
+        this.operation = node.operation;
+        this.sign = node.sign;
+        this.symbol = node.symbol;
+        this.pc = node.pc;
+        this.is_para = node.is_para;
+        this.is_double = node.is_double;
+        this.para_num = node.para_num;
+        // no copying
+        this.visited = false;
+        this.order_num = -1;
+    }
+
     //endregion public constructors
 
     //region public methods
-    public static Boolean isOperationAssociative(X86Analysis.Operation operation) {
-        Boolean result;
-        switch (operation) {
-            case op_add:
-            case op_mul:
-                result = true;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
-
-    public Boolean isOperationAssociative() {
-        Boolean result;
-        switch (this.operation) {
-            case op_add:
-            case op_mul:
-                result = true;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
 
     public abstract String getNodeString();
 
@@ -179,18 +169,17 @@ public abstract class Node <T> {
         this.removeForwardReference(src);
     }
 
-
     /**
      * This method remove the current node and lift its children up
      *
      * @return whether a congregation happened
      */
-    public Boolean CongregateNode() {
+    public boolean CongregateNode() {
         //TODO: logic is really bad (messing with loop variable)
         logger.debug("Entered Canonical node");
         boolean ret = false;
         for (int i = 0 ; i < this.prev.size() ; i++) {
-            if (this.isOperationAssociative() && this.operation == this.prev.get(i).operation) {
+            if (this.operation.isOperationAssociative() && this.operation == this.prev.get(i).operation) {
                 logger.debug("Canonical opportunity");
                 Node pre_node = this.prev.get(i);
                 int rem = pre_node.removeForwardReference(this);
@@ -206,6 +195,21 @@ public abstract class Node <T> {
         return ret;
     }
 
+    public static boolean isNodesSimilar(List<Node> nodes){
+        boolean ans = true;
+        if(nodes.isEmpty()){
+            ans = true;
+        }else{
+            Node firstNode = nodes.get(0);
+            for (Node node:nodes.subList(1, nodes.size() -1)) {
+                if(node != firstNode){
+                    ans = false;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
     //endregion public methods
 
     //region private methods

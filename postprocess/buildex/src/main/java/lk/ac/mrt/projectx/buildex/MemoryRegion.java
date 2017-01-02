@@ -6,6 +6,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class MemoryRegion {
+
     private final static int DIMENSIONS = 3;
 
     private int bytesPerPixel;
@@ -36,9 +37,9 @@ public class MemoryRegion {
     private List<Long> referingPCs;
 
     public MemoryRegion() {
-        extents = new long[DIMENSIONS];
-        strides = new long[DIMENSIONS];
-        min = new long[DIMENSIONS];
+        extents = new long[ DIMENSIONS ];
+        strides = new long[ DIMENSIONS ];
+        min = new long[ DIMENSIONS ];
 
         type = 0;
         direction = Direction.READ;
@@ -171,9 +172,13 @@ public class MemoryRegion {
         this.referingPCs = referingPCs;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * Memory read/write or both
@@ -182,5 +187,29 @@ public class MemoryRegion {
     public enum Direction {
         READ, WRITE, BOTH_READ_WRITE, MEM_INPUT, MEM_OUTPUT, MEM_INTERMEDIATE
     } // krv - added input, output and intermediate coz Helium seems to be using this convention words
+
+    //region public methods
+
+    public static MemoryRegion getMemRegion(Integer value, List<MemoryRegion> memoryRegions) {
+        MemoryRegion region = null;
+        for (MemoryRegion memRegion : memoryRegions) {
+            if (memRegion.getStartMemory() < memRegion.getEndMemory()) {
+                // start <= value <= end
+                if ((memRegion.getStartMemory() <= value) && memRegion.getEndMemory() >= value){
+                    region = memRegion;
+                    break;
+                }
+            }else{
+                // end <= value <= start
+                if((memRegion.getStartMemory() >= value) && (memRegion.getEndMemory() <= value)){
+                    region = memRegion;
+                    break;
+                }
+            }
+        }
+        return region;
+    }
+
+    //endregion public methods
 
 }

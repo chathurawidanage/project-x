@@ -47,6 +47,8 @@ public class X86Analysis {
         op_call,
         op_unknown;
 
+        //region public methods
+
         @Override
         public String toString() {
             String ret;
@@ -138,5 +140,21 @@ public class X86Analysis {
             }
             return ret;
         }
+
+        public Boolean isOperationAssociative() {
+            Boolean result;
+            switch (this) {
+                case op_add:
+                case op_mul:
+                    result = true;
+                    break;
+                default:
+                    result = false;
+                    break;
+            }
+            return result;
+        }
+
+        //endregion public methods
     }
 }

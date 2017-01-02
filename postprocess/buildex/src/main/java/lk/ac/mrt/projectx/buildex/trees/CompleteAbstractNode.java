@@ -37,7 +37,7 @@ public class CompleteAbstractNode <T> extends Node<T> implements Comparable {
 
     //endregion public constructors
 
-    //region overridden methods
+    //region public methods
 
     @Override
     public int compareTo(Object o) {
@@ -87,5 +87,6 @@ public class CompleteAbstractNode <T> extends Node<T> implements Comparable {
         throw new NotImplementedException();
     }
 
-    //endregion overridden methods
+    //endregion public methods
+
 }

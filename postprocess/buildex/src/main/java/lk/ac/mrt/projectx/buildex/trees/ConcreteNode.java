@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by krv on 1/1/17.
  */
-public class ConcreteNode <T> extends Node <T> implements Comparable{
+public class ConcreteNode <T> extends Node<T> implements Comparable {
 
     //region private variables
 
@@ -19,7 +19,7 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
 
     //region public constructors
 
-    public ConcreteNode(Operand symbol){
+    public ConcreteNode(Operand symbol) {
         this.symbol = symbol;
         this.operation = X86Analysis.Operation.op_unknown;
         this.order_num = -1;
@@ -30,7 +30,7 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
         this.region = null;
     }
 
-    public ConcreteNode(Operand.OperandType type, T value, Integer width){
+    public ConcreteNode(Operand.OperandType type, T value, Integer width) {
         this.symbol = new Operand<>(type, value, width);
         this.operation = X86Analysis.Operation.op_unknown;
         this.order_num = -1;
@@ -41,7 +41,7 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
         this.region = null;
     }
 
-    public ConcreteNode(Operand symbol, List<MemoryRegion> regions){
+    public ConcreteNode(Operand symbol, List<MemoryRegion> regions) {
         this.symbol = symbol;
         assignMemRegion(regions);
     }
@@ -49,26 +49,23 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
     //endregion public constructors
 
     //region public methods
-    //endregion public methods
-
-    //region overridden methods
 
     @Override
     public int compareTo(Object o) {
         ConcreteNode node = (ConcreteNode) o;
-        if(!node.srcs.isEmpty()){
+        if (!node.srcs.isEmpty()) {
             return (this.operation == node.operation) &&
                     (this.srcs.size() == node.srcs.size()) ? 1 : 0;
-        }else{
-            if(symbol.type == node.symbol.type){
-                if(symbol.type == Operand.OperandType.IMM_INT_TYPE){
+        } else {
+            if (symbol.type == node.symbol.type) {
+                if (symbol.type == Operand.OperandType.IMM_INT_TYPE) {
                     return 1;
-                }else if(symbol.type == Operand.OperandType.IMM_FLOAT_TYPE){
-                    return Float.compare((Float)symbol.value, (Float)node.symbol.value);
-                }else{
+                } else if (symbol.type == Operand.OperandType.IMM_FLOAT_TYPE) {
+                    return Float.compare((Float) symbol.value, (Float) node.symbol.value);
+                } else {
                     return 1;
                 }
-            }else{
+            } else {
                 return 0;
             }
         }
@@ -97,13 +94,13 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
         throw new NotImplementedException();
     }
 
-    //endregion overridden methods
+    //endregion public methods
 
     //region private methods
 
-    private void assignMemRegion(List<MemoryRegion> regions){
-        if(this.symbol.type == Operand.OperandType.MEM_HEAP_TYPE ||
-                this.symbol.type == Operand.OperandType.MEM_STACK_TYPE){
+    private void assignMemRegion(List<MemoryRegion> regions) {
+        if (this.symbol.type == Operand.OperandType.MEM_HEAP_TYPE ||
+                this.symbol.type == Operand.OperandType.MEM_STACK_TYPE) {
 //            this.region = getMemRegion(this.symbol.value, regions);
             throw new NoSuchMethodError("getMemRegion(ConcreteNode, List<MemoryRegion>");
         }

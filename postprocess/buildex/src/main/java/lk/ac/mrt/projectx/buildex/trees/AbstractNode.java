@@ -72,10 +72,6 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         throw new NotImplementedException();
     }
 
-    //endregion public methods
-
-    //region overridden methods
-
     @Override
     public int compareTo(Object o) {
         AbstractNode node = (AbstractNode) o;
@@ -129,7 +125,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         throw new NotImplementedException();
     }
 
-    //endregion overridden methods
+    //endregion public methods
 
     //region private methods
 

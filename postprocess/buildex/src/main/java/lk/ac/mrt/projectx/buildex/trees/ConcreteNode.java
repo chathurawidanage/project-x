@@ -11,7 +11,13 @@ import java.util.List;
  */
 public class ConcreteNode <T> extends Node <T> implements Comparable{
 
-    //region pubclic constructors
+    //region private variables
+
+    private MemoryRegion region;
+
+    //endregion private variables
+
+    //region public constructors
 
     public ConcreteNode(Operand symbol){
         this.symbol = symbol;
@@ -40,13 +46,7 @@ public class ConcreteNode <T> extends Node <T> implements Comparable{
         assignMemRegion(regions);
     }
 
-    //endregion pubclic constructors
-
-    //region private variables
-
-    private MemoryRegion region;
-
-    //endregion private variables
+    //endregion public constructors
 
     //region public methods
     //endregion public methods

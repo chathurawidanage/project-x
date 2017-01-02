@@ -14,6 +14,8 @@ import java.util.List;
  */
 public class AbstractNode <T> extends Node<T> implements Comparable {
 
+    //region public enum
+
     public static enum AbstractNodeType {
         OPERATION_ONLY,
         INPUT_NODE,
@@ -26,13 +28,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         SUBTREE_BOUNDARY,
     }
 
-    //region pubclic constructors
-
-    public AbstractNode() throws ClassNotFoundException {
-        throw new ClassNotFoundException("CocreteNode");
-    }
-
-    //endregion pubclic constructors
+    //endregion public enum
 
     //region private variables
 
@@ -45,7 +41,19 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
     //endregion private variables
 
+    //region public constructors
+
+    public AbstractNode() throws ClassNotFoundException {
+        throw new ClassNotFoundException("CocreteNode");
+    }
+
+    //endregion public constructors
+
     //region public methods
+
+    public AbstractNodeType getType() {
+        return type;
+    }
 
     public String GetMemString() {
         StringBuilder memSt = new StringBuilder();

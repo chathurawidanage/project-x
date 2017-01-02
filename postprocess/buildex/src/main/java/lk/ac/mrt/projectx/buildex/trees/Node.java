@@ -49,6 +49,7 @@ public abstract class Node <T> {
     //endregion Variables
 
     //region public constructors
+
     public Node() {
         operation = null;
         sign = null;
@@ -65,6 +66,20 @@ public abstract class Node <T> {
         is_para = null;
         visited = false;
     }
+
+    public Node(Node node){
+        this.operation = node.operation;
+        this.sign = node.sign;
+        this.symbol = node.symbol;
+        this.pc = node.pc;
+        this.is_para = node.is_para;
+        this.is_double = node.is_double;
+        this.para_num = node.para_num;
+        // no copying
+        this.visited = false;
+        this.order_num = -1;
+    }
+
     //endregion public constructors
 
     //region public methods

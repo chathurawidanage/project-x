@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -190,6 +191,47 @@ public class MemoryRegion {
 
     //region public methods
 
+    public static ArrayList<Integer> getMemPosition(MemoryRegion memoryRegion, long memValue){
+
+        ArrayList<Integer> pos = new ArrayList<>();
+        ArrayList<Integer> rPos = new ArrayList<>();
+
+	/* dimensions would always be width dir(x), height dir(y) */
+
+	/*get the row */
+
+        long offset;
+
+        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()){
+            offset = memValue - memoryRegion.getStartMemory();
+        }
+        else{
+            offset = memoryRegion.getStartMemory() - memValue;
+        }
+        //uint64_t offset = mem_region->end - mem_value;
+
+        //cout << "mem position: " << dec << offset << " start " << mem_region->start << " end " << mem_region->end << " value " << mem_value << endl;
+
+
+        for (int i = (int)memoryRegion.getDimentsion() - 1; i >= 0; i--){
+            int pointOffset = (int)(offset / memoryRegion.getStrides()[i]);
+            if (pointOffset >= memoryRegion.getExtents()[i]){
+                pointOffset = -1;
+            }
+            rPos.add(pointOffset);
+
+            offset -= pointOffset * memoryRegion.getStrides()[i];
+            //cout << offset << endl;
+        }
+
+        for (int i = 0; i < rPos.size(); i++) {
+            pos.add(rPos.get(i));
+        }
+
+        return pos;
+
+    }
+
     public static MemoryRegion getMemRegion(Integer value, List<MemoryRegion> memoryRegions) {
         MemoryRegion region = null;
         for (MemoryRegion memRegion : memoryRegions) {
@@ -210,7 +252,7 @@ public class MemoryRegion {
         return region;
     }
 
-    public boolean isWithinMemRegion(MemoryRegion memoryRegion, int value){
+    public static boolean isWithinMemRegion(MemoryRegion memoryRegion, int value){
 
         if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()){
             return (value >= memoryRegion.getStartMemory()) && (value <= memoryRegion.getEndMemory());

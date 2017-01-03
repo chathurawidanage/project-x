@@ -23,6 +23,17 @@ public class MainTest {
 
     public static void main(String[] args) {
         MainTest mainTest = new MainTest();
+
+        mainTest.setOutputFolderPath("E:\\FYP\\Java Ported\\Test Files\\output_files");
+        mainTest.setImageFolderPath("E:\\FYP\\Java Ported\\Test Files\\images");
+        mainTest.setFilterFilesFolderPath("E:\\FYP\\Java Ported\\Test Files\\filter_files");
+        mainTest.setInImageFileName("arith.png");
+        mainTest.setOutImageFileName("aritht.png");
+        mainTest.setExeFileName("halide_threshold_test.exe");
+        mainTest.setThreshold(80);
+        mainTest.setFilterMode(1);
+        mainTest.setBufferSize(0);
+
         try {
             mainTest.runAlgorithmDiffMode();
         } catch (IOException e) {
@@ -31,24 +42,10 @@ public class MainTest {
     }
 
     public MainTest() {
-        this.outputFolderPath = "E:\\FYP\\Java Ported\\Test Files\\output_files";
-        this.imageFolderPath = "E:\\FYP\\Java Ported\\Test Files\\images";
-        this.filterFilesFolderPath = "E:\\FYP\\Java Ported\\Test Files\\filter_files";
-        this.inImageFileName = "arith.png";
-        this.outImageFileName = "aritht.png";
-        this.exeFileName = "halide_threshold_test.exe";
-        this.threshold = 80;
-        this.filterMode = 1;
-        this.bufferSize = 0;
         this.profileData = new ArrayList<byte[]>();
         this.memtraceData = new ArrayList<byte[]>();
-
-        initialize();
     }
 
-    public void initialize() {
-        readMemtraceAndProfileFiles();
-    }
 
     private final int DIFF_MODE = 1;
     private final int TWO_IMAGE_MODE = 2;
@@ -66,6 +63,41 @@ public class MainTest {
     private ArrayList<byte[]> profileData;
     private ArrayList<byte[]> memtraceData;
 
+    public void setOutputFolderPath(String outputFolderPath) {
+        this.outputFolderPath = outputFolderPath;
+    }
+
+    public void setImageFolderPath(String imageFolderPath) {
+        this.imageFolderPath = imageFolderPath;
+    }
+
+    public void setFilterFilesFolderPath(String filterFilesFolderPath) {
+        this.filterFilesFolderPath = filterFilesFolderPath;
+    }
+
+    public void setInImageFileName(String inImageFileName) {
+        this.inImageFileName = inImageFileName;
+    }
+
+    public void setOutImageFileName(String outImageFileName) {
+        this.outImageFileName = outImageFileName;
+    }
+
+    public void setExeFileName(String exeFileName) {
+        this.exeFileName = exeFileName;
+    }
+
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
+    }
+
+    public void setFilterMode(int filterMode) {
+        this.filterMode = filterMode;
+    }
+
+    public void setBufferSize(int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
 
     private void readMemtraceAndProfileFiles() {
 
@@ -96,6 +128,8 @@ public class MainTest {
     }
 
     public void runAlgorithmDiffMode() throws IOException {
+
+        readMemtraceAndProfileFiles();
 
         logger.info("Filter function DIFF MODE");
 

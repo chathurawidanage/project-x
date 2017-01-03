@@ -210,6 +210,15 @@ public class MemoryRegion {
         return region;
     }
 
+    public boolean isWithinMemRegion(MemoryRegion memoryRegion, int value){
+
+        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()){
+            return (value >= memoryRegion.getStartMemory()) && (value <= memoryRegion.getEndMemory());
+        }
+        else{
+            return (value >= memoryRegion.getEndMemory()) && (value <= memoryRegion.getStartMemory());
+        }
+    }
     //endregion public methods
 
 }

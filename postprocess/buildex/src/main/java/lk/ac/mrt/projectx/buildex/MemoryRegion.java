@@ -1,13 +1,17 @@
 package lk.ac.mrt.projectx.buildex;
 
+import org.apache.logging.log4j.LogManager;
+
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * @author Chathura Widanage
  */
 public class MemoryRegion {
-
+    private static final Logger logger = LogManager.getLogger(MemoryRegion.class);
     private final static int DIMENSIONS = 3;
 
     private int bytesPerPixel;
@@ -191,6 +195,43 @@ public class MemoryRegion {
 
     //region public methods
 
+    /* abstracting memory locations from mem_regions */
+    public static long getMemLocation(ArrayList<Integer> base, ArrayList<Integer> offset, MemoryRegion memRegion){
+
+        // success boolean parameter ignored.
+
+        if(base.size()!=memRegion.getDimentsion()){
+            logger.error("ERROR: dimensions dont match up");
+        }
+
+        for (int i = 0; i < base.size(); i++){
+            base.set(i,base.get(i)+offset.get(i));
+        }
+
+        for (int i = 0; i < base.size(); i++){
+            if (base.get(i) >= memRegion.getExtents()[i]){
+                return 0;
+            }
+        }
+
+        long retAddr;
+        if (memRegion.getStartMemory() < memRegion.getEndMemory()){
+            retAddr = memRegion.getStartMemory();
+            for (int i = 0; i < base.size(); i++){
+                retAddr += memRegion.getStrides()[i] * base.get(i);
+            }
+        }
+        else{
+            retAddr = memRegion.getStartMemory();
+            for (int i = 0; i < base.size(); i++){
+                retAddr -= memRegion.getStrides()[i] * base.get(i);
+            }
+        }
+
+        return retAddr;
+
+    }
+
     public static ArrayList<Integer> getMemPosition(MemoryRegion memoryRegion, long memValue){
 
         ArrayList<Integer> pos = new ArrayList<>();
@@ -208,10 +249,6 @@ public class MemoryRegion {
         else{
             offset = memoryRegion.getStartMemory() - memValue;
         }
-        //uint64_t offset = mem_region->end - mem_value;
-
-        //cout << "mem position: " << dec << offset << " start " << mem_region->start << " end " << mem_region->end << " value " << mem_value << endl;
-
 
         for (int i = (int)memoryRegion.getDimentsion() - 1; i >= 0; i--){
             int pointOffset = (int)(offset / memoryRegion.getStrides()[i]);
@@ -221,7 +258,7 @@ public class MemoryRegion {
             rPos.add(pointOffset);
 
             offset -= pointOffset * memoryRegion.getStrides()[i];
-            //cout << offset << endl;
+
         }
 
         for (int i = 0; i < rPos.size(); i++) {

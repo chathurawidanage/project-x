@@ -3,7 +3,9 @@ package lk.ac.mrt.projectx.buildex;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +19,7 @@ public class MemoryRegion {
     private int bytesPerPixel;
 
     private long type;//memory region type based on dependency analysis
-    private long dumpType;//memory region type based on dump
+    private DumpType dumpType;//memory region type based on dump
     private long treeDirections;//indirect or not
     private long dimentsion;
 
@@ -36,19 +38,19 @@ public class MemoryRegion {
     private long strides[];
     private long min[];
 
-    private long paddingField;
-    private long padding[];
+    private long paddingField;//right left up and down
+    private long padding[];//padding for four directions
 
     private List<Long> referingPCs;
 
     public MemoryRegion() {
-        extents = new long[ DIMENSIONS ];
-        strides = new long[ DIMENSIONS ];
-        min = new long[ DIMENSIONS ];
+        extents = new long[DIMENSIONS];
+        strides = new long[DIMENSIONS];
+        min = new long[DIMENSIONS];
 
         type = 0;
         direction = Direction.READ;
-        dumpType = 0;
+        dumpType = DumpType.OUTPUT_BUFFER;
         treeDirections = 0;
         dependant = false;
     }
@@ -73,11 +75,11 @@ public class MemoryRegion {
         this.type = type;
     }
 
-    public long getDumpType() {
+    public DumpType getDumpType() {
         return dumpType;
     }
 
-    public void setDumpType(long dumpType) {
+    public void setDumpType(DumpType dumpType) {
         this.dumpType = dumpType;
     }
 
@@ -157,7 +159,7 @@ public class MemoryRegion {
         return paddingField;
     }
 
-    public void setPaddingField(long paddingField) {
+    public void setPaddingFilled(long paddingField) {
         this.paddingField = paddingField;
     }
 
@@ -185,6 +187,32 @@ public class MemoryRegion {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "MemoryRegion{" +
+                "bytesPerPixel=" + bytesPerPixel +
+                ", type=" + type +
+                ", dumpType=" + dumpType +
+                ", treeDirections=" + treeDirections +
+                ", dimentsion=" + dimentsion +
+                ", dependant=" + dependant +
+                ", direction=" + direction +
+                ", startMemory=" + startMemory +
+                ", endMemory=" + endMemory +
+                ", name='" + name + '\'' +
+                ", extents=" + Arrays.toString(extents) +
+                ", strides=" + Arrays.toString(strides) +
+                ", min=" + Arrays.toString(min) +
+                ", paddingField=" + paddingField +
+                ", padding=" + Arrays.toString(padding) +
+                ", referingPCs=" + referingPCs +
+                '}';
+    }
+
+    public enum DumpType {
+        OUTPUT_BUFFER, INPUT_BUFFER
+    }
+
     /**
      * Memory read/write or both
      * TODO: check the better convention READ, WRITE .. convention or INPUT, OUTPUT...
@@ -196,34 +224,33 @@ public class MemoryRegion {
     //region public methods
 
     /* abstracting memory locations from mem_regions */
-    public static long getMemLocation(ArrayList<Integer> base, ArrayList<Integer> offset, MemoryRegion memRegion){
+    public static long getMemLocation(ArrayList<Integer> base, ArrayList<Integer> offset, MemoryRegion memRegion) {
 
         // success boolean parameter ignored.
 
-        if(base.size()!=memRegion.getDimentsion()){
+        if (base.size() != memRegion.getDimentsion()) {
             logger.error("ERROR: dimensions dont match up");
         }
 
-        for (int i = 0; i < base.size(); i++){
-            base.set(i,base.get(i)+offset.get(i));
+        for (int i = 0; i < base.size(); i++) {
+            base.set(i, base.get(i) + offset.get(i));
         }
 
-        for (int i = 0; i < base.size(); i++){
-            if (base.get(i) >= memRegion.getExtents()[i]){
+        for (int i = 0; i < base.size(); i++) {
+            if (base.get(i) >= memRegion.getExtents()[i]) {
                 return 0;
             }
         }
 
         long retAddr;
-        if (memRegion.getStartMemory() < memRegion.getEndMemory()){
+        if (memRegion.getStartMemory() < memRegion.getEndMemory()) {
             retAddr = memRegion.getStartMemory();
-            for (int i = 0; i < base.size(); i++){
+            for (int i = 0; i < base.size(); i++) {
                 retAddr += memRegion.getStrides()[i] * base.get(i);
             }
-        }
-        else{
+        } else {
             retAddr = memRegion.getStartMemory();
-            for (int i = 0; i < base.size(); i++){
+            for (int i = 0; i < base.size(); i++) {
                 retAddr -= memRegion.getStrides()[i] * base.get(i);
             }
         }
@@ -232,7 +259,7 @@ public class MemoryRegion {
 
     }
 
-    public static ArrayList<Integer> getMemPosition(MemoryRegion memoryRegion, long memValue){
+    public static ArrayList<Integer> getMemPosition(MemoryRegion memoryRegion, long memValue) {
 
         ArrayList<Integer> pos = new ArrayList<>();
         ArrayList<Integer> rPos = new ArrayList<>();
@@ -243,16 +270,15 @@ public class MemoryRegion {
 
         long offset;
 
-        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()){
+        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
             offset = memValue - memoryRegion.getStartMemory();
-        }
-        else{
+        } else {
             offset = memoryRegion.getStartMemory() - memValue;
         }
 
-        for (int i = (int)memoryRegion.getDimentsion() - 1; i >= 0; i--){
-            int pointOffset = (int)(offset / memoryRegion.getStrides()[i]);
-            if (pointOffset >= memoryRegion.getExtents()[i]){
+        for (int i = (int) memoryRegion.getDimentsion() - 1; i >= 0; i--) {
+            int pointOffset = (int) (offset / memoryRegion.getStrides()[i]);
+            if (pointOffset >= memoryRegion.getExtents()[i]) {
                 pointOffset = -1;
             }
             rPos.add(pointOffset);
@@ -274,13 +300,13 @@ public class MemoryRegion {
         for (MemoryRegion memRegion : memoryRegions) {
             if (memRegion.getStartMemory() < memRegion.getEndMemory()) {
                 // start <= value <= end
-                if ((memRegion.getStartMemory() <= value) && memRegion.getEndMemory() >= value){
+                if ((memRegion.getStartMemory() <= value) && memRegion.getEndMemory() >= value) {
                     region = memRegion;
                     break;
                 }
-            }else{
+            } else {
                 // end <= value <= start
-                if((memRegion.getStartMemory() >= value) && (memRegion.getEndMemory() <= value)){
+                if ((memRegion.getStartMemory() >= value) && (memRegion.getEndMemory() <= value)) {
                     region = memRegion;
                     break;
                 }
@@ -289,12 +315,11 @@ public class MemoryRegion {
         return region;
     }
 
-    public static boolean isWithinMemRegion(MemoryRegion memoryRegion, int value){
+    public static boolean isWithinMemRegion(MemoryRegion memoryRegion, int value) {
 
-        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()){
+        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
             return (value >= memoryRegion.getStartMemory()) && (value <= memoryRegion.getEndMemory());
-        }
-        else{
+        } else {
             return (value >= memoryRegion.getEndMemory()) && (value <= memoryRegion.getStartMemory());
         }
     }

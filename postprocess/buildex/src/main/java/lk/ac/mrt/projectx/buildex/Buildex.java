@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -37,7 +36,7 @@ public class Buildex {
 
 
         MemoryAnalyser memoryAnalyser = MemoryAnalyser.getInstance();
-        memoryAnalyser.getImageRegion(memoryDumpFileList, inputImage, outputImage);
+        memoryAnalyser.getImageRegions(memoryDumpFileList, inputImage, outputImage);
 
 
         System.out.println("-------");

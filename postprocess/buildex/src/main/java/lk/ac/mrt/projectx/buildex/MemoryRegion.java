@@ -1,7 +1,6 @@
 package lk.ac.mrt.projectx.buildex;
 
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -13,9 +12,9 @@ public class MemoryRegion {
     private int bytesPerPixel;
 
     private long type;//memory region type based on dependency analysis
-    private long dumpType;//memory region type based on dump
+    private DumpType dumpType;//memory region type based on dump
     private long treeDirections;//indirect or not
-    private long dimentsion;
+    private long dimension;
 
     /* indirect or not */
     private boolean dependant;
@@ -32,19 +31,19 @@ public class MemoryRegion {
     private long strides[];
     private long min[];
 
-    private long paddingField;
-    private long padding[];
+    private long paddingField;//right left up and down
+    private long padding[];//padding for four directions
 
     private List<Long> referingPCs;
 
     public MemoryRegion() {
-        extents = new long[ DIMENSIONS ];
-        strides = new long[ DIMENSIONS ];
-        min = new long[ DIMENSIONS ];
+        extents = new long[DIMENSIONS];
+        strides = new long[DIMENSIONS];
+        min = new long[DIMENSIONS];
 
         type = 0;
         direction = Direction.READ;
-        dumpType = 0;
+        dumpType = DumpType.OUTPUT_BUFFER;
         treeDirections = 0;
         dependant = false;
     }
@@ -69,11 +68,11 @@ public class MemoryRegion {
         this.type = type;
     }
 
-    public long getDumpType() {
+    public DumpType getDumpType() {
         return dumpType;
     }
 
-    public void setDumpType(long dumpType) {
+    public void setDumpType(DumpType dumpType) {
         this.dumpType = dumpType;
     }
 
@@ -85,12 +84,12 @@ public class MemoryRegion {
         this.treeDirections = treeDirections;
     }
 
-    public long getDimentsion() {
-        return dimentsion;
+    public long getDimension() {
+        return dimension;
     }
 
-    public void setDimentsion(long dimentsion) {
-        this.dimentsion = dimentsion;
+    public void setDimension(long dimension) {
+        this.dimension = dimension;
     }
 
     public boolean isDependant() {
@@ -153,7 +152,7 @@ public class MemoryRegion {
         return paddingField;
     }
 
-    public void setPaddingField(long paddingField) {
+    public void setPaddingFilled(long paddingField) {
         this.paddingField = paddingField;
     }
 
@@ -179,6 +178,32 @@ public class MemoryRegion {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "MemoryRegion{" +
+                "bytesPerPixel=" + bytesPerPixel +
+                ", type=" + type +
+                ", dumpType=" + dumpType +
+                ", treeDirections=" + treeDirections +
+                ", dimension=" + dimension +
+                ", dependant=" + dependant +
+                ", direction=" + direction +
+                ", startMemory=" + startMemory +
+                ", endMemory=" + endMemory +
+                ", name='" + name + '\'' +
+                ", extents=" + Arrays.toString(extents) +
+                ", strides=" + Arrays.toString(strides) +
+                ", min=" + Arrays.toString(min) +
+                ", paddingField=" + paddingField +
+                ", padding=" + Arrays.toString(padding) +
+                ", referingPCs=" + referingPCs +
+                '}';
+    }
+
+    public enum DumpType {
+        OUTPUT_BUFFER, INPUT_BUFFER
     }
 
     /**

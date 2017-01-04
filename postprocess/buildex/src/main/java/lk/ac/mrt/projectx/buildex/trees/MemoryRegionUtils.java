@@ -21,7 +21,7 @@ public class MemoryRegionUtils {
 
         // success boolean parameter ignored.
 
-        if(base.size()!=memRegion.getDimentsion()){
+        if(base.size()!=memRegion.getDimension()){
             logger.error("ERROR: dimensions dont match up");
         }
 
@@ -71,7 +71,7 @@ public class MemoryRegionUtils {
             offset = memoryRegion.getStartMemory() - memValue;
         }
 
-        for (int i = (int)memoryRegion.getDimentsion() - 1; i >= 0; i--){
+        for (int i = (int)memoryRegion.getDimension() - 1; i >= 0; i--){
             int pointOffset = (int)(offset / memoryRegion.getStrides()[i]);
             if (pointOffset >= memoryRegion.getExtents()[i]){
                 pointOffset = -1;

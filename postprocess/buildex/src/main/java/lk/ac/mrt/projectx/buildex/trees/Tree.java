@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static lk.ac.mrt.projectx.buildex.trees.Tree.areTreeNodesSimilar;
 
 /**
  * Created by krv on 1/2/17.

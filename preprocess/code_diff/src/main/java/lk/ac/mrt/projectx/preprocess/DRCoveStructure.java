@@ -68,11 +68,15 @@ public class DRCoveStructure implements Cloneable {
                 if (index != -1) {  // if found a match
                     Module mod = other.modules.get(index); // get its index and get the module from second structure
                     Set<Long> set1 = mod.getAddresses(); // second structure addresses
-                    Set<Long> set2 = modT.getAddresses(); // first structuer addresses
+                    Set<Long> set2 = modT.getAddresses(); // first structure addresses
                     ///TODO: Why not add new basic blocks from second run ? \
                     /// only adding
-//                    modT.getAddresses().addAll(set1);// merges the addresses of both modules
-//                    set2.removeAll(set1);   // Overlap of addresses of both modules
+                    /* KRV Suggesion
+                    modT.getAddresses().addAll(set1);// merges the addresses of both modules
+                    set2.removeAll(set1);   // Overlap of addresses of both modules
+                    modT.getAddresses().removeAll(set2);
+
+ KRV Suggestion */
                     modT.getAddresses().removeAll(set1);// merges the addresses of both modules
                     // removes the repeated BBs on second structure but does not add new BBs from second structure
                 }

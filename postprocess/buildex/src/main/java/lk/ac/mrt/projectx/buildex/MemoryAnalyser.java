@@ -130,7 +130,7 @@ public class MemoryAnalyser {
                 last += (imageWidth);
                 startPoints.add(j);
                 j += (imageWidth - 1);
-                if (last == imageWidth * imageHeight * 3) {//todo multiply by 3?? OK for planar, interleaved not required
+                if (last == imageWidth * imageHeight) {//todo multiply by 3?? OK for planar, interleaved not required
                     logger.info("Scanned whole image {}",startPoints.size());
                     return startPoints;
                 }

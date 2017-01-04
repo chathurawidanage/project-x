@@ -7,6 +7,5 @@ public class ConcreteTree extends Tree {
 
     @Override
     public void simplifyTree() {
-        
     }
 }

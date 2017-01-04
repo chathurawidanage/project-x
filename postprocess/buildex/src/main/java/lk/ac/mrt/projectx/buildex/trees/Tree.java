@@ -3,12 +3,9 @@ package lk.ac.mrt.projectx.buildex.trees;
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
-import static lk.ac.mrt.projectx.buildex.trees.Tree.areTreeNodesSimilar;
 
 /**
  * Created by krv on 1/2/17.

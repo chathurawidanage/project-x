@@ -5,4 +5,8 @@ package lk.ac.mrt.projectx.buildex.trees;
  */
 public class ConcreteTree extends Tree {
 
+    @Override
+    public void simplifyTree() {
+
+    }
 }

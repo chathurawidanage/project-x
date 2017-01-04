@@ -151,7 +151,7 @@ public class MemoryAnalyser {
                     logger.info("Gaps size : {}", gaps.size());
                     MemoryRegion memoryRegion = new MemoryRegion();
                     memoryRegion.setBytesPerPixel(1);
-                    memoryRegion.setDimentsion(2);
+                    memoryRegion.setDimension(2);
                     memoryRegion.setExtents(new long[]{imageWidth, imageHeight});
                     memoryRegion.setStartMemory(startPoints.get(0) + basePC);
                     memoryRegion.setEndMemory(startPoints.get(startPoints.size() - 1)

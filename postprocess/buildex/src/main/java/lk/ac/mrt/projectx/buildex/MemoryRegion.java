@@ -1,8 +1,5 @@
 package lk.ac.mrt.projectx.buildex;
 
-import org.apache.logging.log4j.LogManager;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,7 +14,7 @@ public class MemoryRegion {
     private long type;//memory region type based on dependency analysis
     private DumpType dumpType;//memory region type based on dump
     private long treeDirections;//indirect or not
-    private long dimentsion;
+    private long dimension;
 
     /* indirect or not */
     private boolean dependant;
@@ -87,12 +84,12 @@ public class MemoryRegion {
         this.treeDirections = treeDirections;
     }
 
-    public long getDimentsion() {
-        return dimentsion;
+    public long getDimension() {
+        return dimension;
     }
 
-    public void setDimentsion(long dimentsion) {
-        this.dimentsion = dimentsion;
+    public void setDimension(long dimension) {
+        this.dimension = dimension;
     }
 
     public boolean isDependant() {
@@ -190,7 +187,7 @@ public class MemoryRegion {
                 ", type=" + type +
                 ", dumpType=" + dumpType +
                 ", treeDirections=" + treeDirections +
-                ", dimentsion=" + dimentsion +
+                ", dimension=" + dimension +
                 ", dependant=" + dependant +
                 ", direction=" + direction +
                 ", startMemory=" + startMemory +

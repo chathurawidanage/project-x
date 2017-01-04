@@ -1,11 +1,13 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.MemoryRegion.Direction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Lasantha on 04-Jan-17.
@@ -15,6 +17,38 @@ public class MemoryRegionUtils {
     private static final Logger logger = LogManager.getLogger(MemoryRegionUtils.class);
 
     //region public methods
+
+    public static MemoryRegion getRandomOutputRegion(ArrayList<MemoryRegion> regions){
+
+        logger.info("selecting a random output region now.......");
+
+	    /*get the number of intermediate and output regions*/
+        int no_regions = 0;
+        for (int i = 0; i < regions.size(); i++){
+            if (regions.get(i).getDirection() == Direction.MEM_INTERMEDIATE || regions.get(i).getDirection() == Direction.MEM_OUTPUT){
+                no_regions++;
+            }
+        }
+
+        Random rand = new Random();
+        int random = rand.nextInt(no_regions);
+
+        no_regions = 0;
+
+        for (int i = 0; i < regions.size(); i++){
+            if (regions.get(i).getDirection() == Direction.MEM_INTERMEDIATE || regions.get(i).getDirection() == Direction.MEM_OUTPUT){
+                if (no_regions == random){
+                    logger.info("random output region seleted");
+                    return regions.get(i);
+                }
+                no_regions++;
+            }
+        }
+
+        return null; /*should not reach this point*/
+
+
+    }
 
     /* abstracting memory locations from mem_regions */
     public static long getMemLocation(ArrayList<Integer> base, ArrayList<Integer> offset, MemoryRegion memRegion){

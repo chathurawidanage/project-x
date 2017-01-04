@@ -78,7 +78,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         this.associatedMem = null;
         MemoryRegion mem = null;
         if(concreteNode.symbol.type == MEM_STACK_TYPE || concreteNode.symbol.type == MEM_HEAP_TYPE){
-            mem = MemoryRegion.getMemRegion((Integer)concreteNode.symbol.value, memRegions);
+            mem = MemoryRegionUtils.getMemRegion((Integer)concreteNode.symbol.value, memRegions);
         }
 
         if((mem != null) && filer){

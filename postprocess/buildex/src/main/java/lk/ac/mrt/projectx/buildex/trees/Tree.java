@@ -37,8 +37,8 @@ public abstract class Tree implements Comparable {
 
     //region protected methods
 
-    protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator){
-        Node node = (Node)nde;
+    protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
+        Node node = (Node) nde;
         Object nodeVal = nodeMutator.mutate(node, value);
         List<Object> traverseValue = new ArrayList<>();
 
@@ -144,8 +144,20 @@ public abstract class Tree implements Comparable {
         throw new NotImplementedException();
     }
 
+
     public void cleanupVisit() {
-        throw new NotImplementedException();
+        traverseTree(head, numNodes, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                node.visited = false;
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     //region Tree Transformations

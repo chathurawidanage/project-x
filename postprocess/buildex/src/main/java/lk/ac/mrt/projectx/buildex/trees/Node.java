@@ -69,7 +69,7 @@ public abstract class Node <T> {
         visited = false;
     }
 
-    public Node(Node node){
+    public Node(Node node) {
         this.operation = node.operation;
         this.sign = node.sign;
         this.symbol = node.symbol;
@@ -85,12 +85,6 @@ public abstract class Node <T> {
     //endregion public constructors
 
     //region public methods
-
-
-    public List<Node> getSrcs() {
-        ArrayList<Node> nodes = new ArrayList<>(srcs);
-        return nodes;
-    }
 
     public abstract String getNodeString();
 
@@ -201,14 +195,14 @@ public abstract class Node <T> {
         return ret;
     }
 
-    public static boolean isNodesSimilar(List<Node> nodes){
+    public static boolean isNodesSimilar(List<Node> nodes) {
         boolean ans = true;
-        if(nodes.isEmpty()){
+        if (nodes.isEmpty()) {
             ans = true;
-        }else{
+        } else {
             Node firstNode = nodes.get(0);
-            for (Node node:nodes.subList(1, nodes.size() -1)) {
-                if(node != firstNode){
+            for (Node node : nodes.subList(1, nodes.size() - 1)) {
+                if (node != firstNode) {
                     ans = false;
                     break;
                 }

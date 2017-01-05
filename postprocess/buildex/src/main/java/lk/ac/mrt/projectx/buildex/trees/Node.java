@@ -62,14 +62,14 @@ public abstract class Node <T> {
         pos = new ArrayList<>();
         pc = null;
         line = pc;
-        order_num = null;
+        order_num = -1;
         para_num = null;
         is_double = null;
         is_para = null;
         visited = false;
     }
 
-    public Node(Node node){
+    public Node(Node node) {
         this.operation = node.operation;
         this.sign = node.sign;
         this.symbol = node.symbol;
@@ -195,14 +195,14 @@ public abstract class Node <T> {
         return ret;
     }
 
-    public static boolean isNodesSimilar(List<Node> nodes){
+    public static boolean isNodesSimilar(List<Node> nodes) {
         boolean ans = true;
-        if(nodes.isEmpty()){
+        if (nodes.isEmpty()) {
             ans = true;
-        }else{
+        } else {
             Node firstNode = nodes.get(0);
-            for (Node node:nodes.subList(1, nodes.size() -1)) {
-                if(node != firstNode){
+            for (Node node : nodes.subList(1, nodes.size() - 1)) {
+                if (node != firstNode) {
                     ans = false;
                     break;
                 }

@@ -6,6 +6,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by krv on 1/2/17.
@@ -34,6 +35,22 @@ public abstract class Tree implements Comparable {
 
     //endregion public constructors
 
+    //region protected methods
+
+    protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
+        Node node = (Node) nde;
+        Object nodeVal = nodeMutator.mutate(node, value);
+        List<Object> traverseValue = new ArrayList<>();
+
+        for (int i = 0 ; i < node.srcs.size() ; i++) {
+            traverseValue.add(traverseTree(node.srcs.get(i), value, nodeMutator, nodeReturnMutator));
+        }
+
+        return nodeReturnMutator.mutate(nodeVal, traverseValue, value);
+    }
+
+    //endregion protected methods
+
     //region public methods
 
     public Node getHead() {
@@ -48,7 +65,7 @@ public abstract class Tree implements Comparable {
         return numParas;
     }
 
-//    public static void setNumParas(Integer numParas) {
+//    public static void setNumParas(Integer  numParas) {
 //        Tree.numParas = numParas;
 //    }
 
@@ -112,7 +129,22 @@ public abstract class Tree implements Comparable {
     }
 
     public void numberTreeNodes() {
-        throw new NotImplementedException();
+        traverseTree(head, this, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                Tree tr = (Tree) value;
+                tr.numNodes = tr.numNodes + 1;
+                if (node.order_num == -1) {
+                    node.order_num = tr.numNodes;
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void printTree(FileOutputStream file) {
@@ -127,8 +159,20 @@ public abstract class Tree implements Comparable {
         throw new NotImplementedException();
     }
 
+
     public void cleanupVisit() {
-        throw new NotImplementedException();
+        traverseTree(head, numNodes, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                node.visited = false;
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     //region Tree Transformations

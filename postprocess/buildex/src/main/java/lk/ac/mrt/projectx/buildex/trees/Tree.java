@@ -6,6 +6,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by krv on 1/2/17.
@@ -36,9 +37,18 @@ public abstract class Tree implements Comparable {
 
     //region protected methods
 
-    protected Object traverseTree(NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator){
+    protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator){
+        Node node = (Node)nde;
+        Object nodeVal = nodeMutator.mutate(node, value);
+        List<Object> traverseValue = new ArrayList<>();
 
+        for (int i = 0 ; i < node.srcs.size() ; i++) {
+            traverseValue.add(traverseTree(node.srcs.get(i), value, nodeMutator, nodeReturnMutator));
+        }
+
+        return nodeReturnMutator.mutate(nodeVal, traverseValue, value);
     }
+
     //endregion protected methods
 
     //region public methods
@@ -55,7 +65,7 @@ public abstract class Tree implements Comparable {
         return numParas;
     }
 
-//    public static void setNumParas(Integer numParas) {
+//    public static void setNumParas(Integer  numParas) {
 //        Tree.numParas = numParas;
 //    }
 

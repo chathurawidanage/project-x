@@ -86,6 +86,12 @@ public abstract class Node <T> {
 
     //region public methods
 
+
+    public List<Node> getSrcs() {
+        ArrayList<Node> nodes = new ArrayList<>(srcs);
+        return nodes;
+    }
+
     public abstract String getNodeString();
 
     public abstract String getDotString();

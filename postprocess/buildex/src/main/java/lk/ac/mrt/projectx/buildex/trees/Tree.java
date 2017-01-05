@@ -1,17 +1,21 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by krv on 1/2/17.
  */
 public abstract class Tree implements Comparable {
+
+    final static Logger logger = LogManager.getLogger(Tree.class);
 
     //region private variables
 
@@ -37,6 +41,45 @@ public abstract class Tree implements Comparable {
 
     //region protected methods
 
+    public static Integer getNumParas() {
+        return numParas;
+    }
+
+    //endregion protected methods
+
+    //region public methods
+
+    public static boolean areTreesSimilar(List<Tree> trees) {
+        List<Node> nodes = new ArrayList<>();
+        for (Tree tree : trees) {
+            nodes.add(tree.getHead());
+        }
+        return areTreeNodesSimilar(nodes) == 1 ? true : false;
+    }
+
+    /**
+     * No idea what this do
+     *
+     * @param nodes
+     * @return
+     */
+    private static int areTreeNodesSimilar(List<Node> nodes) {
+        if (!Node.isNodesSimilar(nodes)) return 0;
+
+        if (!nodes.isEmpty()) {
+            for (int i = 0 ; i < nodes.get(0).srcs.size() ; i++) {
+                List<Node> nodesList = new ArrayList<>();
+                for (int j = 0 ; j < nodes.size() ; j++) {
+                    //TODO : find the reason for needing to cast to Node
+                    nodesList.add((Node) nodes.get(j).srcs.get(i));
+                }
+                if (areTreeNodesSimilar(nodesList) != 1) return 0;
+            }
+        }
+
+        return 1;
+    }
+
     protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
         Node node = (Node) nde;
         Object nodeVal = nodeMutator.mutate(node, value);
@@ -49,9 +92,9 @@ public abstract class Tree implements Comparable {
         return nodeReturnMutator.mutate(nodeVal, traverseValue, value);
     }
 
-    //endregion protected methods
-
-    //region public methods
+//    public static void setNumParas(Integer  numParas) {
+//        Tree.numParas = numParas;
+//    }
 
     public Node getHead() {
         return head;
@@ -59,18 +102,6 @@ public abstract class Tree implements Comparable {
 
     public void setHead(Node head) {
         this.head = head;
-    }
-
-    public static Integer getNumParas() {
-        return numParas;
-    }
-
-//    public static void setNumParas(Integer  numParas) {
-//        Tree.numParas = numParas;
-//    }
-
-    public boolean isRecursive() {
-        return recursive;
     }
 
     public void setRecursive(boolean recursive) {
@@ -112,14 +143,6 @@ public abstract class Tree implements Comparable {
 
     public abstract void simplifyTree();
 
-    public static boolean areTreesSimilar(List<Tree> trees) {
-        List<Node> nodes = new ArrayList<>();
-        for (Tree tree : trees) {
-            nodes.add(tree.getHead());
-        }
-        return areTreeNodesSimilar(nodes) == 1 ? true : false;
-    }
-
     public void cacocicalizeTree() {
         throw new NotImplementedException();
     }
@@ -129,6 +152,7 @@ public abstract class Tree implements Comparable {
     }
 
     public void numberTreeNodes() {
+        logger.debug("Start tree numbering");
         traverseTree(head, this, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
@@ -145,6 +169,7 @@ public abstract class Tree implements Comparable {
                 return null;
             }
         });
+        logger.debug("Number of trees %d", numNodes);
     }
 
     public void printTree(FileOutputStream file) {
@@ -155,12 +180,10 @@ public abstract class Tree implements Comparable {
         throw new NotImplementedException();
     }
 
-    public boolean isRecursive(Node node, List<MemoryRegion> regions) {
-        throw new NotImplementedException();
-    }
-
+    //region Tree Transformations
 
     public void cleanupVisit() {
+        logger.debug("cleaning up all the visited states");
         traverseTree(head, numNodes, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
@@ -174,8 +197,6 @@ public abstract class Tree implements Comparable {
             }
         });
     }
-
-    //region Tree Transformations
 
     public void removeAssignedNodes() {
         throw new NotImplementedException();
@@ -225,38 +246,41 @@ public abstract class Tree implements Comparable {
         throw new NotImplementedException();
     }
 
-    public void removeIdentities() {
-        throw new NotImplementedException();
-    }
-
     //endregion Tree Transformations
 
     //endregion public methods
 
     //region private methods
 
-    /**
-     * No idea what this do
-     *
-     * @param nodes
-     * @return
-     */
-    private static int areTreeNodesSimilar(List<Node> nodes) {
-        if (!Node.isNodesSimilar(nodes)) return 0;
+    public void removeIdentities() {
+        throw new NotImplementedException();
+    }
 
-        if (!nodes.isEmpty()) {
-            for (int i = 0 ; i < nodes.get(0).srcs.size() ; i++) {
-                List<Node> nodesList = new ArrayList<>();
-                for (int j = 0 ; j < nodes.size() ; j++) {
-                    //TODO : find the reason for needing to cast to Node
-                    nodesList.add((Node) nodes.get(j).srcs.get(i));
+    //TODO : move to util
+    public boolean isRecursive(Node node, List<MemoryRegion> regions) {
+        if (head != node) {
+            if (node.symbol.type == Operand.OperandType.MEM_HEAP_TYPE ||
+                    node.symbol.type == Operand.OperandType.MEM_STACK_TYPE) {
+                if (MemoryRegionUtils.getMemRegion((Integer) head.symbol.value, regions) ==
+                        MemoryRegionUtils.getMemRegion((Integer) node.symbol.value, regions)) {
+                    return true;
                 }
-                if (areTreeNodesSimilar(nodesList) != 1) return 0;
             }
         }
 
-        return 1;
+        boolean isRec = false;
+        Iterator<Node> nodeIterator = head.srcs.listIterator();
+        while (nodeIterator.hasNext()) {
+            Node nde = nodeIterator.next();
+            isRec = isRecursive(nde, regions);
+            if (isRec) {
+                break;
+            }
+        }
+
+        return recursive;
     }
+
     //endregion private methods
 
 }

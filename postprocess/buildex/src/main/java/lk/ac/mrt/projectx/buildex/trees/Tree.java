@@ -34,6 +34,13 @@ public abstract class Tree implements Comparable {
 
     //endregion public constructors
 
+    //region protected methods
+
+    protected Object traverseTree(NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator){
+
+    }
+    //endregion protected methods
+
     //region public methods
 
     public Node getHead() {

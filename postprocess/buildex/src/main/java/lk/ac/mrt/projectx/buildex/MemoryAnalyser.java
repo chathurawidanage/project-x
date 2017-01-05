@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,45 +27,53 @@ public class MemoryAnalyser {
     }
 
 
-    public void getImageRegion(List<MemoryDumpFile> memoryDumpFiles, ProjectXImage inputImage, ProjectXImage outputImage) throws IOException {
+    public List<MemoryRegion> getImageRegions(List<MemoryDumpFile> memoryDumpFiles, ProjectXImage inputImage, ProjectXImage outputImage) throws IOException {
         /*if (this.isEqualImages(inputImage, outputImage)) {
             logger.error("Input and output images are equal");
             //throw new Exception("Input and output images are equal");
         }*/
-
+        List<MemoryRegion> memoryRegions = new ArrayList<>();
 
         for (MemoryDumpFile memoryDumpFile : memoryDumpFiles) {
             logger.info("Analyzing file : {}", memoryDumpFile.toString());
+            List<MemoryRegion> startPoints = null;
             if (!memoryDumpFile.isWrite()) {
-                List<Integer> startPoints = forwardAnalysis(memoryDumpFile, inputImage);
+                startPoints = forwardAnalysis(memoryDumpFile, inputImage);
                 System.out.println(startPoints);
                 if (startPoints == null)
-                    backwardAnalysis(memoryDumpFile, inputImage, false);
+                    startPoints = backwardAnalysis(memoryDumpFile, inputImage, false);
             } else {
-                List<Integer> startPoints = forwardAnalysis(memoryDumpFile, outputImage);
+                startPoints = forwardAnalysis(memoryDumpFile, outputImage);
                 System.out.println(startPoints);
                 if (startPoints == null)
-                    backwardAnalysis(memoryDumpFile, outputImage, true);
+                    startPoints = backwardAnalysis(memoryDumpFile, outputImage, true);
+            }
+
+            if (startPoints != null && !startPoints.isEmpty()) {
+                memoryRegions.addAll(startPoints);
             }
         }
+        logger.info("Found total of {} memory regions {}", memoryRegions.size(),memoryRegions.toString());
+        return memoryRegions;
     }
 
-    private void findAnyWhere(MemoryDumpFile memoryDumpFile,ProjectXImage image) throws IOException {
+    private void findAnyWhere(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
         int[] imageBuffer = image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR);
         byte[] memoryBuffer = memoryDumpFile.getMemoryBuffer();
 
-        ArrayList<Integer> locs=new ArrayList<>();
-        for(int pix:imageBuffer){
-            boolean found=false;
-            int pos=0;
-            for(byte x:memoryBuffer){
-                if((x & 0xff)==pix){locs.add(pos);
-                    found=true;
+        ArrayList<Integer> locs = new ArrayList<>();
+        for (int pix : imageBuffer) {
+            boolean found = false;
+            int pos = 0;
+            for (byte x : memoryBuffer) {
+                if ((x & 0xff) == pix) {
+                    locs.add(pos);
+                    found = true;
                     break;
                 }
                 pos++;
             }
-            if(!found){
+            if (!found) {
                 System.out.println("Pixel not found");
             }
         }
@@ -75,15 +82,15 @@ public class MemoryAnalyser {
     }
 
     //todo invalid implementation
-    private List<Integer> backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image, boolean write) throws IOException {
+    private List<MemoryRegion> backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image, boolean write) throws IOException {
         logger.info("Backward analyzing {}", memoryDumpFile.getFile().getName());
         int[] imageBuffer = image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR);
         int[] reversedImageBuffer = new int[imageBuffer.length];
 
         //todo this is just for PLANAR, will not work for INTERLEAVED
         for (int i = 0; i < imageBuffer.length; i += image.getImage().getWidth()) {
-            int swapPosition = (image.getImage().getWidth()*image.getImage().getHeight()*3) - i - image.getImage().getWidth();
-            System.arraycopy(imageBuffer,i,reversedImageBuffer,swapPosition,image.getImage().getWidth());
+            int swapPosition = (image.getImage().getWidth() * image.getImage().getHeight() * 3) - i - image.getImage().getWidth();
+            System.arraycopy(imageBuffer, i, reversedImageBuffer, swapPosition, image.getImage().getWidth());
         }
      /*   if (true) {
             int[] revereImageBufferCopy = Arrays.copyOf(reversedImageBuffer, reversedImageBuffer.length);
@@ -101,21 +108,25 @@ public class MemoryAnalyser {
                 image.getImage().getHeight(),
                 reversedImageBuffer,
                 memoryDumpFile.getBaseProgramCounter(),
-                memoryDumpFile.getMemoryBuffer()
+                memoryDumpFile.getMemoryBuffer(),
+                memoryDumpFile.isWrite()
         );
     }
 
-    private List<Integer> forwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
+    private List<MemoryRegion> forwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
         logger.info("Forward analyzing {}", memoryDumpFile.getFile().getName());
         return findRegions(image.getImage().getWidth(),
                 image.getImage().getHeight(),
                 image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR),
                 memoryDumpFile.getBaseProgramCounter(),
-                memoryDumpFile.getMemoryBuffer()
+                memoryDumpFile.getMemoryBuffer(),
+                memoryDumpFile.isWrite()
         );
     }
 
-    private List<Integer> findRegions(int imageWidth, int imageHeight, int[] imageBuffer, long basePC, byte[] memoryBuffer) {
+    private List<MemoryRegion> findRegions(int imageWidth, int imageHeight, int[] imageBuffer,
+                                           long basePC, byte[] memoryBuffer, boolean write) {
+        ArrayList<MemoryRegion> memoryRegions = new ArrayList<>();
         ArrayList<Integer> startPoints = new ArrayList<>();
         int last = 0;
         for (int j = 0; j < memoryBuffer.length; ) {
@@ -130,16 +141,58 @@ public class MemoryAnalyser {
                 last += (imageWidth);
                 startPoints.add(j);
                 j += (imageWidth - 1);
+                //todo backward memory region implementation
                 if (last == imageWidth * imageHeight) {//todo multiply by 3?? OK for planar, interleaved not required
-                    logger.info("Scanned whole image {}",startPoints.size());
-                    return startPoints;
+                    logger.info("Scanned whole image with {} start points", startPoints.size());
+                    List<Integer> gaps = new ArrayList<>();
+                    for (int i = 1; i < startPoints.size(); i++) {
+                        gaps.add(startPoints.get(i) - startPoints.get(i - 1));
+                    }
+                    logger.info("Gaps size : {}", gaps.size());
+                    MemoryRegion memoryRegion = new MemoryRegion();
+                    memoryRegion.setBytesPerPixel(1);
+                    memoryRegion.setDimension(2);
+                    memoryRegion.setExtents(new long[]{imageWidth, imageHeight});
+                    memoryRegion.setStartMemory(startPoints.get(0) + basePC);
+                    memoryRegion.setEndMemory(startPoints.get(startPoints.size() - 1)
+                            + memoryRegion.getStrides()[1] + basePC);
+                    memoryRegion.setDumpType(write ? MemoryRegion.DumpType.OUTPUT_BUFFER :
+                            MemoryRegion.DumpType.INPUT_BUFFER);
+                    if (gaps.size() == 0) {
+                        memoryRegion.setStrides(new long[]{1, imageWidth});
+                        memoryRegion.setPaddingFilled(1);
+                        memoryRegion.setPadding(new long[]{0});
+
+                        memoryRegions.add(memoryRegion);
+                    } else {
+                        //check gaps are equal
+                        boolean foundEqualGaps = true;
+                        int expectedGap = gaps.get(0);
+                        for (int gap : gaps) {
+                            if (gap != expectedGap) {
+                                foundEqualGaps = false;
+                                break;
+                            }
+                        }
+                        if (foundEqualGaps) {
+                            memoryRegion.setStrides(new long[]{1, expectedGap});
+                            memoryRegion.setPaddingFilled(1);
+                            memoryRegion.setPadding(new long[]{expectedGap - imageWidth});
+
+                            memoryRegions.add(memoryRegion);
+                        }
+                    }
+
+                    //reset
+                    last = 0;
+                    startPoints.clear();
                 }
             } else {
                 j++;
             }
         }
-        System.out.println(startPoints.size());
-        return null;
+        logger.info("Found {} memory regions", memoryRegions.size());
+        return memoryRegions;
     }
 
     private boolean isEqualImages(ProjectXImage i1, ProjectXImage i2) {

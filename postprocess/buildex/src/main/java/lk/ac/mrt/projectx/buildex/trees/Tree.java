@@ -129,7 +129,22 @@ public abstract class Tree implements Comparable {
     }
 
     public void numberTreeNodes() {
-        throw new NotImplementedException();
+        traverseTree(head, this, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                Tree tr = (Tree) value;
+                tr.numNodes = tr.numNodes + 1;
+                if (node.order_num == -1) {
+                    node.order_num = tr.numNodes;
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void printTree(FileOutputStream file) {

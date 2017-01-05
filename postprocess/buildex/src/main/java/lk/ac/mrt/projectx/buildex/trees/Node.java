@@ -62,7 +62,7 @@ public abstract class Node <T> {
         pos = new ArrayList<>();
         pc = null;
         line = pc;
-        order_num = null;
+        order_num = -1;
         para_num = null;
         is_double = null;
         is_para = null;

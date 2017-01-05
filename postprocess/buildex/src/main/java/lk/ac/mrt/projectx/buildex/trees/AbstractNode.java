@@ -50,6 +50,10 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         super();
     }
 
+    public AbstractNode(AbstractNode node) {
+        super(node);
+    }
+
     public AbstractNode(ConcreteNode head, ConcreteNode concreteNode, List<MemoryRegion> memRegions){
         //TODO : Finish it refer (abs_node.cpp)
         super(concreteNode);

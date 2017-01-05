@@ -18,6 +18,17 @@ public class MemoryRegionUtils {
 
     //region public methods
 
+    public static long getRegionSize(MemoryRegion region){
+
+        long size = 1;
+        int dimension = (int)region.getDimension();
+        for (int i = 0; i < dimension; i++){
+            size *= region.getExtents()[i];
+        }
+        return size;
+
+    }
+
     public static long getRandomMemLocation(MemoryRegion region, int seed) {
 
         logger.info("selecting a random output location now.....");

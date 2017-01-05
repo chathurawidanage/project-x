@@ -18,6 +18,85 @@ public class MemoryRegionUtils {
 
     //region public methods
 
+
+    // stride was a pointer. - Not considered it as a pointer here. if needs, it should be implemented
+    public static ArrayList<Long> getNbdOfRandomPoints2(ArrayList<MemoryRegion> image_regions, int seed, int stride){
+
+        MemoryRegion random_mem_region = getRandomOutputRegion(image_regions);
+        //cout << hex << random_mem_region->start << endl;
+        long mem_location = getRandomMemLocation(random_mem_region, seed);
+        logger.info("random mem location we got - {}",mem_location);
+        stride = random_mem_region.getBytesPerPixel();
+
+        ArrayList<Long> nbd_locations = new ArrayList<>();
+        ArrayList<Integer> base = getMemPosition(random_mem_region, mem_location);
+        nbd_locations.add(mem_location);
+
+        /*
+        // printing - ignored
+        cout << "base : " << endl;
+        for (int j = 0; j < base.size(); j++){
+            cout << base[j] << ",";
+        }
+        cout << endl;
+        */
+
+        //get a nbd of locations - diagonally choose pixels
+        int boundary = (int)((random_mem_region.getDimension() + 2) / 2.0);
+        logger.info("boundary : {}", boundary);
+
+        int count = 0;
+
+        int[] val = new int[(int)random_mem_region.getDimension()];
+
+        for (int i = -boundary; i <= boundary; i++){
+
+            ArrayList<Integer> offset = new ArrayList<>();
+            int affected = count % (int)random_mem_region.getDimension();
+            if (count == 4){
+                count++;
+                val[affected]++;
+                continue;
+            }
+            for (int j = 0; j < base.size(); j++){
+                if (j == affected){
+                    val[j]++;
+                    if (val[j] + base.get(j) < random_mem_region.getExtents()[j] && val[j] + base.get(j) > 0){
+                        offset.add(val[j]);
+                    }
+                    else{
+                        offset.add(0);
+                    }
+
+                }
+                else offset.add(0);
+            }
+
+            /*
+            cout << "offset" << endl;
+            for (int j = 0; j < offset.size(); j++){
+                cout << offset[j] << ",";
+            }
+            cout << endl;
+            */
+
+
+            mem_location = getMemLocation(base, offset, random_mem_region);
+
+            if (mem_location == 0) {
+                logger.error("ERROR: random memory location out of bounds");
+            }
+
+            nbd_locations.add(mem_location);
+            count++;
+        }
+
+        return nbd_locations;
+
+
+
+    }
+
     public static long getRegionSize(MemoryRegion region){
 
         long size = 1;

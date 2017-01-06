@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -9,6 +10,9 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
+import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.IMM_INT_TYPE;
 
 /**
  * Created by krv on 1/2/17.
@@ -207,7 +211,9 @@ public abstract class Tree implements Comparable {
     }
 
     public void removeMultiplication() {
-        throw new NotImplementedException();
+        cleanupVisit();
+        removeMultiplication(head);
+        cleanupVisit();
     }
 
     public void simplifyImmediates() {
@@ -279,6 +285,53 @@ public abstract class Tree implements Comparable {
         }
 
         return recursive;
+    }
+
+    private boolean removeMultiplication(Node node){
+        boolean mul = false;
+        if(node.visited) {
+            return false;
+        }else{
+            mul = false;
+            node.visited = true;
+            if(node.operation ==  op_mul){
+                Integer index = -1;
+                Integer imm_value = 0;
+                for (int i = 0 ; i < node.srcs.size() ; i++) {
+                    if(((Node)node.srcs.get(i)).symbol.type == IMM_INT_TYPE){
+                        imm_value = (Integer)((Node) node.srcs.get(i)).symbol.value;
+                        index = i;
+                        break;
+                    }
+                }
+
+                if(index != -1 && imm_value >= 0){
+                    mul = true;
+                    for (int i = 0 ; i < node.prev.size() ; i++) {
+                        Node nde = (Node)node.prev.get(i);
+                        for (int j = 0 ; j < node.srcs.size() ; j++) {
+                            if(index != j){
+                                for (int k = 0 ; k < imm_value ; k++) {
+                                    nde.addForwardRefrence((Node)node.srcs.get(j));
+                                }
+                            }
+                        }
+                        nde.removeForwardReference(node);
+                    }
+
+                    node.removeForwardReferenceAll();
+                }
+            }
+        }
+
+        for (int i = 0 ; i < node.srcs.size() ; i++) {
+            Node src_node = (Node)node.srcs.get(i);
+            if(removeMultiplication(src_node)){
+                i = i - 1;
+            }
+        }
+
+        return mul;
     }
 
     //endregion private methods

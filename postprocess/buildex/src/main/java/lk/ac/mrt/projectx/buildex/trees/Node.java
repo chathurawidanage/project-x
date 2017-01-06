@@ -100,6 +100,15 @@ public abstract class Node <T> {
         return count;
     }
 
+    /**
+     * Remove all forward references in source list
+     */
+    public void removeForwardReferenceAll(){
+        for (int i = 0 ; i < srcs.size() ; i++) {
+            removeForwardReference(srcs.get(i));
+        }
+    }
+
     public int removeBackwardReference(Node ref) {
         int count = 0;
         while (removeBackwardReferenceSingle(ref)) {

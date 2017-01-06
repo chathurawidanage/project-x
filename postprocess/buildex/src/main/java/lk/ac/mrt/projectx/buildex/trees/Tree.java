@@ -7,10 +7,13 @@ import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.FileOutputStream;
+import java.io.InterruptedIOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_add;
+import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_indirect;
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
 import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.IMM_INT_TYPE;
 
@@ -217,7 +220,38 @@ public abstract class Tree implements Comparable {
     }
 
     public void simplifyImmediates() {
-        throw new NotImplementedException();
+        traverseTree(head, head, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                List<Integer> indexes = new ArrayList<Integer>();
+                if(node.operation == op_mul || node.operation == op_add){
+
+                    Integer val = 0;
+
+                    for (int i = 0 ; i < node.srcs.size() ; i++) {
+                        Node loopNode = (Node)node.srcs.get(i);
+                        val += (Integer)loopNode.symbol.value;
+                        indexes.add(i);
+                    }
+                }
+
+                if(!indexes.isEmpty()){
+                    logger.debug("First value : %d ", indexes.get(0));
+                    Node nde = (Node)node.srcs.get(0);
+                    nde.symbol.value = value;
+                    for (int i = 0 ; i < indexes.size() ; i++) {
+                        node.removeForwardReference((Node)node.srcs.get(indexes.get(i)- (i-1)))
+                    }
+                }
+
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        })
     }
 
     public void remoevMinusNodes() {

@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_add;
-import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_indirect;
-import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
+import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.*;
 import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.IMM_INT_TYPE;
 
 /**
@@ -224,23 +222,23 @@ public abstract class Tree implements Comparable {
             @Override
             public Object mutate(Node node, Object value) {
                 List<Integer> indexes = new ArrayList<Integer>();
-                if(node.operation == op_mul || node.operation == op_add){
+                if (node.operation == op_mul || node.operation == op_add) {
 
                     Integer val = 0;
 
                     for (int i = 0 ; i < node.srcs.size() ; i++) {
-                        Node loopNode = (Node)node.srcs.get(i);
-                        val += (Integer)loopNode.symbol.value;
+                        Node loopNode = (Node) node.srcs.get(i);
+                        val += (Integer) loopNode.symbol.value;
                         indexes.add(i);
                     }
                 }
 
-                if(!indexes.isEmpty()){
+                if (!indexes.isEmpty()) {
                     logger.debug("First value : %d ", indexes.get(0));
-                    Node nde = (Node)node.srcs.get(0);
+                    Node nde = (Node) node.srcs.get(0);
                     nde.symbol.value = value;
                     for (int i = 0 ; i < indexes.size() ; i++) {
-                        node.removeForwardReference((Node)node.srcs.get(indexes.get(i)- (i-1)))
+                        node.removeForwardReference((Node) node.srcs.get(indexes.get(i) - (i - 1)));
                     }
                 }
 
@@ -251,7 +249,7 @@ public abstract class Tree implements Comparable {
             public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
                 return null;
             }
-        })
+        });
     }
 
     public void remoevMinusNodes() {
@@ -321,32 +319,32 @@ public abstract class Tree implements Comparable {
         return recursive;
     }
 
-    private boolean removeMultiplication(Node node){
+    private boolean removeMultiplication(Node node) {
         boolean mul = false;
-        if(node.visited) {
+        if (node.visited) {
             return false;
-        }else{
+        } else {
             mul = false;
             node.visited = true;
-            if(node.operation ==  op_mul){
+            if (node.operation == op_mul) {
                 Integer index = -1;
                 Integer imm_value = 0;
                 for (int i = 0 ; i < node.srcs.size() ; i++) {
-                    if(((Node)node.srcs.get(i)).symbol.type == IMM_INT_TYPE){
-                        imm_value = (Integer)((Node) node.srcs.get(i)).symbol.value;
+                    if (((Node) node.srcs.get(i)).symbol.type == IMM_INT_TYPE) {
+                        imm_value = (Integer) ((Node) node.srcs.get(i)).symbol.value;
                         index = i;
                         break;
                     }
                 }
 
-                if(index != -1 && imm_value >= 0){
+                if (index != -1 && imm_value >= 0) {
                     mul = true;
                     for (int i = 0 ; i < node.prev.size() ; i++) {
-                        Node nde = (Node)node.prev.get(i);
+                        Node nde = (Node) node.prev.get(i);
                         for (int j = 0 ; j < node.srcs.size() ; j++) {
-                            if(index != j){
+                            if (index != j) {
                                 for (int k = 0 ; k < imm_value ; k++) {
-                                    nde.addForwardRefrence((Node)node.srcs.get(j));
+                                    nde.addForwardRefrence((Node) node.srcs.get(j));
                                 }
                             }
                         }
@@ -359,8 +357,8 @@ public abstract class Tree implements Comparable {
         }
 
         for (int i = 0 ; i < node.srcs.size() ; i++) {
-            Node src_node = (Node)node.srcs.get(i);
-            if(removeMultiplication(src_node)){
+            Node src_node = (Node) node.srcs.get(i);
+            if (removeMultiplication(src_node)) {
                 i = i - 1;
             }
         }
@@ -368,6 +366,48 @@ public abstract class Tree implements Comparable {
         return mul;
     }
 
-    //endregion private methods
+    private boolean removeRedundant(Node node) {
+        boolean changed = false;
+        if (node.operation == op_add) {
+            if (node.srcs.size() == 1) {
+                for (int i = 0 ; i < node.prev.size() ; i++) {
+                    node.changeReference((Node) node.prev.get(i), (Node) node.srcs.get(0));
+                    changed = true;
+                }
+            }
+        } else if (node.operation == op_full_overlap) {
+            for (int i = 0 ; i < node.srcs.size() ; i++) {
+                Node loopSrcNode = (Node) node.srcs.get(i);
+                if (loopSrcNode.symbol.type == IMM_INT_TYPE) {
+                    for (int j = 0 ; j < node.prev.size() ; j++) {
+                        Node loopPreNode = (Node) node.prev.get(j);
+                        node.changeReference(loopPreNode, loopSrcNode);
+                        changed = true;
+                    }
+                }
+            }
+        } else if (node.symbol.type == IMM_INT_TYPE && node.symbol.value.equals(0)) {
+            Integer count = 0;
+            for (int i = 0 ; i < node.prev.size() ; i++) {
+                Node loopPreNode = (Node) node.prev.get(i);
+                if (loopPreNode.operation == op_add) {
+                    loopPreNode.removeForwardReference(node);
+                    changed = true;
+                    count++;
+                }
+
+            }
+        }
+
+        for (int i = 0 ; i < node.srcs.size() ; i++) {
+            Node loopSrxNode = (Node) node.srcs.get(i);
+            if (removeRedundant(loopSrxNode)) {
+                i = ((i - 1) >= 0) ? i - 1 : 0;
+            }
+        }
+        return changed;
+    }
+
+//endregion private methods
 
 }

@@ -219,9 +219,6 @@ public abstract class Node <T> {
         }
         return ans;
     }
-    //endregion public methods
-
-    //region private methods
 
     /**
      * This operation will carry out the below logic at the end
@@ -230,7 +227,8 @@ public abstract class Node <T> {
      * @param dst dst Node
      * @param src src Node
      */
-    private void changeReference(Node dst, Node src) {
+    //TODO : Move to util class
+    public void changeReference(Node dst, Node src) {
         /* In place forward reference and push back back ward reference
             replacing it at the exact same location is important for
 	        non-associative operations*/
@@ -244,6 +242,10 @@ public abstract class Node <T> {
         }
 //        dst.forwardReference(this); // Redundant
     }
+
+    //endregion public methods
+
+    //region private methods
 
     private Boolean removeBackwardReferenceSingle(Node ref) {
         int idx = this.prev.indexOf(ref);

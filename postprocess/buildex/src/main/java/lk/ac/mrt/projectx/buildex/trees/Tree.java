@@ -266,7 +266,6 @@ public abstract class Tree implements Comparable {
     }
 
     public void simplifyMinus() {
-//        throw new NotImplementedException();
         traverseTree(head, head, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
@@ -315,7 +314,28 @@ public abstract class Tree implements Comparable {
     }
 
     public void removePoNodes() {
-        throw new NotImplementedException();
+        traverseTree(head, head, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                if(node.operation== op_partial_overlap){
+                    for (Iterator<Node> prevIter = node.prev.iterator(); prevIter.hasNext()) {
+                        Node prevNode = prevIter.next();
+                        if(prevNode.symbol.width == node.symbol.width){
+                            for(Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext()){
+                                Node srcNode = srcIter.next();
+                                node.changeReference(prevNode, srcNode);
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void removeOrMinus1() {

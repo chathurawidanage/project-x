@@ -318,10 +318,10 @@ public abstract class Tree implements Comparable {
             @Override
             public Object mutate(Node node, Object value) {
                 if (node.operation == op_partial_overlap) {
-                    for (Iterator<Node> prevIter = node.prev.iterator() ; prevIter.hasNext();) {
+                    for (Iterator<Node> prevIter = node.prev.iterator() ; prevIter.hasNext() ; ) {
                         Node prevNode = prevIter.next();
                         if (prevNode.symbol.width == node.symbol.width) {
-                            for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext();) {
+                            for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
                                 Node srcNode = srcIter.next();
                                 node.changeReference(prevNode, srcNode);
                             }
@@ -378,7 +378,26 @@ public abstract class Tree implements Comparable {
     //region private methods
 
     public void removeIdentities() {
-        throw new NotImplementedException();
+        traverseTree(head, null, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+
+                if (node.operation == op_add) {
+                    for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+                        Node srcNode = srcIter.next();
+                        if (srcNode.symbol.type == IMM_INT_TYPE && (Integer) srcNode.symbol.value == 0) {
+                            node.removeForwardReference(srcNode);
+                        }
+                    }
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     //TODO : move to util

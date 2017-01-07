@@ -9,6 +9,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.io.FileOutputStream;
 import java.io.InterruptedIOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -265,7 +266,48 @@ public abstract class Tree implements Comparable {
     }
 
     public void simplifyMinus() {
-        throw new NotImplementedException();
+//        throw new NotImplementedException();
+        traverseTree(head, head, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                List<Node> postitive;
+                List<Node> negative;
+                if (node.operation == op_add) {
+                    postitive = new ArrayList<Node>();
+                    negative = new ArrayList<Node>();
+                    for (int i = 0 ; i < node.srcs.size() ; i++) {
+                        if (((Node) node.srcs.get(i)).minus) {
+                            negative.add((Node) node.srcs.get(i));
+                        } else {
+                            postitive.add((Node) node.srcs.get(i));
+                        }
+                    }
+                    logger.debug("Minus node size : %d, positive node size : %d", negative.size(), postitive.size());
+                    for (Iterator<Node> posIter = postitive.iterator(); posIter.hasNext();) {
+                        Node posNode = posIter.next();
+                        for(Iterator<Node> negIter = negative.iterator(); negIter.hasNext();){
+                            Node negNode = negIter.next();
+                            List<Node> removallist = new ArrayList<Node>() ;
+                            removallist.add(negNode);
+                            if(posNode.symbol.type == negNode.symbol.type &&
+                                    posNode.symbol.width == negNode.symbol.width &&
+                                    posNode.symbol.value == negNode.symbol.value){
+                                node.removeForwardReference(posNode);
+                                node.removeForwardReference(negNode);
+                                negative.removeAll(removallist);
+                                break;
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void verifyMinus() {
@@ -406,6 +448,16 @@ public abstract class Tree implements Comparable {
             }
         }
         return changed;
+    }
+
+    private void propogateMinus(Node node) {
+        if (node.minus && node.operation == op_add) {
+            for (int i = 0 ; i < node.srcs.size() ; i++) {
+                Node loopSrcNode = (Node) node.srcs.get(i);
+                loopSrcNode.minus = !loopSrcNode.minus;
+                propogateMinus(loopSrcNode);
+            }
+        }
     }
 
 //endregion private methods

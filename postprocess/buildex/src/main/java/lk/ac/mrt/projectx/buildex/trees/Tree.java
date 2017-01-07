@@ -368,7 +368,32 @@ public abstract class Tree implements Comparable {
     }
 
     public void markRecursive() {
-        throw new NotImplementedException();
+        traverseTree(head, this, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                Tree tree = (Tree) value;
+                Node head = tree.getHead();
+
+                MemoryRegion head_region = ((ConcreteNode) head).getRegion();
+                MemoryRegion conc_region = ((ConcreteNode) node).getRegion();
+
+                if (head_region == null || conc_region == null) {
+                    return null;
+                }
+                //TODO : @Chathura head_region == conc_region in c++ check the pointer value whether
+                // pointing to same place
+                if (head_region == conc_region && head.symbol.value != node.symbol.value) {
+                    tree.recursive = true;
+                }
+
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     //endregion Tree Transformations

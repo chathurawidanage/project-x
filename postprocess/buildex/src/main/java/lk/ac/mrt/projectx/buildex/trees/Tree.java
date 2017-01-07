@@ -282,15 +282,15 @@ public abstract class Tree implements Comparable {
                         }
                     }
                     logger.debug("Minus node size : %d, positive node size : %d", negative.size(), postitive.size());
-                    for (Iterator<Node> posIter = postitive.iterator(); posIter.hasNext();) {
+                    for (Iterator<Node> posIter = postitive.iterator() ; posIter.hasNext() ; ) {
                         Node posNode = posIter.next();
-                        for(Iterator<Node> negIter = negative.iterator(); negIter.hasNext();){
+                        for (Iterator<Node> negIter = negative.iterator() ; negIter.hasNext() ; ) {
                             Node negNode = negIter.next();
-                            List<Node> removallist = new ArrayList<Node>() ;
+                            List<Node> removallist = new ArrayList<Node>();
                             removallist.add(negNode);
-                            if(posNode.symbol.type == negNode.symbol.type &&
+                            if (posNode.symbol.type == negNode.symbol.type &&
                                     posNode.symbol.width == negNode.symbol.width &&
-                                    posNode.symbol.value == negNode.symbol.value){
+                                    posNode.symbol.value == negNode.symbol.value) {
                                 node.removeForwardReference(posNode);
                                 node.removeForwardReference(negNode);
                                 negative.removeAll(removallist);
@@ -317,11 +317,11 @@ public abstract class Tree implements Comparable {
         traverseTree(head, head, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
-                if(node.operation== op_partial_overlap){
-                    for (Iterator<Node> prevIter = node.prev.iterator(); prevIter.hasNext()) {
+                if (node.operation == op_partial_overlap) {
+                    for (Iterator<Node> prevIter = node.prev.iterator() ; prevIter.hasNext();) {
                         Node prevNode = prevIter.next();
-                        if(prevNode.symbol.width == node.symbol.width){
-                            for(Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext()){
+                        if (prevNode.symbol.width == node.symbol.width) {
+                            for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext();) {
                                 Node srcNode = srcIter.next();
                                 node.changeReference(prevNode, srcNode);
                             }
@@ -339,7 +339,32 @@ public abstract class Tree implements Comparable {
     }
 
     public void removeOrMinus1() {
-        throw new NotImplementedException();
+        traverseTree(head, head, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                if (node.operation == op_or) {
+                    Integer idx = -1;
+                    for (int i = 0 ; i < node.srcs.size() ; i++) {
+                        Node srcNode = (Node) node.srcs.get(i);
+                        if (srcNode.symbol.type == IMM_INT_TYPE && ((Integer) srcNode.symbol.value == -1)) {
+                            idx = i;
+                            break;
+                        }
+                    }
+                    if (idx != -1) {
+                        node.srcs.clear();
+                        node.symbol.type = IMM_INT_TYPE;
+                        node.symbol.value = 255;
+                    }
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void markRecursive() {

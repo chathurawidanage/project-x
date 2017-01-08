@@ -205,7 +205,31 @@ public abstract class Tree implements Comparable {
     }
 
     public void removeAssignedNodes() {
-        throw new NotImplementedException();
+        cleanupVisit();
+        traverseTree(head, head, new NodeMutator() {
+            @Override
+            public Object mutate(Node dst, Object value) {
+                Node headNode = (Node) value;
+                if (dst.operation == op_assign && dst != headNode && dst.srcs.size() == 1) {
+                    Node srcNode = (Node) dst.srcs.get(0);
+                    for (int i = 0 ; i < dst.prev.size() ; i++) {
+                        Node preNode = (Node) dst.prev.get(i);
+                        int idx = (Integer) dst.pos.get(i);
+                        srcNode.prev.add(preNode);
+                        srcNode.pos.add(idx);
+                        preNode.srcs.remove(idx);
+                        preNode.srcs.add(idx, srcNode);
+                    }
+                }
+
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public List<MemoryRegion> identifyIntermediateBuffers(List<MemoryRegion> mem) {
@@ -314,7 +338,7 @@ public abstract class Tree implements Comparable {
         traverseTree(head, head, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
-                if(node.operation == op_sub){
+                if (node.operation == op_sub) {
                     assert (node.srcs.size() == 2);
                 }
                 return null;

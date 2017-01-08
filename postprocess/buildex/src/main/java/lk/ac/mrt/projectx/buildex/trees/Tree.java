@@ -124,8 +124,49 @@ public abstract class Tree implements Comparable {
 
     public abstract void simplifyTree();
 
-    public void cacocicalizeTree() {
-        throw new NotImplementedException();
+    public void canonicalizeTree() {
+        boolean changedG = true;
+        while (changedG) {
+
+            changedG = (boolean) traverseTree(head, this, new NodeMutator() {
+                @Override
+                public Object mutate(Node node, Object value) {
+                    Tree tree = (Tree) value;
+                    Node headNode = tree.getHead();
+                    Boolean changed = headNode.congregateNode();
+                    return changed;
+                }
+            }, new NodeReturnMutator() {
+                @Override
+                public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                    boolean changed = (boolean) nodeValue;
+                    if (changed) {
+                        return changed;
+                    }
+                    for (int i = 0 ; i < traverseValue.size() ; i++) {
+                        changed = (boolean) traverseValue.get(i);
+                        if (changed) {
+                            return (boolean) changed;
+                        }
+                    }
+                    return null;
+                }
+            });
+
+        }
+
+        traverseTree(head, null, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                node.orderNode();
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void changeHeadNode() {

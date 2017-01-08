@@ -5,6 +5,7 @@ import lk.ac.mrt.projectx.buildex.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -183,7 +184,7 @@ public abstract class Node <T> {
      *
      * @return whether a congregation happened
      */
-    public boolean CongregateNode() {
+    public boolean congregateNode() {
         //TODO: logic is really bad (messing with loop variable)
         logger.debug("Entered Canonical node");
         boolean ret = false;
@@ -241,6 +242,11 @@ public abstract class Node <T> {
             src.pos.add(idx);
         }
 //        dst.forwardReference(this); // Redundant
+    }
+
+    //TODO : implement this
+    public void orderNode() {
+        throw new NotImplementedException();
     }
 
     //endregion public methods

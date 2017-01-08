@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -115,6 +116,22 @@ public class StaticInfo {
         NONE, INPUT, INPUT_DEPENDENT_DIRECT, INPUT_DEPENDENT_INDIRECT, CONDITIONAL, LOOP, OUTPUT
     }
 
+    public StaticInfo clone() {
+        StaticInfo newInstance = new StaticInfo();
+        newInstance.pc = pc;
+        newInstance.module_no = module_no;
+        newInstance.moduleName = moduleName;
+        newInstance.dissasembly = dissasembly + "";
+        newInstance.instructionType = instructionType;
+        newInstance.exampleLine = exampleLine;
+        newInstance.conditionals = new ArrayList<>();
+        if(conditionals != null) {
+            for(Pair<JumpInfo, Boolean> conditional : conditionals) {
+                newInstance.conditionals.add(new Pair<JumpInfo, Boolean>(conditional.getKey().clone(), conditional.getValue()));
+            }
+        }
+        return newInstance;
+    }
     public class JumpInfo {
         /**
          * the pc of the conditional jump
@@ -145,5 +162,17 @@ public class StaticInfo {
          * example lines in the instruction trace for taken and notTaken jump conditionals
          */
         public long not_taken;
+
+        public JumpInfo clone() {
+            JumpInfo inst = new JumpInfo();
+            inst.jump_pc = jump_pc;
+            inst.cond_pc = cond_pc;
+            inst.target_pc = target_pc;
+            inst.fall_pc = fall_pc;
+            inst.merge_pc = merge_pc;
+            inst.taken = taken;
+            inst.not_taken = not_taken;
+            return inst;
+        }
     }
 }

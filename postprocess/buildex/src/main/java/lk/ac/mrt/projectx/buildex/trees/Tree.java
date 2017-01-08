@@ -154,7 +154,13 @@ public abstract class Tree implements Comparable {
     }
 
     public void changeHeadNode() {
-        throw new NotImplementedException();
+        if (head.operation == op_assign) {
+            assert (head.srcs.size() == 1);
+            Node newHead = (Node) head.srcs.get(0);
+            newHead.prev.clear();
+            newHead.pos.clear();
+            setHead(newHead);
+        }
     }
 
     public void numberTreeNodes() {

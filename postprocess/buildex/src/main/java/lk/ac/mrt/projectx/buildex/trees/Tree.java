@@ -311,7 +311,20 @@ public abstract class Tree implements Comparable {
     }
 
     public void verifyMinus() {
-        throw new NotImplementedException();
+        traverseTree(head, head, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                if(node.operation == op_sub){
+                    assert (node.srcs.size() == 2);
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
     }
 
     public void removePoNodes() {

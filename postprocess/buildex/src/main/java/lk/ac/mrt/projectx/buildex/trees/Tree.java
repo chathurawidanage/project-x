@@ -47,44 +47,6 @@ public abstract class Tree implements Comparable {
 
     //region protected methods
 
-    public static Integer getNumParas() {
-        return numParas;
-    }
-
-    //endregion protected methods
-
-    //region public methods
-
-    public static boolean areTreesSimilar(List<Tree> trees) {
-        List<Node> nodes = new ArrayList<>();
-        for (Tree tree : trees) {
-            nodes.add(tree.getHead());
-        }
-        return areTreeNodesSimilar(nodes) == 1 ? true : false;
-    }
-
-    /**
-     * No idea what this do
-     *
-     * @param nodes
-     * @return
-     */
-    private static int areTreeNodesSimilar(List<Node> nodes) {
-        if (!Node.isNodesSimilar(nodes)) return 0;
-
-        if (!nodes.isEmpty()) {
-            for (int i = 0 ; i < nodes.get(0).srcs.size() ; i++) {
-                List<Node> nodesList = new ArrayList<>();
-                for (int j = 0 ; j < nodes.size() ; j++) {
-                    //TODO : find the reason for needing to cast to Node
-                    nodesList.add((Node) nodes.get(j).srcs.get(i));
-                }
-                if (areTreeNodesSimilar(nodesList) != 1) return 0;
-            }
-        }
-
-        return 1;
-    }
 
     protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
         Node node = (Node) nde;
@@ -98,9 +60,22 @@ public abstract class Tree implements Comparable {
         return nodeReturnMutator.mutate(nodeVal, traverseValue, value);
     }
 
-//    public static void setNumParas(Integer  numParas) {
-//        Tree.numParas = numParas;
-//    }
+    //endregion protected methods
+
+    //region public methods
+
+    //TODO : move to util
+    public static boolean areTreesSimilar(List<Tree> trees) {
+        List<Node> nodes = new ArrayList<>();
+        for (Tree tree : trees) {
+            nodes.add(tree.getHead());
+        }
+        return areTreeNodesSimilar(nodes) == 1 ? true : false;
+    }
+
+    public static Integer getNumParas() {
+        return numParas;
+    }
 
     public Node getHead() {
         return head;
@@ -288,7 +263,7 @@ public abstract class Tree implements Comparable {
     }
 
     public void removeRedundantNodes() {
-        throw new NotImplementedException();
+        removeRedundant(head);
     }
 
     public void convertSubNodes() {
@@ -440,12 +415,6 @@ public abstract class Tree implements Comparable {
         });
     }
 
-    //endregion Tree Transformations
-
-    //endregion public methods
-
-    //region private methods
-
     public void removeIdentities() {
         traverseTree(head, null, new NodeMutator() {
             @Override
@@ -493,6 +462,12 @@ public abstract class Tree implements Comparable {
 
         return recursive;
     }
+
+    //endregion Tree Transformations
+
+    //endregion public methods
+
+    //region private methods
 
     private boolean removeMultiplication(Node node) {
         boolean mul = false;
@@ -622,6 +597,29 @@ public abstract class Tree implements Comparable {
             convertNodeSub(srcIter.next());
         }
         return changed;
+    }
+
+    /**
+     * No idea what this do
+     *
+     * @param nodes
+     * @return
+     */
+    private static int areTreeNodesSimilar(List<Node> nodes) {
+        if (!Node.isNodesSimilar(nodes)) return 0;
+
+        if (!nodes.isEmpty()) {
+            for (int i = 0 ; i < nodes.get(0).srcs.size() ; i++) {
+                List<Node> nodesList = new ArrayList<>();
+                for (int j = 0 ; j < nodes.size() ; j++) {
+                    //TODO : find the reason for needing to cast to Node
+                    nodesList.add((Node) nodes.get(j).srcs.get(i));
+                }
+                if (areTreeNodesSimilar(nodesList) != 1) return 0;
+            }
+        }
+
+        return 1;
     }
 
 //endregion private methods

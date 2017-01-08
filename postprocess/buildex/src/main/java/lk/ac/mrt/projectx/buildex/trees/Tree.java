@@ -253,7 +253,7 @@ public abstract class Tree implements Comparable {
         });
     }
 
-    public void remoevMinusNodes() {
+    public void removeMinusNodes() {
         throw new NotImplementedException();
     }
 
@@ -262,7 +262,8 @@ public abstract class Tree implements Comparable {
     }
 
     public void convertSubNodes() {
-        throw new NotImplementedException();
+        convertNodeSub(head);
+        propogateMinus(head);
     }
 
     public void simplifyMinus() {
@@ -380,7 +381,7 @@ public abstract class Tree implements Comparable {
                 if (head_region == null || conc_region == null) {
                     return null;
                 }
-                //TODO : @Chathura head_region == conc_region in c++ check the pointer value whether
+                //TODO : head_region == conc_region in c++ check the pointer value whether
                 // pointing to same place
                 if (head_region == conc_region && head.symbol.value != node.symbol.value) {
                     tree.recursive = true;
@@ -547,6 +548,37 @@ public abstract class Tree implements Comparable {
                 propogateMinus(loopSrcNode);
             }
         }
+    }
+
+    private boolean convertNodeSub(Node node) {
+        boolean changed = false;
+        if (node.operation == op_sub) {
+            Node srcNode0 = (Node) node.srcs.get(0);
+            Node srcNode1 = (Node) node.srcs.get(1);
+
+            for (Iterator<Node> preIter = node.prev.iterator() ; preIter.hasNext() ; ) {
+                Node preNode = preIter.next();
+                if (preNode.operation == op_add) {
+                    assert (node.srcs.size() == 2);
+                    preNode.addForwardRefrence(srcNode0);
+                    preNode.addForwardRefrence(srcNode1);
+
+                    srcNode1.minus = true;
+                    changed = true;
+
+                    //TODO : Helium original has two duplicate lines changed to srcNode1
+                    node.removeForwardReference(srcNode0);
+                    node.removeForwardReference(srcNode1);
+                    preNode.removeForwardReference(node);
+                }
+            }
+        }
+
+        for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+            //TODO : need testing
+            convertNodeSub(srcIter.next());
+        }
+        return changed;
     }
 
 //endregion private methods

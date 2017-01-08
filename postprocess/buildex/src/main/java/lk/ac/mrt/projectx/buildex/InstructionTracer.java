@@ -329,7 +329,7 @@ public class InstructionTracer {
                 for (int j = 0; j < instruction.getNum_srcs(); j++) {
                     if (instruction.srcs.get(j).getType() == InstructionTraceUnit.REG_TYPE &&
                             (long)instruction.srcs.get(j).getValue() == 0) {
-                        instruction.srcs.get(j).se
+                        //instruction.srcs.get(j).se
                     }
                 }
             }

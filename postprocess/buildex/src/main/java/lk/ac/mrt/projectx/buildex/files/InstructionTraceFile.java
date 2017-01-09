@@ -1,8 +1,13 @@
-package lk.ac.mrt.projectx.buildex;
+package lk.ac.mrt.projectx.buildex.files;
+
+import lk.ac.mrt.projectx.buildex.Configurations;
+import lk.ac.mrt.projectx.buildex.exceptions.NoSuitableFileFoundException;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wik2kassa on 12/2/2016.
@@ -28,6 +33,7 @@ public class InstructionTraceFile extends File {
     public static InstructionTraceFile fromFile(File file) {
         return new InstructionTraceFile(file.toURI());
     }
+
     public static InstructionTraceFile getInstructionTraceFile(final String executableName, final String imageName, int threadId) {
         long maxlen = 0;
         InstructionTraceFile selectedFile = null;
@@ -38,15 +44,15 @@ public class InstructionTraceFile extends File {
             }
         });
 
-        for (File file : files
-                ) {
-            if(file != null && file.length() > maxlen) {
+        for (File file : files) {
+            if (file != null && file.length() > maxlen) {
                 selectedFile = (InstructionTraceFile) file;
                 maxlen = file.length();
             }
         }
         return selectedFile;
     }
+
     public static InstructionTraceFile getDisassemblyInstructionTrace(final String executableName, final String imageName, int threadId) {
         long maxlen = 0;
         File selectedFile = null;
@@ -60,11 +66,43 @@ public class InstructionTraceFile extends File {
 
         for (File file : files
                 ) {
-            if(file != null && file.length() > maxlen) {
+            if (file != null && file.length() > maxlen) {
                 selectedFile = file;
                 maxlen = file.length();
             }
         }
         return InstructionTraceFile.fromFile(selectedFile);
+    }
+
+    public static List<InstructionTraceFile> filterInstructionTraceFiles(List<File> allFiles) {
+        List<InstructionTraceFile> instructionTraceFiles = new ArrayList<>();
+        for (File f : allFiles) {
+            try {
+                if (f.getName().matches("instrace_.+_d+\\.log")) {
+                    InstructionTraceFile instructionTraceFile = InstructionTraceFile.fromFile(f);
+                    instructionTraceFiles.add(instructionTraceFile);
+                }
+            } catch (Exception e) {
+
+            }
+        }
+        return instructionTraceFiles;
+    }
+
+    public static InstructionTraceFile filterLargestInstructionTraceFile(List<File> allFiles,
+                                                                         String inputImageName, String exec, boolean disAsm) throws NoSuitableFileFoundException {
+        InstructionTraceFile largestInstructionTraceFile = null;
+        long fileSize = 0;
+        for (File f : allFiles) {
+            if (f.getName().matches("instrace_" + exec + "_" + inputImageName + "_" + (disAsm ? "asm_" : "") + "instr_\\d+\\.log")) {
+                if (f.length() > fileSize) {
+                    largestInstructionTraceFile = InstructionTraceFile.fromFile(f);
+                    fileSize = f.length();
+                }
+            }
+        }
+        if (largestInstructionTraceFile == null)
+            throw new NoSuitableFileFoundException("suitable " + (disAsm ? "disasm" : "instrace") + " file cannot be located");
+        return largestInstructionTraceFile;
     }
 }

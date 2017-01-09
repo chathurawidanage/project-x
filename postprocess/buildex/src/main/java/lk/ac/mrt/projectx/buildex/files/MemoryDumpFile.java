@@ -1,5 +1,7 @@
 package lk.ac.mrt.projectx.buildex.files;
 
+import lk.ac.mrt.projectx.buildex.exceptions.NoSuitableFileFoundException;
+
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +18,7 @@ public class MemoryDumpFile extends File {
     private long baseProgramCounter;
     private byte memoryBuffer[];
 
-    public MemoryDumpFile(String path) throws Exception {
+    public MemoryDumpFile(String path) throws NoSuitableFileFoundException {
         super(path);
         String[] splits = this.getName().split("_");//todo possible using regex, reversing the name would be required
         int readWriteIndex = splits.length - 2;
@@ -28,7 +30,7 @@ public class MemoryDumpFile extends File {
                 || readWriteIndex < 0
                 || !(splits[readWriteIndex].equals("0")
                 || splits[readWriteIndex].equals("1"))) {
-            throw new Exception("Not a qualified memory dump file");
+            throw new NoSuitableFileFoundException("Not a qualified memory dump file");
         }
         if (splits[readWriteIndex].equals("1")) {
             this.write = true;
@@ -55,17 +57,16 @@ public class MemoryDumpFile extends File {
         return memoryBuffer;
     }
 
-    public static List<MemoryDumpFile> filterMemoryDumpFiles(List<File> allFiles) {
+    public static List<MemoryDumpFile> filterMemoryDumpFiles(List<File> allFiles) throws NoSuitableFileFoundException {
         List<MemoryDumpFile> memoryDumpFileList = new ArrayList<>();
         for (File f : allFiles) {
-            try {
-                if (f.getName().matches("memdump_.+_\\d+_\\d+_\\d+_\\d+\\.log")) {
-                    MemoryDumpFile memoryDumpFile = new MemoryDumpFile(f.getAbsolutePath());
-                    memoryDumpFileList.add(memoryDumpFile);
-                }
-            } catch (Exception e) {
-
+            if (f.getName().matches("memdump_.+_\\d+_\\d+_\\d+_\\d+\\.log")) {
+                MemoryDumpFile memoryDumpFile = new MemoryDumpFile(f.getAbsolutePath());
+                memoryDumpFileList.add(memoryDumpFile);
             }
+        }
+        if (memoryDumpFileList.isEmpty()) {
+            throw new NoSuitableFileFoundException("No suitable memory dump files found");
         }
         return memoryDumpFileList;
     }

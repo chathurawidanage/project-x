@@ -57,10 +57,10 @@ public class MemoryDumpFile extends File {
         return memoryBuffer;
     }
 
-    public static List<MemoryDumpFile> filterMemoryDumpFiles(List<File> allFiles) throws NoSuitableFileFoundException {
+    public static List<MemoryDumpFile> filterMemoryDumpFiles(List<File> allFiles,String exec) throws NoSuitableFileFoundException {
         List<MemoryDumpFile> memoryDumpFileList = new ArrayList<>();
         for (File f : allFiles) {
-            if (f.getName().matches("memdump_.+_\\d+_\\d+_\\d+_\\d+\\.log")) {
+            if (f.getName().matches("memdump_"+exec+"_\\d+_\\d+_\\d+_\\d+\\.log")) {
                 MemoryDumpFile memoryDumpFile = new MemoryDumpFile(f.getAbsolutePath());
                 memoryDumpFileList.add(memoryDumpFile);
             }

@@ -15,9 +15,9 @@ public class AppPCFile extends File {
         super(pathname);
     }
 
-    public static AppPCFile filterAppPCFile(List<File> allFiles) throws NoSuitableFileFoundException {
+    public static AppPCFile filterAppPCFile(List<File> allFiles,String exec) throws NoSuitableFileFoundException {
         for (File f : allFiles) {
-            if (f.getName().matches(".+_app_pc\\.log")) {
+            if (f.getName().matches(".+_"+exec+"_app_pc\\.log")) {
                 AppPCFile appPCFile = new AppPCFile(f.getAbsolutePath());
                 return appPCFile;
             }

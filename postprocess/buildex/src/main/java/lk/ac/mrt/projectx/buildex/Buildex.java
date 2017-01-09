@@ -22,28 +22,28 @@ public class Buildex {
 
     public static void main(String[] args) throws IOException, NoSuitableFileFoundException {
         String inImage = "a.png";
-        String exec="halide_blur_hvscan_test.exe";
+        String exec = "halide_blur_hvscan_test.exe";
 
         File outputFolder = Configurations.getOutputFolder();//new File("generated_files_test\\working\\output_files");//Configurations.getOutputFolder();
         List<File> outputFilesList = Arrays.asList(outputFolder.listFiles());
 
         File filterFolder = Configurations.getFilterFolder();
-        List<File> filterFileList=Arrays.asList(filterFolder.listFiles());
+        List<File> filterFileList = Arrays.asList(filterFolder.listFiles());
 
         ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\working\\images\\a.png")));
         ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\working\\images\\ablur.png")));
 
-        InstructionTraceFile instructionTraceFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, false);
+        InstructionTraceFile instructionTraceFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, exec, false);
         logger.info("Found instrace file {}", instructionTraceFile.getName());
 
-        InstructionTraceFile disAsmFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, true);
+        InstructionTraceFile disAsmFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, exec, true);
         logger.info("Found memory dump file {}", disAsmFile.getName());
 
-        List<MemoryDumpFile> memoryDumpFileList = MemoryDumpFile.filterMemoryDumpFiles(outputFilesList);
+        List<MemoryDumpFile> memoryDumpFileList = MemoryDumpFile.filterMemoryDumpFiles(outputFilesList,exec);
         logger.info("Found {} memory dump files {}", memoryDumpFileList.size(), memoryDumpFileList.toString());
 
-        AppPCFile appPCFile = AppPCFile.filterAppPCFile(filterFileList);
-        logger.info("Found app pc file {}",appPCFile.toString());
+        AppPCFile appPCFile = AppPCFile.filterAppPCFile(filterFileList,exec);
+        logger.info("Found app pc file {}", appPCFile.toString());
 
         MemoryAnalyser memoryAnalyser = MemoryAnalyser.getInstance();
         List<MemoryRegion> imageRegions = memoryAnalyser.getImageRegions(memoryDumpFileList, inputImage, outputImage);

@@ -297,7 +297,7 @@ public abstract class Tree implements Comparable {
     }
 
     public void printDot(BufferedWriter file, String name, int number) {
-
+        logger.debug("Printing tree to dot file");
         throw new NotImplementedException();
     }
 

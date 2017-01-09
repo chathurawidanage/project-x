@@ -94,6 +94,10 @@ public class ConcreteNode <T> extends Node<T> implements Comparable {
         throw new NotImplementedException();
     }
 
+    public MemoryRegion getRegion() {
+        return region;
+    }
+
     //endregion public methods
 
     //region private methods

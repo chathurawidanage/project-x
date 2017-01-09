@@ -7,7 +7,7 @@ import java.net.URI;
  * Created by wik2kassa on 12/3/2016.
  */
 public class AppProgramCounterFile extends File{
-
+//todo duplicate of AppPCFile
     public static AppProgramCounterFile getFileByParameters(String executableName) {
         AppProgramCounterFile file = new AppProgramCounterFile(Configurations.getFilterFolder() + File.pathSeparator +
         "filter_" + executableName + "_app_pc.log");

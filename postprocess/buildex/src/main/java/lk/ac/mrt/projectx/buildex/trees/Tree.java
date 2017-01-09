@@ -1,12 +1,11 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.MemoryRegion;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by krv on 1/2/17.

@@ -1,7 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.MemoryRegion;
-import lk.ac.mrt.projectx.buildex.MemoryRegion.Direction;
+import lk.ac.mrt.projectx.buildex.models.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.MemoryRegion.Direction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

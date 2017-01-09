@@ -1,4 +1,4 @@
-package lk.ac.mrt.projectx.buildex;
+package lk.ac.mrt.projectx.buildex.models;
 
 import java.util.Arrays;
 import java.util.List;

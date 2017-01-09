@@ -1,4 +1,4 @@
-package lk.ac.mrt.projectx.buildex.models;
+package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
 import javafx.util.Pair;
 

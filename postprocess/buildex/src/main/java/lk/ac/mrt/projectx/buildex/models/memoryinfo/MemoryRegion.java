@@ -1,4 +1,4 @@
-package lk.ac.mrt.projectx.buildex.models;
+package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,14 +12,14 @@ public class MemoryRegion {
     private int bytesPerPixel;
 
     private long type;//memory region type based on dependency analysis
-    private DumpType dumpType;//memory region type based on dump
+    private MemoryDumpType memoryDumpType;//memory region type based on dump
     private long treeDirections;//indirect or not
     private long dimension;
 
     /* indirect or not */
     private boolean dependant;
 
-    private Direction direction;
+    private MemDirection memDirection;
 
     /* physical demarcations of the memory regions */
     private long startMemory, endMemory;
@@ -42,8 +42,8 @@ public class MemoryRegion {
         min = new long[DIMENSIONS];
 
         type = 0;
-        direction = Direction.READ;
-        dumpType = DumpType.OUTPUT_BUFFER;
+        memDirection = MemDirection.READ;
+        memoryDumpType = MemoryDumpType.OUTPUT_BUFFER;
         treeDirections = 0;
         dependant = false;
     }
@@ -68,12 +68,12 @@ public class MemoryRegion {
         this.type = type;
     }
 
-    public DumpType getDumpType() {
-        return dumpType;
+    public MemoryDumpType getMemoryDumpType() {
+        return memoryDumpType;
     }
 
-    public void setDumpType(DumpType dumpType) {
-        this.dumpType = dumpType;
+    public void setMemoryDumpType(MemoryDumpType memoryDumpType) {
+        this.memoryDumpType = memoryDumpType;
     }
 
     public long getTreeDirections() {
@@ -100,12 +100,12 @@ public class MemoryRegion {
         this.dependant = dependant;
     }
 
-    public Direction getDirection() {
-        return direction;
+    public MemDirection getMemDirection() {
+        return memDirection;
     }
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public void setMemDirection(MemDirection memDirection) {
+        this.memDirection = memDirection;
     }
 
     public long getStartMemory() {
@@ -185,11 +185,11 @@ public class MemoryRegion {
         return "MemoryRegion{" +
                 "bytesPerPixel=" + bytesPerPixel +
                 ", type=" + type +
-                ", dumpType=" + dumpType +
+                ", dumpType=" + memoryDumpType +
                 ", treeDirections=" + treeDirections +
                 ", dimension=" + dimension +
                 ", dependant=" + dependant +
-                ", direction=" + direction +
+                ", direction=" + memDirection +
                 ", startMemory=" + startMemory +
                 ", endMemory=" + endMemory +
                 ", name='" + name + '\'' +
@@ -201,18 +201,4 @@ public class MemoryRegion {
                 ", referingPCs=" + referingPCs +
                 '}';
     }
-
-    public enum DumpType {
-        OUTPUT_BUFFER, INPUT_BUFFER
-    }
-
-    /**
-     * Memory read/write or both
-     * TODO: check the better convention READ, WRITE .. convention or INPUT, OUTPUT...
-     */
-    public enum Direction {
-        READ, WRITE, BOTH_READ_WRITE, MEM_INPUT, MEM_OUTPUT, MEM_INTERMEDIATE
-    } // krv - added input, output and intermediate coz Helium seems to be using this convention words
-
-
 }

@@ -234,16 +234,54 @@ public abstract class Tree implements Comparable {
         }
     }
 
-    public void printTree(BufferedWriter file) {
+    public void printTree(BufferedWriter file) throws IOException {
         printTreeRecursive(this.head, file);
     }
 
-    private void printTreeRecursive(Node node, BufferedWriter bufferedWriter) {
+    private void printTreeRecursive(Node node, BufferedWriter bufferedWriter) throws IOException {
         Integer numSrcs = node.srcs.size();
-
+        if (numSrcs == 0) { // this is a leaf ndoe
+            bufferedWriter.write(node.symbol.toString());
+        } else if (numSrcs == 1) { // unary operation
+            if (node.operation == op_full_overlap) {
+                bufferedWriter.write("{");
+                bufferedWriter.write(node.symbol.toString());
+                bufferedWriter.write(" -> ");
+                bufferedWriter.write(((Node) node.srcs.get(0)).symbol.toString());
+                bufferedWriter.write("}");
+                bufferedWriter.write("(");
+                printTreeRecursive((Node) node.srcs.get(0), bufferedWriter);
+                bufferedWriter.write(")");
+            } else if (node.operation == op_assign) {
+                printTreeRecursive((Node) node.srcs.get(0), bufferedWriter);
+            } else {
+                bufferedWriter.write(node.operation.toString());
+                bufferedWriter.write(" ");
+                printTreeRecursive((Node) node.srcs.get(0), bufferedWriter);
+            }
+        } else if ((numSrcs == 2) && (node.operation != op_partial_overlap)) {
+            bufferedWriter.write("(");
+            printTreeRecursive((Node) node.srcs.get(0), bufferedWriter);
+            bufferedWriter.write(" ");
+            bufferedWriter.write(node.operation.toString());
+            bufferedWriter.write(" ");
+            printTreeRecursive((Node) node.srcs.get(1), bufferedWriter);
+            bufferedWriter.write(")");
+        } else {
+            bufferedWriter.write("(");
+            bufferedWriter.write(node.operation.toString());
+            bufferedWriter.write(" ");
+            for (int i = 0 ; i < numSrcs - 1 ; i++) {
+                //TODO : Helium always calls oth srcNdoe
+                printTreeRecursive((Node) node.srcs.get(i), bufferedWriter);
+                bufferedWriter.write(",");
+            }
+            printTreeRecursive((Node) node.srcs.get(numSrcs - 1), bufferedWriter);
+            bufferedWriter.write(")");
+        }
     }
 
-    //region Tree Transformations
+    //region Tree Transformationus
 
     public void printDot(String file, String name, int number) throws IOException {
         FileWriter fileWriter = null;

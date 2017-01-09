@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.models.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -175,7 +176,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
     private String getMemString(List<String> vars) {
         StringBuilder stringBuilder = new StringBuilder();
-        String in_string = (this.associatedMem.getDirection() == MemoryRegion.Direction.MEM_OUTPUT) ? "_buf_in" : "";
+        String in_string = (this.associatedMem.getMemDirection() == MemDirection.MEM_OUTPUT) ? "_buf_in" : "";
 
         stringBuilder.append(this.associatedMem.getName());
         stringBuilder.append(in_string);

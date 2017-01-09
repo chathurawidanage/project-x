@@ -8,8 +8,8 @@ import java.util.List;
  */
 public class Output {
     private int opcode;
-    private int numSrcs;
-    private int num_Dsts;
+    private int numOfSources;
+    private int numOfDestinations;
     private List<Operand> srcs=new ArrayList<>();
     private List<Operand> dsts=new ArrayList<>();
     private int eflags;
@@ -23,20 +23,20 @@ public class Output {
         this.opcode = opcode;
     }
 
-    public int getNumSrcs() {
-        return numSrcs;
+    public int getNumOfSources() {
+        return numOfSources;
     }
 
-    public void setNumSrcs(int numSrcs) {
-        this.numSrcs = numSrcs;
+    public void setNumOfSources(int numOfSources) {
+        this.numOfSources = numOfSources;
     }
 
-    public int getNum_Dsts() {
-        return num_Dsts;
+    public int getNumOfDestinations() {
+        return numOfDestinations;
     }
 
-    public void setNum_Dsts(int num_Dsts) {
-        this.num_Dsts = num_Dsts;
+    public void setNumOfDestinations(int numOfDestinations) {
+        this.numOfDestinations = numOfDestinations;
     }
 
     public List<Operand> getSrcs() {

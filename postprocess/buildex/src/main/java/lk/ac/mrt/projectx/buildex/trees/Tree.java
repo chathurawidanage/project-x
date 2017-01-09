@@ -1,6 +1,6 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.models.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.FileOutputStream;

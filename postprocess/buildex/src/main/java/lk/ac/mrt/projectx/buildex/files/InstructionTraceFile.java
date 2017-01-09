@@ -90,11 +90,11 @@ public class InstructionTraceFile extends File {
     }
 
     public static InstructionTraceFile filterLargestInstructionTraceFile(List<File> allFiles,
-                                                                         String inputImageName, boolean disAsm) throws NoSuitableFileFoundException {
+                                                                         String inputImageName, String exec, boolean disAsm) throws NoSuitableFileFoundException {
         InstructionTraceFile largestInstructionTraceFile = null;
         long fileSize = 0;
         for (File f : allFiles) {
-            if (f.getName().matches("instrace_.+_" + inputImageName + "_" + (disAsm ? "asm_" : "") + "instr_\\d+\\.log")) {
+            if (f.getName().matches("instrace_" + exec + "_" + inputImageName + "_" + (disAsm ? "asm_" : "") + "instr_\\d+\\.log")) {
                 if (f.length() > fileSize) {
                     largestInstructionTraceFile = InstructionTraceFile.fromFile(f);
                     fileSize = f.length();

@@ -5,7 +5,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,6 +18,7 @@ import java.util.regex.Pattern;
  * @version 0.9
  */
 public class DRCoveStructure implements Cloneable {
+
     /**
      * @see
      */
@@ -89,20 +89,6 @@ public class DRCoveStructure implements Cloneable {
     }
 
     /**
-     * Print the sum of all the basic block addresses of each module, since using a hash set automatically
-     * removes duplicates. Thus this total won't be same with total basic block count
-     * Also Print the modules along with the basic block addresses belong to them
-     */
-    private void CheckStructureIntegrity() {
-        int size = 0;
-        for (Module mod : modules) {
-            size += mod.getAddresses().size();
-            logger.info("BBS  : {} Module {}", mod.getAddresses().size(), mod.getName());
-        }
-        logger.info("Total BBS : {}", size);
-    }
-
-    /**
      * Parse a drcov DR client output file and fill the DRCovStructure (this) class
      *
      * @param fileName Path of the drcov DR client output file
@@ -153,7 +139,7 @@ public class DRCoveStructure implements Cloneable {
 
             // Read all the module details
             // eg :  11, 40960, C:\Windows\syswow64\LPK.dll
-            for (int i = 0; i < noOfModules; i++) {
+            for (int i = 0 ; i < noOfModules ; i++) {
                 currentLine = bufferedReader.readLine();
                 Module module = new Module();
                 module.LoadByDRCovModuleLine(currentLine);
@@ -181,11 +167,11 @@ public class DRCoveStructure implements Cloneable {
             // Parsing the basic block lines
             // eg : module[ 21]: 0x000101c4,  13
             // Module number start_address size
-            for (int i = 0; i < noOfBasicBlocks; i++) {
+            for (int i = 0 ; i < noOfBasicBlocks ; i++) {
                 currentLine = bufferedReader.readLine();
                 result = Pattern.compile("\\[(.*)\\]:.*0x(.*),(.*)").matcher(currentLine);
                 logger.debug("Group Count : {}", result.groupCount());
-                Integer moduleNumber,size;
+                Integer moduleNumber, size;
                 Long startAddress;
                 if (result.find()) {
                     moduleNumber = Integer.parseInt(result.group(1).trim());
@@ -211,17 +197,26 @@ public class DRCoveStructure implements Cloneable {
 
             logger.info("Invalid BBS {}", invalidModules);
             logger.info("Valid BBS {}", noOfBasicBlocks - invalidModules);
+        } finally {
             bufferedReader.close();
             fileReader.close();
-        } catch (FileNotFoundException e) {
-            logger.fatal(e.getMessage());
-            throw e;
-        } catch (IOException e) {
-            logger.fatal(e.getMessage());
-            throw e;
         }
 
         CheckStructureIntegrity();
+    }
+
+    /**
+     * Print the sum of all the basic block addresses of each module, since using a hash set automatically
+     * removes duplicates. Thus this total won't be same with total basic block count
+     * Also Print the modules along with the basic block addresses belong to them
+     */
+    private void CheckStructureIntegrity() {
+        int size = 0;
+        for (Module mod : modules) {
+            size += mod.getAddresses().size();
+            logger.info("BBS  : {} Module {}", mod.getAddresses().size(), mod.getName());
+        }
+        logger.info("Total BBS : {}", size);
     }
 }
 

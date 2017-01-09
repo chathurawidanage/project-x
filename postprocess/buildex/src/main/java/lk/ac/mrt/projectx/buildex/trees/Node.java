@@ -1,13 +1,19 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.util.Pair;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_add;
+import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
+import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.IMM_INT_TYPE;
+import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.MEM_HEAP_TYPE;
 
 /**
  * Created by krv on 12/4/2016.
@@ -62,14 +68,14 @@ public abstract class Node <T> {
         pos = new ArrayList<>();
         pc = null;
         line = pc;
-        order_num = null;
+        order_num = -1;
         para_num = null;
         is_double = null;
         is_para = null;
         visited = false;
     }
 
-    public Node(Node node){
+    public Node(Node node) {
         this.operation = node.operation;
         this.sign = node.sign;
         this.symbol = node.symbol;
@@ -98,6 +104,15 @@ public abstract class Node <T> {
             count++;
         }
         return count;
+    }
+
+    /**
+     * Remove all forward references in source list
+     */
+    public void removeForwardReferenceAll() {
+        for (int i = 0 ; i < srcs.size() ; i++) {
+            removeForwardReference(srcs.get(i));
+        }
     }
 
     public int removeBackwardReference(Node ref) {
@@ -174,7 +189,7 @@ public abstract class Node <T> {
      *
      * @return whether a congregation happened
      */
-    public boolean CongregateNode() {
+    public boolean congregateNode() {
         //TODO: logic is really bad (messing with loop variable)
         logger.debug("Entered Canonical node");
         boolean ret = false;
@@ -195,14 +210,14 @@ public abstract class Node <T> {
         return ret;
     }
 
-    public static boolean isNodesSimilar(List<Node> nodes){
+    public static boolean isNodesSimilar(List<Node> nodes) {
         boolean ans = true;
-        if(nodes.isEmpty()){
+        if (nodes.isEmpty()) {
             ans = true;
-        }else{
+        } else {
             Node firstNode = nodes.get(0);
-            for (Node node:nodes.subList(1, nodes.size() -1)) {
-                if(node != firstNode){
+            for (Node node : nodes.subList(1, nodes.size() - 1)) {
+                if (node != firstNode) {
                     ans = false;
                     break;
                 }
@@ -210,9 +225,6 @@ public abstract class Node <T> {
         }
         return ans;
     }
-    //endregion public methods
-
-    //region private methods
 
     /**
      * This operation will carry out the below logic at the end
@@ -221,7 +233,8 @@ public abstract class Node <T> {
      * @param dst dst Node
      * @param src src Node
      */
-    private void changeReference(Node dst, Node src) {
+    //TODO : Move to util class
+    public void changeReference(Node dst, Node src) {
         /* In place forward reference and push back back ward reference
             replacing it at the exact same location is important for
 	        non-associative operations*/
@@ -235,6 +248,82 @@ public abstract class Node <T> {
         }
 //        dst.forwardReference(this); // Redundant
     }
+
+    /**
+     * Implemented using the integer as the key not the node
+     */
+    public void orderNode() {
+        List<Pair<Integer, Node>> other = new ArrayList<>();
+        List<Pair<Integer, Node>> heap = new ArrayList<>();
+        List<Pair<Integer, Node>> imm = new ArrayList<>();
+        if (this.operation != op_mul && this.operation != op_add) {
+            return;
+        }
+
+        for (int i = 0 ; i < this.srcs.size() ; i++) {
+            Node srcNode = (Node) this.srcs.get(i);
+            Pair<Integer, Node> pair = new Pair<>(i, srcNode);
+            if (srcNode.symbol.type == MEM_HEAP_TYPE) {
+                heap.add(pair);
+            } else if (srcNode.symbol.type == IMM_INT_TYPE) {
+                imm.add(pair);
+            } else {
+                other.add(pair);
+            }
+        }
+
+        Collections.sort(heap, new Comparator<Pair<Integer, Node>>() {
+            @Override
+            public int compare(Pair<Integer, Node> o1, Pair<Integer, Node> o2) {
+                if (o1.getValue().symbol.value instanceof Integer) {
+                    return Integer.compare((Integer) o1.getValue().symbol.value, (Integer) o2.getValue().symbol.value);
+                } else {
+                    return Double.compare((Double) o1.getValue().symbol.value, (Double) o2.getValue().symbol.value);
+                }
+            }
+        });
+
+        this.srcs.clear();
+        for (int i = 0 ; i < imm.size() ; i++) {
+            Node immNode = imm.get(i).getValue();
+            Integer immValue = imm.get(i).getKey();
+            this.srcs.add(immNode);
+            for (int j = 0 ; j < immNode.prev.size() ; j++) {
+                if (immNode.prev.get(j) == this && immNode.pos.get(j) == immValue) {
+                    immNode.pos.remove(j);
+                    immNode.pos.add(j, immValue);
+                }
+            }
+        }
+
+        for (int i = 0 ; i < other.size() ; i++) {
+            Node othNode = other.get(i).getValue();
+            Integer othValue = other.get(i).getKey();
+            this.srcs.add(othNode);
+            for (int j = 0 ; j < othNode.prev.size() ; j++) {
+                if (othNode.prev.get(j) == this && othNode.pos.get(j) == othValue) {
+                    othNode.pos.remove(j);
+                    othNode.pos.add(j, othValue);
+                }
+            }
+        }
+
+        for (int i = 0 ; i < heap.size() ; i++) {
+            Node heapNode = heap.get(i).getValue();
+            Integer heapValue = other.get(i).getKey();
+            this.srcs.add(heapNode);
+            for (int j = 0 ; j < heapNode.prev.size() ; j++) {
+                if (heapNode.prev.get(j) == this && heapNode.pos.get(j) == heapValue) {
+                    heapNode.pos.remove(j);
+                    heapNode.pos.add(j, heapValue);
+                }
+            }
+        }
+    }
+
+    //endregion public methods
+
+    //region private methods
 
     private Boolean removeBackwardReferenceSingle(Node ref) {
         int idx = this.prev.indexOf(ref);

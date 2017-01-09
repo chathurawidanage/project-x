@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -18,10 +17,10 @@ public class Buildex {
     private static final Logger logger = LogManager.getLogger(Buildex.class);
 
     public static void main(String[] args) throws IOException {
-        File outputFolder = new File("generated_files_test\\output_files");//Configurations.getOutputFolder();
+        File outputFolder = new File("generated_files_test\\working\\output_files");//Configurations.getOutputFolder();
         File[] files = outputFolder.listFiles();
-        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\output_files\\arith.png")));
-        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\output_files\\aritht.png")));
+        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\working\\images\\a.png")));
+        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\working\\images\\ablur.png")));
 
 
         List<MemoryDumpFile> memoryDumpFileList = new ArrayList<>();
@@ -37,7 +36,7 @@ public class Buildex {
 
 
         MemoryAnalyser memoryAnalyser = MemoryAnalyser.getInstance();
-        memoryAnalyser.getImageRegion(memoryDumpFileList, inputImage, outputImage);
+        memoryAnalyser.getImageRegions(memoryDumpFileList, inputImage, outputImage);
 
 
         System.out.println("-------");

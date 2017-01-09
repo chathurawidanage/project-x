@@ -70,9 +70,25 @@ public class InstructionTraceUnit {
         this.pc = pc;
     }
 
+    public InstructionTraceUnit clone() {
+        InstructionTraceUnit inst = new InstructionTraceUnit();
+        inst.pc = pc;
+        inst.eflags = eflags;
+        inst.num_dsts = num_dsts;
+        inst.num_srcs = num_srcs;
+        inst.num_dsts = num_dsts;
+        inst.opcode = opcode;
+        for (Operand op : srcs)
+            inst.srcs.add(op.clone());
+
+        for (Operand op : dsts)
+            inst.dsts.add(op.clone());
+        return inst;
+    }
+
     public static class Operand {
 
-        Operand operandRef;
+        public Operand[] addr;
         private long type;
         private long width;
         private Long lvalue;
@@ -107,6 +123,25 @@ public class InstructionTraceUnit {
 
         public void setWidth(long width) {
             this.width = width;
+        }
+
+        public Operand clone() {
+            Operand inst = new Operand();
+            inst.type = type;
+            inst.width = width;
+            inst.lvalue = lvalue;
+            inst.fvalue = fvalue;
+            if(addr != null) {
+                inst.addr = new Operand[addr.length];
+                for (int i = 0; i < addr.length; i++) {
+                    inst.addr[i] = new InstructionTraceUnit.Operand();
+                    inst.addr[i].type = addr[i].type;
+                    inst.addr[i].width = addr[i].width;
+                    inst.addr[i].lvalue = addr[i].lvalue;
+                    inst.addr[i].fvalue = addr[i].fvalue;
+                }
+            }
+            return inst;
         }
     }
 }

@@ -3,6 +3,9 @@ package lk.ac.mrt.projectx.buildex.trees;
 import junit.framework.TestCase;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by krv on 1/5/17.
  */
@@ -77,4 +80,31 @@ public class TreeTest extends TestCase {
         public Integer value = 55;
     }
 
+    public void testArrayListReplace() throws Exception{
+        Integer int1 = 1;
+        Integer int2 = 2;
+        Integer int3 = 3;
+        Integer int4 = 4;
+
+        List<Integer> intList  = new ArrayList<>();
+        intList.add(int1);
+        intList.add(int2);
+        intList.add(int3);
+        intList.add(int4);
+
+        Integer int5 = (Integer)intList.get(2);
+        assertEquals(int5, int3);
+
+        intList.remove(2);
+        Integer int6 = (Integer)intList.get(2);
+        assertNotSame(int6, int3);
+
+        Integer int7 = 3;
+        intList.add(2,int7);
+        Integer int8 = (Integer)intList.get(2);
+        assertEquals(int8, int7);
+        assertEquals(int3, int8);
+        Integer int9 = (Integer)intList.get(3);
+        assertEquals(int4, int9);
+    }
 }

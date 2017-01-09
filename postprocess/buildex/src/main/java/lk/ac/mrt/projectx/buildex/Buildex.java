@@ -4,6 +4,7 @@ import lk.ac.mrt.projectx.buildex.exceptions.NoSuitableFileFoundException;
 import lk.ac.mrt.projectx.buildex.files.AppPCFile;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.files.MemoryDumpFile;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

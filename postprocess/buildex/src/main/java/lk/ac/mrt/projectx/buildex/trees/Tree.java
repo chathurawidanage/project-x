@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import javafx.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -46,14 +47,32 @@ public abstract class Tree implements Comparable {
 
     //region protected methods
 
-    //TODO : move to util
-    public static boolean areTreesSimilar(List<Tree> trees) {
-        List<Node> nodes = new ArrayList<>();
-        for (Tree tree : trees) {
-            nodes.add(tree.getHead());
-        }
-        return areTreeNodesSimilar(nodes) == 1 ? true : false;
+    protected void copyUnrolledTreeStructure(Tree tree, Object peripheralData, NodeToNode NodeCreation){
+        throw new NotImplementedException();
     }
+
+    protected void copyUnrolledTreeStructure(Node head, Node from, Node to, Object peripheralData, NodeToNode NodeCreation){
+        throw new NotImplementedException();
+    }
+
+    protected void copyExactTreeStructure(Tree tree, Object data, NodeToNode NodeCreation){
+        assert (tree.getHead().order_num != -1);
+        assert (tree.getHead().visited == false);
+        List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
+
+        traverseTree(tree.getHead(), treeMap, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
+    }
+
 
     //endregion protected methods
 
@@ -61,6 +80,15 @@ public abstract class Tree implements Comparable {
 
     public static Integer getNumParas() {
         return numParas;
+    }
+
+    //TODO : move to util
+    public static boolean areTreesSimilar(List<Tree> trees) {
+        List<Node> nodes = new ArrayList<>();
+        for (Tree tree : trees) {
+            nodes.add(tree.getHead());
+        }
+        return areTreeNodesSimilar(nodes) == 1 ? true : false;
     }
 
     /**

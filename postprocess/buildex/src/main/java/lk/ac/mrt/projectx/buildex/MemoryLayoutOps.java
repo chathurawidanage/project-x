@@ -1,6 +1,8 @@
 package lk.ac.mrt.projectx.buildex;
 
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
+import lk.ac.mrt.projectx.buildex.models.Pair;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInput;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
@@ -80,8 +82,112 @@ public class MemoryLayoutOps {
         return instructions;
     }
 
+    private void updateStride(List<Pair<Integer, Integer>> strides, List<Pair<Integer, Integer>> old) {
+        for (int i = 0; i < old.size(); i++) {
+            int oldStride = old.get(i).first;
+            int oldFrequency = old.get(i).second;
+            boolean updated = false;
+            for (int j = 0; j < strides.size(); j++) {
+                if (strides.get(j).first == oldStride) {
+                    strides.get(j).second += oldFrequency;
+                    updated = true;
+                    break;
+                }
+            }
+
+            if (!updated) {
+                strides.add(old.get(i));
+            }
+        }
+    }
+
+    private void updateStride(List<Pair<Integer, Integer>> strides, int stride) {
+        boolean updated = false;
+        for (int i = 0; i < strides.size(); i++) {
+            Pair<Integer, Integer> stridePr = strides.get(i);
+            if (stridePr.first == stride) {
+                stridePr.second++;
+                updated = true;
+                break;
+            }
+        }
+        if (!updated) {
+            strides.add(new Pair<>(stride, 1));
+        }
+    }
+
+    private void updateMemoryRegions(List<MemoryInfo> memoryInfoList, MemoryInput memoryInput) {
+        long address = memoryInput.getMemAddress();
+        int stride = memoryInput.getStride();
+        boolean merged = false;
+
+        int direction = 0;
+        List<Pair<Integer, Integer>> strideAcc = new ArrayList<>();
+
+        for (int i = 0; i < memoryInfoList.size(); i++) {
+            MemoryInfo memoryInfo = memoryInfoList.get(i);
+            if (memoryInfo.getType() == memoryInput.getType()) {
+                /* is the address with in range?*/
+                if ((address >= memoryInfo.getStart()) && (address + stride <= memoryInfo.getEnd())) {
+                    int memInfDirection = memoryInfo.getDirection();
+                    memInfDirection |= memoryInput.isWrite() ? MemDirection.MEM_OUTPUT.getValue() : MemDirection.MEM_INPUT.getValue();
+                    memoryInfo.setDirection(memInfDirection);
+                    updateStride(memoryInfo.getStrideFrequency(), stride);
+                    merged = true;
+                }
+                /* delete the memory region that is contained */
+                else if ((address < memoryInfo.getStart()) && (address + stride > memoryInfo.getEnd())) {
+                    direction |= memoryInfo.getDirection();
+                    updateStride(strideAcc, memoryInfo.getStrideFrequency());
+                    //todo there was a erase in CPP
+                }
+                /* can we prepend this to the start of the memory region? */
+                else if ((address + stride >= memoryInfo.getStart()) && (address < memoryInfo.getStart())) {
+                    memoryInfo.setStart(address);
+                    int memoryInfoDirection = memoryInfo.getDirection();
+                    memoryInfoDirection |= memoryInput.isWrite() ? MemDirection.MEM_OUTPUT.getValue() : MemDirection.MEM_INPUT.getValue();
+                    memoryInfoDirection |= direction;
+                    memoryInfo.setDirection(memoryInfoDirection);
+                    updateStride(memoryInfo.getStrideFrequency(), stride);
+                    merged = true;
+                }
+
+				/* can we append this to the end of the memory region? */
+                else if ((address <= memoryInfo.getEnd()) && (address + stride > memoryInfo.getEnd())) {
+                    memoryInfo.setEnd(address + stride);
+                    int memoryInfoDirection = memoryInfo.getDirection();
+                    memoryInfoDirection |= memoryInput.isWrite() ? MemDirection.MEM_OUTPUT.getValue() : MemDirection.MEM_INPUT.getValue();
+                    memoryInfoDirection |= direction;
+                    memoryInfo.setDirection(memoryInfoDirection);
+                    updateStride(memoryInfo.getStrideFrequency(), stride);
+                    merged = true;
+                }
+
+            } else {
+                /* see if there are any collisions and report as errors - implement later */
+            }
+
+            if (merged) break;
+
+        }
+
+        if (!merged) { /* if not merged to an exising mem_region then we need to create a new region */
+            MemoryInfo newRegion = new MemoryInfo();
+            newRegion.setStart(address);
+            newRegion.setEnd(address + stride);/* actually this should be stride - 1 *///todo
+            int memoryInfoDirection = memoryInput.isWrite() ? MemDirection.MEM_OUTPUT.getValue() : MemDirection.MEM_INPUT.getValue();
+            memoryInfoDirection |= direction;
+            newRegion.setDirection(memoryInfoDirection);
+            newRegion.setType(memoryInput.getType());
+            updateStride(newRegion.getStrideFrequency(), strideAcc);
+            updateStride(newRegion.getStrideFrequency(), stride);
+            memoryInfoList.add(newRegion);
+        }
+    }
+
     public List<MemoryInfo> createMemoryLayout(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
         int count = 0;
+        List<MemoryInfo> memoryInfoList=new ArrayList<>();
 
         logger.debug("Creating memory layout : [Memory Info]");
 
@@ -116,7 +222,7 @@ public class MemoryLayoutOps {
                         memoryInput.setWrite(false);
                         memoryInput.setType(opSrc.getType());
                         if (memoryInput.getStride() != 0) {
-                            //update_mem_regions(mem_info, input);//todo implement
+                            updateMemoryRegions(memoryInfoList,memoryInput);
                         }
                     }
                 }
@@ -143,7 +249,7 @@ public class MemoryLayoutOps {
                         memoryInput.setWrite(true);
                         memoryInput.setType(opDst.getType());
                         if (memoryInput.getStride() != 0) {
-                            //update_mem_regions(mem_info, input);//todo implement
+                            updateMemoryRegions(memoryInfoList,memoryInput);
                         }
                     }
                 }
@@ -152,6 +258,6 @@ public class MemoryLayoutOps {
         }
         //postprocess_mem_regions(mem_info);//todo implement
         logger.debug("Creating memory layout : [Memory Info] - Done");
-        return null;
+        return memoryInfoList;
     }
 }

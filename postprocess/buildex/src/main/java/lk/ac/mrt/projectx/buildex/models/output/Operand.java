@@ -1,5 +1,8 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Chathura Widanage
  */
@@ -14,7 +17,7 @@ public class Operand {
     private int type;
     private int width;
     private double value;
-    private Operand address;
+    private List<Operand> address=new ArrayList<>();
 
     public int getType() {
         return type;
@@ -40,11 +43,11 @@ public class Operand {
         this.value = value;
     }
 
-    public Operand getAddress() {
+    public List<Operand> getAddress() {
         return address;
     }
 
-    public void setAddress(Operand address) {
+    public void setAddress(List<Operand> address) {
         this.address = address;
     }
 }

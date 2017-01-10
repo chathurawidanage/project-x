@@ -31,7 +31,6 @@ public class ProjectXImage {
             return imageBuffer;
         }
         int x = this.bufferedImage.getColorModel().getPixelSize();
-        System.out.println("Pixel size " + x);
         imageBuffer = new int[this.bufferedImage.getWidth() * this.bufferedImage.getHeight() * 3];
         int width = bufferedImage.getWidth();
         int height = bufferedImage.getHeight();

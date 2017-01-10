@@ -1,6 +1,6 @@
 package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
-import javafx.util.Pair;
+import lk.ac.mrt.projectx.buildex.models.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,5 +100,20 @@ public class MemoryInfo {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    @Override
+    public String toString() {
+        return "MemoryInfo{" +
+                "type=" + type +
+                ", direction=" + direction +
+                ", start=" + start +
+                ", end=" + end +
+                ", probStride=" + probStride +
+                ", strideFrequency=" + strideFrequency +
+                ", mergedMemoryInfos=" + mergedMemoryInfos +
+                ", paddingMerge=" + paddingMerge +
+                ", order=" + order +
+                '}';
     }
 }

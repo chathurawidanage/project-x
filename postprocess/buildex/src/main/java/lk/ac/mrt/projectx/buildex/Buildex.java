@@ -4,6 +4,7 @@ import lk.ac.mrt.projectx.buildex.exceptions.NoSuitableFileFoundException;
 import lk.ac.mrt.projectx.buildex.files.AppPCFile;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.files.MemoryDumpFile;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,14 +41,17 @@ public class Buildex {
         InstructionTraceFile disAsmFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, exec, true);
         logger.info("Found memory dump file {}", disAsmFile.getName());
 
-        List<MemoryDumpFile> memoryDumpFileList = MemoryDumpFile.filterMemoryDumpFiles(outputFilesList,exec);
+        List<MemoryDumpFile> memoryDumpFileList = MemoryDumpFile.filterMemoryDumpFiles(outputFilesList, exec);
         logger.info("Found {} memory dump files {}", memoryDumpFileList.size(), memoryDumpFileList.toString());
 
-        AppPCFile appPCFile = AppPCFile.filterAppPCFile(filterFileList,exec);
+        AppPCFile appPCFile = AppPCFile.filterAppPCFile(filterFileList, exec);
         logger.info("Found app pc file {}", appPCFile.toString());
 
         MemoryAnalyser memoryAnalyser = MemoryAnalyser.getInstance();
         List<MemoryRegion> imageRegions = memoryAnalyser.getImageRegions(memoryDumpFileList, inputImage, outputImage);
         logger.info("Found {} image regions", imageRegions.size());
+
+        List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayout(instructionTraceFile, 1);
+        logger.info("Found {} memory infos", memoryLayout.size());
     }
 }

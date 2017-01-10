@@ -1,6 +1,6 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 

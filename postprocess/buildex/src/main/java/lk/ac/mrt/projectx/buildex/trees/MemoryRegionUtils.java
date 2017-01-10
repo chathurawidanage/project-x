@@ -1,7 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.MemoryRegion;
-import lk.ac.mrt.projectx.buildex.MemoryRegion.Direction;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -151,7 +151,7 @@ public class MemoryRegionUtils {
 	    /*get the number of intermediate and output regions*/
         int noRegions = 0;
         for (int i = 0; i < regions.size(); i++) {
-            if (regions.get(i).getDirection() == Direction.MEM_INTERMEDIATE || regions.get(i).getDirection() == Direction.MEM_OUTPUT) {
+            if (regions.get(i).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get(i).getMemDirection() == MemDirection.MEM_OUTPUT) {
                 noRegions++;
             }
         }
@@ -162,7 +162,7 @@ public class MemoryRegionUtils {
         noRegions = 0;
 
         for (int i = 0; i < regions.size(); i++) {
-            if (regions.get(i).getDirection() == Direction.MEM_INTERMEDIATE || regions.get(i).getDirection() == Direction.MEM_OUTPUT) {
+            if (regions.get(i).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get(i).getMemDirection() == MemDirection.MEM_OUTPUT) {
                 if (noRegions == random) {
                     logger.info("random output region seleted");
                     return regions.get(i);

@@ -1,5 +1,8 @@
 package lk.ac.mrt.projectx.buildex;
 
+import lk.ac.mrt.projectx.buildex.files.MemoryDumpFile;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryDumpType;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,7 +86,7 @@ public class MemoryAnalyser {
 
     //todo invalid implementation
     private List<MemoryRegion> backwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image, boolean write) throws IOException {
-        logger.info("Backward analyzing {}", memoryDumpFile.getFile().getName());
+        logger.info("Backward analyzing {}", memoryDumpFile.getName());
         int[] imageBuffer = image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR);
         int[] reversedImageBuffer = new int[imageBuffer.length];
 
@@ -114,7 +117,7 @@ public class MemoryAnalyser {
     }
 
     private List<MemoryRegion> forwardAnalysis(MemoryDumpFile memoryDumpFile, ProjectXImage image) throws IOException {
-        logger.info("Forward analyzing {}", memoryDumpFile.getFile().getName());
+        logger.info("Forward analyzing {}", memoryDumpFile.getName());
         return findRegions(image.getImage().getWidth(),
                 image.getImage().getHeight(),
                 image.getImageBuffer(ProjectXImage.BufferLayout.PLANAR),
@@ -156,8 +159,8 @@ public class MemoryAnalyser {
                     memoryRegion.setStartMemory(startPoints.get(0) + basePC);
                     memoryRegion.setEndMemory(startPoints.get(startPoints.size() - 1)
                             + memoryRegion.getStrides()[1] + basePC);
-                    memoryRegion.setDumpType(write ? MemoryRegion.DumpType.OUTPUT_BUFFER :
-                            MemoryRegion.DumpType.INPUT_BUFFER);
+                    memoryRegion.setMemoryDumpType(write ? MemoryDumpType.OUTPUT_BUFFER :
+                            MemoryDumpType.INPUT_BUFFER);
                     if (gaps.size() == 0) {
                         memoryRegion.setStrides(new long[]{1, imageWidth});
                         memoryRegion.setPaddingFilled(1);

@@ -14,10 +14,18 @@ public class Configurations {
      * @return
      */
     public static File getOutputFolder() {
-        return new File(System.getenv().get("EXALGO_OUTPUT_FOLDER"));
+        return getFolder("EXALGO_OUTPUT_FOLDER");
     }
 
     public static File getFilterFolder() {
-        return new File(System.getenv().get("EXALGO_FILTER_FOLDER"));
+        return getFolder("EXALGO_FILTER_FOLDER");
+    }
+
+    public static File getImagesFolder(){
+        return getFolder("EXALGO_FILTER_FOLDER");
+    }
+
+    private static File getFolder(String enVar){
+        return new File(System.getenv().get(enVar));
     }
 }

@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex;
 
 import junit.framework.TestCase;
+import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 
 import java.util.List;
 

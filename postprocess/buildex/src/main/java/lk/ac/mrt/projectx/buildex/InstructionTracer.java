@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex;
 
 import javafx.util.Pair;
+import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

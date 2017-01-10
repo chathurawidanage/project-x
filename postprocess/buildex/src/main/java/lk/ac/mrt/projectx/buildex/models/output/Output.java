@@ -12,8 +12,8 @@ public class Output {
     private int numOfDestinations;
     private List<Operand> srcs=new ArrayList<>();
     private List<Operand> dsts=new ArrayList<>();
-    private int eflags;
-    private int pc;
+    private long eflags;
+    private long pc;
 
     public int getOpcode() {
         return opcode;
@@ -55,19 +55,19 @@ public class Output {
         this.dsts = dsts;
     }
 
-    public int getEflags() {
+    public long getEflags() {
         return eflags;
     }
 
-    public void setEflags(int eflags) {
+    public void setEflags(long eflags) {
         this.eflags = eflags;
     }
 
-    public int getPc() {
+    public long getPc() {
         return pc;
     }
 
-    public void setPc(int pc) {
+    public void setPc(long pc) {
         this.pc = pc;
     }
 }

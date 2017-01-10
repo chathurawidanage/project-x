@@ -20,9 +20,9 @@ public class MemoryLayoutOps {
     public static final int VER_NO_ADDR_OPND = 0;
     public static final int VER_WITH_ADDR_OPND = 1;
 
-    private Logger logger = LogManager.getLogger(MemoryLayoutOps.class);
+    private static Logger logger = LogManager.getLogger(MemoryLayoutOps.class);
 
-    private Operand parseOperand(StringTokenizer stringTokenizer, int version) {
+    private static Operand parseOperand(StringTokenizer stringTokenizer, int version) {
         Operand operand = new Operand();
         operand.setType(Integer.parseInt(stringTokenizer.nextToken()));
         operand.setWidth(Integer.parseInt(stringTokenizer.nextToken()));
@@ -34,13 +34,13 @@ public class MemoryLayoutOps {
         if (version == VER_WITH_ADDR_OPND) {
             if (operand.getType() == Operand.MEM_STACK_TYPE || operand.getType() == Operand.MEM_HEAP_TYPE) {
             /* we need to collect the address operands */
-                Operand address = new Operand();
                 for (int j = 0; j < 4; j++) {
+                    Operand address = new Operand();
                     address.setType(Integer.parseInt(stringTokenizer.nextToken()));
                     address.setWidth(Integer.parseInt(stringTokenizer.nextToken()));
                     address.setValue(Double.parseDouble(stringTokenizer.nextToken()));
+                    operand.getAddress().add(address);
                 }
-                operand.setAddress(address);
             }
         } else if (version == VER_NO_ADDR_OPND) {
             //address is null
@@ -48,7 +48,7 @@ public class MemoryLayoutOps {
         return operand;
     }
 
-    private List<Output> getInstructionsList(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
+    private static List<Output> getInstructionsList(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
         Scanner instrScanner = new Scanner(instructionTraceFile);
         List<Output> instructions = new ArrayList<>();
         while (instrScanner.hasNextLine()) {
@@ -73,8 +73,8 @@ public class MemoryLayoutOps {
                     instr.getSrcs().add(source);
                 }
 
-                instr.setEflags(Integer.parseInt(stringTokenizer.nextToken()));
-                instr.setPc(Integer.parseInt(stringTokenizer.nextToken()));
+                instr.setEflags(Long.parseLong(stringTokenizer.nextToken()));
+                instr.setPc(Long.parseLong(stringTokenizer.nextToken()));
 
                 instructions.add(instr);
             }
@@ -82,7 +82,7 @@ public class MemoryLayoutOps {
         return instructions;
     }
 
-    private void updateStride(List<Pair<Integer, Integer>> strides, List<Pair<Integer, Integer>> old) {
+    private static void updateStride(List<Pair<Integer, Integer>> strides, List<Pair<Integer, Integer>> old) {
         for (int i = 0; i < old.size(); i++) {
             int oldStride = old.get(i).first;
             int oldFrequency = old.get(i).second;
@@ -101,7 +101,7 @@ public class MemoryLayoutOps {
         }
     }
 
-    private void updateStride(List<Pair<Integer, Integer>> strides, int stride) {
+    private static void updateStride(List<Pair<Integer, Integer>> strides, int stride) {
         boolean updated = false;
         for (int i = 0; i < strides.size(); i++) {
             Pair<Integer, Integer> stridePr = strides.get(i);
@@ -116,7 +116,7 @@ public class MemoryLayoutOps {
         }
     }
 
-    private void updateMemoryRegions(List<MemoryInfo> memoryInfoList, MemoryInput memoryInput) {
+    private static void updateMemoryRegions(List<MemoryInfo> memoryInfoList, MemoryInput memoryInput) {
         long address = memoryInput.getMemAddress();
         int stride = memoryInput.getStride();
         boolean merged = false;
@@ -185,9 +185,9 @@ public class MemoryLayoutOps {
         }
     }
 
-    public List<MemoryInfo> createMemoryLayout(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
+    public static List<MemoryInfo> createMemoryLayout(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
         int count = 0;
-        List<MemoryInfo> memoryInfoList=new ArrayList<>();
+        List<MemoryInfo> memoryInfoList = new ArrayList<>();
 
         logger.debug("Creating memory layout : [Memory Info]");
 
@@ -204,7 +204,7 @@ public class MemoryLayoutOps {
                         boolean skip = true;
                         if (opSrc.getType() == Operand.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
-                                long reg = (long) opSrc.getAddress().getValue();//todo check casting issue
+                                long reg = (long) opSrc.getAddress().get(addr).getValue();//todo check casting issue
                                 if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
@@ -222,7 +222,7 @@ public class MemoryLayoutOps {
                         memoryInput.setWrite(false);
                         memoryInput.setType(opSrc.getType());
                         if (memoryInput.getStride() != 0) {
-                            updateMemoryRegions(memoryInfoList,memoryInput);
+                            updateMemoryRegions(memoryInfoList, memoryInput);
                         }
                     }
                 }
@@ -231,7 +231,7 @@ public class MemoryLayoutOps {
                         boolean skip = true;
                         if (opDst.getType() == Operand.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
-                                long reg = (long) opDst.getAddress().getValue();//todo check cast problem
+                                long reg = (long) opDst.getAddress().get(addr).getValue();//todo check cast problem
                                 if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
@@ -249,7 +249,7 @@ public class MemoryLayoutOps {
                         memoryInput.setWrite(true);
                         memoryInput.setType(opDst.getType());
                         if (memoryInput.getStride() != 0) {
-                            updateMemoryRegions(memoryInfoList,memoryInput);
+                            updateMemoryRegions(memoryInfoList, memoryInput);
                         }
                     }
                 }

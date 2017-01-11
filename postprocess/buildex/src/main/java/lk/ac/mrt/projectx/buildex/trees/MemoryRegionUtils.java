@@ -18,6 +18,61 @@ public class MemoryRegionUtils {
 
     //region public methods
 
+    /* extracting random locations from the mem regions */
+    ArrayList<Long> getNbdOfRandomPoints(ArrayList<MemoryRegion> image_regions, int seed, int stride){
+
+	    /*ok we need find a set of random locations */
+        MemoryRegion random_mem_region = getRandomOutputRegion(image_regions);
+        //cout << hex << random_mem_region->start << endl;
+        long mem_location = getRandomMemLocation(random_mem_region, seed);
+        logger.info("random mem location we got - {}",mem_location);
+        stride = random_mem_region.getBytesPerPixel();
+
+        ArrayList<Long> nbd_locations = new ArrayList<>();
+        ArrayList<Integer> base = getMemPosition(random_mem_region, mem_location);
+        nbd_locations.add(mem_location);
+
+        //get a nbd of locations - diagonally choose pixels
+        int boundary = (int)((random_mem_region.getDimension() + 2) / 2.0);
+        logger.info("boundary : {}", boundary);
+
+        int count = 0;
+
+        int[] val = new int[(int)random_mem_region.getDimension()];
+
+        for (int i = -boundary; i <= boundary; i++){
+
+            if(i==0){
+                continue;
+            }
+
+            ArrayList<Integer> offset = new ArrayList<>();
+            int affected = count % (int)random_mem_region.getDimension();
+            for (int j = 0; j < base.size(); j++){
+                if (j == affected){
+                    if (base.get(j) + i < 0 || base.get(j)+i>= random_mem_region.getExtents()[j]){
+                        offset.add(0);
+                    }
+                    else{
+                        offset.add(i);
+                    }
+
+                }
+                else offset.add(0);
+            }
+
+            mem_location = getMemLocation(base, offset, random_mem_region);
+
+            if (mem_location == 0) {
+                logger.error("ERROR: random memory location out of bounds");
+            }
+
+            nbd_locations.add(mem_location);
+            count++;
+        }
+
+        return nbd_locations;
+    }
 
     // stride was a pointer. - Not considered it as a pointer here. if needs, it should be implemented
     public static ArrayList<Long> getNbdOfRandomPoints2(ArrayList<MemoryRegion> image_regions, int seed, int stride){

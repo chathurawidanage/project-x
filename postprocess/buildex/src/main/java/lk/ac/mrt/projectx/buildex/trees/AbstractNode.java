@@ -1,15 +1,15 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.X86Analysis;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
-import lk.ac.mrt.projectx.buildex.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.MEM_HEAP_TYPE;
-import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.MEM_STACK_TYPE;
+import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.MEM_HEAP_TYPE;
+import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.MEM_STACK_TYPE;
 
 
 /**
@@ -82,8 +82,8 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
         this.associatedMem = null;
         MemoryRegion mem = null;
-        if(concreteNode.symbol.type == MEM_STACK_TYPE || concreteNode.symbol.type == MEM_HEAP_TYPE){
-            mem = MemoryRegionUtils.getMemRegion((Integer)concreteNode.symbol.value, memRegions);
+        if(concreteNode.symbol.getType() == MEM_STACK_TYPE || concreteNode.symbol.getType() == MEM_HEAP_TYPE){
+            mem = MemoryRegionUtils.getMemRegion((Integer)concreteNode.symbol.getValue(), memRegions);
         }
 
         if((mem != null) && filer){
@@ -129,7 +129,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 //                    return this.symbol.value == node.symbol.value;
                     return 1;
                 } else if (this.type == AbstractNodeType.IMMEDIATE_FLOAT) {
-                    return Float.compare((Float) node.symbol.value, (Float) this.symbol.value);
+                    return Float.compare((Float) node.symbol.getValue(), (Float) this.symbol.getValue());
                 } else if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
                         || this.type == AbstractNodeType.INTERMEDIATE_NODE) {
                     if (node.srcs.size() > 0 &&
@@ -151,7 +151,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
                 || this.type == AbstractNodeType.INTERMEDIATE_NODE) {
             return GetMemString();
         } else if (this.type == AbstractNodeType.IMMEDIATE_INT || this.type == AbstractNodeType.IMMEDIATE_FLOAT) {
-            return this.symbol.value.toString();
+            return this.symbol.getValue().toString();
         } else if (this.type == AbstractNodeType.OPERATION_ONLY) {
             return this.operation.toString();
         } else if (this.type == AbstractNodeType.PARAMETER) {

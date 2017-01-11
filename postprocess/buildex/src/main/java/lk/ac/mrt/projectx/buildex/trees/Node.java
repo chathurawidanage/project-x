@@ -51,7 +51,7 @@ public abstract class Node <T> {
     Boolean is_para;
     Boolean is_double;
 
-    Boolean visited;
+    private Boolean visited;
     //endregion unclassified variables
 
     //endregion Variables
@@ -321,6 +321,13 @@ public abstract class Node <T> {
         }
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(Boolean visitOrNot){
+        this.visited = visitOrNot;
+    }
     //endregion public methods
 
     //region private methods

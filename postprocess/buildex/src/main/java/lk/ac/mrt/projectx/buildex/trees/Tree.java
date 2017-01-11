@@ -57,7 +57,7 @@ public abstract class Tree implements Comparable {
 
     protected void copyExactTreeStructure(Tree tree, Object data, NodeToNode NodeCreation){
         assert (tree.getHead().order_num != -1);
-        assert (tree.getHead().visited == false);
+        assert (tree.getHead().isVisited() == false);
 
         // Get all the nodes and the nodes to which it is connected
         List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
@@ -338,9 +338,33 @@ public abstract class Tree implements Comparable {
         }
     }
 
-    public void printDot(BufferedWriter file, String name, int number) {
+    public void printDot(BufferedWriter file, String name, int number) throws IOException {
         logger.debug("Printing tree to dot file");
-        throw new NotImplementedException();
+        StringBuilder nodesStBlder = new StringBuilder();
+        StringBuilder headerStBlder = new StringBuilder();
+        headerStBlder.append("digraph G_");
+        headerStBlder.append(name);
+        headerStBlder.append("_");
+        headerStBlder.append(number);
+        headerStBlder.append(" {\n");
+
+        cleanupVisit();
+        traverseTree(head, nodesStBlder, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                if(!node.isVisited()){
+
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
+
+
     }
 
     public void cleanupVisit() {
@@ -348,7 +372,7 @@ public abstract class Tree implements Comparable {
         traverseTree(head, numNodes, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
-                node.visited = false;
+                node.setVisited(false);
                 return null;
             }
         }, new NodeReturnMutator() {
@@ -645,11 +669,11 @@ public abstract class Tree implements Comparable {
 
     private boolean removeMultiplication(Node node) {
         boolean mul = false;
-        if (node.visited) {
+        if (node.isVisited()) {
             return false;
         } else {
             mul = false;
-            node.visited = true;
+            node.setVisited(true);
             if (node.operation == op_mul) {
                 Integer index = -1;
                 Integer imm_value = 0;

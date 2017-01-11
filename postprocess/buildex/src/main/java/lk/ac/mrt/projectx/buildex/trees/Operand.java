@@ -9,7 +9,7 @@ import static lk.ac.mrt.projectx.buildex.X86Analysis.MAX_SIZE_OF_REG;
  * Created by krv on 12/4/2016.
  */
 //TODO : index sort comparable (check output.h line 24-33), this may be a linked list
-//TODO : DUPLICATE CLASS IN InstructionTraceUnit
+//TODO : DUPLICATE CLASS IN InstructionTraceUnit , package lk.ac.mrt.projectx.buildex.models.output
 public class Operand <T> implements Comparable {
 
     //region public enum
@@ -112,7 +112,7 @@ public class Operand <T> implements Comparable {
     //region private methods
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
-    // TODO 1 contd. : But currently project-x gets the same value in the enum as you see
+    // TODO 1 contd. : But currently project-x gets the same value in the defines.h enum from DynamoRIO as you see
     private DefinesDotH.Registers memRangeToRegister() {
         DefinesDotH.Registers ret;
         if (this.type == OperandType.REG_TYPE) {

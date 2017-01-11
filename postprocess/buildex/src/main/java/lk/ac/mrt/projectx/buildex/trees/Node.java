@@ -1,19 +1,17 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.util.Pair;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
+import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.*;
 
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_add;
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
-import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.IMM_INT_TYPE;
-import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.MEM_HEAP_TYPE;
+import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.IMM_INT_TYPE;
+import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.MEM_HEAP_TYPE;
 
 /**
  * Created by krv on 12/4/2016.
@@ -40,7 +38,7 @@ public abstract class Node <T> {
     Boolean minus;
     String functionName;
 
-    Operand<T> symbol;
+    Operand symbol;
 
     Long pc;
     Long line;
@@ -263,9 +261,9 @@ public abstract class Node <T> {
         for (int i = 0 ; i < this.srcs.size() ; i++) {
             Node srcNode = (Node) this.srcs.get(i);
             Pair<Integer, Node> pair = new Pair<>(i, srcNode);
-            if (srcNode.symbol.type == MEM_HEAP_TYPE) {
+            if (srcNode.symbol.getType() == MEM_HEAP_TYPE) {
                 heap.add(pair);
-            } else if (srcNode.symbol.type == IMM_INT_TYPE) {
+            } else if (srcNode.symbol.getType() == IMM_INT_TYPE) {
                 imm.add(pair);
             } else {
                 other.add(pair);
@@ -275,10 +273,10 @@ public abstract class Node <T> {
         Collections.sort(heap, new Comparator<Pair<Integer, Node>>() {
             @Override
             public int compare(Pair<Integer, Node> o1, Pair<Integer, Node> o2) {
-                if (o1.getValue().symbol.value instanceof Integer) {
-                    return Integer.compare((Integer) o1.getValue().symbol.value, (Integer) o2.getValue().symbol.value);
+                if (o1.getValue().symbol.getValue() instanceof Integer) {
+                    return Integer.compare((Integer) o1.getValue().symbol.getValue(), (Integer) o2.getValue().symbol.getValue());
                 } else {
-                    return Double.compare((Double) o1.getValue().symbol.value, (Double) o2.getValue().symbol.value);
+                    return Double.compare((Double) o1.getValue().symbol.getValue(), (Double) o2.getValue().symbol.getValue());
                 }
             }
         });

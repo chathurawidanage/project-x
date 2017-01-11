@@ -27,7 +27,7 @@ public abstract class Tree implements Comparable {
 
     private static Integer numParas;
     private boolean recursive;
-    private boolean dummyTree;
+    protected boolean dummyTree;
     private Integer numNodes;
     private Integer treeNum;
     private Node head;

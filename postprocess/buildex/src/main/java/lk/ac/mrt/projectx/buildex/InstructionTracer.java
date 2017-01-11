@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex;
 
 import javafx.util.Pair;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
+import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -237,40 +238,6 @@ public class InstructionTracer {
         }
     }
 
-    public List<Pair<InstructionTraceUnit, StaticInfo>> filterInstructionTrace(List<Long> startPc, List<Long> endPc,
-                                                                               List<Pair<InstructionTraceUnit, StaticInfo>> unfilteredInstructions) {
-        boolean start = false;
-        int index = -1;
-        List<Pair<InstructionTraceUnit, StaticInfo>> filteredInstructions = new ArrayList<>();
-
-        if (logger.isDebugEnabled()) {
-            logger.debug(InstructionTracer.class.getName(), "Filtering the instruction trace by start,end pcs\\n");
-
-            for (Pair<InstructionTraceUnit, StaticInfo> unfilteredInstruction : unfilteredInstructions) {
-                if (!start) {
-                    index = -1;
-                    for (int i = 0; i < startPc.size(); i++) {
-                        if (startPc.get(i) == unfilteredInstruction.getKey().getPc()) {
-                            index = i;
-                            start = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (start) {
-                    filteredInstructions.add(unfilteredInstruction);
-                    unfilteredInstruction.getValue().setExampleLine(filteredInstructions.size() - 1); //TODO check this ?
-                }
-
-                if (start && unfilteredInstruction.getKey().getPc() == endPc.get(index)) {
-                    start = false;
-                }
-            }
-        }
-        return filteredInstructions;
-    }
-
     public StaticInfo getStaticInfo(List<StaticInfo> staticInfo, long pc) {
         if (staticInfo != null) {
             for (StaticInfo info : staticInfo) {
@@ -310,6 +277,40 @@ public class InstructionTracer {
             op.addr = null;
         }
         return start;
+    }
+
+    public List<Pair<InstructionTraceUnit, StaticInfo>> filterInstructionTrace(List<Long> startPc, List<Long> endPc,
+                                                                               List<Pair<InstructionTraceUnit, StaticInfo>> unfilteredInstructions) {
+        boolean start = false;
+        int index = -1;
+        List<Pair<InstructionTraceUnit, StaticInfo>> filteredInstructions = new ArrayList<>();
+
+        if (logger.isDebugEnabled()) {
+            logger.debug(InstructionTracer.class.getName(), "Filtering the instruction trace by start,end pcs\\n");
+
+            for (Pair<InstructionTraceUnit, StaticInfo> unfilteredInstruction : unfilteredInstructions) {
+                if (!start) {
+                    index = -1;
+                    for (int i = 0 ; i < startPc.size() ; i++) {
+                        if (startPc.get(i) == unfilteredInstruction.getKey().getPc()) {
+                            index = i;
+                            start = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (start) {
+                    filteredInstructions.add(unfilteredInstruction);
+                    unfilteredInstruction.getValue().setExampleLine(filteredInstructions.size() - 1); //TODO check this ?
+                }
+
+                if (start && unfilteredInstruction.getKey().getPc() == endPc.get(index)) {
+                    start = false;
+                }
+            }
+        }
+        return filteredInstructions;
     }
 
     public void printDissassemblyInformation(List<StaticInfo> staticInfos) {

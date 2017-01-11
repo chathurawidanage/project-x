@@ -1,7 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import javafx.util.Pair;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -47,51 +47,6 @@ public abstract class Tree implements Comparable {
 
     //region protected methods
 
-    protected void copyUnrolledTreeStructure(Tree tree, Object peripheralData, NodeToNode NodeCreation){
-        throw new NotImplementedException();
-    }
-
-    protected void copyUnrolledTreeStructure(Node head, Node from, Node to, Object peripheralData, NodeToNode NodeCreation){
-        throw new NotImplementedException();
-    }
-
-    protected void copyExactTreeStructure(Tree tree, Object data, NodeToNode NodeCreation){
-        assert (tree.getHead().order_num != -1);
-        assert (tree.getHead().isVisited() == false);
-
-        // Get all the nodes and the nodes to which it is connected
-        List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
-        traverseTree(tree.getHead(), treeMap, new NodeMutator() {
-            @Override
-            public Object mutate(Node node, Object value) {
-                List<Pair<Node, List<Integer>>> map = (List<Pair<Node,List<Integer>>>) value;
-                Pair<Node, List<Integer>> mapElement = map.get(node.order_num);
-                if(mapElement.getKey() == null){ //todo : == null in Helium
-                    for(Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext();){
-                        Node srcNode = srcIter.next();
-                        mapElement.getValue().add(srcNode.order_num);
-                    }
-                }
-                return null;
-            }
-        }, new NodeReturnMutator() {
-            @Override
-            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
-                return null;
-            }
-        });
-
-        // create the new tree as a vector
-        List<Pair<Node, List<Integer>>> newTreeMap = new ArrayList<>(tree.getNumNodes());
-
-
-    }
-
-
-    //endregion protected methods
-
-    //region public methods
-
     public static Integer getNumParas() {
         return numParas;
     }
@@ -126,6 +81,51 @@ public abstract class Tree implements Comparable {
         }
 
         return 1;
+    }
+
+
+    //endregion protected methods
+
+    //region public methods
+
+    protected void copyUnrolledTreeStructure(Tree tree, Object peripheralData, NodeToNode NodeCreation) {
+        throw new NotImplementedException();
+    }
+
+    protected void copyUnrolledTreeStructure(Node head, Node from, Node to, Object peripheralData, NodeToNode NodeCreation) {
+        throw new NotImplementedException();
+    }
+
+    protected void copyExactTreeStructure(Tree tree, Object data, NodeToNode NodeCreation) {
+        assert (tree.getHead().order_num != -1);
+        assert (tree.getHead().isVisited() == false);
+
+        // Get all the nodes and the nodes to which it is connected
+        List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
+        traverseTree(tree.getHead(), treeMap, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                List<Pair<Node, List<Integer>>> map = (List<Pair<Node, List<Integer>>>) value;
+                Pair<Node, List<Integer>> mapElement = map.get(node.order_num);
+                if (mapElement.getKey() == null) { //todo : == null in Helium
+                    for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+                        Node srcNode = srcIter.next();
+                        mapElement.getValue().add(srcNode.order_num);
+                    }
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
+
+        // create the new tree as a vector
+        List<Pair<Node, List<Integer>>> newTreeMap = new ArrayList<>(tree.getNumNodes());
+
+
     }
 
     protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
@@ -342,18 +342,25 @@ public abstract class Tree implements Comparable {
         logger.debug("Printing tree to dot file");
         StringBuilder nodesStBlder = new StringBuilder();
         StringBuilder headerStBlder = new StringBuilder();
+        StringBuilder edgeStBlder = new StringBuilder();
         headerStBlder.append("digraph G_");
         headerStBlder.append(name);
         headerStBlder.append("_");
         headerStBlder.append(number);
-        headerStBlder.append(" {\n");
+        headerStBlder.append(" {");
 
         cleanupVisit();
         traverseTree(head, nodesStBlder, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
-                if(!node.isVisited()){
-
+                StringBuilder nodesStBlder = (StringBuilder) value;
+                if (!node.isVisited()) {
+                    // this implementations is from Helium "dot_get_node_string" in print_helper.cpp
+                    nodesStBlder.append(node.getOrderNum());
+                    nodesStBlder.append(" [label=\"");
+                    nodesStBlder.append(node.getDotString());
+                    nodesStBlder.append("\"];");
+                    node.setVisited();
                 }
                 return null;
             }
@@ -363,8 +370,38 @@ public abstract class Tree implements Comparable {
                 return null;
             }
         });
+        cleanupVisit();
 
-
+        traverseTree(head, edgeStBlder, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                if (node.isVisited()) {
+                    StringBuilder edgeStBlder = ((StringBuilder) value);
+                    for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+                        Node srcNode = srcIter.next();
+                        edgeStBlder.append(node.getOrderNum());
+                        edgeStBlder.append(" -> ");
+                        edgeStBlder.append(srcNode.getOrderNum());
+                        edgeStBlder.append(";");
+                        edgeStBlder.append("\n");
+                        node.setVisited();
+                    }
+                }
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;
+            }
+        });
+        file.write(headerStBlder.toString());
+        file.write("\n");
+        file.write(nodesStBlder.toString());
+        file.write("\n");
+        file.write(edgeStBlder.toString());
+        file.write("}");
+        file.write("\n");
     }
 
     public void cleanupVisit() {

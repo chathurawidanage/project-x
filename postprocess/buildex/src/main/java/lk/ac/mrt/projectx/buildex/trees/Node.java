@@ -1,14 +1,14 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.util.Pair;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.plugins.convert.TypeConverters;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_add;
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
@@ -51,7 +51,7 @@ public abstract class Node <T> {
     Boolean is_para;
     Boolean is_double;
 
-    Boolean visited;
+    private Boolean visited;
     //endregion unclassified variables
 
     //endregion Variables
@@ -92,19 +92,27 @@ public abstract class Node <T> {
 
     //region public methods
 
+    public static boolean isNodesSimilar(List<Node> nodes) {
+        boolean ans = true;
+        if (nodes.isEmpty()) {
+            ans = true;
+        } else {
+            Node firstNode = nodes.get(0);
+            for (Node node : nodes.subList(1, nodes.size() - 1)) {
+                if (node != firstNode) {
+                    ans = false;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+
     public abstract String getNodeString();
 
     public abstract String getDotString();
 
     public abstract String getSimpleString();
-
-    public int removeForwardReference(Node ref) {
-        int count = 0;
-        while (removeForwardReferenceSingle(ref)) {
-            count++;
-        }
-        return count;
-    }
 
     /**
      * Remove all forward references in source list
@@ -115,23 +123,58 @@ public abstract class Node <T> {
         }
     }
 
-    public int removeBackwardReference(Node ref) {
+    public int removeForwardReference(Node ref) {
         int count = 0;
-        while (removeBackwardReferenceSingle(ref)) {
+        while (removeForwardReferenceSingle(ref)) {
             count++;
         }
         return count;
     }
 
     /**
-     * Adding a node to srcs (forward) list
+     * This function is removing a one forward reference, forward references are in the srcs list
+     * Because pos list contains backward references parents srcs lists positions for a node after every update of srcs
+     * list need to update the pos list of all the forward references also
      *
-     * @param ref node to be added
+     * @param ref
+     * @return
      */
-    public void addForwardRefrence(Node ref) {
-        this.srcs.add(ref);
-        ref.prev.add(this);
-        ref.pos.add(this.srcs.size() - 1);
+    private Boolean removeForwardReferenceSingle(Node ref) {
+        // Removing from the src list
+        Integer idx = srcs.indexOf(ref);
+        if (srcs.remove(ref)) {
+            // Updating the backward references of deleted node
+            int jidx = ref.prev.indexOf(this);
+            if (jidx != -1 && ref.pos.get(jidx) == idx) {
+                ref.prev.remove(jidx);
+                ref.pos.remove(jidx);
+            } else {
+                logger.warn("backward reference not found from deleted node");
+            }
+            // Update backward references of still connected nodes
+            // Need to update pos list indexes of others connected to this
+            //Since src list is changed
+            // TODO : Check the possibility of being a own function
+            for (int i = 0 ; i < srcs.size() ; i++) {
+                Node curSrcNode = srcs.get(i);
+                int thisPosition = curSrcNode.prev.indexOf(this);
+                if (thisPosition != -1) {
+                    curSrcNode.pos.set(thisPosition, i);
+                } else {
+                    logger.warn("backward reference not found from src");
+                }
+                //TODO: Check why Chairth has used a difference logic
+//                for (int j = 0; j < prev.size(); j++) {
+//                    if (curSrcNode.prev.get(j) == this) {
+//                        curSrcNode.pos.set(j, i);
+//                        break;
+//                    }
+//                }
+            }
+
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -147,6 +190,24 @@ public abstract class Node <T> {
                 node.removeBackwardReference(this);
             }
         }
+    }
+
+    public int removeBackwardReference(Node ref) {
+        int count = 0;
+        while (removeBackwardReferenceSingle(ref)) {
+            count++;
+        }
+        return count;
+    }
+
+    private Boolean removeBackwardReferenceSingle(Node ref) {
+        int idx = this.prev.indexOf(ref);
+        if (idx != -1) {
+            this.prev.remove(idx);
+            this.pos.remove(idx);
+            return true;
+        }
+        return true;
     }
 
     /**
@@ -185,6 +246,29 @@ public abstract class Node <T> {
     }
 
     /**
+     * This operation will carry out the below logic at the end
+     * (dst -> this) => (dst -> src)
+     *
+     * @param dst dst Node
+     * @param src src Node
+     */
+    //TODO : Move to util class
+    public void changeReference(Node dst, Node src) {
+        /* In place forward reference and push back back ward reference
+            replacing it at the exact same location is important for
+	        non-associative operations*/
+        //TODO : Check whether need to run a loop and do this to many srcs of dst, currently doing it only to idx index
+
+        int idx = dst.srcs.indexOf(this);
+        if (idx != -1) {
+            dst.srcs.set(idx, src);
+            src.prev.add(dst);
+            src.pos.add(idx);
+        }
+//        dst.forwardReference(this); // Redundant
+    }
+
+    /**
      * This method remove the current node and lift its children up
      *
      * @return whether a congregation happened
@@ -210,43 +294,15 @@ public abstract class Node <T> {
         return ret;
     }
 
-    public static boolean isNodesSimilar(List<Node> nodes) {
-        boolean ans = true;
-        if (nodes.isEmpty()) {
-            ans = true;
-        } else {
-            Node firstNode = nodes.get(0);
-            for (Node node : nodes.subList(1, nodes.size() - 1)) {
-                if (node != firstNode) {
-                    ans = false;
-                    break;
-                }
-            }
-        }
-        return ans;
-    }
-
     /**
-     * This operation will carry out the below logic at the end
-     * (dst -> this) => (dst -> src)
+     * Adding a node to srcs (forward) list
      *
-     * @param dst dst Node
-     * @param src src Node
+     * @param ref node to be added
      */
-    //TODO : Move to util class
-    public void changeReference(Node dst, Node src) {
-        /* In place forward reference and push back back ward reference
-            replacing it at the exact same location is important for
-	        non-associative operations*/
-        //TODO : Check whether need to run a loop and do this to many srcs of dst, currently doing it only to idx index
-
-        int idx = dst.srcs.indexOf(this);
-        if (idx != -1) {
-            dst.srcs.set(idx, src);
-            src.prev.add(dst);
-            src.pos.add(idx);
-        }
-//        dst.forwardReference(this); // Redundant
+    public void addForwardRefrence(Node ref) {
+        this.srcs.add(ref);
+        ref.prev.add(this);
+        ref.pos.add(this.srcs.size() - 1);
     }
 
     /**
@@ -321,64 +377,31 @@ public abstract class Node <T> {
         }
     }
 
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(Boolean visitOrNot){
+        this.visited = visitOrNot;
+    }
+
+    /**
+     * Set the visited status to true
+     */
+    public void setVisited() {
+        this.visited = true;
+    }
+
     //endregion public methods
 
     //region private methods
 
-    private Boolean removeBackwardReferenceSingle(Node ref) {
-        int idx = this.prev.indexOf(ref);
-        if (idx != -1) {
-            this.prev.remove(idx);
-            this.pos.remove(idx);
-            return true;
-        }
-        return true;
+    public Integer getOrderNum() {
+        return order_num;
     }
 
-    /**
-     * This function is removing a one forward reference, forward references are in the srcs list
-     * Because pos list contains backward references parents srcs lists positions for a node after every update of srcs
-     * list need to update the pos list of all the forward references also
-     *
-     * @param ref
-     * @return
-     */
-    private Boolean removeForwardReferenceSingle(Node ref) {
-        // Removing from the src list
-        Integer idx = srcs.indexOf(ref);
-        if (srcs.remove(ref)) {
-            // Updating the backward references of deleted node
-            int jidx = ref.prev.indexOf(this);
-            if (jidx != -1 && ref.pos.get(jidx) == idx) {
-                ref.prev.remove(jidx);
-                ref.pos.remove(jidx);
-            } else {
-                logger.warn("backward reference not found from deleted node");
-            }
-            // Update backward references of still connected nodes
-            // Need to update pos list indexes of others connected to this
-            //Since src list is changed
-            // TODO : Check the possibility of being a own function
-            for (int i = 0 ; i < srcs.size() ; i++) {
-                Node curSrcNode = srcs.get(i);
-                int thisPosition = curSrcNode.prev.indexOf(this);
-                if (thisPosition != -1) {
-                    curSrcNode.pos.set(thisPosition, i);
-                } else {
-                    logger.warn("backward reference not found from src");
-                }
-                //TODO: Check why Chairth has used a difference logic
-//                for (int j = 0; j < prev.size(); j++) {
-//                    if (curSrcNode.prev.get(j) == this) {
-//                        curSrcNode.pos.set(j, i);
-//                        break;
-//                    }
-//                }
-            }
-
-            return true;
-        }
-        return false;
+    public void setOrderNum(Integer order_num) {
+        this.order_num = order_num;
     }
 
     //endregion private methods

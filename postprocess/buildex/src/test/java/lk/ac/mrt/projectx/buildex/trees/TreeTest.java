@@ -35,17 +35,17 @@ public class TreeTest extends TestCase {
 
 
     public void testCleanupVisit() throws Exception {
-        nde.visited = true;
-        nde3.visited = false;
-        nde2.visited = true;
+        nde.setVisited(true);
+        nde3.setVisited(false);
+        nde2.setVisited(true);
         nde2.operation = X86Analysis.Operation.op_add;
-        assertEquals((Boolean) true, nde.visited);
-        assertEquals((Boolean) true, nde2.visited);
-        assertEquals((Boolean) false, nde3.visited);
+        assertEquals((boolean) true, nde.isVisited());
+        assertEquals((boolean) true, nde2.isVisited());
+        assertEquals((boolean) false, nde3.isVisited());
         tree.cleanupVisit();
-        assertEquals((Boolean) false, tree.getHead().visited);
-        assertEquals((Boolean) false, nde2.visited);
-        assertEquals((Boolean) false, nde3.visited);
+        assertEquals((boolean) false, tree.getHead().isVisited());
+        assertEquals((boolean) false, nde2.isVisited());
+        assertEquals((boolean) false, nde3.isVisited());
     }
 
     public void testNumberTreeNodes() throws Exception {

@@ -1,5 +1,8 @@
 package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
+
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
+
 /**
  * @author Chathura Widanage
  */
@@ -10,7 +13,7 @@ public class MemoryInput {
     private long memAddress;
     private boolean write;
     private int stride;
-    private int type;
+    private MemoryType type;
 
     public String getModule() {
         return module;
@@ -52,11 +55,11 @@ public class MemoryInput {
         this.stride = stride;
     }
 
-    public int getType() {
+    public MemoryType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(MemoryType type) {
         this.type = type;
     }
 }

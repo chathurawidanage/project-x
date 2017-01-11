@@ -58,11 +58,20 @@ public abstract class Tree implements Comparable {
     protected void copyExactTreeStructure(Tree tree, Object data, NodeToNode NodeCreation){
         assert (tree.getHead().order_num != -1);
         assert (tree.getHead().visited == false);
-        List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
 
+        // Get all the nodes and the nodes to which it is connected
+        List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
         traverseTree(tree.getHead(), treeMap, new NodeMutator() {
             @Override
             public Object mutate(Node node, Object value) {
+                List<Pair<Node, List<Integer>>> map = (List<Pair<Node,List<Integer>>>) value;
+                Pair<Node, List<Integer>> mapElement = map.get(node.order_num);
+                if(mapElement.getKey() == null){ //todo : == null in Helium
+                    for(Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext();){
+                        Node srcNode = srcIter.next();
+                        mapElement.getValue().add(srcNode.order_num);
+                    }
+                }
                 return null;
             }
         }, new NodeReturnMutator() {
@@ -71,6 +80,11 @@ public abstract class Tree implements Comparable {
                 return null;
             }
         });
+
+        // create the new tree as a vector
+        List<Pair<Node, List<Integer>>> newTreeMap = new ArrayList<>(tree.getNumNodes());
+
+
     }
 
 

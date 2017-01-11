@@ -128,18 +128,6 @@ public abstract class Tree implements Comparable {
 
     }
 
-    protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
-        Node node = (Node) nde;
-        Object nodeVal = nodeMutator.mutate(node, value);
-        List<Object> traverseValue = new ArrayList<>();
-
-        for (int i = 0 ; i < node.srcs.size() ; i++) {
-            traverseValue.add(traverseTree(node.srcs.get(i), value, nodeMutator, nodeReturnMutator));
-        }
-
-        return nodeReturnMutator.mutate(nodeVal, traverseValue, value);
-    }
-
     public Node getHead() {
         return head;
     }

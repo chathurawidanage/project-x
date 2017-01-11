@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex.trees;
 
 import javafx.util.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -14,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.*;
-import static lk.ac.mrt.projectx.buildex.trees.Operand.OperandType.IMM_INT_TYPE;
 
 /**
  * Created by krv on 1/2/17.
@@ -70,9 +70,9 @@ public abstract class Tree implements Comparable {
         if (!Node.isNodesSimilar(nodes)) return 0;
 
         if (!nodes.isEmpty()) {
-            for (int i = 0 ; i < nodes.get(0).srcs.size() ; i++) {
+            for (int i = 0; i < nodes.get(0).srcs.size(); i++) {
                 List<Node> nodesList = new ArrayList<>();
-                for (int j = 0 ; j < nodes.size() ; j++) {
+                for (int j = 0; j < nodes.size(); j++) {
                     //TODO : find the reason for needing to cast to Node
                     nodesList.add((Node) nodes.get(j).srcs.get(i));
                 }
@@ -126,6 +126,18 @@ public abstract class Tree implements Comparable {
         List<Pair<Node, List<Integer>>> newTreeMap = new ArrayList<>(tree.getNumNodes());
 
 
+    }
+
+    protected Object traverseTree(Object nde, Object value, NodeMutator nodeMutator, NodeReturnMutator nodeReturnMutator) {
+        Node node = (Node) nde;
+        Object nodeVal = nodeMutator.mutate(node, value);
+        List<Object> traverseValue = new ArrayList<>();
+
+        for (int i = 0; i < node.srcs.size(); i++) {
+            traverseValue.add(traverseTree(node.srcs.get(i), value, nodeMutator, nodeReturnMutator));
+        }
+
+        return nodeReturnMutator.mutate(nodeVal, traverseValue, value);
     }
 
     public Node getHead() {
@@ -194,7 +206,7 @@ public abstract class Tree implements Comparable {
                     if (changed) {
                         return changed;
                     }
-                    for (int i = 0 ; i < traverseValue.size() ; i++) {
+                    for (int i = 0; i < traverseValue.size(); i++) {
                         changed = (boolean) traverseValue.get(i);
                         if (changed) {
                             return (boolean) changed;
@@ -301,7 +313,7 @@ public abstract class Tree implements Comparable {
             bufferedWriter.write("(");
             bufferedWriter.write(node.operation.toString());
             bufferedWriter.write(" ");
-            for (int i = 0 ; i < numSrcs - 1 ; i++) {
+            for (int i = 0; i < numSrcs - 1; i++) {
                 //TODO : Helium always calls oth srcNdoe
                 printTreeRecursive((Node) node.srcs.get(i), bufferedWriter);
                 bufferedWriter.write(",");
@@ -416,7 +428,7 @@ public abstract class Tree implements Comparable {
                 Node headNode = (Node) value;
                 if (dst.operation == op_assign && dst != headNode && dst.srcs.size() == 1) {
                     Node srcNode = (Node) dst.srcs.get(0);
-                    for (int i = 0 ; i < dst.prev.size() ; i++) {
+                    for (int i = 0; i < dst.prev.size(); i++) {
                         Node preNode = (Node) dst.prev.get(i);
                         int idx = (Integer) dst.pos.get(i);
                         srcNode.prev.add(preNode);
@@ -455,9 +467,9 @@ public abstract class Tree implements Comparable {
 
                     Integer val = 0;
 
-                    for (int i = 0 ; i < node.srcs.size() ; i++) {
+                    for (int i = 0; i < node.srcs.size(); i++) {
                         Node loopNode = (Node) node.srcs.get(i);
-                        val += (Integer) loopNode.symbol.value;
+                        val += (Integer) loopNode.symbol.getValue();
                         indexes.add(i);
                     }
                 }
@@ -465,8 +477,8 @@ public abstract class Tree implements Comparable {
                 if (!indexes.isEmpty()) {
                     logger.debug("First value : %d ", indexes.get(0));
                     Node nde = (Node) node.srcs.get(0);
-                    nde.symbol.value = value;
-                    for (int i = 0 ; i < indexes.size() ; i++) {
+                    nde.symbol.setValue((Number) value);
+                    for (int i = 0; i < indexes.size(); i++) {
                         node.removeForwardReference((Node) node.srcs.get(indexes.get(i) - (i - 1)));
                     }
                 }
@@ -503,7 +515,7 @@ public abstract class Tree implements Comparable {
                 if (node.operation == op_add) {
                     postitive = new ArrayList<Node>();
                     negative = new ArrayList<Node>();
-                    for (int i = 0 ; i < node.srcs.size() ; i++) {
+                    for (int i = 0; i < node.srcs.size(); i++) {
                         if (((Node) node.srcs.get(i)).minus) {
                             negative.add((Node) node.srcs.get(i));
                         } else {
@@ -511,15 +523,15 @@ public abstract class Tree implements Comparable {
                         }
                     }
                     logger.debug("Minus node size : %d, positive node size : %d", negative.size(), postitive.size());
-                    for (Iterator<Node> posIter = postitive.iterator() ; posIter.hasNext() ; ) {
+                    for (Iterator<Node> posIter = postitive.iterator(); posIter.hasNext(); ) {
                         Node posNode = posIter.next();
-                        for (Iterator<Node> negIter = negative.iterator() ; negIter.hasNext() ; ) {
+                        for (Iterator<Node> negIter = negative.iterator(); negIter.hasNext(); ) {
                             Node negNode = negIter.next();
                             List<Node> removallist = new ArrayList<Node>();
                             removallist.add(negNode);
-                            if (posNode.symbol.type == negNode.symbol.type &&
-                                    posNode.symbol.width == negNode.symbol.width &&
-                                    posNode.symbol.value == negNode.symbol.value) {
+                            if (posNode.symbol.getType() == negNode.symbol.getType() &&
+                                    posNode.symbol.getWidth() == negNode.symbol.getWidth() &&
+                                    posNode.symbol.getValue().doubleValue() == negNode.symbol.getValue().doubleValue()) {
                                 node.removeForwardReference(posNode);
                                 node.removeForwardReference(negNode);
                                 negative.removeAll(removallist);
@@ -560,10 +572,10 @@ public abstract class Tree implements Comparable {
             @Override
             public Object mutate(Node node, Object value) {
                 if (node.operation == op_partial_overlap) {
-                    for (Iterator<Node> prevIter = node.prev.iterator() ; prevIter.hasNext() ; ) {
+                    for (Iterator<Node> prevIter = node.prev.iterator(); prevIter.hasNext(); ) {
                         Node prevNode = prevIter.next();
-                        if (prevNode.symbol.width == node.symbol.width) {
-                            for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+                        if (prevNode.symbol.getWidth() == node.symbol.getWidth()) {
+                            for (Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext(); ) {
                                 Node srcNode = srcIter.next();
                                 node.changeReference(prevNode, srcNode);
                             }
@@ -586,17 +598,17 @@ public abstract class Tree implements Comparable {
             public Object mutate(Node node, Object value) {
                 if (node.operation == op_or) {
                     Integer idx = -1;
-                    for (int i = 0 ; i < node.srcs.size() ; i++) {
+                    for (int i = 0; i < node.srcs.size(); i++) {
                         Node srcNode = (Node) node.srcs.get(i);
-                        if (srcNode.symbol.type == IMM_INT_TYPE && ((Integer) srcNode.symbol.value == -1)) {
+                        if (srcNode.symbol.getType() == MemoryType.IMM_INT_TYPE && (srcNode.symbol.getValue().intValue() == -1)) {
                             idx = i;
                             break;
                         }
                     }
                     if (idx != -1) {
                         node.srcs.clear();
-                        node.symbol.type = IMM_INT_TYPE;
-                        node.symbol.value = 255;
+                        node.symbol.setType(MemoryType.IMM_INT_TYPE);
+                        node.symbol.setValue(255);
                     }
                 }
                 return null;
@@ -624,7 +636,7 @@ public abstract class Tree implements Comparable {
                 }
                 //TODO : head_region == conc_region in c++ check the pointer value whether
                 // pointing to same place
-                if (head_region == conc_region && head.symbol.value != node.symbol.value) {
+                if (head_region == conc_region && head.symbol.getValue().doubleValue() != node.symbol.getValue().doubleValue()) {
                     tree.recursive = true;
                 }
 
@@ -650,9 +662,9 @@ public abstract class Tree implements Comparable {
             public Object mutate(Node node, Object value) {
 
                 if (node.operation == op_add) {
-                    for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+                    for (Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext(); ) {
                         Node srcNode = srcIter.next();
-                        if (srcNode.symbol.type == IMM_INT_TYPE && (Integer) srcNode.symbol.value == 0) {
+                        if (srcNode.symbol.getType() == MemoryType.IMM_INT_TYPE && srcNode.symbol.getValue().intValue() == 0) {
                             node.removeForwardReference(srcNode);
                         }
                     }
@@ -670,10 +682,10 @@ public abstract class Tree implements Comparable {
     //TODO : move to util
     public boolean isRecursive(Node node, List<MemoryRegion> regions) {
         if (head != node) {
-            if (node.symbol.type == Operand.OperandType.MEM_HEAP_TYPE ||
-                    node.symbol.type == Operand.OperandType.MEM_STACK_TYPE) {
-                if (MemoryRegionUtils.getMemRegion((Integer) head.symbol.value, regions) ==
-                        MemoryRegionUtils.getMemRegion((Integer) node.symbol.value, regions)) {
+            if (node.symbol.getType() == MemoryType.MEM_HEAP_TYPE ||
+                    node.symbol.getType() == MemoryType.MEM_STACK_TYPE) {
+                if (MemoryRegionUtils.getMemRegion(head.symbol.getValue().intValue(), regions) ==
+                        MemoryRegionUtils.getMemRegion(node.symbol.getValue().intValue(), regions)) {
                     return true;
                 }
             }
@@ -702,9 +714,9 @@ public abstract class Tree implements Comparable {
             if (node.operation == op_mul) {
                 Integer index = -1;
                 Integer imm_value = 0;
-                for (int i = 0 ; i < node.srcs.size() ; i++) {
-                    if (((Node) node.srcs.get(i)).symbol.type == IMM_INT_TYPE) {
-                        imm_value = (Integer) ((Node) node.srcs.get(i)).symbol.value;
+                for (int i = 0; i < node.srcs.size(); i++) {
+                    if (((Node) node.srcs.get(i)).symbol.getType() == MemoryType.IMM_INT_TYPE) {
+                        imm_value = ((Node) node.srcs.get(i)).symbol.getValue().intValue();
                         index = i;
                         break;
                     }
@@ -712,11 +724,11 @@ public abstract class Tree implements Comparable {
 
                 if (index != -1 && imm_value >= 0) {
                     mul = true;
-                    for (int i = 0 ; i < node.prev.size() ; i++) {
+                    for (int i = 0; i < node.prev.size(); i++) {
                         Node nde = (Node) node.prev.get(i);
-                        for (int j = 0 ; j < node.srcs.size() ; j++) {
+                        for (int j = 0; j < node.srcs.size(); j++) {
                             if (index != j) {
-                                for (int k = 0 ; k < imm_value ; k++) {
+                                for (int k = 0; k < imm_value; k++) {
                                     nde.addForwardRefrence((Node) node.srcs.get(j));
                                 }
                             }
@@ -729,7 +741,7 @@ public abstract class Tree implements Comparable {
             }
         }
 
-        for (int i = 0 ; i < node.srcs.size() ; i++) {
+        for (int i = 0; i < node.srcs.size(); i++) {
             Node src_node = (Node) node.srcs.get(i);
             if (removeMultiplication(src_node)) {
                 i = i - 1;
@@ -743,25 +755,25 @@ public abstract class Tree implements Comparable {
         boolean changed = false;
         if (node.operation == op_add) {
             if (node.srcs.size() == 1) {
-                for (int i = 0 ; i < node.prev.size() ; i++) {
+                for (int i = 0; i < node.prev.size(); i++) {
                     node.changeReference((Node) node.prev.get(i), (Node) node.srcs.get(0));
                     changed = true;
                 }
             }
         } else if (node.operation == op_full_overlap) {
-            for (int i = 0 ; i < node.srcs.size() ; i++) {
+            for (int i = 0; i < node.srcs.size(); i++) {
                 Node loopSrcNode = (Node) node.srcs.get(i);
-                if (loopSrcNode.symbol.type == IMM_INT_TYPE) {
-                    for (int j = 0 ; j < node.prev.size() ; j++) {
+                if (loopSrcNode.symbol.getType() == MemoryType.IMM_INT_TYPE) {
+                    for (int j = 0; j < node.prev.size(); j++) {
                         Node loopPreNode = (Node) node.prev.get(j);
                         node.changeReference(loopPreNode, loopSrcNode);
                         changed = true;
                     }
                 }
             }
-        } else if (node.symbol.type == IMM_INT_TYPE && node.symbol.value.equals(0)) {
+        } else if (node.symbol.getType() == MemoryType.IMM_INT_TYPE && node.symbol.getValue().intValue() == 0) {
             Integer count = 0;
-            for (int i = 0 ; i < node.prev.size() ; i++) {
+            for (int i = 0; i < node.prev.size(); i++) {
                 Node loopPreNode = (Node) node.prev.get(i);
                 if (loopPreNode.operation == op_add) {
                     loopPreNode.removeForwardReference(node);
@@ -772,7 +784,7 @@ public abstract class Tree implements Comparable {
             }
         }
 
-        for (int i = 0 ; i < node.srcs.size() ; i++) {
+        for (int i = 0; i < node.srcs.size(); i++) {
             Node loopSrxNode = (Node) node.srcs.get(i);
             if (removeRedundant(loopSrxNode)) {
                 i = ((i - 1) >= 0) ? i - 1 : 0;
@@ -783,7 +795,7 @@ public abstract class Tree implements Comparable {
 
     private void propogateMinus(Node node) {
         if (node.minus && node.operation == op_add) {
-            for (int i = 0 ; i < node.srcs.size() ; i++) {
+            for (int i = 0; i < node.srcs.size(); i++) {
                 Node loopSrcNode = (Node) node.srcs.get(i);
                 loopSrcNode.minus = !loopSrcNode.minus;
                 propogateMinus(loopSrcNode);
@@ -797,7 +809,7 @@ public abstract class Tree implements Comparable {
             Node srcNode0 = (Node) node.srcs.get(0);
             Node srcNode1 = (Node) node.srcs.get(1);
 
-            for (Iterator<Node> preIter = node.prev.iterator() ; preIter.hasNext() ; ) {
+            for (Iterator<Node> preIter = node.prev.iterator(); preIter.hasNext(); ) {
                 Node preNode = preIter.next();
                 if (preNode.operation == op_add) {
                     assert (node.srcs.size() == 2);
@@ -815,7 +827,7 @@ public abstract class Tree implements Comparable {
             }
         }
 
-        for (Iterator<Node> srcIter = node.srcs.iterator() ; srcIter.hasNext() ; ) {
+        for (Iterator<Node> srcIter = node.srcs.iterator(); srcIter.hasNext(); ) {
             //TODO : need testing
             convertNodeSub(srcIter.next());
         }

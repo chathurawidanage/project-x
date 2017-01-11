@@ -7,6 +7,7 @@ import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInput;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,17 +29,20 @@ public class MemoryLayoutOps {
         operand.setWidth(Integer.parseInt(stringTokenizer.nextToken()));
 
         //todo check whether float_value and value is essential if double is used
-
-        operand.setValue(Double.parseDouble(stringTokenizer.nextToken()));
+        if (operand.getType() == MemoryType.IMM_FLOAT_TYPE) {
+            operand.setValue(Double.parseDouble(stringTokenizer.nextToken()));
+        } else {
+            operand.setValue(Long.parseLong(stringTokenizer.nextToken()));
+        }
 
         if (version == VER_WITH_ADDR_OPND) {
-            if (operand.getType() == Operand.MEM_STACK_TYPE || operand.getType() == Operand.MEM_HEAP_TYPE) {
+            if (operand.getType() == MemoryType.MEM_STACK_TYPE || operand.getType() == MemoryType.MEM_HEAP_TYPE) {
             /* we need to collect the address operands */
                 for (int j = 0; j < 4; j++) {
                     Operand address = new Operand();
                     address.setType(Integer.parseInt(stringTokenizer.nextToken()));
                     address.setWidth(Integer.parseInt(stringTokenizer.nextToken()));
-                    address.setValue(Double.parseDouble(stringTokenizer.nextToken()));
+                    address.setValue(Long.parseLong(stringTokenizer.nextToken()));
                     operand.getAddress().add(address);
                 }
             }
@@ -199,12 +203,12 @@ public class MemoryLayoutOps {
             MemoryInput memoryInput = new MemoryInput();
 
             if (instr != null) {
-                for (Operand opSrc : instr.getSrcs()) {
-                    if (opSrc.getType() == Operand.MEM_HEAP_TYPE || opSrc.getType() == Operand.MEM_STACK_TYPE) {
+                for (Operand opSrc : instr.getSrcs()) {//safely using Double as generic
+                    if (opSrc.getType() == MemoryType.MEM_HEAP_TYPE || opSrc.getType() == MemoryType.MEM_STACK_TYPE) {
                         boolean skip = true;
-                        if (opSrc.getType() == Operand.MEM_STACK_TYPE) {
+                        if (opSrc.getType() == MemoryType.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
-                                long reg = (long) opSrc.getAddress().get(addr).getValue();//todo check casting issue
+                                long reg = opSrc.getAddress().get(addr).getValue().longValue();//todo check casting issue
                                 if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
@@ -217,7 +221,7 @@ public class MemoryLayoutOps {
                             continue;
                         }
 
-                        memoryInput.setMemAddress((long) opSrc.getValue());//todo check cast problem
+                        memoryInput.setMemAddress(opSrc.getValue().longValue());//todo check cast problem
                         memoryInput.setStride(opSrc.getWidth());
                         memoryInput.setWrite(false);
                         memoryInput.setType(opSrc.getType());
@@ -227,11 +231,11 @@ public class MemoryLayoutOps {
                     }
                 }
                 for (Operand opDst : instr.getDsts()) {
-                    if (opDst.getType() == Operand.MEM_HEAP_TYPE || opDst.getType() == Operand.MEM_STACK_TYPE) {
+                    if (opDst.getType() == MemoryType.MEM_HEAP_TYPE || opDst.getType() == MemoryType.MEM_STACK_TYPE) {
                         boolean skip = true;
-                        if (opDst.getType() == Operand.MEM_STACK_TYPE) {
+                        if (opDst.getType() == MemoryType.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
-                                long reg = (long) opDst.getAddress().get(addr).getValue();//todo check cast problem
+                                long reg = opDst.getAddress().get(addr).getValue().longValue();//todo check cast problem
                                 if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
@@ -244,7 +248,7 @@ public class MemoryLayoutOps {
                             continue;
                         }
 
-                        memoryInput.setMemAddress((long) opDst.getValue());//todo check casting problem
+                        memoryInput.setMemAddress(opDst.getValue().longValue());//todo check casting problem
                         memoryInput.setStride(opDst.getWidth());
                         memoryInput.setWrite(true);
                         memoryInput.setType(opDst.getType());

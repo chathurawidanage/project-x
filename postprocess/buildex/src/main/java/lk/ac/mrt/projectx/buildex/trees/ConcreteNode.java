@@ -2,6 +2,8 @@ package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.X86Analysis;
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
+import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * Created by krv on 1/1/17.
  */
-public class ConcreteNode <T> extends Node<T> implements Comparable {
+public class ConcreteNode <T extends Number> extends Node<T> implements Comparable {
 
     //region private variables
 
@@ -30,8 +32,8 @@ public class ConcreteNode <T> extends Node<T> implements Comparable {
         this.region = null;
     }
 
-    public ConcreteNode(Operand.OperandType type, T value, Integer width) {
-        this.symbol = new Operand<>(type, value, width);
+    public ConcreteNode(MemoryType operandType, T value, Integer width) {
+        this.symbol = new Operand(operandType, value, width);
         this.operation = X86Analysis.Operation.op_unknown;
         this.order_num = -1;
         this.is_para = false;
@@ -57,11 +59,11 @@ public class ConcreteNode <T> extends Node<T> implements Comparable {
             return (this.operation == node.operation) &&
                     (this.srcs.size() == node.srcs.size()) ? 1 : 0;
         } else {
-            if (symbol.type == node.symbol.type) {
-                if (symbol.type == Operand.OperandType.IMM_INT_TYPE) {
+            if (symbol.getType() == node.symbol.getType()) {
+                if (symbol.getType() == MemoryType.IMM_INT_TYPE) {
                     return 1;
-                } else if (symbol.type == Operand.OperandType.IMM_FLOAT_TYPE) {
-                    return Float.compare((Float) symbol.value, (Float) node.symbol.value);
+                } else if (symbol.getType() == MemoryType.IMM_FLOAT_TYPE) {
+                    return Float.compare((Float) symbol.getValue(), (Float) node.symbol.getValue());
                 } else {
                     return 1;
                 }
@@ -103,8 +105,8 @@ public class ConcreteNode <T> extends Node<T> implements Comparable {
     //region private methods
 
     private void assignMemRegion(List<MemoryRegion> regions) {
-        if (this.symbol.type == Operand.OperandType.MEM_HEAP_TYPE ||
-                this.symbol.type == Operand.OperandType.MEM_STACK_TYPE) {
+        if (this.symbol.getType() == MemoryType.MEM_HEAP_TYPE ||
+                this.symbol.getType() == MemoryType.MEM_STACK_TYPE) {
 //            this.region = getMemRegion(this.symbol.value, regions);
             throw new NoSuchMethodError("getMemRegion(ConcreteNode, List<MemoryRegion>");
         }

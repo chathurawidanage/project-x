@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
 import lk.ac.mrt.projectx.buildex.models.Pair;
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class MemoryInfo {
 
-    private int type;  /*mem type*/
+    private MemoryType type;  /*mem type*/
     private int direction; /* input / output */
 
     /* start and end instructions */
@@ -30,11 +31,11 @@ public class MemoryInfo {
         this.mergedMemoryInfos = new ArrayList<>();
     }
 
-    public int getType() {
+    public MemoryType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(MemoryType type) {
         this.type = type;
     }
 

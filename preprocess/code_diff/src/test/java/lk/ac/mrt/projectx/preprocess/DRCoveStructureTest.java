@@ -113,4 +113,14 @@ public class DRCoveStructureTest extends TestCase {
             fr_orig.close();
         }
     }
+
+    public void testSimpleTest() throws Exception{
+        DRCoveStructure drCoveStructure_1 = new DRCoveStructure("test");
+        DRCoveStructure drCoveStructure_2 = new DRCoveStructure("test");
+
+        drCoveStructure_1.LoadFromFile("test/drcov.test.exe.00168.0000.proc.log");
+        drCoveStructure_2.LoadFromFile("test/drcov.test.exe.02092.0000.proc.log");
+        List<Module> diffModules = drCoveStructure_2.GetDifference(drCoveStructure_1);
+        Diff.printToFile("test/diff_photoshop.txt", diffModules);
+    }
 }

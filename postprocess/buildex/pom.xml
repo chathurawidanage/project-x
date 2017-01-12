@@ -6,14 +6,7 @@
     <groupId>lk.ac.mrt</groupId>
     <artifactId>projectx-postprocess-buildex</artifactId>
     <version>0.0.1</version>
-    <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.2</version>
-        </dependency>
-    </dependencies>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <name>ProjectX Buildex</name>
 
     <parent>
@@ -30,6 +23,9 @@
             </resource>
             <resource>
                 <directory>../../resources</directory>
+            </resource>
+            <resource>
+                <directory>../../log</directory>
             </resource>
         </resources>
         <plugins>

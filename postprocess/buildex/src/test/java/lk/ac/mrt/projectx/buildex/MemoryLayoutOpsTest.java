@@ -1,18 +1,21 @@
 package lk.ac.mrt.projectx.buildex;
 
-import junit.framework.TestCase;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Chathura Widanage
  */
-public class MemoryLayoutOpsTest extends TestCase {
+public class MemoryLayoutOpsTest {
+    @Test
     public void testCreateMemoryLayout() throws Exception {
         blurTestCreateMemoryLayout();
     }
@@ -42,4 +45,6 @@ public class MemoryLayoutOpsTest extends TestCase {
         String line = scanner.nextLine();
         assertEquals(memoryLayout.toString(), line.trim());
     }
+
+
 }

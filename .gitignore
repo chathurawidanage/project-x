@@ -3,5 +3,4 @@
 *.iml
 **/target/*
 log/*.log
-**/generated_files_test/log/helium.log
 **/preprocess/code_diff/log/helium.log

@@ -57,6 +57,12 @@
                 <directory>${project.basedir}/conf</directory>
                 <filtering>true</filtering>
             </resource>
+            <resource>
+                <directory>${basedir}/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
         </resources>
     </build>
 

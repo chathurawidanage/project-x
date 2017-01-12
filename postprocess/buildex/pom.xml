@@ -28,6 +28,9 @@
             <resource>
                 <directory>../../conf</directory>
             </resource>
+            <resource>
+                <directory>../../resources</directory>
+            </resource>
         </resources>
         <plugins>
             <plugin>

@@ -1,9 +1,11 @@
 package lk.ac.mrt.projectx.preprocess;
 
 import junit.framework.TestCase;
+import lk.ac.mrt.projectx.buildex.Configurations;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.file.Path;
 import java.util.List;
 import java.io.File;
 
@@ -15,8 +17,9 @@ public class DRCoveStructureTest extends TestCase {
     private String ori_diff_file = "filter_files/diff_photoshop.txt";
 
     public void testLoadFromFile() throws Exception {
-        DRCoveStructure drCoveStructure = new DRCoveStructure("halide_threshold_test.exe");
-        drCoveStructure.LoadFromFile("output_files/drcov.halide_threshold_test.exe.02240.0000.proc.log");
+        File filePth = Configurations.getOutputFolderTest("blur");
+        DRCoveStructure drCoveStructure = new DRCoveStructure("halide_blur_hvscan_test.exe");
+        drCoveStructure.LoadFromFile(filePth.getAbsolutePath()+"/drcov.halide_blur_hvscan_test.exe.02912.0000.proc.log");
         assertEquals(drCoveStructure.drcovVersion.intValue(), 1);
         assertEquals(drCoveStructure.noOfModules.intValue(), 24);
 
@@ -24,11 +27,13 @@ public class DRCoveStructureTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-
+        File filePth = Configurations.getOutputFolderTest("blur");
+        File filePthDiff = Configurations.getFilterFolderTest("blur");
+        ori_diff_file = filePthDiff.getAbsolutePath()+"/diff_photoshop.txt";
         DRCoveStructure drCoveStructure_1 = new DRCoveStructure("halide_blur_hvscan_test.exe");
-        drCoveStructure_1.LoadFromFile("working/output_files/drcov.halide_blur_hvscan_test.exe.02912.0000.proc.log");
+        drCoveStructure_1.LoadFromFile(filePth.getAbsolutePath()+"/drcov.halide_blur_hvscan_test.exe.02912.0000.proc.log");
         DRCoveStructure drCoveStructure_2 = new DRCoveStructure("halide_blur_hvscan_test.exe");
-        drCoveStructure_2.LoadFromFile("working/output_files/drcov.halide_blur_hvscan_test.exe.02956.0000.proc.log");
+        drCoveStructure_2.LoadFromFile(filePth.getAbsolutePath()+"/drcov.halide_blur_hvscan_test.exe.02956.0000.proc.log");
         List<Module> diffModules = drCoveStructure_2.GetDifference(drCoveStructure_1);
         Diff.printToFile(fileName, diffModules);
     }
@@ -112,15 +117,5 @@ public class DRCoveStructureTest extends TestCase {
             fr_test.close();
             fr_orig.close();
         }
-    }
-
-    public void testSimpleTest() throws Exception{
-        DRCoveStructure drCoveStructure_1 = new DRCoveStructure("test");
-        DRCoveStructure drCoveStructure_2 = new DRCoveStructure("test");
-
-        drCoveStructure_1.LoadFromFile("test/drcov.test.exe.00168.0000.proc.log");
-        drCoveStructure_2.LoadFromFile("test/drcov.test.exe.02092.0000.proc.log");
-        List<Module> diffModules = drCoveStructure_2.GetDifference(drCoveStructure_1);
-        Diff.printToFile("test/diff_photoshop.txt", diffModules);
     }
 }

@@ -19,7 +19,7 @@ public class MemoryInfo {
     private long end;
 
     /* stride */
-    private int probStride;
+    private long probStride;
     List<Pair<Integer, Integer>> strideFrequency;
 
     private List<MemoryInfo> mergedMemoryInfos;// if merged this would be filled
@@ -63,11 +63,11 @@ public class MemoryInfo {
         this.end = end;
     }
 
-    public int getProbStride() {
+    public long getProbStride() {
         return probStride;
     }
 
-    public void setProbStride(int probStride) {
+    public void setProbStride(long probStride) {
         this.probStride = probStride;
     }
 

@@ -1,0 +1,12 @@
+language: java
+
+before_install:
+  mvn test -B
+
+install:
+  mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+jdk:
+  - oraclejdk8
+os:
+  - windows

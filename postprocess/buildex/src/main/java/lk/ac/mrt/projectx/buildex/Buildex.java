@@ -32,8 +32,8 @@ public class Buildex {
         File filterFolder = Configurations.getFilterFolder();
         List<File> filterFileList = Arrays.asList(filterFolder.listFiles());
 
-        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\working\\images\\a.png")));
-        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File("generated_files_test\\working\\images\\ablur.png")));
+        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File(Configurations.getImagesFolderTest(),"a.png")));
+        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File(Configurations.getImagesFolderTest(),"ablur.png")));
 
         InstructionTraceFile instructionTraceFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, exec, false);
         logger.info("Found instrace file {}", instructionTraceFile.getName());
@@ -53,5 +53,6 @@ public class Buildex {
 
         List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayout(instructionTraceFile, 1);
         logger.info("Found {} memory infos", memoryLayout.size());
+        System.out.println(memoryLayout);
     }
 }

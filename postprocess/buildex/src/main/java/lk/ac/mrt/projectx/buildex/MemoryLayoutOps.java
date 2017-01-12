@@ -261,8 +261,98 @@ public class MemoryLayoutOps {
 
             }
         }
-        //postprocess_mem_regions(mem_info);//todo implement
+        postProcesseMemoryRegions(memoryInfoList);
         logger.debug("Creating memory layout : [Memory Info] - Done");
         return memoryInfoList;
+    }
+
+    private static void postProcesseMemoryRegions(List<MemoryInfo> memoryInfoList) {
+        defragmentMemoryRegions(memoryInfoList);
+        updateMostProbStride(memoryInfoList);
+    }
+
+    private static void defragmentMemoryRegions(List<MemoryInfo> memoryInfoList) {
+        /*this will try to merge individual chunks of memory units info defragmented larger chunks*/
+        boolean finished = false;
+
+        while (!finished) {
+            Set<MemoryInfo> toRemove = new HashSet<>();
+            ListIterator<MemoryInfo> memoryInfoIterator = memoryInfoList.listIterator();
+
+            while (memoryInfoIterator.hasNext()) {
+                int i = memoryInfoIterator.nextIndex();
+                MemoryInfo candidate = memoryInfoIterator.next();
+
+                ListIterator<MemoryInfo> memoryInfoIteratorSub = memoryInfoList.listIterator();
+                while (memoryInfoIteratorSub.hasNext()) {
+                    MemoryInfo current = memoryInfoIteratorSub.next();
+                    if (current == candidate) continue;  /* this never happens? */
+
+				/*check if they can be merged*/
+                    if (current.getType() == candidate.getType()) {
+
+					/*can we merge the two? we will always update the candidate and delete the current if this can be merged*/
+                    /* we cannot possibly have a mem region captured within a mem region if update mem regions has done its job*/
+
+                        boolean merged = false;
+
+					/*if the candidate is a subset of the current? remove candidate*/
+                        if ((candidate.getStart() >= current.getStart()) && (candidate.getEnd() <= current.getEnd())) {
+                            int currentDirection = current.getDirection();
+                            currentDirection |= candidate.getDirection();
+                            current.setDirection(currentDirection);
+                            updateStride(current.getStrideFrequency(), candidate.getStrideFrequency());
+                            toRemove.add(candidate);
+                            break;
+                        }
+                    /*if current is a subset of the candidate? remove current*/
+                        else if ((current.getStart() >= candidate.getStart()) && (current.getEnd() <= candidate.getEnd())) {
+                            merged = true;
+                        }
+                    /* prepend to the candidate?*/
+                        else if ((current.getStart() < candidate.getStart()) && (current.getEnd() >= candidate.getStart())) {
+                            candidate.setStart(current.getStart());
+                            merged = true;
+                        }
+                    /* append to candidate?*/
+                        else if ((current.getStart() <= candidate.getEnd()) && (current.getStart() > candidate.getEnd())) {
+                            candidate.setEnd(current.getEnd());
+                            merged = true;
+                        }
+
+                        if (merged) {
+                            int candidateDirection = candidate.getDirection();
+                            candidateDirection |= current.getDirection();
+                            candidate.setDirection(candidateDirection);
+                            updateStride(candidate.getStrideFrequency(), current.getStrideFrequency());
+                            toRemove.add(current);
+                        }
+                    }
+
+                }
+            }
+
+            finished = !memoryInfoList.removeAll(toRemove);
+        }
+    }
+
+    private static void updateMostProbStride(List<MemoryInfo> memoryInfoLis) {
+        for (MemoryInfo memoryInfo : memoryInfoLis) {
+            long stride = getMostProbableStride(memoryInfo.getStrideFrequency());
+            memoryInfo.setProbStride(stride);
+        }
+    }
+
+    private static long getMostProbableStride(List<Pair<Integer, Integer>> strideFrequencies) {
+        long stride = -1;
+        long maxFreq = -1;
+
+        for (Pair<Integer, Integer> pr : strideFrequencies) {
+            if (maxFreq < pr.second) {
+                maxFreq = pr.second;
+                stride = pr.first;
+            }
+        }
+        return stride;
     }
 }

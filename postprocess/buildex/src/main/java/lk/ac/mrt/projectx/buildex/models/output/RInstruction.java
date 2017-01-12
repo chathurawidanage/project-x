@@ -1,8 +1,7 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import lk.ac.mrt.projectx.buildex.trees.*;
 import lk.ac.mrt.projectx.buildex.trees.Operand;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ public class RInstruction {
 
     //region Private variables
 
-    private Integer operation;
+    private Operation operation;
     private Operand dst;
     private List<Operand> srcs;
     private Boolean sign;
@@ -23,11 +22,15 @@ public class RInstruction {
 
     //region Public methods
 
-    public Integer getOperation() {
+    public Operation getOperation() {
         return operation;
     }
 
     public void setOperation(Integer operation) {
+        this.operation = Operation.values()[ operation ];
+    }
+
+    public void setOperation(Operation operation) {
         this.operation = operation;
     }
 

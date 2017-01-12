@@ -25,6 +25,11 @@ public class Output {
         this.opcode = opcode;
     }
 
+    public void setOpcode(String opcode) {
+        Operation op = Operation.valueOf(opcode);
+        this.opcode = op;
+    }
+
     public int getNumOfSources() {
         return numOfSources;
     }

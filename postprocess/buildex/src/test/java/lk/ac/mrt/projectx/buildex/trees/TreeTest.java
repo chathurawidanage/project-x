@@ -1,7 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import junit.framework.TestCase;
-import lk.ac.mrt.projectx.buildex.X86Analysis;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,11 +75,6 @@ public class TreeTest extends TestCase {
         inta.value = inta.value + 1;
     }
 
-    private class toyIntger {
-
-        public Integer value = 55;
-    }
-
     public void testArrayListReplace() throws Exception{
         Integer int1 = 1;
         Integer int2 = 2;
@@ -106,5 +101,10 @@ public class TreeTest extends TestCase {
         assertEquals(int3, int8);
         Integer int9 = (Integer)intList.get(3);
         assertEquals(int4, int9);
+    }
+
+    private class toyIntger {
+
+        public Integer value = 55;
     }
 }

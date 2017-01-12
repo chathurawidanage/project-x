@@ -1,9 +1,9 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
-import lk.ac.mrt.projectx.buildex.X86Analysis;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
@@ -52,6 +52,14 @@ public class ConcreteNode <T extends Number> extends Node<T> implements Comparab
 
     //region public methods
 
+    private void assignMemRegion(List<MemoryRegion> regions) {
+        if (this.symbol.getType() == MemoryType.MEM_HEAP_TYPE ||
+                this.symbol.getType() == MemoryType.MEM_STACK_TYPE) {
+//            this.region = getMemRegion(this.symbol.value, regions);
+            throw new NoSuchMethodError("getMemRegion(ConcreteNode, List<MemoryRegion>");
+        }
+    }
+
     @Override
     public int compareTo(Object o) {
         ConcreteNode node = (ConcreteNode) o;
@@ -96,20 +104,12 @@ public class ConcreteNode <T extends Number> extends Node<T> implements Comparab
         throw new NotImplementedException();
     }
 
-    public MemoryRegion getRegion() {
-        return region;
-    }
-
     //endregion public methods
 
     //region private methods
 
-    private void assignMemRegion(List<MemoryRegion> regions) {
-        if (this.symbol.getType() == MemoryType.MEM_HEAP_TYPE ||
-                this.symbol.getType() == MemoryType.MEM_STACK_TYPE) {
-//            this.region = getMemRegion(this.symbol.value, regions);
-            throw new NoSuchMethodError("getMemRegion(ConcreteNode, List<MemoryRegion>");
-        }
+    public MemoryRegion getRegion() {
+        return region;
     }
 
     //endregion private methods

@@ -1,4 +1,4 @@
-package lk.ac.mrt.projectx.buildex;
+package lk.ac.mrt.projectx.buildex.x86;
 
 /**
  * Created by krv on 12/5/2016.

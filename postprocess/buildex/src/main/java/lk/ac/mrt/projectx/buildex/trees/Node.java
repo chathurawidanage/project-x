@@ -1,8 +1,8 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import javafx.util.Pair;
-import lk.ac.mrt.projectx.buildex.X86Analysis;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_add;
-import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.op_mul;
 import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.IMM_INT_TYPE;
 import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.MEM_HEAP_TYPE;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_add;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_mul;
 
 /**
  * Created by krv on 12/4/2016.

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.*;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.*;
 
 /**
  * Created by krv on 1/2/17.
@@ -26,8 +26,8 @@ public abstract class Tree implements Comparable {
     //region private variables
 
     private static Integer numParas;
-    private boolean recursive;
     protected boolean dummyTree;
+    private boolean recursive;
     private Integer numNodes;
     private Integer treeNum;
     private Node head;

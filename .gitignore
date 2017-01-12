@@ -2,6 +2,5 @@
 .idea
 *.iml
 **/target/*
-log/*.log
+log/helium.log
 **/preprocess/code_diff/log/helium.log
-**/postprocess/buildex/log/helium.log

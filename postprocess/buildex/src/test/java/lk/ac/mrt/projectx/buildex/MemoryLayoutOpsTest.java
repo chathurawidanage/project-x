@@ -14,7 +14,7 @@ import java.util.Scanner;
  */
 public class MemoryLayoutOpsTest extends TestCase {
     public void testCreateMemoryLayout() throws Exception {
-        blurTestCreateMemoryLayou();
+        blurTestCreateMemoryLayout();
     }
 
     /**
@@ -22,7 +22,7 @@ public class MemoryLayoutOpsTest extends TestCase {
      *
      * @throws Exception
      */
-    private void blurTestCreateMemoryLayou() throws Exception {
+    private void blurTestCreateMemoryLayout() throws Exception {
         String inImage = "a.png";
         String exec = "halide_blur_hvscan_test.exe";
         InstructionTraceFile instructionTraceFile = InstructionTraceFile.filterLargestInstructionTraceFile(

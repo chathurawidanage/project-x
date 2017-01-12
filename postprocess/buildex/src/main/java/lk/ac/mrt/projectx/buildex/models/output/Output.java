@@ -1,5 +1,7 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +9,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class Output {
-    private int opcode;
+    private Operation opcode;
     private int numOfSources;
     private int numOfDestinations;
     private List<Operand> srcs=new ArrayList<>();
@@ -15,11 +17,11 @@ public class Output {
     private long eflags;
     private long pc;
 
-    public int getOpcode() {
+    public Operation getOpcode() {
         return opcode;
     }
 
-    public void setOpcode(int opcode) {
+    public void setOpcode(Operation opcode) {
         this.opcode = opcode;
     }
 

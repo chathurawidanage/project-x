@@ -42,12 +42,10 @@ public class MemoryAnalyser {
             List<MemoryRegion> startPoints = null;
             if (!memoryDumpFile.isWrite()) {
                 startPoints = forwardAnalysis(memoryDumpFile, inputImage);
-                System.out.println(startPoints);
                 if (startPoints == null)
                     startPoints = backwardAnalysis(memoryDumpFile, inputImage, false);
             } else {
                 startPoints = forwardAnalysis(memoryDumpFile, outputImage);
-                System.out.println(startPoints);
                 if (startPoints == null)
                     startPoints = backwardAnalysis(memoryDumpFile, outputImage, true);
             }
@@ -56,7 +54,7 @@ public class MemoryAnalyser {
                 memoryRegions.addAll(startPoints);
             }
         }
-        logger.info("Found total of {} memory regions {}", memoryRegions.size(),memoryRegions.toString());
+        logger.debug("Found total of {} memory regions {}", memoryRegions.size(),memoryRegions.toString());
         return memoryRegions;
     }
 
@@ -81,7 +79,6 @@ public class MemoryAnalyser {
             }
         }
         Collections.sort(locs);
-        System.out.println(locs);
     }
 
     //todo invalid implementation
@@ -156,9 +153,7 @@ public class MemoryAnalyser {
                     memoryRegion.setBytesPerPixel(1);
                     memoryRegion.setDimension(2);
                     memoryRegion.setExtents(new long[]{imageWidth, imageHeight});
-                    memoryRegion.setStartMemory(startPoints.get(0) + basePC);
-                    memoryRegion.setEndMemory(startPoints.get(startPoints.size() - 1)
-                            + memoryRegion.getStrides()[1] + basePC);
+
                     memoryRegion.setMemoryDumpType(write ? MemoryDumpType.OUTPUT_BUFFER :
                             MemoryDumpType.INPUT_BUFFER);
                     if (gaps.size() == 0) {
@@ -185,6 +180,9 @@ public class MemoryAnalyser {
                             memoryRegions.add(memoryRegion);
                         }
                     }
+                    memoryRegion.setStartMemory(startPoints.get(0) + basePC);
+                    memoryRegion.setEndMemory(startPoints.get(startPoints.size() - 1)
+                            + memoryRegion.getStrides()[1] + basePC);
 
                     //reset
                     last = 0;

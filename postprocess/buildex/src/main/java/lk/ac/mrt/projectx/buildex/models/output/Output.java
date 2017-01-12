@@ -1,5 +1,8 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
+import lk.ac.mrt.projectx.buildex.DefinesDotH.*;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +10,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class Output {
-    private int opcode;
+    private OpCodes opcode;
     private int numOfSources;
     private int numOfDestinations;
     private List<Operand> srcs=new ArrayList<>();
@@ -15,12 +18,21 @@ public class Output {
     private long eflags;
     private long pc;
 
-    public int getOpcode() {
+    public OpCodes getOpcode() {
         return opcode;
     }
 
-    public void setOpcode(int opcode) {
+    public void setOpcode(OpCodes opcode) {
         this.opcode = opcode;
+    }
+
+    public void setOpcode(Integer opcode) {
+        this.opcode = OpCodes.values()[opcode];
+    }
+
+    public void setOpcode(String opcode) {
+        OpCodes op =  OpCodes.values()[Integer.parseInt(opcode)];
+        this.opcode = op;
     }
 
     public int getNumOfSources() {

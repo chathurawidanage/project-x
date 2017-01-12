@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.Registers.DR_REG_INVALID;
-import static lk.ac.mrt.projectx.buildex.X86Analysis.MAX_SIZE_OF_REG;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.MAX_SIZE_OF_REG;
 
 /**
  * @author Chathura Widanage
@@ -32,12 +32,12 @@ public class Operand implements Comparable<Operand> {
         return type;
     }
 
-    public void setType(MemoryType type) {
-        this.type = type;
-    }
-
     public void setType(int type) {
         this.type = MemoryType.values()[type];
+    }
+
+    public void setType(MemoryType type) {
+        this.type = type;
     }
 
     public int getWidth() {
@@ -62,14 +62,6 @@ public class Operand implements Comparable<Operand> {
 
     public void setAddress(List<Operand> address) {
         this.address = address;
-    }
-
-    /****/
-    public String getRegName() {
-        DefinesDotH.Registers reg;
-        reg = memRangeToRegister();
-        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
-        return name.toLowerCase();
     }
 
     @Override
@@ -99,16 +91,13 @@ public class Operand implements Comparable<Operand> {
         return super.toString();
     }
 
-    @Override
-    public int compareTo(Operand other) {
-        //TODO : not complete but similar to Helium
-        return Double.valueOf(this.value.doubleValue()).
-                compareTo(Double.valueOf(other.value.doubleValue()));
+    /****/
+    public String getRegName() {
+        DefinesDotH.Registers reg;
+        reg = memRangeToRegister();
+        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
+        return name.toLowerCase();
     }
-
-    //endregion public methods
-
-    //region private methods
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
     // TODO 1 contd. : But currently project-x gets the same value in the enum as you see
@@ -125,5 +114,16 @@ public class Operand implements Comparable<Operand> {
             ret = DR_REG_INVALID;
         }
         return ret;
+    }
+
+    //endregion public methods
+
+    //region private methods
+
+    @Override
+    public int compareTo(Operand other) {
+        //TODO : not complete but similar to Helium
+        return Double.valueOf(this.value.doubleValue()).
+                compareTo(Double.valueOf(other.value.doubleValue()));
     }
 }

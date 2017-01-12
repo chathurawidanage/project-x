@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class ConcreteTree extends Tree {
         funcInside = false;
         frontier = new ArrayList<>(MAX_FRONTIERS);
     }
+
+
     //endregion public constructors
 
     //region protected methods
@@ -34,6 +37,26 @@ public class ConcreteTree extends Tree {
     //region public methods
     @Override
     public void simplifyTree() {
+    }
+
+    private Node searchNode(Operand opnd){
+        throw new NotImplementedException();
+    }
+
+    private Integer generateHash(Operand opnd){
+        throw new NotImplementedException();
+    }
+
+    private void addToFrntier(Integer hash, Node node){
+        throw new NotImplementedException();
+    }
+
+    private void removeRegistersFromFrontier(){
+        throw new NotImplementedException();
+    }
+
+    private Boolean updateDependencyBackward(){
+        throw new NotImplementedException();
     }
     //endregion public methods
 

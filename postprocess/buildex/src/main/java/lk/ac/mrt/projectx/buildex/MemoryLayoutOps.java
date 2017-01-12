@@ -8,6 +8,7 @@ import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInput;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

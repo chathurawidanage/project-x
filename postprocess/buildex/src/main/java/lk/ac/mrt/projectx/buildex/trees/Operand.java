@@ -3,7 +3,7 @@ package lk.ac.mrt.projectx.buildex.trees;
 import lk.ac.mrt.projectx.buildex.DefinesDotH;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.Registers.DR_REG_INVALID;
-import static lk.ac.mrt.projectx.buildex.X86Analysis.MAX_SIZE_OF_REG;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.MAX_SIZE_OF_REG;
 
 /**
  * Created by krv on 12/4/2016.
@@ -14,34 +14,24 @@ public class Operand <T> implements Comparable {
 
     //region public enum
 
-    public static enum OperandType {
-        REG_TYPE,
-        MEM_STACK_TYPE,
-        MEM_HEAP_TYPE,
-        IMM_FLOAT_TYPE,
-        IMM_INT_TYPE,
-        DEFAULT_TYPE;
-    }
+    OperandType type;
 
     //endregion public enum
 
     //region variables
-
-    OperandType type;
     Integer width;
     T value;
     Operand addr;
-
-    //endregion variables
-
-    //region public constructors
-
     public Operand() {
         this.type = null;
         this.width = null;
         this.value = null;
         this.addr = null;
     }
+
+    //endregion variables
+
+    //region public constructors
 
     public Operand(Operand operand) {
         this(operand.type, (T) operand.value, operand.width);
@@ -51,17 +41,6 @@ public class Operand <T> implements Comparable {
         this.type = type;
         this.value = value;
         this.width = width;
-    }
-
-    //endregion public constructors
-
-    //region public methods
-
-    public String getRegName() {
-        DefinesDotH.Registers reg;
-        reg = memRangeToRegister();
-        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
-        return name.toLowerCase();
     }
 
     @Override
@@ -91,6 +70,34 @@ public class Operand <T> implements Comparable {
         return super.toString();
     }
 
+    //endregion public constructors
+
+    //region public methods
+
+    public String getRegName() {
+        DefinesDotH.Registers reg;
+        reg = memRangeToRegister();
+        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
+        return name.toLowerCase();
+    }
+
+    // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
+    // TODO 1 contd. : But currently project-x gets the same value in the defines.h enum from DynamoRIO as you see
+    private DefinesDotH.Registers memRangeToRegister() {
+        DefinesDotH.Registers ret;
+        if (this.type == OperandType.REG_TYPE) {
+            int range = (Integer) this.value / MAX_SIZE_OF_REG + 1;
+            if (range > 0 && range <= 56) {
+                ret = DefinesDotH.Registers.values()[ range ];
+            } else {
+                ret = DR_REG_INVALID;
+            }
+        } else {
+            ret = DR_REG_INVALID;
+        }
+        return ret;
+    }
+
     @Override
     public int compareTo(Object other) {
         //TODO : not complete but similar to Helium
@@ -111,21 +118,13 @@ public class Operand <T> implements Comparable {
 
     //region private methods
 
-    // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
-    // TODO 1 contd. : But currently project-x gets the same value in the defines.h enum from DynamoRIO as you see
-    private DefinesDotH.Registers memRangeToRegister() {
-        DefinesDotH.Registers ret;
-        if (this.type == OperandType.REG_TYPE) {
-            int range = (Integer) this.value / MAX_SIZE_OF_REG + 1;
-            if (range > 0 && range <= 56) {
-                ret = DefinesDotH.Registers.values()[ range ];
-            } else {
-                ret = DR_REG_INVALID;
-            }
-        } else {
-            ret = DR_REG_INVALID;
-        }
-        return ret;
+    public static enum OperandType {
+        REG_TYPE,
+        MEM_STACK_TYPE,
+        MEM_HEAP_TYPE,
+        IMM_FLOAT_TYPE,
+        IMM_INT_TYPE,
+        DEFAULT_TYPE;
     }
 
     //endregion private methods

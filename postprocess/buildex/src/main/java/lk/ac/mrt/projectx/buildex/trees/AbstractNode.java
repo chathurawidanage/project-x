@@ -1,8 +1,8 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.X86Analysis;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -20,36 +20,23 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
     //region public enum
 
-    public static enum AbstractNodeType {
-        OPERATION_ONLY,
-        INPUT_NODE,
-        OUTPUT_NODE,
-        INTERMEDIATE_NODE,
-        IMMEDIATE_INT,
-        IMMEDIATE_FLOAT,
-        PARAMETER,
-        UNRESOLVED_SYMBOL,
-        SUBTREE_BOUNDARY,
-    }
+    private AbstractNodeType type;
 
     //endregion public enum
 
     //region private variables
-
-    private AbstractNodeType type;
     private Integer dimensions;
     private Integer headDiemensions;
     private ArrayList<ArrayList<Integer>> indexes;
     private ArrayList<Integer> pos;
     private MemoryRegion associatedMem;
+    public AbstractNode() {
+        super();
+    }
 
     //endregion private variables
 
     //region public constructors
-
-    public AbstractNode() {
-        super();
-    }
 
     public AbstractNode(AbstractNode node) {
         super(node);
@@ -92,26 +79,13 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         throw new NotImplementedException();
     }
 
-    //endregion public constructors
-
-    //region public methods
-
     public AbstractNodeType getType() {
         return type;
     }
 
-    public String GetMemString() {
-        StringBuilder memSt = new StringBuilder();
-        memSt.append(this.associatedMem.getName());
-        memSt.append("(");
-        for (int i = 0 ; i < this.dimensions - 1 ; i++) {
-            memSt.append(this.pos.get(i));
-            memSt.append(",");
-        }
-        memSt.append(this.pos.get(this.dimensions - 1));
-        memSt.append(")");
-        return memSt.toString();
-    }
+    //endregion public constructors
+
+    //region public methods
 
     public String GetSymbolicString(List<String> vars) {
         throw new NotImplementedException();
@@ -145,6 +119,19 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         }
     }
 
+    private String getSymbolicString(List<String> vars) {
+        String stRet;
+        if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
+                || this.type == AbstractNodeType.INTERMEDIATE_NODE) {
+            stRet = getMemString(vars);
+        } else if (this.type == AbstractNodeType.IMMEDIATE_INT) {
+            stRet = getImmediateString(vars);
+        } else {
+            stRet = getNodeString();
+        }
+        return stRet;
+    }
+
     @Override
     public String getNodeString() {
         if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
@@ -158,6 +145,19 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
             return "p_" + this.para_num.toString();
         }
         return "";
+    }
+
+    public String GetMemString() {
+        StringBuilder memSt = new StringBuilder();
+        memSt.append(this.associatedMem.getName());
+        memSt.append("(");
+        for (int i = 0 ; i < this.dimensions - 1 ; i++) {
+            memSt.append(this.pos.get(i));
+            memSt.append(",");
+        }
+        memSt.append(this.pos.get(this.dimensions - 1));
+        memSt.append(")");
+        return memSt.toString();
     }
 
     @Override
@@ -238,17 +238,16 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         return stringBuilder.toString();
     }
 
-    private String getSymbolicString(List<String> vars) {
-        String stRet;
-        if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
-                || this.type == AbstractNodeType.INTERMEDIATE_NODE) {
-            stRet = getMemString(vars);
-        } else if (this.type == AbstractNodeType.IMMEDIATE_INT) {
-            stRet = getImmediateString(vars);
-        } else {
-            stRet = getNodeString();
-        }
-        return stRet;
+    public static enum AbstractNodeType {
+        OPERATION_ONLY,
+        INPUT_NODE,
+        OUTPUT_NODE,
+        INTERMEDIATE_NODE,
+        IMMEDIATE_INT,
+        IMMEDIATE_FLOAT,
+        PARAMETER,
+        UNRESOLVED_SYMBOL,
+        SUBTREE_BOUNDARY,
     }
 
     //endregion private methods

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import static lk.ac.mrt.projectx.buildex.X86Analysis.Operation.*;
 
@@ -28,7 +27,7 @@ public abstract class Tree implements Comparable {
 
     private static Integer numParas;
     private boolean recursive;
-    private boolean dummyTree;
+    protected boolean dummyTree;
     private Integer numNodes;
     private Integer treeNum;
     private Node head;

@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex;
 
 import junit.framework.TestCase;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
+import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 
 import java.util.List;
 

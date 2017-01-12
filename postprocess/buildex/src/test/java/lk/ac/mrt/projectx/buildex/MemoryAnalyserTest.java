@@ -1,8 +1,8 @@
 package lk.ac.mrt.projectx.buildex;
 
-import junit.framework.TestCase;
 import lk.ac.mrt.projectx.buildex.files.MemoryDumpFile;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -10,10 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Chathura Widanage
  */
-public class MemoryAnalyserTest extends TestCase {
+public class MemoryAnalyserTest{
+    @Test
     public void testGetImageRegions() throws Exception {
         blurTestGetImageRegions();
     }

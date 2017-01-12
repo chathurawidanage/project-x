@@ -36,7 +36,7 @@ public class Configurations {
     }
 
     public static File getImagesFolder() {
-        return getFolder("EXALGO_FILTER_FOLDER");
+        return getFolder("EXALGO_IMAGE_FOLDER");
     }
 
     public static File getImagesFolderTest() {

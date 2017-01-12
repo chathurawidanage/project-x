@@ -31,6 +31,9 @@
             <resource>
                 <directory>../../resources</directory>
             </resource>
+            <resource>
+                <directory>../../log</directory>
+            </resource>
         </resources>
         <plugins>
             <plugin>

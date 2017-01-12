@@ -61,7 +61,7 @@ public class MemoryLayoutOps {
             if (newLine.length() > 0) {
                 Output instr = new Output();
                 StringTokenizer stringTokenizer = new StringTokenizer(newLine, ",");
-                instr.setOpcode(stringTokenizer.nextToken());
+                instr.setOpcode(Integer.parseInt(stringTokenizer.nextToken()));
 
                 //destinations
                 instr.setNumOfDestinations(Integer.parseInt(stringTokenizer.nextToken()));

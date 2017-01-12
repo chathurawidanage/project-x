@@ -5,3 +5,4 @@
 log/*.log
 **/preprocess/code_diff/log/helium.log
 **/postprocess/buildex/log/helium.log
+**/generated_files_test/log/helium.log

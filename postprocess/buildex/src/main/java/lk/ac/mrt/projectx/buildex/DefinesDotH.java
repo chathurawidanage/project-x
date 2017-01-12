@@ -8,7 +8,7 @@ package lk.ac.mrt.projectx.buildex;
  */
 public class DefinesDotH {
 
-    enum OpCodes{
+    public enum OpCodes{
 /*   0 */     OP_INVALID, /**< INVALID opcode */
 /*   1 */     OP_UNDECODED, /**< UNDECODED opcode */
 /*   2 */     OP_CONTD, /**< CONTD opcode */

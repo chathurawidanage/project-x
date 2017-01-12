@@ -8,6 +8,7 @@ import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInput;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -60,7 +61,7 @@ public class MemoryLayoutOps {
             if (newLine.length() > 0) {
                 Output instr = new Output();
                 StringTokenizer stringTokenizer = new StringTokenizer(newLine, ",");
-                instr.setOpcode(Integer.parseInt(stringTokenizer.nextToken()));
+                instr.setOpcode(stringTokenizer.nextToken());
 
                 //destinations
                 instr.setNumOfDestinations(Integer.parseInt(stringTokenizer.nextToken()));

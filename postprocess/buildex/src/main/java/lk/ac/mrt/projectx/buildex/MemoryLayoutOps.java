@@ -267,6 +267,7 @@ public class MemoryLayoutOps {
 
     private static void postProcesseMemoryRegions(List<MemoryInfo> memoryInfoList) {
         defragmentMemoryRegions(memoryInfoList);
+        updateMostProbStride(memoryInfoList);
     }
 
     private static void defragmentMemoryRegions(List<MemoryInfo> memoryInfoList) {
@@ -334,5 +335,23 @@ public class MemoryLayoutOps {
         }
     }
 
+    private static void updateMostProbStride(List<MemoryInfo> memoryInfoLis) {
+        for (MemoryInfo memoryInfo : memoryInfoLis) {
+            long stride = getMostProbableStride(memoryInfo.getStrideFrequency());
+            memoryInfo.setProbStride(stride);
+        }
+    }
 
+    private static long getMostProbableStride(List<Pair<Integer, Integer>> strideFrequencies) {
+        long stride = -1;
+        long maxFreq = -1;
+
+        for (Pair<Integer, Integer> pr : strideFrequencies) {
+            if (maxFreq < pr.second) {
+                maxFreq = pr.second;
+                stride = pr.first;
+            }
+        }
+        return stride;
+    }
 }

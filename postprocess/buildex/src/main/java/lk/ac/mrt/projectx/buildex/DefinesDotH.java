@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex;
 
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by krv on 1/1/17.
@@ -3389,6 +3390,9 @@ public class DefinesDotH {
             this.OP_LAST = 1098;
         }
 
+        public Boolean isJmpConditionalAffected(Integer flags){
+            throw new NotImplementedException();
+        }
         public Operation DrLogicalToOperation() {
             Operation retOp;
             switch (this) {
@@ -3508,7 +3512,7 @@ public class DefinesDotH {
         }
     }
 
-    ;
+
 
     public enum Registers {
         DR_REG_NULL, /**

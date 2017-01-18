@@ -1,6 +1,8 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
 import lk.ac.mrt.projectx.buildex.DefinesDotH;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,7 @@ import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.MAX_SIZE_OF_REG;
  */
 public class Operand implements Comparable<Operand> {
 
+    final static Logger logger = LogManager.getLogger( Operand.class );
     private MemoryType type;
     private int width;
     private Number value;
@@ -32,12 +35,12 @@ public class Operand implements Comparable<Operand> {
         return type;
     }
 
-    public void setType(int type) {
-        this.type = MemoryType.values()[ type ];
-    }
-
     public void setType(MemoryType type) {
         this.type = type;
+    }
+
+    public void setType(int type) {
+        this.type = MemoryType.values()[ type ];
     }
 
     public int getWidth() {
@@ -356,8 +359,104 @@ public class Operand implements Comparable<Operand> {
                     this.value = 32 * MAX_SIZE_OF_REG - this.width;
                     break;
 
+                // floating point registers
+                // floating point ST0 register
+                case DR_REG_ST0:
+                    this.value = 33 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST1 register
+                case DR_REG_ST1:
+                    this.value = 34 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST2 register
+                case DR_REG_ST2:
+                    this.value = 35 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST2 register
+                case DR_REG_ST3:
+                    this.value = 36 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST2 register
+                case DR_REG_ST4:
+                    this.value = 37 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST2 register
+                case DR_REG_ST5:
+                    this.value = 38 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST2 register
+                case DR_REG_ST6:
+                    this.value = 39 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // floating point ST2 register
+                case DR_REG_ST7:
+                    this.value = 40 * MAX_SIZE_OF_REG - this.width;
+                    break;
 
+                // 8 registers kept for the floating point stack extension
+                case DR_REG_ST8:
+                    this.value = 41 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST9:
+                    this.value = 42 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST10:
+                    this.value = 43 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST11:
+                    this.value = 44 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST12:
+                    this.value = 45 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST13:
+                    this.value = 46 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST14:
+                    this.value = 47 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_ST15:
+                    this.value = 48 * MAX_SIZE_OF_REG - this.width;
+                    break;
 
+                // segments
+                case DR_SEG_ES:
+                    this.value = 49 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_SEG_CS:
+                    this.value = 50 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_SEG_SS:
+                    this.value = 51 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_SEG_DS:
+                    this.value = 52 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_SEG_FS:
+                    this.value = 53 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_SEG_GS:
+                    this.value = 54 * MAX_SIZE_OF_REG - this.width;
+                    break;
+
+                // virtual registers
+                case DR_REG_VIRTUAL_1:
+                    this.value = 55 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_VIRTUAL_2:
+                    this.value = 56 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                case DR_REG_NULL:
+                    logger.warn( "Null register found - check if OP_lea" );
+                    break;
+                default:
+                    logger.error( "Register %d not translated", value );
+                    break;
+            }
+        } else if ((type == MemoryType.MEM_HEAP_TYPE || type == MemoryType.MEM_STACK_TYPE) && (width != 0)) {
+            if (((Integer) value) < MAX_SIZE_OF_REG * 57) {
+                logger.warn( "Memory and register space overlap" );
+                logger.debug( "mem vaalue - %d, min allowed - %d", value, MAX_SIZE_OF_REG * 57 );
             }
         }
     }

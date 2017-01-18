@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex;
 
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.PCMemoryRegion;
 import org.junit.Test;
 
 import java.io.File;
@@ -20,8 +21,39 @@ public class MemoryLayoutOpsTest {
         blurTestCreateMemoryLayout();
     }
 
+    @Test
+    public void testCreateMemoryLayoutPCMemoryRegion() throws Exception{
+        blurTestCreateMemoryLayoutPCMemoryRegion();
+    }
+
     /**
-     * This method tests createMemoryLayout method for blur filter
+     * This method tests createMemoryLayoutMemoryInfo method for blur filter
+     *
+     * @throws Exception
+     */
+    private void blurTestCreateMemoryLayoutPCMemoryRegion() throws Exception {
+        String inImage = "a.png";
+        String exec = "halide_blur_hvscan_test.exe";
+        InstructionTraceFile instructionTraceFile = InstructionTraceFile.filterLargestInstructionTraceFile(
+                Arrays.asList(Configurations.getOutputFolderTest("blur").listFiles()),
+                inImage,
+                exec,
+                false
+        );
+        List<PCMemoryRegion> pcMemoryRegions = MemoryLayoutOps.createMemoryLayoutPCMemoryRegion(instructionTraceFile, 1);
+        assertEquals(pcMemoryRegions.size(), 30);
+
+        File memoryInfoIntStr = new File(
+                Configurations.getIntermediateStructuresTest("blur"),
+                "PCMemoryRegions.int"
+        );
+        Scanner scanner = new Scanner(memoryInfoIntStr);
+        String line = scanner.nextLine();
+        assertEquals(pcMemoryRegions.toString(), line.trim());
+    }
+
+    /**
+     * This method tests createMemoryLayoutMemoryInfo method for blur filter
      *
      * @throws Exception
      */
@@ -34,7 +66,7 @@ public class MemoryLayoutOpsTest {
                 exec,
                 false
         );
-        List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayout(instructionTraceFile, 1);
+        List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayoutMemoryInfo(instructionTraceFile, 1);
         assertEquals(memoryLayout.size(), 10);
 
         File memoryInfoIntStr = new File(

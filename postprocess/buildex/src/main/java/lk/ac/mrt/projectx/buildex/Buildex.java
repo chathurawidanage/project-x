@@ -6,6 +6,7 @@ import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.files.MemoryDumpFile;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.PCMemoryRegion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,8 +53,12 @@ public class Buildex {
         logger.info("Found {} image regions", imageRegions.size());
         logger.debug(imageRegions.toString());
 
-        List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayout(instructionTraceFile, 1);
-        logger.info("Found {} memory infos", memoryLayout.size());
-        logger.debug(memoryLayout.toString());
+        List<MemoryInfo> memoryLayoutMemoryInfo = MemoryLayoutOps.createMemoryLayoutMemoryInfo(instructionTraceFile, 1);
+        logger.info("Found {} memory infos", memoryLayoutMemoryInfo.size());
+        logger.debug(memoryLayoutMemoryInfo.toString());
+
+        List<PCMemoryRegion> memoryLayoutPCMemoryRegion = MemoryLayoutOps.createMemoryLayoutPCMemoryRegion(instructionTraceFile, 1);
+        logger.info("Found {} PC Memory Regions", memoryLayoutPCMemoryRegion.size());
+        logger.debug(memoryLayoutPCMemoryRegion.toString());
     }
 }

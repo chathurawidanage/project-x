@@ -343,7 +343,7 @@ public class MemoryLayoutOps {
                         if (opDst.getType() == MemoryType.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
                                 long reg = opDst.getAddress().get(addr).getValue().longValue();//todo check cast problem
-                                if (reg != 0 && reg != DefinesDotH.DR_REG.DR_REG_EBP.ordinal() && reg != DefinesDotH.DR_REGgit .DR_REG_ESP.ordinal()) {
+                                if (reg != 0 && reg != DefinesDotH.DR_REG.DR_REG_EBP.ordinal() && reg != DefinesDotH.DR_REG.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
                             }

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.*;
 

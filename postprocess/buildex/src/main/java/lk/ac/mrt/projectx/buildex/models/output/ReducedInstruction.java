@@ -42,12 +42,12 @@ public class ReducedInstruction {
         return operation;
     }
 
-    public void setOperation(Operation operation) {
-        this.operation = operation;
-    }
-
     public void setOperation(Integer operation) {
         this.operation = Operation.values()[ operation ];
+    }
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
     }
 
     public Operand getDst() {
@@ -68,10 +68,6 @@ public class ReducedInstruction {
 
     public Boolean isFloating() {
         return isFloating;
-    }
-
-    public void setFloating(Boolean floating) {
-        isFloating = floating;
     }
 
     public Integer getNumRinstr() {
@@ -185,6 +181,8 @@ public class ReducedInstruction {
                     unhandled = true;
                 }
                 break;
+
+            // **************************** integer instructions
             case OP_push_imm:
             case OP_push:
                 // [esp -4] [dst[1]] <- src[0]
@@ -269,7 +267,7 @@ public class ReducedInstruction {
                     inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
                     rInstructions.add( inst0 );
                 } else {
-                    unhandled = false;
+                    unhandled = true;
                 }
                 break;
             case OP_imul:
@@ -281,34 +279,78 @@ public class ReducedInstruction {
                     inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
                     inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
                     rInstructions.add( inst0 );
-                }else if(isBounds( cinst, 2, 2 )){
+                } else if (isBounds( cinst, 2, 2 )) {
                     // create an operand for the virtual register
-                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, 2* cinst.getSrcs().get( 1 ).getWidth()
-                            , DefinesDotH.DR_REG.DR_REG_VIRTUAL_1.ordinal());
+                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, 2 * cinst.getSrcs().get( 1 ).getWidth()
+                            , DefinesDotH.DR_REG.DR_REG_VIRTUAL_1.ordinal() );
                     virtualReg.regToMemRange();
 
                     // virtual <= eax * src0
-                    ReducedInstruction inst0 = new ReducedInstruction(Operation.op_mul, virtualReg, true);
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_mul, virtualReg, true );
                     inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
                     inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
 
                     // edx <= split_h(virtual)
-                    ReducedInstruction inst1 = new ReducedInstruction(Operation.op_split_h, cinst.getDsts().get( 0 ), true);
+                    ReducedInstruction inst1 = new ReducedInstruction( Operation.op_split_h, cinst.getDsts().get( 0 ), true );
                     inst1.getSrcs().add( virtualReg );
 
                     // eax <= split_l(virtual)
-                    ReducedInstruction inst2 = new ReducedInstruction(Operation.op_split_l, cinst.getDsts().get( 1 ), true);
+                    ReducedInstruction inst2 = new ReducedInstruction( Operation.op_split_l, cinst.getDsts().get( 1 ), true );
                     inst2.getSrcs().add( virtualReg );
 
                     rInstructions.add( inst0 );
                     rInstructions.add( inst1 );
                     rInstructions.add( inst2 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_mul:
+                if (isBounds( cinst, 2, 2 )) {
+                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, 2 * cinst.getSrcs().get( 1 ).getWidth()
+                            , DefinesDotH.DR_REG.DR_REG_VIRTUAL_1.ordinal() );
+                    virtualReg.regToMemRange();
+
+                    // virtual <= eax * src0
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_mul, virtualReg, false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+
+                    // edx <= split_h(virtual)
+                    ReducedInstruction inst1 = new ReducedInstruction( Operation.op_split_h, cinst.getDsts().get( 0 ), false );
+                    inst1.getSrcs().add( virtualReg );
+
+                    // eax <= split_l(virtual)
+                    ReducedInstruction inst2 = new ReducedInstruction( Operation.op_split_l, cinst.getDsts().get( 1 ), false );
+                    inst2.getSrcs().add( virtualReg );
+
+                    rInstructions.add( inst0 );
+                    rInstructions.add( inst1 );
+                    rInstructions.add( inst2 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_idiv:
+                if (isBounds( cinst, 2, 3 )) {
+
+                } else {
+                    unhandled = true;
                 }
                 break;
 
         }
 
+        for (int i = 0 ; i < rInstructions.size() ; i++) {
+            ReducedInstruction ins = rInstructions.get( i );
+            ins.setFloating( cinst.getOpcode().isFloatingPointIns() );
+        }
         return rInstructions;
+
+    }
+
+    public void setFloating(Boolean floating) {
+        isFloating = floating;
     }
 
     public List<Operand> getSrcs() {

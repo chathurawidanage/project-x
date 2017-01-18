@@ -5,10 +5,10 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInput;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.PCMemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
-import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -121,7 +121,29 @@ public class MemoryLayoutOps {
         }
     }
 
-    private static void updateMemoryRegions(List<MemoryInfo> memoryInfoList, MemoryInput memoryInput) {
+    private static PCMemoryRegion getPCMemoryRegion(List<PCMemoryRegion> pcMemoryRegions, String module, long appPC) {
+        /* first check whether we have the same app_pc */
+        if (module != null && module.trim().length() != 0) { /* here the module information comparison is requested by the input */
+            for (PCMemoryRegion pcMemoryRegion : pcMemoryRegions) {
+                assert pcMemoryRegion.getModule().trim().length() != 0;
+                if (pcMemoryRegion.getModule().equals(module)) {
+                /* now check for the app_pc */
+                    if (pcMemoryRegion.getPc() == appPC) {
+                        return pcMemoryRegion;
+                    }
+                }
+            }
+        } else {  /* module information is disregarded; here we get the first match with app_pc we do not try to see whether there are more than one match*/
+            for (PCMemoryRegion pcMemoryRegion : pcMemoryRegions) {
+                if (pcMemoryRegion.getPc() == appPC) {
+                    return pcMemoryRegion;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static void updateMemoryRegionsMemInfo(List<MemoryInfo> memoryInfoList, MemoryInput memoryInput) {
         long address = memoryInput.getMemAddress();
         int stride = memoryInput.getStride();
         boolean merged = false;
@@ -190,8 +212,20 @@ public class MemoryLayoutOps {
         }
     }
 
-    public static List<MemoryInfo> createMemoryLayout(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
-        int count = 0;
+    private static void updateMemoryRegionsPCMemoryRegion(List<PCMemoryRegion> pcMemoryRegionList, MemoryInput memoryInput) {
+        PCMemoryRegion pcMemoryRegion = getPCMemoryRegion(pcMemoryRegionList, memoryInput.getModule(), memoryInput.getPc());
+        if (pcMemoryRegion != null) {
+            updateMemoryRegionsMemInfo(pcMemoryRegion.getRegions(), memoryInput);
+        } else {
+            pcMemoryRegion = new PCMemoryRegion();
+            pcMemoryRegion.setPc(memoryInput.getPc());
+            pcMemoryRegion.setModule(memoryInput.getModule());
+            updateMemoryRegionsMemInfo(pcMemoryRegion.getRegions(), memoryInput);
+            pcMemoryRegionList.add(pcMemoryRegion);
+        }
+    }
+
+    public static List<MemoryInfo> createMemoryLayoutMemoryInfo(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
         List<MemoryInfo> memoryInfoList = new ArrayList<>();
 
         logger.debug("Creating memory layout : [Memory Info]");
@@ -227,7 +261,7 @@ public class MemoryLayoutOps {
                         memoryInput.setWrite(false);
                         memoryInput.setType(opSrc.getType());
                         if (memoryInput.getStride() != 0) {
-                            updateMemoryRegions(memoryInfoList, memoryInput);
+                            updateMemoryRegionsMemInfo(memoryInfoList, memoryInput);
                         }
                     }
                 }
@@ -254,21 +288,103 @@ public class MemoryLayoutOps {
                         memoryInput.setWrite(true);
                         memoryInput.setType(opDst.getType());
                         if (memoryInput.getStride() != 0) {
-                            updateMemoryRegions(memoryInfoList, memoryInput);
+                            updateMemoryRegionsMemInfo(memoryInfoList, memoryInput);
                         }
                     }
                 }
 
             }
         }
-        postProcesseMemoryRegions(memoryInfoList);
+        postProcessMemoryRegionsMemoryInfo(memoryInfoList);
         logger.debug("Creating memory layout : [Memory Info] - Done");
         return memoryInfoList;
     }
 
-    private static void postProcesseMemoryRegions(List<MemoryInfo> memoryInfoList) {
+    public static List<PCMemoryRegion> createMemoryLayoutPCMemoryRegion(InstructionTraceFile instructionTraceFile, int version) throws FileNotFoundException {
+        logger.debug("Creating memory layout : [PC Memory Region]");
+        List<PCMemoryRegion> pcMemoryRegionList = new ArrayList<>();
+
+        List<Output> instructions = getInstructionsList(instructionTraceFile, version);
+        Iterator<Output> instructionsIterator = instructions.iterator();
+
+        while (instructionsIterator.hasNext()) {
+            Output instr = instructionsIterator.next();
+            MemoryInput memoryInput = new MemoryInput();
+            if (instr != null) {
+                for (Operand opSrc : instr.getSrcs()) {
+                    if (opSrc.getType() == MemoryType.MEM_HEAP_TYPE || opSrc.getType() == MemoryType.MEM_STACK_TYPE) {
+                        boolean skip = true;
+                        if (opSrc.getType() == MemoryType.MEM_STACK_TYPE) {
+                            for (int addr = 0; addr < 2; addr++) {
+                                long reg = opSrc.getAddress().get(addr).getValue().longValue();
+                                if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
+                                    skip = false;
+                                }
+                            }
+                        } else {
+                            skip = false;
+                        }
+
+                        if (skip) continue;
+
+                        memoryInput.setPc(instr.getPc());
+                        memoryInput.setMemAddress(opSrc.getValue().longValue());
+                        memoryInput.setStride(opSrc.getWidth());
+                        memoryInput.setWrite(false);
+                        memoryInput.setType(opSrc.getType());
+                        if (memoryInput.getStride() != 0) {
+                            updateMemoryRegionsPCMemoryRegion(pcMemoryRegionList, memoryInput);
+                        }
+                    }
+                }
+                for (Operand opDst : instr.getDsts()) {
+                    if (opDst.getType() == MemoryType.MEM_HEAP_TYPE || opDst.getType() == MemoryType.MEM_STACK_TYPE) {
+                        boolean skip = true;
+                        if (opDst.getType() == MemoryType.MEM_STACK_TYPE) {
+                            for (int addr = 0; addr < 2; addr++) {
+                                long reg = opDst.getAddress().get(addr).getValue().longValue();//todo check cast problem
+                                if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
+                                    skip = false;
+                                }
+                            }
+                        } else {
+                            skip = false;
+                        }
+
+                        if (skip) {
+                            continue;
+                        }
+
+                        memoryInput.setPc(instr.getPc());
+                        memoryInput.setMemAddress(opDst.getValue().longValue());//todo check casting problem
+                        memoryInput.setStride(opDst.getWidth());
+                        memoryInput.setWrite(true);
+                        memoryInput.setType(opDst.getType());
+                        if (memoryInput.getStride() != 0) {
+                            updateMemoryRegionsPCMemoryRegion(pcMemoryRegionList, memoryInput);
+                        }
+                    }
+                }
+            }
+        }
+        postProcessMemoryRegionsPCMemoryRegion(pcMemoryRegionList);
+        logger.debug("Creating memory layout : [Memory Info] - Done");
+        return pcMemoryRegionList;
+    }
+
+    private static void postProcessMemoryRegionsMemoryInfo(List<MemoryInfo> memoryInfoList) {
         defragmentMemoryRegions(memoryInfoList);
         updateMostProbStride(memoryInfoList);
+    }
+
+    private static void postProcessMemoryRegionsPCMemoryRegion(List<PCMemoryRegion> pcMemoryRegionList) {
+        logger.debug("Post processing {} memory regions", pcMemoryRegionList.size());
+        for (PCMemoryRegion pcMemoryRegion : pcMemoryRegionList) {
+            logger.debug(" app_pc {} mem region size before {}", pcMemoryRegion.getPc(), pcMemoryRegion.getRegions().size());
+            defragmentMemoryRegions(pcMemoryRegion.getRegions());
+            updateMostProbStride(pcMemoryRegion.getRegions());
+            logger.debug(" mem region size after {}", pcMemoryRegion.getRegions().size());
+        }
     }
 
     private static void defragmentMemoryRegions(List<MemoryInfo> memoryInfoList) {

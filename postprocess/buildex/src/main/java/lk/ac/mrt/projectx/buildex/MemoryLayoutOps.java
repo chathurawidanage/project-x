@@ -8,7 +8,6 @@ import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInput;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
-import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -210,7 +209,7 @@ public class MemoryLayoutOps {
                         if (opSrc.getType() == MemoryType.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
                                 long reg = opSrc.getAddress().get(addr).getValue().longValue();//todo check casting issue
-                                if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
+                                if (reg != 0 && reg != DefinesDotH.DR_REG.DR_REG_EBP.ordinal() && reg != DefinesDotH.DR_REG.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
                             }
@@ -237,7 +236,7 @@ public class MemoryLayoutOps {
                         if (opDst.getType() == MemoryType.MEM_STACK_TYPE) {
                             for (int addr = 0; addr < 2; addr++) {
                                 long reg = opDst.getAddress().get(addr).getValue().longValue();//todo check cast problem
-                                if (reg != 0 && reg != DefinesDotH.Registers.DR_REG_EBP.ordinal() && reg != DefinesDotH.Registers.DR_REG_ESP.ordinal()) {
+                                if (reg != 0 && reg != DefinesDotH.DR_REG.DR_REG_EBP.ordinal() && reg != DefinesDotH.DR_REG.DR_REG_ESP.ordinal()) {
                                     skip = false;
                                 }
                             }

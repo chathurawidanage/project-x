@@ -2,7 +2,7 @@ package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.DefinesDotH;
 
-import static lk.ac.mrt.projectx.buildex.DefinesDotH.Registers.DR_REG_INVALID;
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_INVALID;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.MAX_SIZE_OF_REG;
 
 /**
@@ -75,7 +75,7 @@ public class Operand <T> implements Comparable {
     //region public methods
 
     public String getRegName() {
-        DefinesDotH.Registers reg;
+        DefinesDotH.DR_REG reg;
         reg = memRangeToRegister();
         String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
         return name.toLowerCase();
@@ -83,12 +83,12 @@ public class Operand <T> implements Comparable {
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
     // TODO 1 contd. : But currently project-x gets the same value in the defines.h enum from DynamoRIO as you see
-    private DefinesDotH.Registers memRangeToRegister() {
-        DefinesDotH.Registers ret;
+    private DefinesDotH.DR_REG memRangeToRegister() {
+        DefinesDotH.DR_REG ret;
         if (this.type == OperandType.REG_TYPE) {
             int range = (Integer) this.value / MAX_SIZE_OF_REG + 1;
             if (range > 0 && range <= 56) {
-                ret = DefinesDotH.Registers.values()[ range ];
+                ret = DefinesDotH.DR_REG.values()[ range ];
             } else {
                 ret = DR_REG_INVALID;
             }

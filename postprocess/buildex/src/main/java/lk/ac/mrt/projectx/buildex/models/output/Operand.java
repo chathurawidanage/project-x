@@ -5,7 +5,7 @@ import lk.ac.mrt.projectx.buildex.DefinesDotH;
 import java.util.ArrayList;
 import java.util.List;
 
-import static lk.ac.mrt.projectx.buildex.DefinesDotH.Registers.DR_REG_INVALID;
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.*;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.MAX_SIZE_OF_REG;
 
 /**
@@ -22,7 +22,7 @@ public class Operand implements Comparable<Operand> {
     public Operand() {
     }
 
-    public Operand(MemoryType operandType, Number value, Integer width) {
+    public Operand(MemoryType operandType, Integer width, Number value) {
         this.type = operandType;
         this.value = value;
         this.width = width;
@@ -33,7 +33,7 @@ public class Operand implements Comparable<Operand> {
     }
 
     public void setType(int type) {
-        this.type = MemoryType.values()[type];
+        this.type = MemoryType.values()[ type ];
     }
 
     public void setType(MemoryType type) {
@@ -69,44 +69,44 @@ public class Operand implements Comparable<Operand> {
         StringBuilder stringBuilder = new StringBuilder();
         if (type == MemoryType.REG_TYPE) {
             Integer offset = (Integer) value - ((Integer) value / MAX_SIZE_OF_REG) * MAX_SIZE_OF_REG;
-            stringBuilder.append(((Integer) value).toString());
-            stringBuilder.append(":r[");
-            stringBuilder.append(this.getRegName());
-            stringBuilder.append(":");
-            stringBuilder.append(offset.toString());
+            stringBuilder.append( ((Integer) value).toString() );
+            stringBuilder.append( ":r[" );
+            stringBuilder.append( this.getRegName() );
+            stringBuilder.append( ":" );
+            stringBuilder.append( offset.toString() );
         } else {
             if (this.type == MemoryType.IMM_FLOAT_TYPE || this.type == MemoryType.IMM_INT_TYPE) {
-                stringBuilder.append("imm[");
+                stringBuilder.append( "imm[" );
             } else if (this.type == MemoryType.MEM_STACK_TYPE) {
-                stringBuilder.append("ms[");
+                stringBuilder.append( "ms[" );
             } else if (this.type == MemoryType.MEM_HEAP_TYPE) {
-                stringBuilder.append("mh[");
+                stringBuilder.append( "mh[" );
             }
-            stringBuilder.append(this.value.toString());
+            stringBuilder.append( this.value.toString() );
         }
-        stringBuilder.append("]");
-        stringBuilder.append("{");
-        stringBuilder.append(this.width);
-        stringBuilder.append("}");
+        stringBuilder.append( "]" );
+        stringBuilder.append( "{" );
+        stringBuilder.append( this.width );
+        stringBuilder.append( "}" );
         return super.toString();
     }
 
     /****/
     public String getRegName() {
-        DefinesDotH.Registers reg;
+        DefinesDotH.DR_REG reg;
         reg = memRangeToRegister();
-        String name = reg.name().substring(reg.name().lastIndexOf("_") + 1);
+        String name = reg.name().substring( reg.name().lastIndexOf( "_" ) + 1 );
         return name.toLowerCase();
     }
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
     // TODO 1 contd. : But currently project-x gets the same value in the enum as you see
-    private DefinesDotH.Registers memRangeToRegister() {
-        DefinesDotH.Registers ret;
+    private DefinesDotH.DR_REG memRangeToRegister() {
+        DefinesDotH.DR_REG ret;
         if (this.type == MemoryType.REG_TYPE) {
             int range = (Integer) this.value / MAX_SIZE_OF_REG + 1;
             if (range > 0 && range <= 56) {
-                ret = DefinesDotH.Registers.values()[range];
+                ret = DefinesDotH.DR_REG.values()[ range ];
             } else {
                 ret = DR_REG_INVALID;
             }
@@ -116,6 +116,251 @@ public class Operand implements Comparable<Operand> {
         return ret;
     }
 
+    public void regToMemRange() {
+        if (this.type == MemoryType.REG_TYPE) {
+            Integer value = (Integer) this.value;
+            DefinesDotH.DR_REG reg = DefinesDotH.DR_REG.values()[ value ];
+            switch (reg) {
+
+                // ABCD registers
+                // A registers
+                case DR_REG_RAX:
+                case DR_REG_EAX:
+                case DR_REG_AX:
+                case DR_REG_AH:
+                case DR_REG_AL:
+
+                    if (reg == DR_REG_AH) {
+                        this.value = 1 * MAX_SIZE_OF_REG - 2;
+                    } else {
+                        this.value = 1 * MAX_SIZE_OF_REG - this.width;
+                    }
+                    break;
+                // B registers
+                case DR_REG_RBX:
+                case DR_REG_EBX:
+                case DR_REG_BX:
+                case DR_REG_BH:
+                case DR_REG_BL:
+
+                    if (reg == DR_REG_BH) {
+                        this.value = 2 * MAX_SIZE_OF_REG - 2;
+                    } else {
+                        this.value = 2 * MAX_SIZE_OF_REG - this.width;
+                    }
+                    break;
+                // C registers
+                case DR_REG_RCX:
+                case DR_REG_ECX:
+                case DR_REG_CX:
+                case DR_REG_CH:
+                case DR_REG_CL:
+
+                    if (reg == DR_REG_CH) {
+                        this.value = 3 * MAX_SIZE_OF_REG - 2;
+                    } else {
+                        this.value = 3 * MAX_SIZE_OF_REG - this.width;
+                    }
+                    break;
+                // D registers
+                case DR_REG_RDX:
+                case DR_REG_EDX:
+                case DR_REG_DX:
+                case DR_REG_DH:
+                case DR_REG_DL:
+
+                    if (reg == DR_REG_DH) {
+                        this.value = 4 * MAX_SIZE_OF_REG - 2;
+                    } else {
+                        this.value = 4 * MAX_SIZE_OF_REG - this.width;
+                    }
+                    break;
+
+                // SP, BP, SI , DI registers
+                // SP Registers
+                case DR_REG_RSP:
+                case DR_REG_ESP:
+                case DR_REG_SP:
+                case DR_REG_SPL:
+                    this.value = 5 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // BP Registers
+                case DR_REG_RBP:
+                case DR_REG_EBP:
+                case DR_REG_BP:
+                case DR_REG_BPL:
+                    this.value = 6 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // SI Registers
+                case DR_REG_RSI:
+                case DR_REG_ESI:
+                case DR_REG_SI:
+                case DR_REG_SIL:
+                    this.value = 7 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // DI Registers
+                case DR_REG_RDI:
+                case DR_REG_EDI:
+                case DR_REG_DI:
+                case DR_REG_DIL:
+                    this.value = 8 * MAX_SIZE_OF_REG - this.width;
+                    break;
+
+                // x64 regs
+                // x64 register 8
+                case DR_REG_R8:
+                case DR_REG_R8D:
+                case DR_REG_R8W:
+                case DR_REG_R8L:
+                    this.value = 9 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 9
+                case DR_REG_R9:
+                case DR_REG_R9D:
+                case DR_REG_R9W:
+                case DR_REG_R9L:
+                    this.value = 10 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 10
+                case DR_REG_R10:
+                case DR_REG_R10D:
+                case DR_REG_R10W:
+                case DR_REG_R10L:
+                    this.value = 11 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 11
+                case DR_REG_R11:
+                case DR_REG_R11D:
+                case DR_REG_R11W:
+                case DR_REG_R11L:
+                    this.value = 12 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 12
+                case DR_REG_R12:
+                case DR_REG_R12D:
+                case DR_REG_R12W:
+                case DR_REG_R12L:
+                    this.value = 13 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 13
+                case DR_REG_R13:
+                case DR_REG_R13D:
+                case DR_REG_R13W:
+                case DR_REG_R13L:
+                    this.value = 14 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 14
+                case DR_REG_R14:
+                case DR_REG_R14D:
+                case DR_REG_R14W:
+                case DR_REG_R14L:
+                    this.value = 15 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // x64 register 15
+                case DR_REG_R15:
+                case DR_REG_R15D:
+                case DR_REG_R15W:
+                case DR_REG_R15L:
+                    this.value = 16 * MAX_SIZE_OF_REG - this.width;
+                    break;
+
+                // mmx registers
+                // mmx 0 register
+                case DR_REG_MM0:
+                case DR_REG_XMM0:
+                case DR_REG_YMM0:
+                    this.value = 17 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 1 register
+                case DR_REG_MM1:
+                case DR_REG_XMM1:
+                case DR_REG_YMM1:
+                    this.value = 18 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 2 register
+                case DR_REG_MM2:
+                case DR_REG_XMM2:
+                case DR_REG_YMM2:
+                    this.value = 19 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 3 register
+                case DR_REG_MM3:
+                case DR_REG_XMM3:
+                case DR_REG_YMM3:
+                    this.value = 20 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 4 register
+                case DR_REG_MM4:
+                case DR_REG_XMM4:
+                case DR_REG_YMM4:
+                    this.value = 21 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 5 register
+                case DR_REG_MM5:
+                case DR_REG_XMM5:
+                case DR_REG_YMM5:
+                    this.value = 22 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 6 register
+                case DR_REG_MM6:
+                case DR_REG_XMM6:
+                case DR_REG_YMM6:
+                    this.value = 23 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // mmx 7 register
+                case DR_REG_MM7:
+                case DR_REG_XMM7:
+                case DR_REG_YMM7:
+                    this.value = 24 * MAX_SIZE_OF_REG - this.width;
+                    break;
+
+                // new mmx registers
+                // new mmx 8 register
+                case DR_REG_XMM8:
+                case DR_REG_YMM8:
+                    this.value = 25 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 9 register
+                case DR_REG_XMM9:
+                case DR_REG_YMM9:
+                    this.value = 26 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 10 register
+                case DR_REG_XMM10:
+                case DR_REG_YMM10:
+                    this.value = 27 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 11 register
+                case DR_REG_XMM11:
+                case DR_REG_YMM11:
+                    this.value = 28 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 12 register
+                case DR_REG_XMM12:
+                case DR_REG_YMM12:
+                    this.value = 29 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 13 register
+                case DR_REG_XMM13:
+                case DR_REG_YMM13:
+                    this.value = 30 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 14 register
+                case DR_REG_XMM14:
+                case DR_REG_YMM14:
+                    this.value = 31 * MAX_SIZE_OF_REG - this.width;
+                    break;
+                // new mmx 15 register
+                case DR_REG_XMM15:
+                case DR_REG_YMM15:
+                    this.value = 32 * MAX_SIZE_OF_REG - this.width;
+                    break;
+
+
+
+            }
+        }
+    }
     //endregion public methods
 
     //region private methods
@@ -123,7 +368,8 @@ public class Operand implements Comparable<Operand> {
     @Override
     public int compareTo(Operand other) {
         //TODO : not complete but similar to Helium
-        return Double.valueOf(this.value.doubleValue()).
-                compareTo(Double.valueOf(other.value.doubleValue()));
+        return Double.valueOf( this.value.doubleValue() ).
+                compareTo( Double.valueOf( other.value.doubleValue() ) );
     }
+
 }

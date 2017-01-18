@@ -33,7 +33,7 @@ public class ConcreteNode <T extends Number> extends Node<T> implements Comparab
     }
 
     public ConcreteNode(MemoryType operandType, T value, Integer width) {
-        this.symbol = new Operand(operandType, value, width);
+        this.symbol = new Operand(operandType, width, value);
         this.operation = X86Analysis.Operation.op_unknown;
         this.order_num = -1;
         this.is_para = false;

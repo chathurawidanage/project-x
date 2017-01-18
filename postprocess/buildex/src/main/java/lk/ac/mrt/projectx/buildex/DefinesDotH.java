@@ -3514,341 +3514,139 @@ public class DefinesDotH {
 
 
 
-    public enum Registers {
-        DR_REG_NULL, /**
-         * < Sentinel value indicating no register, for address modes. "null" register
-         */
+    public enum DR_REG {
+        DR_REG_NULL, /**< Sentinel value indicating no register, for address modes. "null" register */
     /* 64-bit general purpose */
-        DR_REG_RAX, /**
-         * < The "rax" register.
-         */
-        DR_REG_RCX, /**
-         * < The "rcx" register.
-         */
-        DR_REG_RDX, /**
-         * < The "rdx" register.
-         */
-        DR_REG_RBX, /**
-         * < The "rbx" register.
-         */
+        DR_REG_RAX, /**< The "rax" register. */
+        DR_REG_RCX, /**< The "rcx" register. */
+        DR_REG_RDX, /**< The "rdx" register. */
+        DR_REG_RBX, /**< The "rbx" register. */
 
-        DR_REG_RSP, /**
-         * < The "rsp" register.
-         */
-        DR_REG_RBP, /**
-         * < The "rbp" register.
-         */
-        DR_REG_RSI, /**
-         * < The "rsi" register.
-         */
-        DR_REG_RDI, /**
-         * < The "rdi" register.
-         */
+        DR_REG_RSP, /**< The "rsp" register. */
+        DR_REG_RBP, /**< The "rbp" register. */
+        DR_REG_RSI, /**< The "rsi" register. */
+        DR_REG_RDI, /**< The "rdi" register. */
 
-        DR_REG_R8, /**
-         * < The "r8" register.
-         */
-        DR_REG_R9, /**
-         * < The "r9" register.
-         */
-        DR_REG_R10, /**
-         * < The "r10" register.
-         */
-        DR_REG_R11, /**
-         * < The "r11" register.
-         */
+        DR_REG_R8, /**< The "r8" register. */
+        DR_REG_R9, /**< The "r9" register. */
+        DR_REG_R10, /**< The "r10" register. */
+        DR_REG_R11, /**< The "r11" register. */
 
-        DR_REG_R12, /**
-         * < The "r12" register.
-         */
-        DR_REG_R13, /**
-         * < The "r13" register.
-         */
-        DR_REG_R14, /**
-         * < The "r14" register.
-         */
-        DR_REG_R15, /**
-         * < The "r15" register.
-         */
+        DR_REG_R12, /**< The "r12" register. */
+        DR_REG_R13, /**< The "r13" register. */
+        DR_REG_R14, /**< The "r14" register. */
+        DR_REG_R15, /**< The "r15" register. */
 
     /* 32-bit general purpose */
-        DR_REG_EAX, /**
-         * < The "eax" register.
-         */
-        DR_REG_ECX, /**
-         * < The "ecx" register.
-         */
-        DR_REG_EDX, /**
-         * < The "edx" register.
-         */
-        DR_REG_EBX, /**
-         * < The "ebx" register.
-         */
+        DR_REG_EAX, /**< The "eax" register. */
+        DR_REG_ECX, /**< The "ecx" register. */
+        DR_REG_EDX, /**< The "edx" register. */
+        DR_REG_EBX, /**< The "ebx" register. */
 
-        DR_REG_ESP, /**
-         * < The "esp" register.
-         */
-        DR_REG_EBP, /**
-         * < The "ebp" register.
-         */
-        DR_REG_ESI, /**
-         * < The "esi" register.
-         */
-        DR_REG_EDI, /**
-         * < The "edi" register.
-         */
+        DR_REG_ESP, /**< The "esp" register. */
+        DR_REG_EBP, /**< The "ebp" register. */
+        DR_REG_ESI, /**< The "esi" register. */
+        DR_REG_EDI, /**< The "edi" register. */
 
-        DR_REG_R8D, /**
-         * < The "r8d" register.
-         */
-        DR_REG_R9D, /**
-         * < The "r9d" register.
-         */
-        DR_REG_R10D, /**
-         * < The "r10d" register.
-         */
-        DR_REG_R11D, /**
-         * < The "r11d" register.
-         */
+        DR_REG_R8D, /**< The "r8d" register. */
+        DR_REG_R9D, /**< The "r9d" register. */
+        DR_REG_R10D, /**< The "r10d" register. */
+        DR_REG_R11D, /**< The "r11d" register. */
 
-        DR_REG_R12D, /**
-         * < The "r12d" register.
-         */
-        DR_REG_R13D, /**
-         * < The "r13d" register.
-         */
-        DR_REG_R14D, /**
-         * < The "r14d" register.
-         */
-        DR_REG_R15D, /**
-         * < The "r15d" register.
-         */
+        DR_REG_R12D, /**< The "r12d" register. */
+        DR_REG_R13D, /**< The "r13d" register. */
+        DR_REG_R14D, /**< The "r14d" register. */
+        DR_REG_R15D, /**< The "r15d" register. */
 
     /* 16-bit general purpose */
-        DR_REG_AX, /**
-         * < The "ax" register.
-         */
-        DR_REG_CX, /**
-         * < The "cx" register.
-         */
-        DR_REG_DX, /**
-         * < The "dx" register.
-         */
-        DR_REG_BX, /**
-         * < The "bx" register.
-         */
+        DR_REG_AX, /**< The "ax" register. */
+        DR_REG_CX, /**< The "cx" register. */
+        DR_REG_DX, /**< The "dx" register. */
+        DR_REG_BX, /**< The "bx" register. */
 
-        DR_REG_SP, /**
-         * < The "sp" register.
-         */
-        DR_REG_BP, /**
-         * < The "bp" register.
-         */
-        DR_REG_SI, /**
-         * < The "si" register.
-         */
-        DR_REG_DI, /**
-         * < The "di" register.
-         */
+        DR_REG_SP, /**< The "sp" register. */
+        DR_REG_BP, /**< The "bp" register. */
+        DR_REG_SI, /**< The "si" register. */
+        DR_REG_DI, /**< The "di" register. */
 
-        DR_REG_R8W, /**
-         * < The "r8w" register.
-         */
-        DR_REG_R9W, /**
-         * < The "r9w" register.
-         */
-        DR_REG_R10W, /**
-         * < The "r10w" register.
-         */
-        DR_REG_R11W, /**
-         * < The "r11w" register.
-         */
+        DR_REG_R8W, /**< The "r8w" register. */
+        DR_REG_R9W, /**< The "r9w" register. */
+        DR_REG_R10W, /**< The "r10w" register. */
+        DR_REG_R11W, /**< The "r11w" register. */
 
-        DR_REG_R12W, /**
-         * < The "r12w" register.
-         */
-        DR_REG_R13W, /**
-         * < The "r13w" register.
-         */
-        DR_REG_R14W, /**
-         * < The "r14w" register.
-         */
-        DR_REG_R15W, /**
-         * < The "r15w" register.
-         */
+        DR_REG_R12W, /**< The "r12w" register. */
+        DR_REG_R13W, /**< The "r13w" register. */
+        DR_REG_R14W, /**< The "r14w" register. */
+        DR_REG_R15W, /**< The "r15w" register. */
 
     /* 8-bit general purpose */
-        DR_REG_AL, /**
-         * < The "al" register.
-         */
-        DR_REG_CL, /**
-         * < The "cl" register.
-         */
-        DR_REG_DL, /**
-         * < The "dl" register.
-         */
-        DR_REG_BL, /**
-         * < The "bl" register.
-         */
+        DR_REG_AL, /**< The "al" register. */
+        DR_REG_CL, /**< The "cl" register. */
+        DR_REG_DL, /**< The "dl" register. */
+        DR_REG_BL, /**< The "bl" register. */
 
-        DR_REG_AH, /**
-         * < The "ah" register.
-         */
-        DR_REG_CH, /**
-         * < The "ch" register.
-         */
-        DR_REG_DH, /**
-         * < The "dh" register.
-         */
-        DR_REG_BH, /**
-         * < The "bh" register.
-         */
+        DR_REG_AH, /**< The "ah" register. */
+        DR_REG_CH, /**< The "ch" register. */
+        DR_REG_DH, /**< The "dh" register. */
+        DR_REG_BH, /**< The "bh" register. */
 
-        DR_REG_R8L, /**
-         * < The "r8l" register.
-         */
-        DR_REG_R9L, /**
-         * < The "r9l" register.
-         */
-        DR_REG_R10L, /**
-         * < The "r10l" register.
-         */
-        DR_REG_R11L, /**
-         * < The "r11l" register.
-         */
+        DR_REG_R8L, /**< The "r8l" register. */
+        DR_REG_R9L, /**< The "r9l" register. */
+        DR_REG_R10L, /**< The "r10l" register. */
+        DR_REG_R11L, /**< The "r11l" register. */
 
-        DR_REG_R12L, /**
-         * < The "r12l" register.
-         */
-        DR_REG_R13L, /**
-         * < The "r13l" register.
-         */
-        DR_REG_R14L, /**
-         * < The "r14l" register.
-         */
-        DR_REG_R15L, /**
-         * < The "r15l" register.
-         */
+        DR_REG_R12L, /**< The "r12l" register. */
+        DR_REG_R13L, /**< The "r13l" register. */
+        DR_REG_R14L, /**< The "r14l" register. */
+        DR_REG_R15L, /**< The "r15l" register. */
 
-        DR_REG_SPL, /**
-         * < The "spl" register.
-         */
-        DR_REG_BPL, /**
-         * < The "bpl" register.
-         */
-        DR_REG_SIL, /**
-         * < The "sil" register.
-         */
-        DR_REG_DIL, /**
-         * < The "dil" register.
-         */
+        DR_REG_SPL, /**< The "spl" register. */
+        DR_REG_BPL, /**< The "bpl" register. */
+        DR_REG_SIL, /**< The "sil" register. */
+        DR_REG_DIL, /**< The "dil" register. */
 
     /* 64-BIT MMX */
-        DR_REG_MM0, /**
-         * < The "mm0" register.
-         */
-        DR_REG_MM1, /**
-         * < The "mm1" register.
-         */
-        DR_REG_MM2, /**
-         * < The "mm2" register.
-         */
-        DR_REG_MM3, /**
-         * < The "mm3" register.
-         */
+        DR_REG_MM0, /**< The "mm0" register. */
+        DR_REG_MM1, /**< The "mm1" register. */
+        DR_REG_MM2, /**< The "mm2" register. */
+        DR_REG_MM3, /**< The "mm3" register. */
 
-        DR_REG_MM4, /**
-         * < The "mm4" register.
-         */
-        DR_REG_MM5, /**
-         * < The "mm5" register.
-         */
-        DR_REG_MM6, /**
-         * < The "mm6" register.
-         */
-        DR_REG_MM7, /**
-         * < The "mm7" register.
-         */
+        DR_REG_MM4, /**< The "mm4" register. */
+        DR_REG_MM5, /**< The "mm5" register. */
+        DR_REG_MM6, /**< The "mm6" register. */
+        DR_REG_MM7, /**< The "mm7" register. */
 
     /* 128-BIT XMM */
-        DR_REG_XMM0, /**
-         * < The "xmm0" register.
-         */
-        DR_REG_XMM1, /**
-         * < The "xmm1" register.
-         */
-        DR_REG_XMM2, /**
-         * < The "xmm2" register.
-         */
-        DR_REG_XMM3, /**
-         * < The "xmm3" register.
-         */
+        DR_REG_XMM0, /**< The "xmm0" register. */
+        DR_REG_XMM1, /**< The "xmm1" register. */
+        DR_REG_XMM2, /**< The "xmm2" register. */
+        DR_REG_XMM3, /**< The "xmm3" register. */
 
-        DR_REG_XMM4, /**
-         * < The "xmm4" register.
-         */
-        DR_REG_XMM5, /**
-         * < The "xmm5" register.
-         */
-        DR_REG_XMM6, /**
-         * < The "xmm6" register.
-         */
-        DR_REG_XMM7, /**
-         * < The "xmm7" register.
-         */
+        DR_REG_XMM4, /**< The "xmm4" register. */
+        DR_REG_XMM5, /**< The "xmm5" register. */
+        DR_REG_XMM6, /**< The "xmm6" register. */
+        DR_REG_XMM7, /**< The "xmm7" register. */
 
-        DR_REG_XMM8, /**
-         * < The "xmm8" register.
-         */
-        DR_REG_XMM9, /**
-         * < The "xmm9" register.
-         */
-        DR_REG_XMM10, /**
-         * < The "xmm10" register.
-         */
-        DR_REG_XMM11, /**
-         * < The "xmm11" register.
-         */
+        DR_REG_XMM8, /**< The "xmm8" register. */
+        DR_REG_XMM9, /**< The "xmm9" register. */
+        DR_REG_XMM10, /**< The "xmm10" register. */
+        DR_REG_XMM11, /**< The "xmm11" register. */
 
-        DR_REG_XMM12, /**
-         * < The "xmm12" register.
-         */
-        DR_REG_XMM13, /**
-         * < The "xmm13" register.
-         */
-        DR_REG_XMM14, /**
-         * < The "xmm14" register.
-         */
-        DR_REG_XMM15, /**
-         * < The "xmm15" register.
-         */
+        DR_REG_XMM12, /**< The "xmm12" register. */
+        DR_REG_XMM13, /**< The "xmm13" register. */
+        DR_REG_XMM14, /**< The "xmm14" register. */
+        DR_REG_XMM15, /**< The "xmm15" register. */
 
 	/* floating point registers */
-        DR_REG_ST0, /**
-         * < The "st0" register.
-         */
-        DR_REG_ST1, /**
-         * < The "st1" register.
-         */
-        DR_REG_ST2, /**
-         * < The "st2" register.
-         */
-        DR_REG_ST3, /**
-         * < The "st3" register.
-         */
+        DR_REG_ST0, /**< The "st0" register. */
+        DR_REG_ST1, /**< The "st1" register. */
+        DR_REG_ST2, /**< The "st2" register. */
+        DR_REG_ST3, /**< The "st3" register. */
 
-        DR_REG_ST4, /**
-         * < The "st4" register.
-         */
-        DR_REG_ST5, /**
-         * < The "st5" register.
-         */
-        DR_REG_ST6, /**
-         * < The "st6" register.
-         */
-        DR_REG_ST7, /**
-         * < The "st7" register.
-         */
+        DR_REG_ST4, /**< The "st4" register. */
+        DR_REG_ST5, /**< The "st5" register. */
+        DR_REG_ST6, /**< The "st6" register. */
+        DR_REG_ST7, /**< The "st7" register. */
 
         DR_REG_ST8,
         DR_REG_ST9,
@@ -3860,187 +3658,77 @@ public class DefinesDotH {
         DR_REG_ST15,
 
         /* segments (order from "Sreg" description in Intel manual) */
-        DR_SEG_ES, /**
-         * < The "es" register.
-         */
-        DR_SEG_CS, /**
-         * < The "cs" register.
-         */
-        DR_SEG_SS, /**
-         * < The "ss" register.
-         */
-        DR_SEG_DS, /**
-         * < The "ds" register.
-         */
-        DR_SEG_FS, /**
-         * < The "fs" register.
-         */
-        DR_SEG_GS, /**
-         * < The "gs" register.
-         */
+        DR_SEG_ES, /**< The "es" register. */
+        DR_SEG_CS, /**< The "cs" register. */
+        DR_SEG_SS, /**< The "ss" register. */
+        DR_SEG_DS, /**< The "ds" register. */
+        DR_SEG_FS, /**< The "fs" register. */
+        DR_SEG_GS, /**< The "gs" register. */
 
 	/* debug & control registers (privileged access only; 8-15 for future processors) */
-        DR_REG_DR0, /**
-         * < The "dr0" register.
-         */
-        DR_REG_DR1, /**
-         * < The "dr1" register.
-         */
-        DR_REG_DR2, /**
-         * < The "dr2" register.
-         */
-        DR_REG_DR3, /**
-         * < The "dr3" register.
-         */
+        DR_REG_DR0, /**< The "dr0" register. */
+        DR_REG_DR1, /**< The "dr1" register. */
+        DR_REG_DR2, /**< The "dr2" register. */
+        DR_REG_DR3, /**< The "dr3" register. */
 
-        DR_REG_DR4, /**
-         * < The "dr4" register.
-         */
-        DR_REG_DR5, /**
-         * < The "dr5" register.
-         */
-        DR_REG_DR6, /**
-         * < The "dr6" register.
-         */
-        DR_REG_DR7, /**
-         * < The "dr7" register.
-         */
+        DR_REG_DR4, /**< The "dr4" register. */
+        DR_REG_DR5, /**< The "dr5" register. */
+        DR_REG_DR6, /**< The "dr6" register. */
+        DR_REG_DR7, /**< The "dr7" register. */
 
-        DR_REG_DR8, /**
-         * < The "dr8" register.
-         */
-        DR_REG_DR9, /**
-         * < The "dr9" register.
-         */
-        DR_REG_DR10, /**
-         * < The "dr10" register.
-         */
-        DR_REG_DR11, /**
-         * < The "dr11" register.
-         */
+        DR_REG_DR8, /**< The "dr8" register. */
+        DR_REG_DR9, /**< The "dr9" register. */
+        DR_REG_DR10, /**< The "dr10" register. */
+        DR_REG_DR11, /**< The "dr11" register. */
 
-        DR_REG_DR12, /**
-         * < The "dr12" register.
-         */
-        DR_REG_DR13, /**
-         * < The "dr13" register.
-         */
-        DR_REG_DR14, /**
-         * < The "dr14" register.
-         */
-        DR_REG_DR15, /**
-         * < The "dr15" register.
-         */
+        DR_REG_DR12, /**< The "dr12" register. */
+        DR_REG_DR13, /**< The "dr13" register. */
+        DR_REG_DR14, /**< The "dr14" register. */
+        DR_REG_DR15, /**< The "dr15" register. */
 
 	/* cr9-cr15 do not yet exist on current x64 hardware */
-        DR_REG_CR0, /**
-         * < The "cr0" register.
-         */
-        DR_REG_CR1, /**
-         * < The "cr1" register.
-         */
-        DR_REG_CR2, /**
-         * < The "cr2" register.
-         */
-        DR_REG_CR3, /**
-         * < The "cr3" register.
-         */
+        DR_REG_CR0, /**< The "cr0" register. */
+        DR_REG_CR1, /**< The "cr1" register. */
+        DR_REG_CR2, /**< The "cr2" register. */
+        DR_REG_CR3, /**< The "cr3" register. */
 
-        DR_REG_CR4, /**
-         * < The "cr4" register.
-         */
-        DR_REG_CR5, /**
-         * < The "cr5" register.
-         */
-        DR_REG_CR6, /**
-         * < The "cr6" register.
-         */
-        DR_REG_CR7, /**
-         * < The "cr7" register.
-         */
+        DR_REG_CR4, /**< The "cr4" register. */
+        DR_REG_CR5, /**< The "cr5" register. */
+        DR_REG_CR6, /**< The "cr6" register. */
+        DR_REG_CR7, /**< The "cr7" register. */
 
-        DR_REG_CR8, /**
-         * < The "cr8" register.
-         */
-        DR_REG_CR9, /**
-         * < The "cr9" register.
-         */
-        DR_REG_CR10, /**
-         * < The "cr10" register.
-         */
-        DR_REG_CR11, /**
-         * < The "cr11" register.
-         */
+        DR_REG_CR8, /**< The "cr8" register. */
+        DR_REG_CR9, /**< The "cr9" register. */
+        DR_REG_CR10, /**< The "cr10" register. */
+        DR_REG_CR11, /**< The "cr11" register. */
 
-        DR_REG_CR12, /**
-         * < The "cr12" register.
-         */
-        DR_REG_CR13, /**
-         * < The "cr13" register.
-         */
-        DR_REG_CR14, /**
-         * < The "cr14" register.
-         */
-        DR_REG_CR15, /**
-         * < The "cr15" register.
-         */
+        DR_REG_CR12, /**< The "cr12" register. */
+        DR_REG_CR13, /**< The "cr13" register. */
+        DR_REG_CR14, /**< The "cr14" register. */
+        DR_REG_CR15, /**< The "cr15" register. */
 
-        DR_REG_INVALID, /**
-         * < Sentinel value indicating an invalid register.
-         */
+        DR_REG_INVALID, /**< Sentinel value indicating an invalid register. */
 
 	/* 256-BIT YMM */
-        DR_REG_YMM0, /**
-         * < The "ymm0" register.
-         */
-        DR_REG_YMM1, /**
-         * < The "ymm1" register.
-         */
-        DR_REG_YMM2, /**
-         * < The "ymm2" register.
-         */
-        DR_REG_YMM3, /**
-         * < The "ymm3" register.
-         */
+        DR_REG_YMM0, /**< The "ymm0" register. */
+        DR_REG_YMM1, /**< The "ymm1" register. */
+        DR_REG_YMM2, /**< The "ymm2" register. */
+        DR_REG_YMM3, /**< The "ymm3" register. */
 
-        DR_REG_YMM4, /**
-         * < The "ymm4" register.
-         */
-        DR_REG_YMM5, /**
-         * < The "ymm5" register.
-         */
-        DR_REG_YMM6, /**
-         * < The "ymm6" register.
-         */
-        DR_REG_YMM7, /**
-         * < The "ymm7" register.
-         */
+        DR_REG_YMM4, /**< The "ymm4" register. */
+        DR_REG_YMM5, /**< The "ymm5" register. */
+        DR_REG_YMM6, /**< The "ymm6" register. */
+        DR_REG_YMM7, /**< The "ymm7" register. */
 
-        DR_REG_YMM8, /**
-         * < The "ymm8" register.
-         */
-        DR_REG_YMM9, /**
-         * < The "ymm9" register.
-         */
-        DR_REG_YMM10, /**
-         * < The "ymm10" register.
-         */
-        DR_REG_YMM11, /**
-         * < The "ymm11" register.
-         */
+        DR_REG_YMM8, /**< The "ymm8" register. */
+        DR_REG_YMM9, /**< The "ymm9" register. */
+        DR_REG_YMM10, /**< The "ymm10" register. */
+        DR_REG_YMM11, /**< The "ymm11" register. */
 
-        DR_REG_YMM12, /**
-         * < The "ymm12" register.
-         */
-        DR_REG_YMM13, /**
-         * < The "ymm13" register.
-         */
-        DR_REG_YMM14, /**
-         * < The "ymm14" register.
-         */
-        DR_REG_YMM15, /**
-         * < The "ymm15" register.
-         */
+        DR_REG_YMM12, /**< The "ymm12" register. */
+        DR_REG_YMM13, /**< The "ymm13" register. */
+        DR_REG_YMM14, /**< The "ymm14" register. */
+        DR_REG_YMM15, /**< The "ymm15" register. */
 
 
 	/*virtual registers for split and joins*/
@@ -4117,6 +3805,5 @@ public class DefinesDotH {
         Reserved_1,
         Carry_Flag
     }
-
 }
 

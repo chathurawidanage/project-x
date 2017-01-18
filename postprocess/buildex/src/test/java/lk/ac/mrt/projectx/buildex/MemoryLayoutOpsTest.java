@@ -21,7 +21,7 @@ public class MemoryLayoutOpsTest {
     }
 
     /**
-     * This method tests createMemoryLayout method for blur filter
+     * This method tests createMemoryLayoutMemoryInfo method for blur filter
      *
      * @throws Exception
      */
@@ -34,7 +34,7 @@ public class MemoryLayoutOpsTest {
                 exec,
                 false
         );
-        List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayout(instructionTraceFile, 1);
+        List<MemoryInfo> memoryLayout = MemoryLayoutOps.createMemoryLayoutMemoryInfo(instructionTraceFile, 1);
         assertEquals(memoryLayout.size(), 10);
 
         File memoryInfoIntStr = new File(

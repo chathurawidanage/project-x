@@ -8,7 +8,7 @@ import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
  */
 public class MemoryInput {
     private String module;
-    private int pc;
+    private long pc;
 
     private long memAddress;
     private boolean write;
@@ -23,11 +23,11 @@ public class MemoryInput {
         this.module = module;
     }
 
-    public int getPc() {
+    public long getPc() {
         return pc;
     }
 
-    public void setPc(int pc) {
+    public void setPc(long pc) {
         this.pc = pc;
     }
 

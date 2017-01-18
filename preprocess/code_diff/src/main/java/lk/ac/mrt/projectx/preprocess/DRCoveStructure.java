@@ -198,8 +198,12 @@ public class DRCoveStructure implements Cloneable {
             logger.info("Invalid BBS {}", invalidModules);
             logger.info("Valid BBS {}", noOfBasicBlocks - invalidModules);
         } finally {
-            bufferedReader.close();
-            fileReader.close();
+            if(bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if(fileReader != null) {
+                fileReader.close();
+            }
         }
 
         CheckStructureIntegrity();

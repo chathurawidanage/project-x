@@ -1,6 +1,5 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -58,6 +57,7 @@ public class ConcreteTree extends Tree {
     private Boolean updateDependencyBackward(){
         throw new NotImplementedException();
     }
+
     //endregion public methods
 
     //region private methods

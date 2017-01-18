@@ -6,6 +6,13 @@
     <groupId>lk.ac.mrt.projectx</groupId>
     <artifactId>preprocess-code-diff</artifactId>
     <version>0.0.1</version>
+    <dependencies>
+        <dependency>
+            <groupId>lk.ac.mrt</groupId>
+            <artifactId>projectx-postprocess-buildex</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+    </dependencies>
     <packaging>pom</packaging>
     <name>ProjectX Code Diff</name>
 

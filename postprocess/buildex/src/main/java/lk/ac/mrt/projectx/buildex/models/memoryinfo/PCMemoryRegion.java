@@ -60,4 +60,15 @@ public class PCMemoryRegion {
     public void setToRegion(List<PCMemoryRegion> toRegion) {
         this.toRegion = toRegion;
     }
+
+    @Override
+    public String toString() {
+        return "PCMemoryRegion{" +
+                "module='" + module + '\'' +
+                ", pc=" + pc +
+                ", fromRegion=" + fromRegion +
+                ", regions=" + regions +
+                ", toRegion=" + toRegion +
+                '}';
+    }
 }

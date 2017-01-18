@@ -3510,6 +3510,36 @@ public class DefinesDotH {
             }
             return answer;
         }
+
+        // TODO : Not complete -- done as Helium
+        public Boolean isFloatingPointIns() {
+            Boolean answer = false;
+            switch (this) {
+                case OP_fld:
+                case OP_fld1:
+                case OP_fild:
+                case OP_fldz:
+                case OP_fst:
+                case OP_fstp:
+                case OP_fistp:
+                case OP_fmul:
+                case OP_fmulp:
+                case OP_fxch:
+                case OP_fadd:
+                case OP_faddp:
+                case OP_fsub:
+                case OP_fsubp:
+                case OP_fdiv:
+                case OP_fdivp:
+                case OP_fcomp:
+                    answer = true;
+                    break;
+                default:
+                    answer = false;
+                    break;
+            }
+            return answer;
+        }
     }
 
 

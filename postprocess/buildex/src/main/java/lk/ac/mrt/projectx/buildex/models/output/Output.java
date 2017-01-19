@@ -82,4 +82,8 @@ public class Output {
     public void setPc(long pc) {
         this.pc = pc;
     }
+
+    public boolean isBounds(int d, int s) {
+        return ((this.getNumOfDestinations() == d) && (this.getNumOfSources() == s));
+    }
 }

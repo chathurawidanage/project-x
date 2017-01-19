@@ -1,5 +1,7 @@
 package lk.ac.mrt.projectx.buildex.x86;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 /**
  * Created by krv on 12/5/2016.
  */
@@ -156,5 +158,30 @@ public class X86Analysis {
         }
 
         //endregion public methods
+    }
+
+    public enum LahfBits{
+        CARRY_LAHF,
+        RESERVED_7_LAHF,
+        PARITY_LAHF,
+        RESERVED_5_LAHF,
+        AUXILIARY_LAHF,
+        RESERVED_3_LAHF,
+        ZERO_LAHF,
+        SIGN_LAHF,
+        OVERFLOW_LAHF
+    }
+
+    // TODO [KRV] : check the impact of using long instead of int
+    public static Boolean checkLAHFBit(LahfBits flagType, Long regVal){
+        Long ah = (regVal >> 8 ) & 0xFF;
+        Long al = (regVal ) & 0xFF;
+        Boolean ans = null;
+        if(flagType == LahfBits.OVERFLOW_LAHF){
+            ans =  al == 1;
+        }else{
+            ans = (ah&(1<< flagType.ordinal())) == (1<< flagType.ordinal());
+        }
+        return ans;
     }
 }

@@ -13,8 +13,8 @@ public class Output {
     private OpCodes opcode;
     private int numOfSources;
     private int numOfDestinations;
-    private List<Operand> srcs=new ArrayList<>();
-    private List<Operand> dsts=new ArrayList<>();
+    private List<Operand> srcs = new ArrayList<>();
+    private List<Operand> dsts = new ArrayList<>();
     private long eflags;
     private long pc;
 
@@ -27,11 +27,11 @@ public class Output {
     }
 
     public void setOpcode(Integer opcode) {
-        this.opcode = OpCodes.values()[opcode];
+        this.opcode = OpCodes.values()[ opcode ];
     }
 
     public void setOpcode(String opcode) {
-        OpCodes op =  OpCodes.values()[Integer.parseInt(opcode)];
+        OpCodes op = OpCodes.values()[ Integer.parseInt( opcode ) ];
         this.opcode = op;
     }
 

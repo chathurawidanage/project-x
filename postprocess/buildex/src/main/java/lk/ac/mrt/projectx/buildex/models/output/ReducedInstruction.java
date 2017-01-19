@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_VIRTUAL_1;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.checkLAHFBit;
 
 /**
  * Created by krv on 1/12/17.
@@ -606,6 +608,7 @@ public class ReducedInstruction {
                 break;
             case OP_sbb:
                 if(isBounds( cinst, 1,2 )){
+                    Boolean cf = checkLAHFBit( X86Analysis.LahfBits.CARRY_LAHF, cinst.getEflags());
                 }
                 break;
 

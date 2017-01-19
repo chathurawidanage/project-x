@@ -4,12 +4,12 @@ import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_VIRTUAL_1;
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.OpCodes.*;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.checkLAHFBit;
 
 /**
@@ -46,12 +46,12 @@ public class ReducedInstruction {
         return operation;
     }
 
-    public void setOperation(Operation operation) {
-        this.operation = operation;
-    }
-
     public void setOperation(Integer operation) {
         this.operation = Operation.values()[ operation ];
+    }
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
     }
 
     public Operand getDst() {
@@ -607,8 +607,272 @@ public class ReducedInstruction {
                 }
                 break;
             case OP_sbb:
-                if(isBounds( cinst, 1,2 )){
-                    Boolean cf = checkLAHFBit( X86Analysis.LahfBits.CARRY_LAHF, cinst.getEflags());
+                if (isBounds( cinst, 1, 2 )) {
+                    Boolean cf = checkLAHFBit( X86Analysis.LahfBits.CARRY_LAHF, cinst.getEflags() );
+                    ReducedInstruction inst0 = null;
+                    // dsts[0] <- srcs[1] - srcs[0]
+                    if (cinst.getSrcs().get( 0 ).getType() == cinst.getSrcs().get( 1 ).getType()
+                            && cinst.getSrcs().get( 0 ).getValue() == cinst.getSrcs().get( 1 ).getValue()) {
+                        Operand immediate0 = new Operand( MemoryType.IMM_INT_TYPE, cinst.getSrcs().get( 1 ).getWidth(),
+                                0 );
+                        inst0 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 )
+                                , true );
+                        inst0.getSrcs().add( immediate0 );
+                    } else {
+                        inst0 = new ReducedInstruction( Operation.op_sub, cinst.getDsts().get( 0 )
+                                , true );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    }
+                    rInstructions.add( inst0 );
+                    if (cf) {
+                        // subtract an immediate 1
+                        // dsts[0] <- dsts[0] - 1
+                        Operand immediate1 = new Operand( MemoryType.IMM_INT_TYPE, cinst.getSrcs().get( 1 ).getWidth(),
+                                1 );
+                        ReducedInstruction inst1 = new ReducedInstruction( Operation.op_sub, cinst.getDsts().get( 0 )
+                                , true );
+                        inst1.getSrcs().add( cinst.getDsts().get( 0 ) );
+                        inst1.getSrcs().add( immediate1 );
+                        rInstructions.add( inst1 );
+                    }
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_adc:
+                if (isBounds( cinst, 1, 2 )) {
+                    Boolean cf = checkLAHFBit( X86Analysis.LahfBits.CARRY_LAHF, cinst.getEflags() );
+
+                    // dsts[0] <- srcs[1] + srcs[0]
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_add, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+
+                    // dsts[0] <- dsts[0] + 1
+                    if (cf) {
+                        Operand immediate1 = new Operand( MemoryType.IMM_INT_TYPE, cinst.getSrcs().get( 1 ).getWidth(),
+                                1 );
+                        ReducedInstruction inst1 = new ReducedInstruction( Operation.op_add, cinst.getDsts().get( 0 ),
+                                true );
+                        inst1.getSrcs().add( cinst.getDsts().get( 0 ) );
+                        inst1.getSrcs().add( immediate1 );
+                        rInstructions.add( inst1 );
+                    }
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_cmovle:
+            case OP_cmovnle:
+            case OP_cmovl:
+            case OP_cmovnl:
+            case OP_cmovz:
+            case OP_cmovns:
+            case OP_cmovnz:
+                if (isBounds( cinst, 1, 2 )) {
+                    Boolean zf = checkLAHFBit( X86Analysis.LahfBits.ZERO_LAHF, cinst.getEflags() );
+                    Boolean sf = checkLAHFBit( X86Analysis.LahfBits.SIGN_LAHF, cinst.getEflags() );
+                    Boolean of = checkLAHFBit( X86Analysis.LahfBits.OVERFLOW_LAHF, cinst.getEflags() );
+                    boolean check = false;
+                    if (cinst.getOpcode() == OP_cmovl) {
+                        check = (sf != of);
+                    } else if (cinst.getOpcode() == OP_cmovle) {
+                        check = (zf || (sf != of));
+                    } else if (cinst.getOpcode() == OP_cmovnle) {
+                        check = ((!zf) || (sf == of));
+                    } else if (cinst.getOpcode() == OP_cmovnl) {
+                        check = (sf == of);
+                    } else if (cinst.getOpcode() == OP_cmovz) {
+                        check = zf;
+                    } else if (cinst.getOpcode() == OP_cmovnz) {
+                        check = !zf;
+                    } else if (cinst.getOpcode() == OP_cmovns) {
+                        check = !sf;
+                    }
+
+                    if (check) {
+                        ReducedInstruction inst0 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 )
+                                , true );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                        rInstructions.add( inst0 );
+                    }
+
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_setz:
+            case OP_sets:
+            case OP_setns:
+            case OP_setnz:
+            case OP_setb:
+                if (isBounds( cinst, 1, 0 )) {
+                    boolean flag = false;
+                    switch (cinst.getOpcode()) {
+                        case OP_setz:
+                            flag = checkLAHFBit( X86Analysis.LahfBits.ZERO_LAHF, cinst.getEflags() );
+                            break;
+                        case OP_setnz:
+                            flag = checkLAHFBit( X86Analysis.LahfBits.ZERO_LAHF, cinst.getEflags() );
+                            break;
+                        case OP_sets:
+                            flag = checkLAHFBit( X86Analysis.LahfBits.SIGN_LAHF, cinst.getEflags() );
+                            break;
+                        case OP_setns:
+                            flag = checkLAHFBit( X86Analysis.LahfBits.SIGN_LAHF, cinst.getEflags() );
+                            break;
+                        case OP_setb:
+                            flag = checkLAHFBit( X86Analysis.LahfBits.CARRY_LAHF, cinst.getEflags() );
+                            break;
+                    }
+
+                    Operand immediate = null;
+
+                    if (flag) {
+                        immediate = new Operand( MemoryType.IMM_INT_TYPE, cinst.getDsts().get( 0 ).getWidth(),
+                                1 );
+                    } else {
+                        immediate = new Operand( MemoryType.IMM_INT_TYPE, cinst.getDsts().get( 0 ).getWidth(),
+                                0 );
+                    }
+
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( immediate );
+                    rInstructions.add( inst0 );
+
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_xadd:
+                if (isBounds( cinst, 2, 2 )) {
+                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, cinst.getSrcs().get( 0 ).getWidth(),
+                            DR_REG_VIRTUAL_1.ordinal() );
+                    virtualReg.regToMemRange();
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_add, virtualReg, true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+
+                    ReducedInstruction inst1 = new ReducedInstruction( Operation.op_assign, cinst.getSrcs().get( 1 ),
+                            true );
+                    inst1.getSrcs().add( cinst.getSrcs().get( 0 ) );
+
+                    ReducedInstruction inst2 = new ReducedInstruction( Operation.op_assign, cinst.getSrcs().get( 0 ),
+                            true );
+                    inst2.getSrcs().add( virtualReg );
+
+                    rInstructions.add( inst0 );
+                    rInstructions.add( inst1 );
+                    rInstructions.add( inst2 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+
+            /***************************************************floating point instructions*********************************************************/
+
+		    /* floating point instructions */
+            case OP_fld: //Push m32fp onto the FPU register stack.
+            case OP_fld1: //Push +1.0 onto the FPU register stack
+            case OP_fild: //Push m32int onto the FPU register stack.
+            case OP_fldz: //Push +0.0 onto the FPU register stack.
+                // dst[0] <- src[0]
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_fst:
+            case OP_fstp:  //Copy ST(0) to m32fp and pop register stack.
+            case OP_fistp:  //Store ST(0) in m32int and pop register stack.
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_fmul: //Multiply ST(0) by m32fp and store result in ST(0).
+            case OP_fmulp:  //Multiply ST(i) by ST(0), store result in ST(i), and pop the register stack.
+                if (isBounds( cinst, 1, 2 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_mul, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+
+            //Exchange the contents of ST(0) and ST(i).
+            case OP_fxch:
+                //exchange the two registers
+                if (isBounds( cinst, 2, 2 )) {
+                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, cinst.getSrcs().get( 0 ).getWidth(),
+                            DR_REG_VIRTUAL_1.ordinal() );
+                    virtualReg.regToMemRange();
+
+                    // virtual <- src[0]
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_assign, virtualReg, false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+
+                    // dst[0] <- src[1]
+                    ReducedInstruction inst1 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 ),
+                            false );
+                    inst1.getSrcs().add( cinst.getSrcs().get( 1 ) );
+
+                    // dst[1] <- virtual
+                    ReducedInstruction inst2 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 1 ),
+                            false );
+                    inst1.getSrcs().add( virtualReg );
+
+                    rInstructions.add( inst0 );
+                    rInstructions.add( inst1 );
+                    rInstructions.add( inst2 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_faddp:  //Add ST(0) to ST(i), store result in ST(i), and pop the register stack
+            case OP_fadd:   //Add m32fp to ST(0) and store result in ST(0).
+            case OP_fsubp:  //Subtract ST(0) from ST(1), store result in ST(1), and pop register stack.
+            case OP_fsub:   //Subtract m32fp from ST(0) and store result in ST(0).
+            case OP_fdivp:  //Divide ST(1) by ST(0), store result in ST(1), and pop the register stack.
+            case OP_fdiv:   //Divide ST(0) by m32fp and store result in ST(0).
+                // dst[0] <- src[1] (op) src[0]
+                if (isBounds( cinst, 1, 2 )) {
+                    Operation op = null;
+                    switch (cinst.getOpcode()) {
+                        case OP_faddp:
+                        case OP_fadd:
+                            op = Operation.op_add;
+                            break;
+                        case OP_fsubp:
+                        case OP_fsub:
+                            op = Operation.op_sub;
+                            break;
+                        case OP_fdivp:
+                        case OP_fdiv:
+                            op = Operation.op_div;
+                            break;
+                    }
+                    ReducedInstruction inst0 = new ReducedInstruction( op, cinst.getDsts().get( 0 ), false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
                 }
                 break;
 

@@ -844,12 +844,12 @@ public class ReducedInstruction {
                     unhandled = true;
                 }
                 break;
-            case OP_faddp:  //Add ST(0) to ST(i), store result in ST(i), and pop the register stack
-            case OP_fadd:   //Add m32fp to ST(0) and store result in ST(0).
-            case OP_fsubp:  //Subtract ST(0) from ST(1), store result in ST(1), and pop register stack.
-            case OP_fsub:   //Subtract m32fp from ST(0) and store result in ST(0).
-            case OP_fdivp:  //Divide ST(1) by ST(0), store result in ST(1), and pop the register stack.
-            case OP_fdiv:   //Divide ST(0) by m32fp and store result in ST(0).
+            case OP_faddp:  // Add ST(0) to ST(i), store result in ST(i), and pop the register stack
+            case OP_fadd:   // Add m32fp to ST(0) and store result in ST(0).
+            case OP_fsubp:  // Subtract ST(0) from ST(1), store result in ST(1), and pop register stack.
+            case OP_fsub:   // Subtract m32fp from ST(0) and store result in ST(0).
+            case OP_fdivp:  // Divide ST(1) by ST(0), store result in ST(1), and pop the register stack.
+            case OP_fdiv:   // Divide ST(0) by m32fp and store result in ST(0).
                 // dst[0] <- src[1] (op) src[0]
                 if (isBounds( cinst, 1, 2 )) {
                     Operation op = null;
@@ -867,6 +867,7 @@ public class ReducedInstruction {
                             op = Operation.op_div;
                             break;
                     }
+                    /* changed for SUB (src1, src0) from the reverse: please verify */
                     ReducedInstruction inst0 = new ReducedInstruction( op, cinst.getDsts().get( 0 ), false );
                     inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
                     inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
@@ -875,15 +876,93 @@ public class ReducedInstruction {
                     unhandled = true;
                 }
                 break;
+            case OP_fsubr:
+                if (isBounds( cinst, 1, 2 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_sub, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    rInstructions.add( inst0 );
 
+                } else {
+                    unhandled = true;
+                }
+                break;
+            /******************************************************control flow instructions**************************************************************************************************/
+
+            case OP_btr:
+
+            case OP_cmpxchg:
+            case OP_rep_stos:
+            case OP_cld:
+            case OP_jbe:
+
+            case OP_fcom:
+            case OP_fcomp:
+
+		/* above change */
+
+            case OP_jmp:
+            case OP_jmp_short:
+            case OP_jnl:
+            case OP_jnl_short:
+            case OP_jl:
+            case OP_jnle:
+            case OP_jnle_short:
+            case OP_jnz:
+            case OP_jnz_short:
+            case OP_jz:
+            case OP_jnb_short:
+            case OP_jb_short:
+            case OP_jz_short:
+            case OP_jl_short:
+            case OP_jns_short:
+            case OP_js_short:
+            case OP_jnbe_short:
+            case OP_jle_short:
+            case OP_jle:
+            case OP_jbe_short:
+            case OP_jns:
+            case OP_jb:
+            case OP_jnb:
+            case OP_js:
+            case OP_jmp_ind:
+            case OP_jnbe:
+
+            case OP_cmp:
+            case OP_test:
+
+            case OP_call:
+            case OP_ret:
+            case OP_call_ind:
+
+		/* need to check these as they change esp and ebp ; for now just disregard */
+            case OP_enter:
+            case OP_leave:
+
+		/* floating point control word stores and loads */
+            case OP_fldcw:
+            case OP_fnstcw:
+            case OP_fnstsw:
+            case OP_stmxcsr:
+            case OP_fwait:
+
+            case OP_nop_modrm:
+            case OP_nop:
+                break;
+
+            default:
+                unhandled = true;
+                break;
         }
+
+        logger.debug( "Op code skipped %d", rInstructions.size() );
 
         for (int i = 0 ; i < rInstructions.size() ; i++) {
             ReducedInstruction ins = rInstructions.get( i );
             ins.setFloating( cinst.getOpcode().isFloatingPointIns() );
         }
         return rInstructions;
-
     }
 
     public void setFloating(Boolean floating) {

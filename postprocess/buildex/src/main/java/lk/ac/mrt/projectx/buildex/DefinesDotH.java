@@ -1,7 +1,14 @@
 package lk.ac.mrt.projectx.buildex;
 
+import lk.ac.mrt.projectx.buildex.trees.MemoryRegionUtils;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.EFLAGS_BITS.Overflow_Flag;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.LahfBits.*;
 
 /**
  * Created by krv on 1/1/17.
@@ -9,6 +16,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * // Not sure this is the best way to create this values
  */
 public class DefinesDotH {
+
+    private static final Logger logger = LogManager.getLogger( DefinesDotH.class );
 
     public enum OpCodes {
         /*   0 */     OP_INVALID, /*** < INVALID opcode */
@@ -3390,9 +3399,214 @@ public class DefinesDotH {
             this.OP_LAST = 1098;
         }
 
-        public Boolean isJmpConditionalAffected(Integer flags){
-            throw new NotImplementedException();
+        /**
+         * checks if a particular conditional jump is affected
+         * @param flags the flags bit mask vector of the condition codes for a given instruction, obtained through
+         *              is_eflags_affected function
+         * @return whether the condition codes that are updated by a particular instruction is actually consumed
+         *          by the conditional jump.
+         *
+         *          However, note that it is up to the user to perform reaching definitions analysis to find the correct
+         *          instruction which determines branching direction. This function will only say whether given the flags
+         *          mask vector for a particular instruction, will it potentially affect the branching decision for the
+         *          conditional jump that is queried.
+         */
+        public Boolean isJmpConditionalAffected(long flags) {
+            boolean cf = X86Analysis.checkLAHFBit( CARRY_LAHF, flags );
+            boolean zf = X86Analysis.checkLAHFBit( ZERO_LAHF, flags );
+            boolean of = X86Analysis.checkLAHFBit( OVERFLOW_LAHF, flags );
+            boolean af = X86Analysis.checkLAHFBit( AUXILIARY_LAHF, flags );
+            boolean pf = X86Analysis.checkLAHFBit( PARITY_LAHF, flags );
+            boolean sf = X86Analysis.checkLAHFBit( SIGN_LAHF, flags );
+            boolean answer = false;
+            // TODO : BUG - need to change it to a OR
+            switch (this) {
+                case OP_jnl:
+                case OP_jnl_short:
+                case OP_jl:
+                case OP_jl_short:
+                    // Jump short if not less(SF = OF)
+                    answer = (of && sf);
+                    break;
+                case OP_jnle:
+                case OP_jnle_short:
+                    //Jump short if not less or equal (ZF=0 and SF=OF)
+                    answer = (of && sf && zf);
+                    break;
+                case OP_jnz:
+                case OP_jnz_short:
+                case OP_jz:
+                case OP_jz_short:
+                    //ZF value
+                    answer = zf;
+                    break;
+                case OP_jb:
+                case OP_jb_short:
+                case OP_jnb:
+                case OP_jnb_short:
+                    //CF value
+                    answer = cf;
+                    break;
+                case OP_jns:
+                case OP_jns_short:
+                case OP_js:
+                case OP_js_short:
+                    //SF value
+                    answer = sf;
+                    break;
+                case OP_jbe_short:
+                    //Jump short if below or equal (CF=1 or ZF=1)
+                    answer = (cf || zf);
+                    break;
+                case OP_jle:
+                case OP_jle_short:
+                    //Jump near if less or equal (ZF=1 or SF~=OF)
+                    answer = (zf || (sf && of));
+                    break;
+                case OP_jnbe_short:
+                    //Jump short if not below or equal (CF=0 and ZF=0)
+                    answer = (cf && zf);
+                    break;
+                case OP_sbb:
+                    answer = cf;
+                    break;
+                case OP_jnbe:
+                    answer = (cf && zf);
+                    break;
+
+                case OP_cmovnle:
+                case OP_cmovle:
+                    answer = (zf || (sf && of));
+                    break;
+                case OP_cmovl:
+                case OP_cmovnl:
+                    answer = (sf && of);
+                    break;
+                case OP_cmovz:
+                    answer = zf;
+                    break;
+                case OP_cmovns:
+                    answer = sf;
+                    break;
+                case OP_cmovnz:
+                    answer = zf;
+                    break;
+                default:
+                    logger.error( "jmp affected opcode %d not handled in canonicalization", this );
+                    break;
+            }
+
+            return answer;
         }
+
+        /**
+         * Determines if the branch is taken based on the value of the flags register
+         *
+         * @param flags the actual value of the flags recovered by DR instrumentation at runtime via lahf instruction
+         *              (refer lahf_bits to find the exact position)
+         * @return based on the jump instruction and the flag values at the point of execution, whether this branch is
+         * taken or not
+         */
+        public Boolean isBranchTaken(long flags) {
+
+            boolean cf = X86Analysis.checkLAHFBit( CARRY_LAHF, flags );
+            boolean zf = X86Analysis.checkLAHFBit( ZERO_LAHF, flags );
+            boolean of = X86Analysis.checkLAHFBit( OVERFLOW_LAHF, flags );
+            boolean af = X86Analysis.checkLAHFBit( AUXILIARY_LAHF, flags );
+            boolean pf = X86Analysis.checkLAHFBit( PARITY_LAHF, flags );
+            boolean sf = X86Analysis.checkLAHFBit( SIGN_LAHF, flags );
+
+            boolean answer = false;
+
+            switch (this) {
+                case OP_jnl:
+                case OP_jnl_short:
+                    //Jump short if not less(SF = OF)
+                    answer = (of == sf);
+                    break;
+                case OP_jl:
+                case OP_jl_short:
+                    answer = (of != sf);
+                    break;
+                case OP_jnle:
+                case OP_jnle_short:
+                    //Jump short if not less or equal (ZF=0 and SF=OF)
+                    answer = ((of == sf) && !zf);
+                    break;
+                case OP_jnz:
+                case OP_jnz_short:
+                    answer = (!zf);
+                    break;
+                case OP_jz:
+                case OP_jz_short:
+                    //ZF value
+                    answer = zf;
+                    break;
+                case OP_jb:
+                case OP_jb_short:
+                    answer = cf;
+                    break;
+                case OP_jnb:
+                case OP_jnb_short:
+                    //CF value
+                    answer = !cf;
+                    break;
+                case OP_jns:
+                case OP_jns_short:
+                    answer = !sf;
+                    break;
+                case OP_js:
+                case OP_js_short:
+                    //SF value
+                    answer = sf;
+                    break;
+                case OP_jbe_short:
+                    //Jump short if below or equal (CF=1 or ZF=1)
+                    answer = (cf || zf);
+                    break;
+                case OP_jle:
+                case OP_jle_short:
+                    //Jump near if less or equal (ZF=1 or SF~=OF)
+                    answer = (zf || (sf != of));
+                    break;
+                case OP_jnbe_short:
+                    //Jump short if not below or equal (CF=0 and ZF=0)
+                    answer = (!cf && !zf);
+                    break;
+                case OP_sbb:
+                    answer = cf;
+                    break;
+                case OP_jnbe:
+                    answer = (!cf && !zf);
+                    break;
+                case OP_cmovle:
+                    answer = (zf || (sf != of));
+                    break;
+                case OP_cmovnle:
+                    answer = (!zf || (sf == of));
+                    break;
+                case OP_cmovl:
+                    answer = (sf != of);
+                    break;
+                case OP_cmovnl:
+                    answer = (sf == of);
+                    break;
+                case OP_cmovz:
+                    answer = zf;
+                    break;
+                case OP_cmovns:
+                    answer = !sf;
+                    break;
+                case OP_cmovnz:
+                    answer = !zf;
+                    break;
+                default:
+                    logger.error( "opcode %d not handled in canonicalization", this );
+                    break;
+            }
+            return answer;
+        }
+
         public Operation DrLogicalToOperation() {
             Operation retOp;
             switch (this) {
@@ -3466,6 +3680,10 @@ public class DefinesDotH {
             return retOp;
         }
 
+        /**
+         *  Check whether the instruction is a conditional jump instruction
+         * @return ::Boolean whether the instruction is a conditional jump instruction
+         */
         public Boolean isConditionalJumpIns() {
             Boolean answer = false;
             switch (this) {
@@ -3510,11 +3728,215 @@ public class DefinesDotH {
             }
             return answer;
         }
+
+        /**
+         * This returns the flag mask register of the affected flags by the relevant opcode
+         *
+         * @return The mask register which carries a bit vector of which flags are affected by which instruction
+         */
+        public int affectedEflags() {
+            int flags = 0;
+            switch (this) {
+                case OP_imul:
+                case OP_mul:
+                    //CF and OF
+                    flags |= (1 << EFLAGS_BITS.Carry_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Overflow_Flag.ordinal());
+                    break;
+                // all 6 flags
+                case OP_sub:
+                case OP_add:
+                case OP_neg:
+                case OP_sbb:
+                case OP_cmp:
+                    //Op_cmp - CF, OF, SF, ZF, AF, and PF
+                    //Op_neg - CF 0 if opnd 0, OF, SF, ZF, AF, and PF
+                    //OF, SF, ZF, AF, CF, and PF
+                    flags |= (1 << EFLAGS_BITS.Overflow_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Sign_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Zero_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Carry_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Parity_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Auxiliary_Carry_Flag.ordinal());
+                    break;
+                // without AF
+                case OP_test:
+                    //OF and CF flags are set to 0. The SF, ZF, and PF
+                case OP_sar:
+                case OP_shr:
+                case OP_shl:
+                    //OF, CF, SF, ZF, and PF (AF is generally undefined) - there are conditions for OF, CF as well but we will disregard them for now
+                case OP_xor:
+                case OP_and:
+                case OP_or:
+                    //OF,CF cleared, SF, ZF, PF
+                    flags |= (1 << EFLAGS_BITS.Overflow_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Sign_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Zero_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Carry_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Parity_Flag.ordinal());
+                    break;
+                // without CF
+                case OP_dec:
+                case OP_inc:
+                    //OF, SF, ZF, AF, and PF
+                    flags |= (1 << EFLAGS_BITS.Overflow_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Sign_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Zero_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Parity_Flag.ordinal());
+                    flags |= (1 << EFLAGS_BITS.Auxiliary_Carry_Flag.ordinal());
+                    break;
+            }
+            return flags;
+        }
+
+        /**
+         * Duplicate to keep the same function names as Helium
+         *
+         * @return
+         */
+        public int isEflagsAffected() {
+            return this.affectedEflags();
+        }
+
+        // TODO : Not complete -- done as Helium
+        public Boolean isFloatingPointIns() {
+            Boolean answer = false;
+            switch (this) {
+                case OP_fld:
+                case OP_fld1:
+                case OP_fild:
+                case OP_fldz:
+                case OP_fst:
+                case OP_fstp:
+                case OP_fistp:
+                case OP_fmul:
+                case OP_fmulp:
+                case OP_fxch:
+                case OP_fadd:
+                case OP_faddp:
+                case OP_fsub:
+                case OP_fsubp:
+                case OP_fdiv:
+                case OP_fdivp:
+                case OP_fcomp:
+                    answer = true;
+                    break;
+                default:
+                    answer = false;
+                    break;
+            }
+            return answer;
+        }
+
+        /**
+         *  checks if the particular instruction is handled
+         * @return whether the particular instruction is handled
+         */
+        public Boolean isInstructionHandled(){
+            boolean answer = false;
+            switch (this) {
+                case OP_movaps:
+                case OP_xorps:
+                case OP_movss:
+                case OP_pmuldq:
+                case OP_push_imm:
+                case OP_push:
+                case OP_pop:
+                case OP_mov_st:
+                case OP_mov_ld:
+                case OP_mov_imm:
+                case OP_movzx:
+                case OP_movsx:
+                case OP_movq:
+                case OP_movd:
+                case OP_movapd:
+                case OP_movdqa:
+                case OP_cvttsd2si:
+                case OP_imul:
+                case OP_mul:
+                case OP_idiv:
+                case OP_cdq:
+                case OP_xchg:
+                case OP_xor:
+                case OP_sub:
+                case OP_pxor:
+                case OP_psubd:
+                case OP_add:
+                case OP_and:
+                case OP_or:
+                case OP_andpd:
+                case OP_neg:
+                case OP_dec:
+                case OP_inc:
+                case OP_sar:
+                case OP_shr:
+                case OP_shl:
+                case OP_psllq:
+                case OP_psrlq:
+                case OP_not:
+                case OP_lea:
+                case OP_sbb:
+                case OP_setz:
+                case OP_sets:
+                case OP_setns:
+                case OP_setb:
+                case OP_cmp:
+                case OP_test:
+                case OP_jmp:
+                case OP_jmp_short:
+                case OP_jnl:
+                case OP_jnl_short:
+                case OP_jl:
+                case OP_jnle:
+                case OP_jnle_short:
+                case OP_jnz:
+                case OP_jnz_short:
+                case OP_jz:
+                case OP_jnb_short:
+                case OP_jb_short:
+                case OP_jz_short:
+                case OP_jl_short:
+                case OP_jns_short:
+                case OP_js_short:
+                case OP_jnbe_short:
+                case OP_jle_short:
+                case OP_jle:
+                case OP_jbe_short:
+                case OP_jns:
+                case OP_jb:
+                case OP_jnb:
+                case OP_js:
+                case OP_jmp_ind:
+                case OP_call:
+                case OP_ret:
+                case OP_call_ind:
+                case OP_enter:
+                case OP_leave:
+                case OP_fldcw:
+                case OP_fnstcw:
+                case OP_stmxcsr:
+                case OP_nop:
+                case OP_adc:
+                case OP_cwde:
+
+                case OP_cmovle:
+                case OP_cmovnle:
+                case OP_cmovl:
+                case OP_cmovnl:
+                case OP_cmovz:
+                case OP_cmovnz:
+
+                    answer = true;
+                default:
+                    answer = false;
+            }
+            return answer;
+        }
     }
 
 
-
-    public enum Registers {
+    public enum DR_REG {
         DR_REG_NULL, /**
          * < Sentinel value indicating no register, for address modes. "null" register
          */
@@ -4054,25 +4476,25 @@ public class DefinesDotH {
     }
 
     enum EFLAGS {
-        EFLAGS_CF(0x00000001), /**
+        EFLAGS_CF( 0x00000001 ), /**
          * < The bit in the eflags register of CF (Carry Flag).
          */
-        EFLAGS_PF(0x00000004), /**
+        EFLAGS_PF( 0x00000004 ), /**
          * < The bit in the eflags register of PF (Parity Flag).
          */
-        EFLAGS_AF(0x00000010), /**
+        EFLAGS_AF( 0x00000010 ), /**
          * < The bit in the eflags register of AF (Aux Carry Flag).
          */
-        EFLAGS_ZF(0x00000040), /**
+        EFLAGS_ZF( 0x00000040 ), /**
          * < The bit in the eflags register of ZF (Zero Flag).
          */
-        EFLAGS_SF(0x00000080), /**
+        EFLAGS_SF( 0x00000080 ), /**
          * < The bit in the eflags register of SF (Sign Flag).
          */
-        EFLAGS_DF(0x00000400), /**
+        EFLAGS_DF( 0x00000400 ), /**
          * < The bit in the eflags register of DF (Direction Flag).
          */
-        EFLAGS_OF(0x00000800);
+        EFLAGS_OF( 0x00000800 );
         /**
          * < The bit in the eflags register of OF (Overflow Flag).
          */
@@ -4080,7 +4502,7 @@ public class DefinesDotH {
         public final Integer value;
 
         EFLAGS(int i) {
-            value = new Integer(i);
+            value = new Integer( i );
         }
     }
 
@@ -4117,6 +4539,5 @@ public class DefinesDotH {
         Reserved_1,
         Carry_Flag
     }
-
 }
 

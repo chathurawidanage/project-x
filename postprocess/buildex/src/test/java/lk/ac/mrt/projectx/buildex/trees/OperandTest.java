@@ -10,13 +10,13 @@ import lk.ac.mrt.projectx.buildex.models.output.Operand;
 public class OperandTest extends TestCase {
 
     public void testConstructorInteger() {
-        Operand operand = new Operand(MemoryType.IMM_INT_TYPE, 50, 160);
+        Operand operand = new Operand(MemoryType.IMM_INT_TYPE, 160,50);
 
         assertEquals(50, operand.getValue());
     }
 
     public void testConstructorFloat() {
-        Operand operand = new Operand(MemoryType.IMM_FLOAT_TYPE, 50.0f, 160);
+        Operand operand = new Operand(MemoryType.IMM_FLOAT_TYPE,  160,50.0f);
 
         assertEquals(50.0f, operand.getValue());
     }

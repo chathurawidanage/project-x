@@ -49,6 +49,7 @@ public class Buildex {
         AppPCFile appPCFile = AppPCFile.filterAppPCFile(filterFileList, exec);
         logger.info("Found app pc file {}", appPCFile.toString());
 
+        /*MEMORY INFO STAGE*/
         MemoryAnalyser memoryAnalyser = MemoryAnalyser.getInstance();
         List<MemoryRegion> imageRegions = memoryAnalyser.getImageRegions(memoryDumpFileList, inputImage, outputImage);
         logger.info("Found {} image regions", imageRegions.size());
@@ -56,7 +57,6 @@ public class Buildex {
 
         List<MemoryInfo> memoryLayoutMemoryInfo = MemoryLayoutOps.createMemoryLayoutMemoryInfo(instructionTraceFile, 1);
         logger.info("Found {} memory infos", memoryLayoutMemoryInfo.size());
-        logger.debug(memoryLayoutMemoryInfo.toString());
 
         List<PCMemoryRegion> memoryLayoutPCMemoryRegion = MemoryLayoutOps.createMemoryLayoutPCMemoryRegion(instructionTraceFile, 1);
         logger.info("Found {} PC Memory Regions", memoryLayoutPCMemoryRegion.size());
@@ -66,5 +66,8 @@ public class Buildex {
         MemoryLayoutOps.linkMemoryRegionsGreedy(memoryLayoutMemoryInfo, 0);
         logger.debug("Linked memory regions. Size : {}", memoryLayoutMemoryInfo.size());
 
+        MemoryLayoutOps.mergeMemoryInfoPCMemoryRegion(memoryLayoutMemoryInfo, memoryLayoutPCMemoryRegion);
+        logger.info("Merged memory regions {}", memoryLayoutMemoryInfo.toString());
+        /*END OF MEMORY INFO STAGE*/
     }
 }

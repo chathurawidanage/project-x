@@ -77,6 +77,4 @@ public class MemoryLayoutOpsTest {
         String line = scanner.nextLine();
         assertEquals(memoryLayout.toString(), line.trim());
     }
-
-
 }

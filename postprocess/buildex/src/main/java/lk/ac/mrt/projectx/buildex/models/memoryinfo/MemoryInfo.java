@@ -117,4 +117,37 @@ public class MemoryInfo {
                 ", order=" + order +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MemoryInfo)) return false;
+
+        MemoryInfo that = (MemoryInfo) o;
+
+        if (getDirection() != that.getDirection()) return false;
+        if (getStart() != that.getStart()) return false;
+        if (getEnd() != that.getEnd()) return false;
+        if (getProbStride() != that.getProbStride()) return false;
+        if (isPaddingMerge() != that.isPaddingMerge()) return false;
+        if (getOrder() != that.getOrder()) return false;
+        if (getType() != that.getType()) return false;
+        if (getStrideFrequency() != null ? !getStrideFrequency().equals(that.getStrideFrequency()) : that.getStrideFrequency() != null)
+            return false;
+        return getMergedMemoryInfos() != null ? getMergedMemoryInfos().equals(that.getMergedMemoryInfos()) : that.getMergedMemoryInfos() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getType() != null ? getType().hashCode() : 0;
+        result = 31 * result + getDirection();
+        result = 31 * result + (int) (getStart() ^ (getStart() >>> 32));
+        result = 31 * result + (int) (getEnd() ^ (getEnd() >>> 32));
+        result = 31 * result + (int) (getProbStride() ^ (getProbStride() >>> 32));
+        result = 31 * result + (getStrideFrequency() != null ? getStrideFrequency().hashCode() : 0);
+        result = 31 * result + (getMergedMemoryInfos() != null ? getMergedMemoryInfos().hashCode() : 0);
+        result = 31 * result + (isPaddingMerge() ? 1 : 0);
+        result = 31 * result + getOrder();
+        return result;
+    }
 }

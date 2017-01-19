@@ -296,6 +296,13 @@ public class MemoryLayoutOps {
             }
         }
         postProcessMemoryRegionsMemoryInfo(memoryInfoList);
+
+        //assigning order
+        int order = 0;
+        for (MemoryInfo memoryInfo : memoryInfoList) {
+            memoryInfo.setOrder(order++);
+        }
+
         logger.debug("Creating memory layout : [Memory Info] - Done");
         return memoryInfoList;
     }
@@ -372,6 +379,7 @@ public class MemoryLayoutOps {
         return pcMemoryRegionList;
     }
 
+    /*POST PROCESSING*/
     private static void postProcessMemoryRegionsMemoryInfo(List<MemoryInfo> memoryInfoList) {
         defragmentMemoryRegions(memoryInfoList);
         updateMostProbStride(memoryInfoList);
@@ -451,6 +459,7 @@ public class MemoryLayoutOps {
             finished = !memoryInfoList.removeAll(toRemove);
         }
     }
+    /*END OF POST PROCESSING*/
 
     private static void updateMostProbStride(List<MemoryInfo> memoryInfoLis) {
         for (MemoryInfo memoryInfo : memoryInfoLis) {
@@ -470,5 +479,17 @@ public class MemoryLayoutOps {
             }
         }
         return stride;
+    }
+
+
+    public static class MemoryInfoComparators {
+        public static Comparator<MemoryInfo> getComparatorByStart() {
+            return new Comparator<MemoryInfo>() {
+                @Override
+                public int compare(MemoryInfo o1, MemoryInfo o2) {
+                    return (int) (o1.getStart() - o2.getStart());
+                }
+            };
+        }
     }
 }

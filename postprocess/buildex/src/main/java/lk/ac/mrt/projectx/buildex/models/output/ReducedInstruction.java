@@ -1,12 +1,13 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
-import lk.ac.mrt.projectx.buildex.DefinesDotH;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_VIRTUAL_1;
 
 /**
  * Created by krv on 1/12/17.
@@ -42,12 +43,12 @@ public class ReducedInstruction {
         return operation;
     }
 
-    public void setOperation(Integer operation) {
-        this.operation = Operation.values()[ operation ];
-    }
-
     public void setOperation(Operation operation) {
         this.operation = operation;
+    }
+
+    public void setOperation(Integer operation) {
+        this.operation = Operation.values()[ operation ];
     }
 
     public Operand getDst() {
@@ -280,9 +281,10 @@ public class ReducedInstruction {
                     inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
                     rInstructions.add( inst0 );
                 } else if (isBounds( cinst, 2, 2 )) {
+                    // edx [dst0] : eax [dst1] <- eax [src1] * [src0]
                     // create an operand for the virtual register
                     Operand virtualReg = new Operand( MemoryType.REG_TYPE, 2 * cinst.getSrcs().get( 1 ).getWidth()
-                            , DefinesDotH.DR_REG.DR_REG_VIRTUAL_1.ordinal() );
+                            , DR_REG_VIRTUAL_1.ordinal() );
                     virtualReg.regToMemRange();
 
                     // virtual <= eax * src0
@@ -308,7 +310,7 @@ public class ReducedInstruction {
             case OP_mul:
                 if (isBounds( cinst, 2, 2 )) {
                     Operand virtualReg = new Operand( MemoryType.REG_TYPE, 2 * cinst.getSrcs().get( 1 ).getWidth()
-                            , DefinesDotH.DR_REG.DR_REG_VIRTUAL_1.ordinal() );
+                            , DR_REG_VIRTUAL_1.ordinal() );
                     virtualReg.regToMemRange();
 
                     // virtual <= eax * src0
@@ -332,10 +334,192 @@ public class ReducedInstruction {
                 }
                 break;
             case OP_idiv:
+                // dst - edx / dx, eax / ax, src - src[0], edx / dx, eax / ax
                 if (isBounds( cinst, 2, 3 )) {
+                    // create an operand for virtual register
+                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, 2 * cinst.getSrcs().get( 1 ).getWidth()
+                            , DR_REG_VIRTUAL_1.ordinal() );
+                    virtualReg.regToMemRange();
 
+                    // virtual <= eax * src0
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_mul, virtualReg, false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 2 ) );
+
+                    // edx <= split_h(virtual)
+                    ReducedInstruction inst1 = new ReducedInstruction( Operation.op_split_h, cinst.getDsts().get( 0 ),
+                            true );
+                    inst1.getSrcs().add( virtualReg );
+
+                    // eax <= split_l(virtual)
+                    ReducedInstruction inst2 = new ReducedInstruction( Operation.op_split_l, cinst.getDsts().get( 1 ),
+                            true );
+                    inst2.getSrcs().add( virtualReg );
+
+                    rInstructions.add( inst0 );
+                    rInstructions.add( inst1 );
+                    rInstructions.add( inst2 );
                 } else {
                     unhandled = true;
+                }
+                break;
+            case OP_cdq:
+                // todo : need to change -- Helium
+                // edx <- eax
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_signex,
+                            cinst.getDsts().get( 0 ), true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_cwde:
+                // eax <- ax
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_signex, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_xchg:
+                // exchange the two registers
+                if (isBounds( cinst, 2, 2 )) {
+                    Operand virtualReg = new Operand( MemoryType.REG_TYPE, cinst.getSrcs().get( 0 ).getWidth(),
+                            DR_REG_VIRTUAL_1.ordinal() );
+                    virtualReg.regToMemRange();
+
+                    // virtual <- src[0]
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_assign, virtualReg, false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    // dst[0] <- src[1]
+                    ReducedInstruction inst1 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 ),
+                            false );
+                    inst1.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    // dst[1] <- virtual
+                    ReducedInstruction inst2 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 1 ),
+                            false );
+                    inst1.getSrcs().add( virtualReg );
+                    rInstructions.add( inst0 );
+                    rInstructions.add( inst1 );
+                    rInstructions.add( inst2 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_xorps: //todo - KEVIN test -- Helium
+            case OP_xor:
+            case OP_sub:
+            case OP_pxor:
+            case OP_psubd:
+                if (isBounds( cinst, 1, 2 )) {
+                    Operand first = cinst.getSrcs().get( 0 );
+                    Operand second = cinst.getSrcs().get( 1 );
+                    ReducedInstruction inst0 = null;
+                    if (first.getType() == second.getType() && first.getValue() == second.getValue()) {
+                        Operand zero = new Operand( MemoryType.IMM_INT_TYPE, cinst.getSrcs().get( 0 ).getWidth(), 0 );
+                        inst0 = new ReducedInstruction( Operation.op_assign, cinst.getDsts().get( 0 ), false );
+                        inst0.getSrcs().add( zero );
+                    } else {
+                        Operation op = null;
+                        switch (cinst.getOpcode()) {
+                            case OP_xorps:
+                            case OP_xor:
+                            case OP_pxor:
+                                op = Operation.op_xor;
+                                break;
+                            case OP_sub:
+                            case OP_psubd:
+                                op = Operation.op_sub;
+                                break;
+                        }
+                        inst0 = new ReducedInstruction( op, cinst.getDsts().get( 0 ), false );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    }
+
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_add:
+            case OP_and:
+            case OP_andpd:
+            case OP_or:
+                // dst[0] <- src[1] (op) src[0]
+                if (isBounds( cinst, 1, 2 )) {
+                    Operation op = null;
+                    switch (cinst.getOpcode()) {
+                        case OP_add:
+                            op = Operation.op_add;
+                            break;
+                        case OP_and:
+                        case OP_andpd:
+                            op = Operation.op_and;
+                            break;
+                        case OP_or:
+                            op = Operation.op_or;
+                            break;
+                    }
+                    ReducedInstruction inst0 = new ReducedInstruction( op, cinst.getDsts().get( 0 ), false );
+                    // todo : Changed for SUB (src1, src0) from the reverse : please check -- Helium
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_neg:
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_sub, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = false;
+                }
+                break;
+            case OP_dec:
+                if (isBounds( cinst, 1, 1 )) {
+                    Operand immediate = new Operand( MemoryType.IMM_INT_TYPE, cinst.getSrcs().get( 0 ).getWidth(),
+                            1 );
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_sub, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    inst0.getSrcs().add( immediate );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_inc:
+                if (isBounds( cinst, 1, 1 )) {
+                    Operand immediate = new Operand( MemoryType.IMM_INT_TYPE, cinst.getSrcs().get( 0 ).getWidth(),
+                            1 );
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_add, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    inst0.getSrcs().add( immediate );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_sar:
+                if (isBounds( cinst, 1, 2 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_rsh, cinst.getDsts().get( 0 ),
+                            true );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = false;
                 }
                 break;
 

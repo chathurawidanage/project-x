@@ -3680,6 +3680,10 @@ public class DefinesDotH {
             return retOp;
         }
 
+        /**
+         *  Check whether the instruction is a conditional jump instruction
+         * @return ::Boolean whether the instruction is a conditional jump instruction
+         */
         public Boolean isConditionalJumpIns() {
             Boolean answer = false;
             switch (this) {

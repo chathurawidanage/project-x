@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex.models.output;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.pattern.AbstractStyleNameConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -519,7 +520,92 @@ public class ReducedInstruction {
                     inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
                     rInstructions.add( inst0 );
                 } else {
-                    unhandled = false;
+                    unhandled = true;
+                }
+                break;
+            case OP_shr:
+            case OP_psrlq:
+                if (isBounds( cinst, 1, 2 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_rsh, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_shl:
+            case OP_psllq:
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_lsh, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_not:
+                if (isBounds( cinst, 1, 1 )) {
+                    ReducedInstruction inst0 = new ReducedInstruction( Operation.op_not, cinst.getDsts().get( 0 ),
+                            false );
+                    inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                    rInstructions.add( inst0 );
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_lea:
+                // [base, index, scale, disp]
+                if (isBounds( cinst, 1, 4 )) {
+                    if ((cinst.getSrcs().get( 0 ).getValue() == 0) &&
+                            (cinst.getSrcs().get( 0 ).getType() == MemoryType.REG_TYPE)) {
+                        cinst.getSrcs().get( 0 ).setType( MemoryType.IMM_INT_TYPE );
+                        cinst.getSrcs().get( 0 ).setWidth( 4 );
+                        cinst.getSrcs().get( 0 ).setValue( 0 );
+                    }
+
+                    if (cinst.getSrcs().get( 2 ).getValue() == 0) {
+                        // dst <- base(src0) + disp(src3)
+                        ReducedInstruction inst0 = new ReducedInstruction( Operation.op_add, cinst.getDsts().get( 0 ),
+                                true );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 0 ) );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 3 ) );
+                        rInstructions.add( inst0 );
+
+                    } else {
+                        Operand virtualReg = new Operand( MemoryType.REG_TYPE, cinst.getSrcs().get( 0 ).getWidth(),
+                                DR_REG_VIRTUAL_1.ordinal() );
+                        virtualReg.regToMemRange();
+
+                        // virtual <- scale(src2) * index(src1)
+                        ReducedInstruction inst0 = new ReducedInstruction( Operation.op_mul, virtualReg, true );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 2 ) );
+                        inst0.getSrcs().add( cinst.getSrcs().get( 1 ) );
+
+                        // virtual <- virtual + base(src0)
+                        ReducedInstruction inst1 = new ReducedInstruction( Operation.op_add, virtualReg, true );
+                        inst1.getSrcs().add( virtualReg );
+                        inst1.getSrcs().add( cinst.getSrcs().get( 0 ) );
+
+                        // dst <- virtual + disp
+                        ReducedInstruction inst2 = new ReducedInstruction( Operation.op_add, cinst.getDsts().get( 0 ),
+                                true );
+                        inst2.getSrcs().add( virtualReg );
+                        inst2.getSrcs().add( cinst.getSrcs().get( 3 ) );
+
+                        rInstructions.add( inst0 );
+                        rInstructions.add( inst1 );
+                        rInstructions.add( inst2 );
+                    }
+                } else {
+                    unhandled = true;
+                }
+                break;
+            case OP_sbb:
+                if(isBounds( cinst, 1,2 )){
                 }
                 break;
 

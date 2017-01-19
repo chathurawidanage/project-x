@@ -3824,6 +3824,111 @@ public class DefinesDotH {
             }
             return answer;
         }
+
+        /**
+         *  checks if the particular instruction is handled
+         * @return whether the particular instruction is handled
+         */
+        public Boolean isInstructionHandled(){
+            boolean answer = false;
+            switch (this) {
+                case OP_movaps:
+                case OP_xorps:
+                case OP_movss:
+                case OP_pmuldq:
+                case OP_push_imm:
+                case OP_push:
+                case OP_pop:
+                case OP_mov_st:
+                case OP_mov_ld:
+                case OP_mov_imm:
+                case OP_movzx:
+                case OP_movsx:
+                case OP_movq:
+                case OP_movd:
+                case OP_movapd:
+                case OP_movdqa:
+                case OP_cvttsd2si:
+                case OP_imul:
+                case OP_mul:
+                case OP_idiv:
+                case OP_cdq:
+                case OP_xchg:
+                case OP_xor:
+                case OP_sub:
+                case OP_pxor:
+                case OP_psubd:
+                case OP_add:
+                case OP_and:
+                case OP_or:
+                case OP_andpd:
+                case OP_neg:
+                case OP_dec:
+                case OP_inc:
+                case OP_sar:
+                case OP_shr:
+                case OP_shl:
+                case OP_psllq:
+                case OP_psrlq:
+                case OP_not:
+                case OP_lea:
+                case OP_sbb:
+                case OP_setz:
+                case OP_sets:
+                case OP_setns:
+                case OP_setb:
+                case OP_cmp:
+                case OP_test:
+                case OP_jmp:
+                case OP_jmp_short:
+                case OP_jnl:
+                case OP_jnl_short:
+                case OP_jl:
+                case OP_jnle:
+                case OP_jnle_short:
+                case OP_jnz:
+                case OP_jnz_short:
+                case OP_jz:
+                case OP_jnb_short:
+                case OP_jb_short:
+                case OP_jz_short:
+                case OP_jl_short:
+                case OP_jns_short:
+                case OP_js_short:
+                case OP_jnbe_short:
+                case OP_jle_short:
+                case OP_jle:
+                case OP_jbe_short:
+                case OP_jns:
+                case OP_jb:
+                case OP_jnb:
+                case OP_js:
+                case OP_jmp_ind:
+                case OP_call:
+                case OP_ret:
+                case OP_call_ind:
+                case OP_enter:
+                case OP_leave:
+                case OP_fldcw:
+                case OP_fnstcw:
+                case OP_stmxcsr:
+                case OP_nop:
+                case OP_adc:
+                case OP_cwde:
+
+                case OP_cmovle:
+                case OP_cmovnle:
+                case OP_cmovl:
+                case OP_cmovnl:
+                case OP_cmovz:
+                case OP_cmovnz:
+
+                    answer = true;
+                default:
+                    answer = false;
+            }
+            return answer;
+        }
     }
 
 

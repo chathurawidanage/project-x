@@ -590,6 +590,180 @@ public class MemoryLayoutOps {
         memoryInfoList.removeAll(removeMemoryInfos);
     }
 
+    public static void mergeMemoryInfoPCMemoryRegion(List<MemoryInfo> memoryInfoList, List<PCMemoryRegion> pcMemoryRegionList) {
+        List<List<MemoryInfo>> mergeOpportunities = getMergeOpportunities(memoryInfoList, pcMemoryRegionList);
+        System.out.println(mergeOpportunities);
+    }
+
+    private static List<List<MemoryInfo>> getMergeOpportunities(List<MemoryInfo> memoryInfoList, List<PCMemoryRegion> pcMemoryRegionList) {
+        List<List<MemoryInfo>> ret = new ArrayList<>();
+        Collections.sort(memoryInfoList, MemoryInfoComparators.getComparatorByStart());
+
+        logger.debug("Getting merge opportunities");
+
+        class MergeOpportunityUtils {
+            public boolean isOverlapped(long start1, long end1, long start2, long end2) {
+                boolean oneInTwo = (start1 >= start2) && (end1 <= end2);
+                boolean twoInOne = (start2 >= start1) && (end2 <= end1);
+                boolean partialOverlap = ((start1 >= start2) && (start1 <= end2)) || ((end1 >= start2) && (end1 <= end2));
+                return oneInTwo || twoInOne || partialOverlap;
+            }
+
+            public long getNumberOfDimensions(MemoryInfo memoryInfo) {
+                long dim = 1;
+                MemoryInfo localMemInfo = memoryInfo;
+                while (!localMemInfo.getMergedMemoryInfos().isEmpty()) {
+                    dim++;
+                    localMemInfo = localMemInfo.getMergedMemoryInfos().get(0);
+                }
+                return dim;
+            }
+
+            public long getExtents(MemoryInfo memoryInfo, long dim, long totalDims) {
+                List<MemoryInfo> localMemoryInfos = new ArrayList<>();
+                localMemoryInfos.add(memoryInfo);
+
+                MemoryInfo local = memoryInfo;
+
+                while (!local.getMergedMemoryInfos().isEmpty()) {
+                    localMemoryInfos.add(local.getMergedMemoryInfos().get(0));
+                    local = local.getMergedMemoryInfos().get(0);
+                }
+
+                MemoryInfo wanted = localMemoryInfos.get((int) (totalDims - dim));
+                if (!wanted.getMergedMemoryInfos().isEmpty()) {
+                    return wanted.getMergedMemoryInfos().size();
+                } else {
+                    return (wanted.getEnd() - wanted.getStart()) / wanted.getProbStride();
+                }
+
+            }
+
+            public long getStride(MemoryInfo memoryInfo, long dim, long totalDims) {
+                List<MemoryInfo> localMemoryInfos = new ArrayList<>();
+                localMemoryInfos.add(memoryInfo);
+
+                MemoryInfo local = memoryInfo;
+
+                while (!local.getMergedMemoryInfos().isEmpty()) {
+                    localMemoryInfos.add(local.getMergedMemoryInfos().get(0));
+                    local = local.getMergedMemoryInfos().get(0);
+                }
+
+                MemoryInfo wanted = localMemoryInfos.get((int) (totalDims - dim));
+                if (!wanted.getMergedMemoryInfos().isEmpty()) {
+                    return wanted.getMergedMemoryInfos().get(1).getStart() - wanted.getMergedMemoryInfos().get(0).getStart();
+                } else {
+                    return wanted.getProbStride();
+                }
+
+            }
+        }
+
+        MergeOpportunityUtils mergeOpportunityUtils = new MergeOpportunityUtils();
+
+        for (int i = 0; i < pcMemoryRegionList.size(); i++) {
+            List<MemoryInfo> overlapped = new ArrayList<>();
+            List<MemoryInfo> pc_mem_info = pcMemoryRegionList.get(i).getRegions();
+
+            for (int j = 0; j < memoryInfoList.size(); j++) {
+                for (int k = 0; k < pc_mem_info.size(); k++) {
+                    if (mergeOpportunityUtils.isOverlapped(
+                            pc_mem_info.get(k).getStart(),
+                            pc_mem_info.get(k).getEnd(),
+                            memoryInfoList.get(j).getStart(),
+                            memoryInfoList.get(j).getEnd()
+                    )) {
+                        overlapped.add(memoryInfoList.get(j));
+                        break;
+                    }
+                }
+            }
+
+            logger.info("{} overlapped - ", pcMemoryRegionList.get(i).getPc(), overlapped.toString());
+
+            List<List<MemoryInfo>> regions = new ArrayList<>();
+            List<MemoryInfo> tempInfo = new ArrayList<>();
+            /* find sequences which are fairly close to each other */
+            for (int j = 1; j < overlapped.size(); j++) {
+                long firstDim = mergeOpportunityUtils.getNumberOfDimensions(overlapped.get(j - 1));
+                long firstExtent = mergeOpportunityUtils.getExtents(overlapped.get(j - 1), firstDim, firstDim);
+                long firstStride = mergeOpportunityUtils.getStride(overlapped.get(j - 1), firstDim, firstDim);
+                long rightFirst = overlapped.get(j - 1).getEnd() + firstExtent * firstStride;
+
+                long secondDim = mergeOpportunityUtils.getNumberOfDimensions(overlapped.get(j));
+                long secondExtent = mergeOpportunityUtils.getExtents(overlapped.get(j), secondDim, secondDim);
+                long secondStride = mergeOpportunityUtils.getStride(overlapped.get(j), secondDim, secondDim);
+                long leftSecond = overlapped.get(j).getStart() - secondExtent * secondStride;
+
+                tempInfo.add(overlapped.get(j - 1));
+                if (rightFirst < leftSecond) {
+                    regions.add(new ArrayList<>(tempInfo));
+                    tempInfo.clear();
+                }
+            }
+
+            tempInfo.add(overlapped.get(overlapped.size() - 1));
+            regions.add(tempInfo);
+
+            logger.info("Regions : {}", regions);
+
+            for (int k = 0; k < regions.size(); k++) {
+                //sort(regions[k].begin(), regions[k].end());
+
+                if (regions.get(k).size() >= 2) {
+
+                    boolean added = false;
+
+                    for (int j = 0; j < ret.size(); j++) {
+                    /* 1000 is just a heuristic value of the set size() -> make it dynamic for more resilience*/
+                        /*vector<mem_info_t *>temp(1000);
+                        vector<mem_info_t *>::iterator it;*/
+
+                        Set<MemoryInfo> intersection = new HashSet<>(regions.get(k));
+                        intersection.retainAll(new HashSet<>(ret.get(j)));
+
+                        //it = set_intersection(regions[k].begin(), regions[k].end(), ret[j].begin(), ret[j].end(), temp.begin());
+                       /* if (it != temp.begin()) {
+                            it = set_union(regions[k].begin(), regions[k].end(), ret[j].begin(), ret[j].end(), temp.begin());
+                            temp.resize(it - temp.begin());
+                            ret[j] = temp;
+                            added = true;
+                            break;
+                        }*/
+                        if (!intersection.isEmpty()) {//todo check porting
+                            Set<MemoryInfo> union = new HashSet<>(regions.get(k));
+                            union.addAll(ret.get(j));
+                            ret.set(j, new ArrayList<>(union));
+                            added = true;
+                            break;
+                        }
+
+                    }
+
+                    if (!added) {
+                        ret.add(regions.get(k));
+                    }
+                }
+            }
+        }
+
+
+     /*   LOG(log_file, "final mergable regions..." << endl);
+        DEBUG_PRINT(("final mergable regions....\n"), 2);
+        for (int i = 0; i < ret.size(); i++) {
+            for (int j = 0; j < ret[i].size(); j++) {
+                DEBUG_PRINT(("%d,", ret[i][j]->start),2);
+                LOG(log_file, ret[i][j]->start << ",");
+            }
+            DEBUG_PRINT(("\n"), 2);
+            LOG(log_file, endl);
+        }
+
+*/
+        return ret;
+    }
+
 
     public static class MemoryInfoComparators {
         public static Comparator<MemoryInfo> getComparatorByStart() {

@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -33,8 +34,8 @@ public class Buildex {
         File filterFolder = Configurations.getFilterFolder();
         List<File> filterFileList = Arrays.asList(filterFolder.listFiles());
 
-        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File(Configurations.getImagesFolder(),"a.png")));
-        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File(Configurations.getImagesFolder(),"ablur.png")));
+        ProjectXImage inputImage = new ProjectXImage(ImageIO.read(new File(Configurations.getImagesFolder(), "a.png")));
+        ProjectXImage outputImage = new ProjectXImage(ImageIO.read(new File(Configurations.getImagesFolder(), "ablur.png")));
 
         InstructionTraceFile instructionTraceFile = InstructionTraceFile.filterLargestInstructionTraceFile(outputFilesList, inImage, exec, false);
         logger.info("Found instrace file {}", instructionTraceFile.getName());
@@ -60,5 +61,10 @@ public class Buildex {
         List<PCMemoryRegion> memoryLayoutPCMemoryRegion = MemoryLayoutOps.createMemoryLayoutPCMemoryRegion(instructionTraceFile, 1);
         logger.info("Found {} PC Memory Regions", memoryLayoutPCMemoryRegion.size());
         logger.debug(memoryLayoutPCMemoryRegion.toString());
+
+        logger.debug("Linking memory regions. Size : {}", memoryLayoutMemoryInfo.size());
+        MemoryLayoutOps.linkMemoryRegionsGreedy(memoryLayoutMemoryInfo, 0);
+        logger.debug("Linked memory regions. Size : {}", memoryLayoutMemoryInfo.size());
+
     }
 }

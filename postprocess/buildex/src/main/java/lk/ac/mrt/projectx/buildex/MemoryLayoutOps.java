@@ -481,6 +481,115 @@ public class MemoryLayoutOps {
         return stride;
     }
 
+    /*Linking and Merging*/
+    public static void linkMemoryRegionsGreedy(List<MemoryInfo> memoryInfoList, long appPc) {
+        Collections.sort(memoryInfoList, MemoryInfoComparators.getComparatorByStart());
+
+        List<MemoryInfo> removeMemoryInfos = new ArrayList<>();
+
+        /**
+         * MemoryMerger helper class
+         */
+        class MemoryMerger {
+            void mergeInfoToFirst(MemoryInfo memoryInfoFirst, MemoryInfo memoryInfoSecond) {
+                int direction = memoryInfoFirst.getDirection();
+                direction |= memoryInfoSecond.getDirection();
+                memoryInfoFirst.setDirection(direction);
+                updateStride(memoryInfoFirst.getStrideFrequency(), memoryInfoSecond.getStrideFrequency());
+                memoryInfoFirst.setProbStride(getMostProbableStride(memoryInfoFirst.getStrideFrequency()));
+            }
+        }
+        MemoryMerger memoryMerger = new MemoryMerger();
+        /*End of MemoryMerger Helper*/
+
+        boolean ret = true;
+
+        while (ret) {
+
+            ret = false;
+            for (int i = 0; i < memoryInfoList.size(); i++) {
+
+                if (i + 2 >= memoryInfoList.size()) continue; //at least three regions should be connected
+                long gapFirst = memoryInfoList.get(i + 1).getStart() - memoryInfoList.get(i).getEnd();
+                long gapSecond = memoryInfoList.get(i + 2).getStart() - memoryInfoList.get(i + 1).getEnd();
+
+                long sizeFirst = memoryInfoList.get(i).getEnd() - memoryInfoList.get(i).getStart();
+                long sizeMiddle = memoryInfoList.get(i + 1).getEnd() - memoryInfoList.get(i + 1).getEnd();
+                long sizeLast = memoryInfoList.get(i + 2).getEnd() - memoryInfoList.get(i + 2).getStart();
+
+                boolean size_match = (sizeFirst == sizeMiddle && sizeMiddle == sizeLast);
+
+                if (gapFirst == gapSecond && size_match) { /* ok we can now merge the regions */
+                    MemoryInfo newMemInfo = new MemoryInfo();
+
+                    long gap = gapFirst;
+
+                    final MemoryInfo firstMemoryInfo = memoryInfoList.get(i);
+                    MemoryInfo middleMemoryInfo = memoryInfoList.get(i + 1);
+                    MemoryInfo lastMemoryInfo = memoryInfoList.get(i + 2);
+
+                    newMemInfo.setDirection(firstMemoryInfo.getDirection());
+                    newMemInfo.setProbStride(firstMemoryInfo.getProbStride());
+                    newMemInfo.setType(firstMemoryInfo.getType());
+                    newMemInfo.setStrideFrequency(firstMemoryInfo.getStrideFrequency());
+
+                    newMemInfo.setStart(firstMemoryInfo.getStart());
+                    newMemInfo.setEnd(lastMemoryInfo.getEnd());
+                    newMemInfo.getMergedMemoryInfos().addAll(firstMemoryInfo.getMergedMemoryInfos());
+                    newMemInfo.getMergedMemoryInfos().addAll(middleMemoryInfo.getMergedMemoryInfos());
+                    newMemInfo.getMergedMemoryInfos().addAll(lastMemoryInfo.getMergedMemoryInfos());
+
+
+                    memoryMerger.mergeInfoToFirst(newMemInfo, middleMemoryInfo);
+                    memoryMerger.mergeInfoToFirst(newMemInfo, lastMemoryInfo);
+
+
+                    long index = i + 2;
+                    for (int j = i + 3; j < memoryInfoList.size(); j++) {
+                        long gapNow = memoryInfoList.get(j).getStart() - newMemInfo.getEnd();
+                        long sizeNow = memoryInfoList.get(j).getEnd() - memoryInfoList.get(j).getStart();
+
+                        if (gapNow == gap && sizeNow == sizeLast) {
+                            //mem[i]->end = mem[j]->end;
+                            //merge_info_to_first(mem[i], mem[j]);
+                            newMemInfo.getMergedMemoryInfos().add(memoryInfoList.get(j));
+                            newMemInfo.setEnd(memoryInfoList.get(j).getEnd());
+                            memoryMerger.mergeInfoToFirst(newMemInfo, memoryInfoList.get(j));
+                            index = j;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    newMemInfo.setEnd(newMemInfo.getEnd() + gap);
+
+                    logger.debug("app_pc {} merged indexes from {} to {}", appPc, i, index);
+                    for (int j = i; j <= index; j++) {
+                        //delete mem[i + 1];
+                        removeMemoryInfos.add(memoryInfoList.get(j));
+                        //mem.erase(mem.begin() + i);
+                    }
+                    memoryInfoList.add(i, newMemInfo);
+                    //mem.insert(mem.begin() + i, new_mem_info);
+
+
+                    newMemInfo.setOrder(Integer.MAX_VALUE);
+                    for (int j = 0; j < newMemInfo.getMergedMemoryInfos().size(); j++) {
+                        if (newMemInfo.getOrder() > newMemInfo.getMergedMemoryInfos().get(j).getOrder()) {
+                            newMemInfo.setOrder(newMemInfo.getMergedMemoryInfos().get(j).getOrder());
+                        }
+                    }
+
+                    logger.info("linked memory infos");
+                    logger.info("New memory info start: {} , end : {}, merged amount : {}", newMemInfo.getStart(), newMemInfo.getEnd(), newMemInfo.getMergedMemoryInfos().size());
+                    ret = true;
+                }
+            }
+        }
+        logger.debug("Removing {} merged memory infos from array", removeMemoryInfos.size());
+        memoryInfoList.removeAll(removeMemoryInfos);
+    }
+
 
     public static class MemoryInfoComparators {
         public static Comparator<MemoryInfo> getComparatorByStart() {

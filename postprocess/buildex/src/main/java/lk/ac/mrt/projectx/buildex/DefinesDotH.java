@@ -16,7 +16,9 @@ import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.LahfBits.*;
  * // Not sure this is the best way to create this values
  */
 public class DefinesDotH {
-    private static final Logger logger = LogManager.getLogger(DefinesDotH.class);
+
+    private static final Logger logger = LogManager.getLogger( DefinesDotH.class );
+
     public enum OpCodes {
         /*   0 */     OP_INVALID, /*** < INVALID opcode */
         /*   1 */     OP_UNDECODED, /*** < UNDECODED opcode*/
@@ -3397,8 +3399,104 @@ public class DefinesDotH {
             this.OP_LAST = 1098;
         }
 
-        public Boolean isJmpConditionalAffected(Integer flags) {
-            throw new NotImplementedException();
+        /**
+         * checks if a particular conditional jump is affected
+         * @param flags the flags bit mask vector of the condition codes for a given instruction, obtained through
+         *              is_eflags_affected function
+         * @return whether the condition codes that are updated by a particular instruction is actually consumed
+         *          by the conditional jump.
+         *
+         *          However, note that it is up to the user to perform reaching definitions analysis to find the correct
+         *          instruction which determines branching direction. This function will only say whether given the flags
+         *          mask vector for a particular instruction, will it potentially affect the branching decision for the
+         *          conditional jump that is queried.
+         */
+        public Boolean isJmpConditionalAffected(long flags) {
+            boolean cf = X86Analysis.checkLAHFBit( CARRY_LAHF, flags );
+            boolean zf = X86Analysis.checkLAHFBit( ZERO_LAHF, flags );
+            boolean of = X86Analysis.checkLAHFBit( OVERFLOW_LAHF, flags );
+            boolean af = X86Analysis.checkLAHFBit( AUXILIARY_LAHF, flags );
+            boolean pf = X86Analysis.checkLAHFBit( PARITY_LAHF, flags );
+            boolean sf = X86Analysis.checkLAHFBit( SIGN_LAHF, flags );
+            boolean answer = false;
+            // TODO : BUG - need to change it to a OR
+            switch (this) {
+                case OP_jnl:
+                case OP_jnl_short:
+                case OP_jl:
+                case OP_jl_short:
+                    // Jump short if not less(SF = OF)
+                    answer = (of && sf);
+                    break;
+                case OP_jnle:
+                case OP_jnle_short:
+                    //Jump short if not less or equal (ZF=0 and SF=OF)
+                    answer = (of && sf && zf);
+                    break;
+                case OP_jnz:
+                case OP_jnz_short:
+                case OP_jz:
+                case OP_jz_short:
+                    //ZF value
+                    answer = zf;
+                    break;
+                case OP_jb:
+                case OP_jb_short:
+                case OP_jnb:
+                case OP_jnb_short:
+                    //CF value
+                    answer = cf;
+                    break;
+                case OP_jns:
+                case OP_jns_short:
+                case OP_js:
+                case OP_js_short:
+                    //SF value
+                    answer = sf;
+                    break;
+                case OP_jbe_short:
+                    //Jump short if below or equal (CF=1 or ZF=1)
+                    answer = (cf || zf);
+                    break;
+                case OP_jle:
+                case OP_jle_short:
+                    //Jump near if less or equal (ZF=1 or SF~=OF)
+                    answer = (zf || (sf && of));
+                    break;
+                case OP_jnbe_short:
+                    //Jump short if not below or equal (CF=0 and ZF=0)
+                    answer = (cf && zf);
+                    break;
+                case OP_sbb:
+                    answer = cf;
+                    break;
+                case OP_jnbe:
+                    answer = (cf && zf);
+                    break;
+
+                case OP_cmovnle:
+                case OP_cmovle:
+                    answer = (zf || (sf && of));
+                    break;
+                case OP_cmovl:
+                case OP_cmovnl:
+                    answer = (sf && of);
+                    break;
+                case OP_cmovz:
+                    answer = zf;
+                    break;
+                case OP_cmovns:
+                    answer = sf;
+                    break;
+                case OP_cmovnz:
+                    answer = zf;
+                    break;
+                default:
+                    logger.error( "jmp affected opcode %d not handled in canonicalization", this );
+                    break;
+            }
+
+            return answer;
         }
 
         /**
@@ -3627,9 +3725,14 @@ public class DefinesDotH {
             return answer;
         }
 
-        public int affectedEflags(){
+        /**
+         * This returns the flag mask register of the affected flags by the relevant opcode
+         *
+         * @return The mask register which carries a bit vector of which flags are affected by which instruction
+         */
+        public int affectedEflags() {
             int flags = 0;
-            switch(this){
+            switch (this) {
                 case OP_imul:
                 case OP_mul:
                     //CF and OF
@@ -3683,7 +3786,12 @@ public class DefinesDotH {
             return flags;
         }
 
-        public int isEflagsAffected(){
+        /**
+         * Duplicate to keep the same function names as Helium
+         *
+         * @return
+         */
+        public int isEflagsAffected() {
             return this.affectedEflags();
         }
 

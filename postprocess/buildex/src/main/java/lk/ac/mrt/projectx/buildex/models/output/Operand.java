@@ -104,7 +104,8 @@ public class Operand implements Comparable<Operand> {
 
     // TODO 1        : Check why X86_analysis.cpp (mem_range_to_reg) switch case values are different from defines.h
     // TODO 1 contd. : But currently project-x gets the same value in the enum as you see
-    private DefinesDotH.DR_REG memRangeToRegister() {
+    // int mem_range_to_reg(operand_t * opnd){
+    public DefinesDotH.DR_REG memRangeToRegister() {
         DefinesDotH.DR_REG ret;
         if (this.type == MemoryType.REG_TYPE) {
             int range = (Integer) this.value / MAX_SIZE_OF_REG + 1;
@@ -119,6 +120,9 @@ public class Operand implements Comparable<Operand> {
         return ret;
     }
 
+    /**
+     * reg_to_mem_range (void reg_to_mem_range(operand_t * opnd)
+     */
     public void regToMemRange() {
         if (this.type == MemoryType.REG_TYPE) {
             Integer value = (Integer) this.value;
@@ -460,6 +464,7 @@ public class Operand implements Comparable<Operand> {
             }
         }
     }
+
     //endregion public methods
 
     //region private methods

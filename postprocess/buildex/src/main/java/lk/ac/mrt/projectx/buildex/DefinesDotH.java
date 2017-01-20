@@ -3607,7 +3607,7 @@ public class DefinesDotH {
             return answer;
         }
 
-        public Operation DrLogicalToOperation() {
+        public Operation drLogicalToOperation() {
             Operation retOp;
             switch (this) {
                 case OP_jnl:
@@ -3931,6 +3931,34 @@ public class DefinesDotH {
                 default:
                     answer = false;
             }
+            return answer;
+        }
+
+        public Boolean isFloatingPointInstruction(){
+            boolean answer = false;
+            switch (this) {
+                case OP_fld: //Push m32fp onto the FPU register stack.
+                case OP_fld1: //Push +1.0 onto the FPU register stack
+                case OP_fild: //Push m32int onto the FPU register stack.
+                case OP_fldz: //Push +0.0 onto the FPU register stack.
+                case OP_fst: //Copy ST(0) to m32fp.
+                case OP_fstp:  //Copy ST(0) to m32fp and pop register stack.
+                case OP_fistp:  //Store ST(0) in m32int and pop register stack.
+                case OP_fmul: //Multiply ST(0) by m32fp and store result in ST(0).
+                case OP_fmulp:  //Multiply ST(i) by ST(0), store result in ST(i), and pop the register stack.
+                case OP_fxch:
+                case OP_faddp:  //Add ST(0) to ST(i), store result in ST(i), and pop the register stack
+                case OP_fadd:   //Add m32fp to ST(0) and store result in ST(0).
+                case OP_fsubp:  //Subtract ST(0) from ST(1), store result in ST(1), and pop register stack.
+                case OP_fsub:   //Subtract m32fp from ST(0) and store result in ST(0).
+                case OP_fdivp:  //Divide ST(1) by ST(0), store result in ST(1), and pop the register stack.
+                case OP_fdiv:   //Divide ST(0) by m32fp and store result in ST(0).
+                case OP_fcomp:
+                    answer = true;
+                default:
+                    answer = false;
+            }
+
             return answer;
         }
     }

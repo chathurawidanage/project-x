@@ -5,6 +5,7 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class OutputInstructionUtils {
                 }
             }
         }
+        throw new NotImplementedException();
     }
 
 }

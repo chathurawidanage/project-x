@@ -88,17 +88,24 @@ public class Output {
         return ((this.getNumOfDestinations() == d) && (this.getNumOfSources() == s));
     }
 
-    public void updateFPReg(String disams, int line) {
+    public void updateFPDest(String disams, int line) {
         for (Operand op : dsts) {
             if (op.isFloatingPointReg()) {
-                op.updateFloatingPointReg(disams, line);
+                op.updateFloatingPointReg( disams, line );
             }
         }
+    }
 
+    public void updateFPSrc(String disams, int line) {
         for (Operand op : srcs) {
             if (op.isFloatingPointReg()) {
-                op.updateFloatingPointReg(disams, line);
+                op.updateFloatingPointReg( disams, line );
             }
         }
+    }
+
+    public void updateFPReg(String disams, int line) {
+        updateFPDest( disams, line );
+        updateFPSrc( disams, line );
     }
 }

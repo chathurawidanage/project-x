@@ -1,6 +1,8 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -14,6 +16,9 @@ public class ConcreteTree extends Tree {
 
     //region private variables
     private static final int MAX_FRONTIERS = 1000;
+    private static final int MEM_OFFSET = 200;
+    private static final int MEM_REGION = (MAX_FRONTIERS - MEM_OFFSET);
+
     private List<Conditional> conditionals;
     private List<Frontier> frontier; // this is actually a hash table keeping pointers to the nodes already allocated
     private List<Integer> memInFrontier;
@@ -22,12 +27,12 @@ public class ConcreteTree extends Tree {
     //endregion private variables
 
     //region public constructors
+
     public ConcreteTree(){
         dummyTree = false;
         funcInside = false;
         frontier = new ArrayList<>(MAX_FRONTIERS);
     }
-
 
     //endregion public constructors
 
@@ -43,9 +48,7 @@ public class ConcreteTree extends Tree {
         throw new NotImplementedException();
     }
 
-    private Integer generateHash(Operand opnd){
-        throw new NotImplementedException();
-    }
+
 
     private void addToFrntier(Integer hash, Node node){
         throw new NotImplementedException();
@@ -62,6 +65,17 @@ public class ConcreteTree extends Tree {
     //endregion public methods
 
     //region private methods
+
+    private Integer generateHash(Operand opnd){
+        if(opnd.getType() == MemoryType.REG_TYPE) {
+            return ((Integer) opnd.getValue()) / X86Analysis.MAX_SIZE_OF_REG;
+        }else if( (opnd.getType() == MemoryType.MEM_STACK_TYPE) || (opnd.getType() == MemoryType.MEM_HEAP_TYPE)){
+            int offset = ((Integer) opnd.getValue()) % MEM_REGION;
+            return offset + MEM_OFFSET;
+        }
+        return -1;
+    }
+
     //endregion private methods
 
     //region Inner Classes

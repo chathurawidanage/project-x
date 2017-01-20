@@ -10,6 +10,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class Output {
+
     private OpCodes opcode;
     private int numOfSources;
     private int numOfDestinations;
@@ -85,5 +86,19 @@ public class Output {
 
     public boolean isBounds(int d, int s) {
         return ((this.getNumOfDestinations() == d) && (this.getNumOfSources() == s));
+    }
+
+    public void updateFPReg(String disams, int line) {
+        for (Operand op : dsts) {
+            if (op.isFloatingPointReg()) {
+                op.updateFloatingPointReg(disams, line);
+            }
+        }
+
+        for (Operand op : srcs) {
+            if (op.isFloatingPointReg()) {
+                op.updateFloatingPointReg(disams, line);
+            }
+        }
     }
 }

@@ -16,7 +16,7 @@ import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.MEM_STACK_TYPE
  * Created by krv on 12/30/16.
  * Depends on classes: Node, MemoryRegion
  */
-public class AbstractNode <T> extends Node<T> implements Comparable {
+public class AbstractNode <T> extends Node<T> implements Comparable {//chathura - why generics?
 
     //region public enum
 
@@ -32,6 +32,50 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     private MemoryRegion associatedMem;
     public AbstractNode() {
         super();
+    }
+
+    public void setType(AbstractNodeType type) {
+        this.type = type;
+    }
+
+    public Integer getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(Integer dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public Integer getHeadDiemensions() {
+        return headDiemensions;
+    }
+
+    public void setHeadDiemensions(Integer headDiemensions) {
+        this.headDiemensions = headDiemensions;
+    }
+
+    public ArrayList<ArrayList<Integer>> getIndexes() {
+        return indexes;
+    }
+
+    public void setIndexes(ArrayList<ArrayList<Integer>> indexes) {
+        this.indexes = indexes;
+    }
+
+    public ArrayList<Integer> getPos() {
+        return pos;
+    }
+
+    public void setPos(ArrayList<Integer> pos) {
+        this.pos = pos;
+    }
+
+    public MemoryRegion getAssociatedMem() {
+        return associatedMem;
+    }
+
+    public void setAssociatedMem(MemoryRegion associatedMem) {
+        this.associatedMem = associatedMem;
     }
 
     //endregion private variables

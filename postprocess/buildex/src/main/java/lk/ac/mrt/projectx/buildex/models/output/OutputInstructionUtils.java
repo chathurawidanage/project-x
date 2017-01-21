@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.OpCodes.*;
+
 /**
  * Created by krv on 1/20/17.
  */
@@ -17,15 +19,24 @@ public class OutputInstructionUtils {
 
     //region Public Methods
 
-    public static void updateFloatingPointRegs(List<Pair<Output, StaticInfo>> instrs, Integer direction,
-                                               List<StaticInfo> statidInfo, List<Integer> pc) {
+    /**
+     * update_floating_point_regs x86_analysis.cpp
+     *
+     * @param instrs
+     * @param direction   whether forward analysis = 1, or backwards analysis = 2
+     * @param staticInfos
+     * @param pc
+     * @return ::int updated tos value, tos is not a precondition but its value is changed inside this method
+     */
+    public static int updateFloatingPointRegs(List<Pair<Output, StaticInfo>> instrs, Integer direction,
+                                              List<StaticInfo> staticInfos, List<Integer> pc) {
         logger.debug( "updating floating point regs" );
         int tos = DefinesDotH.DR_REG.DR_REG_ST8.ordinal();
 
         for (int i = 0 ; i < instrs.size() ; i++) {
             Output cinstr = instrs.get( i ).first;
             boolean unhandled = false;
-            String disasm = getDisasmString( statidInfo, cinstr.getPc() );
+            String disasm = getDisasmString( staticInfos, cinstr.getPc() );
             int line = i + 1;
 
             // this loop has no effect since tos is already set to the value changed by the loop
@@ -35,6 +46,7 @@ public class OutputInstructionUtils {
 //                    break;
 //                }
 //            }
+
             if (!cinstr.getOpcode().isFloatingPointIns()) {
                 cinstr.updateFPReg( disasm, i + 1 );
             } else {
@@ -43,18 +55,76 @@ public class OutputInstructionUtils {
                     case OP_fld1: //Push +1.0 onto the FPU register stack
                     case OP_fild: //Push m32int onto the FPU register stack.
                     case OP_fldz: //Push +0.0 onto the FPU register stack.
-                        if (direction == 1) { // FORWARDS_ANALYSIS
+                        if (direction == 1) {// Forward
                             cinstr.updateFPSrc( disasm, line );
                             tos = updateTos( tos, true, disasm, line, direction );
                             cinstr.updateFPDest( disasm, line );
+                        } else if (direction == 2) {// backwards
+                            cinstr.updateFPDest( disasm, line );
+                            tos = updateTos( tos, true, disasm, line, direction );
+                            cinstr.updateFPSrc( disasm, line );
                         }
+                        break;
+                    case OP_fst:
+                        cinstr.updateFPReg( disasm, line );
+                        break;
+                    case OP_fstp:  //Copy ST(0) to m32fp and pop register stack.
+                    case OP_fistp:  //Store ST(0) in m32int and pop register stack.
+                        if (direction == 1) {// forwards
+                            cinstr.updateFPReg( disasm, line );
+                            tos = updateTos( tos, false, disasm, line, direction );
+                        } else if (direction == 2) { // backwards
+                            tos = updateTos( tos, false, disasm, line, direction );
+                            cinstr.updateFPReg( disasm, line );
+                        }
+                        break;
+                    case OP_fmul: //Multiply ST(0) by m32fp and store result in ST(0).
+                    case OP_fmulp:  //Multiply ST(i) by ST(0), store result in ST(i), and pop the register stack.
+                        if (cinstr.getOpcode() == OP_fmulp && direction == 2) { // backwards
+                            tos = updateTos( tos, false, disasm, line, direction );
+                        }
+                        cinstr.updateFPReg( disasm, line );
+                        if (cinstr.getOpcode() == OP_fmulp && direction == 1) { // forward
+                            tos = updateTos( tos, false, disasm, line, direction );
+                        }
+                        break;
+                    case OP_fxch:
+                        cinstr.updateFPReg( disasm, line );
+                        break; // todo : helium does not have this break
+                    case OP_faddp:  //Add ST(0) to ST(i), store result in ST(i), and pop the register stack
+                    case OP_fadd:   //Add m32fp to ST(0) and store result in ST(0).
+                    case OP_fsubp:  //Subtract ST(0) from ST(1), store result in ST(1), and pop register stack.
+                    case OP_fsub:   //Subtract m32fp from ST(0) and store result in ST(0).
+                    case OP_fdivp:  //Divide ST(1) by ST(0), store result in ST(1), and pop the register stack.
+                    case OP_fdiv:   //Divide ST(0) by m32fp and store result in ST(0).
+                        if (((cinstr.getOpcode() == OP_faddp) || (cinstr.getOpcode() == OP_fsubp)
+                                || (cinstr.getOpcode() == OP_fdivp)) && (direction == 2)) { // backward
+                            tos = updateTos( tos, false, disasm, line, direction );
+                        }
+                        cinstr.updateFPReg( disasm, line );
+                        if (((cinstr.getOpcode() == OP_faddp) || (cinstr.getOpcode() == OP_fsubp)
+                                || (cinstr.getOpcode() == OP_fdivp)) && (direction == 1)) {
+                            tos = updateTos( tos, false, disasm, line, direction );
+                        }
+                        break;
+                    case OP_fcomp:
+                        tos = updateTos( tos, false, disasm, line, direction );
+                        break;
+                    default:
+                        unhandled = true;
+                        break;
                 }
+                assert !unhandled : "ERROR: opcode "
+                        + cinstr.getOpcode().toString() + "(" + cinstr.getOpcode().ordinal() + ")" + " with " +
+                        cinstr.getDsts().size() + " dests and " + cinstr.getSrcs().size() + " srcs (app_pc - " +
+                        cinstr.getPc() + ") not handled in canonicalization";
             }
         }
+        return tos;
     }
 
     /**
-     * Update tos
+     * Update tos x86_analysis.cpp
      *
      * @param tos       int current tos value
      * @param push      Whether the type is a push = true, or pop = false

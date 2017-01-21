@@ -21,14 +21,30 @@ public class OutputInstructionUtils {
             Output instr = instrs.get( i ).first;
             for (int j = 0 ; j < instr.getSrcs().size() ; j++) {
                 Operand srcOp = instr.getSrcs().get( j );
-                if ((srcOp.getType() == MemoryType.REG_TYPE) &&
-                        (((Integer) srcOp.getValue()) > DefinesDotH.DR_REG.DR_REG_ST7.ordinal())) {
-                    srcOp.regToMemRange();
+                updateRegsToMemRangeHelper( srcOp, j );
+            }
 
-                }
+            for (int j = 0 ; j < instr.getSrcs().size() ; j++) {
+                Operand dstOp = instr.getDsts().get( j );
+                updateRegsToMemRangeHelper( dstOp, j );
             }
         }
         throw new NotImplementedException();
     }
 
+    private static void updateRegsToMemRangeHelper(Operand op, int j) {
+        if ((op.getType() == MemoryType.REG_TYPE) &&
+                (((Integer) op.getValue()) > DefinesDotH.DR_REG.DR_REG_ST7.ordinal())) {
+            op.regToMemRange();
+            if (!op.getAddress().isEmpty()) { // TODO : check the logic x86_analysis.cpp line 1181 - 1185
+                for (int k = 0 ; k < 4 ; k++) {
+                    if ((op.getAddress().get( k ).getType() == MemoryType.REG_TYPE)
+                            && (op.getAddress().get( j ).getValue() == 0)) {
+                        continue;
+                    }
+                    op.getAddress().get( j ).regToMemRange();
+                }
+            }
+        }
+    }
 }

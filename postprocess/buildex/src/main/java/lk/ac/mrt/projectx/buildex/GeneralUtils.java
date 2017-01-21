@@ -12,6 +12,7 @@ public class GeneralUtils {
     public static void assertAndFail(boolean assertOperation, String errorLog) {
         if (!assertOperation) {
             logger.fatal(errorLog);
+            logger.fatal(Thread.currentThread().getStackTrace());
             System.exit(0);
         }
     }

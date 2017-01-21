@@ -26,7 +26,62 @@ public class OutputInstructionUtils {
             Output cinstr = instrs.get( i ).first;
             boolean unhandled = false;
             String disasm = getDisasmString( statidInfo, cinstr.getPc() );
+            int line = i + 1;
+
+            // this loop has no effect since tos is already set to the value changed by the loop
+//            for (int j = 0 ; j < pc.size() ; j++) {
+//                if (cinstr.getPc() == pc.get( j )) {
+//                    tos = DefinesDotH.DR_REG.DR_REG_ST8.ordinal();
+//                    break;
+//                }
+//            }
+            if (!cinstr.getOpcode().isFloatingPointIns()) {
+                cinstr.updateFPReg( disasm, i + 1 );
+            } else {
+                switch (cinstr.getOpcode()) {
+                    case OP_fld: //Push m32fp onto the FPU register stack.
+                    case OP_fld1: //Push +1.0 onto the FPU register stack
+                    case OP_fild: //Push m32int onto the FPU register stack.
+                    case OP_fldz: //Push +0.0 onto the FPU register stack.
+                        if (direction == 1) { // FORWARDS_ANALYSIS
+                            cinstr.updateFPSrc( disasm, line );
+                            tos = updateTos( tos, true, disasm, line, direction );
+                            cinstr.updateFPDest( disasm, line );
+                        }
+                }
+            }
         }
+    }
+
+    /**
+     * Update tos
+     *
+     * @param tos       int current tos value
+     * @param push      Whether the type is a push = true, or pop = false
+     * @param disasm
+     * @param line
+     * @param direction whether forward analysis = 1, or backwards analysis = 2
+     * @return ::int updated tos value
+     */
+    private static int updateTos(int tos, boolean push, String disasm, int line, Integer direction) {
+        if (direction == 2) { // BACKWARD_ANALYSIS
+            assert tos >= DefinesDotH.DR_REG.DR_REG_ST0.ordinal() : "Floating point stack overflow";
+            assert tos < DefinesDotH.DR_REG.DR_REG_ST15.ordinal() : "Floating point stack underflow";
+            if (push) {
+                tos--;
+            } else { // pop
+                tos++;
+            }
+        } else if (direction == 1) { // FORWARDS_ANALYSIS
+            assert tos >= DefinesDotH.DR_REG.DR_REG_ST0.ordinal() : "Floating point stack overflow";
+            assert tos < DefinesDotH.DR_REG.DR_REG_ST15.ordinal() : "Floating point stack underflow";
+            if (push) { // push
+                tos++;
+            } else { // pop
+                tos--;
+            }
+        }
+        return tos;
     }
 
     private static String getDisasmString(List<StaticInfo> statidInfo, long pc) {

@@ -10,11 +10,12 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class Output {
+
     private OpCodes opcode;
     private int numOfSources;
     private int numOfDestinations;
-    private List<Operand> srcs=new ArrayList<>();
-    private List<Operand> dsts=new ArrayList<>();
+    private List<Operand> srcs = new ArrayList<>();
+    private List<Operand> dsts = new ArrayList<>();
     private long eflags;
     private long pc;
 
@@ -27,11 +28,11 @@ public class Output {
     }
 
     public void setOpcode(Integer opcode) {
-        this.opcode = OpCodes.values()[opcode];
+        this.opcode = OpCodes.values()[ opcode ];
     }
 
     public void setOpcode(String opcode) {
-        OpCodes op =  OpCodes.values()[Integer.parseInt(opcode)];
+        OpCodes op = OpCodes.values()[ Integer.parseInt( opcode ) ];
         this.opcode = op;
     }
 
@@ -81,5 +82,30 @@ public class Output {
 
     public void setPc(long pc) {
         this.pc = pc;
+    }
+
+    public boolean isBounds(int d, int s) {
+        return ((this.getNumOfDestinations() == d) && (this.getNumOfSources() == s));
+    }
+
+    public void updateFPDest(String disams, int line) {
+        for (Operand op : dsts) {
+            if (op.isFloatingPointReg()) {
+                op.updateFloatingPointReg( disams, line );
+            }
+        }
+    }
+
+    public void updateFPSrc(String disams, int line) {
+        for (Operand op : srcs) {
+            if (op.isFloatingPointReg()) {
+                op.updateFloatingPointReg( disams, line );
+            }
+        }
+    }
+
+    public void updateFPReg(String disams, int line) {
+        updateFPDest( disams, line );
+        updateFPSrc( disams, line );
     }
 }

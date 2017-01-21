@@ -325,7 +325,7 @@ public class InstructionTracer {
 
     public void updateRegistersToMemeoryRange(List<Pair<InstructionTraceUnit, StaticInfo>> instructions) {
         if (logger.isDebugEnabled()) {
-            logger.debug(InstructionTracer.class.getName(), "Converting Registers to memory\n");
+            logger.debug(InstructionTracer.class.getName(), "Converting DR_REG to memory\n");
             for (int i = 0; i < instructions.size(); i++) {
                 InstructionTraceUnit instruction = instructions.get(i).getKey();
                 for (int j = 0; j < instruction.getNum_srcs(); j++) {

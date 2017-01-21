@@ -1,9 +1,13 @@
 package lk.ac.mrt.projectx.buildex.halide;
 
+import lk.ac.mrt.projectx.buildex.GeneralUtils;
+import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
 import lk.ac.mrt.projectx.buildex.trees.Node;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +16,8 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class HalideProgram {
+    private final Logger logger = LogManager.getLogger(HalideProgram.class);
+
     private StringBuilder halideProgramStr = new StringBuilder();
     private AbstractTree abstractTree;
 
@@ -63,6 +69,70 @@ public class HalideProgram {
             funcs.add(function);
         }
         function.getPureTrees().add(abstractTree);
+    }
+
+    private long getRdomLocation(Function function, RDom rDom) {
+        for (int i = 0; i < function.getReductionTrees().size(); i++) {
+            RDom currentRDom = function.getReductionTrees().get(i).first;
+            if (rDom.getrDomType() == currentRDom.getrDomType()) {
+                if (rDom.getrDomType() == RDomType.INDIRECT_REF) {
+                    if (rDom.getRedNode().getAssociatedMem().
+                            equals(currentRDom.getRedNode().getAssociatedMem())) {
+                        return i;
+                    }
+                } else {
+                    List<Pair<Long, Long>> first = currentRDom.getExtents();
+                    List<Pair<Long, Long>> second = rDom.getExtents();
+
+                    GeneralUtils.assertAndFail(first.size() == second.size(),
+                            "reduction domain dimensions for the same buffer should be the same");
+
+
+                    boolean similar = true;
+                    for (int j = 0; j < first.size(); j++) {
+                        if (first.get(i).first != second.get(i).first
+                                || first.get(i).second != second.get(i).second) {
+                            similar = false;
+                            break;
+                        }
+                    }
+
+                    if (similar) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public void populateRedFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
+        RDom rdom = new RDom();
+        if (node != null) {
+            rdom.setRedNode(node);
+            rdom.setrDomType(RDomType.INDIRECT_REF);
+            logger.debug("Indirect reference populated");
+        } else {
+            rdom.setExtents(boundaries);
+            rdom.setrDomType(RDomType.EXTENTS);
+            logger.debug("Extents populated");
+        }
+
+        AbstractNode head = (AbstractNode) tree.getHead();
+        Function func = checkFunction(head.getAssociatedMem());
+        if (func == null) {
+            func = new Function();
+            funcs.add(func);
+        }
+
+        long loc = getRdomLocation(func, rdom);
+        if (loc != -1) {
+            func.getReductionTrees().get((int) loc).second.add(tree);
+        } else {
+            List<AbstractTree> abstractTreeList = new ArrayList<>();
+            abstractTreeList.add(tree);
+            func.getReductionTrees().add(new Pair<>(rdom, abstractTreeList));
+        }
     }
 
     public String getFinalizedProgram() {

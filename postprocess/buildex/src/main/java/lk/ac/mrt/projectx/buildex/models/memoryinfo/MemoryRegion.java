@@ -233,4 +233,26 @@ public class MemoryRegion {
 
         return ret;
     }
+
+    public Long getMemLocation(List<Integer> base, List<Integer> offset) {
+        assert base.size() == this.dimension : "dimensions done match up";
+        for (int i = 0 ; i < base.size() ; i++) {
+            if (base.get( i ) + offset.get( i ) > this.extents[ i ]) {
+                return null;
+            }
+        }
+        Long retAddress = null;
+        retAddress = startMemory;
+        if (this.startMemory < this.endMemory) {
+            for (int i = 0 ; i < base.size() ; i++) {
+                retAddress += this.strides[ i ] * base.get( i );
+            }
+        } else {
+            for (int i = 0 ; i < base.size() ; i++) {
+                retAddress -= this.strides[ i ] * base.get( i );
+            }
+        }
+
+        return retAddress;
+    }
 }

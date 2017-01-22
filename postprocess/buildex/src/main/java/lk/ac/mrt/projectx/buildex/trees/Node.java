@@ -7,6 +7,7 @@ import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +21,7 @@ import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_mul;
 /**
  * Created by krv on 12/4/2016.
  */
-public abstract class Node implements Cloneable {//chathura - generics removed
+public abstract class Node implements Serializable {//chathura - generics removed
 
     final static Logger logger = LogManager.getLogger(Node.class);
 
@@ -38,20 +39,20 @@ public abstract class Node implements Cloneable {//chathura - generics removed
 
     //region unclassified variables
 
-    Boolean sign;   // Signed operation or not
-    Boolean minus;
-    String functionName;
+    public Boolean sign;   // Signed operation or not
+    public Boolean minus;
+    public String functionName;
 
-    Operand symbol;
+    public Operand symbol;
 
-    Long pc;
-    Long line;
+    public Long pc;
+    public Long line;
 
     // Auxiliary variables
-    Integer order_num;
-    Integer para_num;
-    Boolean is_para;
-    Boolean is_double;
+    public Integer order_num;
+    public Integer para_num;
+    public Boolean is_para;
+    public Boolean is_double;
 
     private Boolean visited;
     //endregion unclassified variables
@@ -77,7 +78,7 @@ public abstract class Node implements Cloneable {//chathura - generics removed
         visited = false;
     }
 
-    public Node(Node node) {//todo is this for cloning? If yes, this won't clone -chathura
+    public Node(Node node) {//todo is this for cloning? This won't actually deep copy. Migrate to clone method -chathura
         this.operation = node.operation;
         this.sign = node.sign;
         this.symbol = node.symbol;
@@ -88,11 +89,6 @@ public abstract class Node implements Cloneable {//chathura - generics removed
         // no copying
         this.visited = false;
         this.order_num = -1;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     //endregion public constructors
@@ -291,7 +287,7 @@ public abstract class Node implements Cloneable {//chathura - generics removed
                 int rem = pre_node.removeForwardReference(this);
                 if (rem > 0) {
                     for (int j = 0; j < this.srcs.size(); j++) {
-                        pre_node.addForwardRefrence(this.srcs.get(j));
+                        pre_node.addForwardReference(this.srcs.get(j));
                     }
                     i--;
                     ret = true;
@@ -306,7 +302,7 @@ public abstract class Node implements Cloneable {//chathura - generics removed
      *
      * @param ref node to be added
      */
-    public void addForwardRefrence(Node ref) {
+    public void addForwardReference(Node ref) {
         this.srcs.add(ref);
         ref.prev.add(this);
         ref.pos.add(this.srcs.size() - 1);

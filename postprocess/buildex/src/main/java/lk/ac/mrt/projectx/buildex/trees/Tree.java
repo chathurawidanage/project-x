@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.*;
 
@@ -733,7 +732,7 @@ public abstract class Tree implements Comparable {
                         for (int j = 0; j < node.srcs.size(); j++) {
                             if (index != j) {
                                 for (int k = 0; k < imm_value; k++) {
-                                    nde.addForwardRefrence((Node) node.srcs.get(j));
+                                    nde.addForwardReference((Node) node.srcs.get(j));
                                 }
                             }
                         }
@@ -817,8 +816,8 @@ public abstract class Tree implements Comparable {
                 Node preNode = preIter.next();
                 if (preNode.operation == op_add) {
                     GeneralUtils.assertAndFail(node.srcs.size() == 2,"TODO add error message");
-                    preNode.addForwardRefrence(srcNode0);
-                    preNode.addForwardRefrence(srcNode1);
+                    preNode.addForwardReference(srcNode0);
+                    preNode.addForwardReference(srcNode1);
 
                     srcNode1.minus = true;
                     changed = true;

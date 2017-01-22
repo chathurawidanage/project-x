@@ -5,12 +5,13 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
-import lk.ac.mrt.projectx.buildex.trees.Node;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_assign;
 
 /**
  * @author Chathura Widanage
@@ -132,6 +133,40 @@ public class HalideProgram {
             List<AbstractTree> abstractTreeList = new ArrayList<>();
             abstractTreeList.add(tree);
             func.getReductionTrees().add(new Pair<>(rdom, abstractTreeList));
+        }
+    }
+
+    public void resolveConditionals() {
+        /* if there is no else; if assume it is coming from outside */
+
+	/* todo need to handle all cases */
+
+        for (int i = 0; i < funcs.size(); i++) {
+
+		/* check whether there is no statement with no conditionals */
+            if (funcs.get(i).getPureTrees().size() == 1) {
+                if (!funcs.get(i).getPureTrees().get(0).getConditionalTrees().isEmpty()) {
+                /* add a new tree output = output values coming from outside */
+                    AbstractTree abstractTree = funcs.get(i).getPureTrees().get(0);
+                    AbstractTree newTree = new AbstractTree();
+
+                    AbstractNode newHead = (AbstractNode) GeneralUtils.deepCopy(abstractTree.getHead());
+                    newHead.operation = op_assign;
+                    newHead.minus = false;
+
+                    AbstractNode assignNode = (AbstractNode) GeneralUtils.deepCopy(abstractTree.getHead());
+                    for (int j = 0; j < assignNode.getDimensions(); j++) {
+                        for (int k = 0; k < assignNode.getHeadDiemensions() + 1; k++) {
+                            if (j == k) assignNode.getIndexes().get(i).set(k, 1);// mem_info.indexes[j][k] = 1;
+                            else assignNode.getIndexes().get(i).set(k, 0);
+                        }
+                    }
+                    assignNode.minus=false;
+                    newTree.setHead(newHead);
+                    newHead.addForwardReference(assignNode);
+                    funcs.get(i).getPureTrees().add(newTree);
+                }
+            }
         }
     }
 

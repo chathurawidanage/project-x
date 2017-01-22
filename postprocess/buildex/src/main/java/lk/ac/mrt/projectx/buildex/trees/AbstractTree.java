@@ -20,6 +20,39 @@ public class AbstractTree extends Tree {
         this.conditionalTrees = conditionalTrees;
     }
 
+    public List<AbstractNode> retrieveParameters(){
+        List<AbstractNode> nodes=new ArrayList<>();
+        traverseTree(
+                this.getHead(),
+                nodes,
+                new NodeMutator() {
+                    @Override
+                    public Object mutate(Node node, Object value) {
+                        AbstractNode abs_node = (AbstractNode) node;
+                        if (abs_node.getType() == AbstractNode.AbstractNodeType.PARAMETER) {
+                            List<AbstractNode> nodes = (List<AbstractNode>) value;
+                            for (int i = 0; i < nodes.size(); i++) {
+                                if (nodes.get(i).para_num
+                                        == abs_node.para_num) {
+                                    return null;
+                                }
+                            }
+                            nodes.add(abs_node);
+                        }
+                        return null;
+                    }
+                },
+                new NodeReturnMutator() {
+                    @Override
+                    public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                        return null;//empty
+                    }
+                }
+        );
+
+        return nodes;
+    }
+
     @Override
     public void simplifyTree() {
 

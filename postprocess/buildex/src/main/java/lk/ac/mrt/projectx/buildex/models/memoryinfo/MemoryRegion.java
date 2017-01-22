@@ -241,8 +241,7 @@ public class MemoryRegion {
                 return null;
             }
         }
-        Long retAddress = null;
-        retAddress = startMemory;
+        Long retAddress = startMemory;
         if (this.startMemory < this.endMemory) {
             for (int i = 0 ; i < base.size() ; i++) {
                 retAddress += this.strides[ i ] * base.get( i );

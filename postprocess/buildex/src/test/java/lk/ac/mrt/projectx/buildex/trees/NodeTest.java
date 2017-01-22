@@ -8,8 +8,8 @@ import junit.framework.TestCase;
 public class NodeTest extends TestCase {
 
     public void testIsNodeSimilar() throws Exception {
-        AbstractNode<Float> node1 = new AbstractNode<>();
-        AbstractNode<Float> node2 = new AbstractNode<>(node1);
+        AbstractNode node1 = new AbstractNode();
+        AbstractNode node2 = new AbstractNode(node1);
         int ans = node1.compareTo(node2);
         assertEquals(1,ans);
     }

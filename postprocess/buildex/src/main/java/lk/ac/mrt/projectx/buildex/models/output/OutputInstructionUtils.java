@@ -1,11 +1,13 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
 import lk.ac.mrt.projectx.buildex.DefinesDotH;
+import lk.ac.mrt.projectx.buildex.InstructionTraceUnit;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.OpCodes.*;
@@ -163,6 +165,21 @@ public class OutputInstructionUtils {
             }
         }
         return disasm;
+    }
+
+    public static List<Pair<Output, StaticInfo>> instraceToOutputAdabpter(List<javafx.util.Pair<InstructionTraceUnit,
+            StaticInfo>> input) {
+        List<Pair<Output, StaticInfo>> output = new ArrayList<>();
+
+        for (int i = 0 ; i < input.size() ; i++) {
+            javafx.util.Pair<InstructionTraceUnit, StaticInfo> pair = input.get( i );
+            InstructionTraceUnit instructionTraceUnit = pair.getKey();
+            StaticInfo staticInfo = pair.getValue();
+            Output output1 = new Output( instructionTraceUnit );
+            output.add( new Pair( output1, staticInfo ) );
+        }
+
+        return output;
     }
 
     //endregion Public Methods

@@ -10,7 +10,7 @@ import java.util.List;
  * @author Rukshan Perera
  */
 public class AbstractTree extends Tree {
-    private List<Pair<AbstractTree,Boolean>> conditionalTrees=new ArrayList<>();
+    private List<Pair<AbstractTree, Boolean>> conditionalTrees = new ArrayList<>();
 
     public List<Pair<AbstractTree, Boolean>> getConditionalTrees() {
         return conditionalTrees;
@@ -20,24 +20,24 @@ public class AbstractTree extends Tree {
         this.conditionalTrees = conditionalTrees;
     }
 
-    public List<AbstractNode> retrieveParameters(){
-        List<AbstractNode> nodes=new ArrayList<>();
+    public List<AbstractNode> retrieveParameters() {
+        List<AbstractNode> nodes = new ArrayList<>();
         traverseTree(
                 this.getHead(),
                 nodes,
                 new NodeMutator() {
                     @Override
                     public Object mutate(Node node, Object value) {
-                        AbstractNode abs_node = (AbstractNode) node;
-                        if (abs_node.getType() == AbstractNode.AbstractNodeType.PARAMETER) {
+                        AbstractNode absNode = (AbstractNode) node;
+                        if (absNode.getType() == AbstractNode.AbstractNodeType.PARAMETER) {
                             List<AbstractNode> nodes = (List<AbstractNode>) value;
                             for (int i = 0; i < nodes.size(); i++) {
                                 if (nodes.get(i).para_num
-                                        == abs_node.para_num) {
+                                        == absNode.para_num) {
                                     return null;
                                 }
                             }
-                            nodes.add(abs_node);
+                            nodes.add(absNode);
                         }
                         return null;
                     }
@@ -49,6 +49,39 @@ public class AbstractTree extends Tree {
                     }
                 }
         );
+
+        return nodes;
+    }
+
+    public List<AbstractNode> getBufferRegionNodes() {
+        List<AbstractNode> nodes = new ArrayList<>();
+
+        traverseTree(this.getHead(), nodes, new NodeMutator() {
+            @Override
+            public Object mutate(Node node, Object value) {
+                AbstractNode abstractNode = (AbstractNode) node;
+                if (abstractNode.getType() == AbstractNode.AbstractNodeType.INPUT_NODE
+                        || abstractNode.getType() == AbstractNode.AbstractNodeType.OUTPUT_NODE
+                        || abstractNode.getType() == AbstractNode.AbstractNodeType.INTERMEDIATE_NODE) {
+                    List<AbstractNode> nodes = (List<AbstractNode>) value;
+                    for (int i = 1; i < nodes.size(); i++) { /* trick to get rid of the head node */
+                        if(abstractNode.getAssociatedMem().equals(nodes.get(i).getAssociatedMem())){
+                            return null;
+                        }
+                    }
+                    nodes.add(abstractNode);
+                }
+
+                return null;
+            }
+        }, new NodeReturnMutator() {
+            @Override
+            public Object mutate(Object nodeValue, List<Object> traverseValue, Object value) {
+                return null;//empty
+            }
+        });
+
+        nodes.remove(0);/* remove head node */
 
         return nodes;
     }

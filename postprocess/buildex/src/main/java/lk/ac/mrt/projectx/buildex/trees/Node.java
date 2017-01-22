@@ -348,8 +348,7 @@ public abstract class Node <T> {
             this.srcs.add(immNode);
             for (int j = 0 ; j < immNode.prev.size() ; j++) {
                 if (immNode.prev.get(j) == this && immNode.pos.get(j) == immValue) {
-                    immNode.pos.remove(j);
-                    immNode.pos.add(j, immValue);
+                    immNode.pos.set( j, immValue );
                 }
             }
         }
@@ -360,8 +359,7 @@ public abstract class Node <T> {
             this.srcs.add(othNode);
             for (int j = 0 ; j < othNode.prev.size() ; j++) {
                 if (othNode.prev.get(j) == this && othNode.pos.get(j) == othValue) {
-                    othNode.pos.remove(j);
-                    othNode.pos.add(j, othValue);
+                    othNode.pos.set(j, othValue);
                 }
             }
         }
@@ -372,8 +370,7 @@ public abstract class Node <T> {
             this.srcs.add(heapNode);
             for (int j = 0 ; j < heapNode.prev.size() ; j++) {
                 if (heapNode.prev.get(j) == this && heapNode.pos.get(j) == heapValue) {
-                    heapNode.pos.remove(j);
-                    heapNode.pos.add(j, heapValue);
+                    heapNode.pos.set(j, heapValue);
                 }
             }
         }

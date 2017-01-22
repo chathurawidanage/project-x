@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class MemoryRegion {
+
     private final static int DIMENSIONS = 3;
 
     private int bytesPerPixel;
@@ -37,9 +39,9 @@ public class MemoryRegion {
     private List<Long> referingPCs;
 
     public MemoryRegion() {
-        extents = new long[DIMENSIONS];
-        strides = new long[DIMENSIONS];
-        min = new long[DIMENSIONS];
+        extents = new long[ DIMENSIONS ];
+        strides = new long[ DIMENSIONS ];
+        min = new long[ DIMENSIONS ];
 
         type = 0;
         memDirection = MemDirection.READ;
@@ -193,12 +195,42 @@ public class MemoryRegion {
                 ", startMemory=" + startMemory +
                 ", endMemory=" + endMemory +
                 ", name='" + name + '\'' +
-                ", extents=" + Arrays.toString(extents) +
-                ", strides=" + Arrays.toString(strides) +
-                ", min=" + Arrays.toString(min) +
+                ", extents=" + Arrays.toString( extents ) +
+                ", strides=" + Arrays.toString( strides ) +
+                ", min=" + Arrays.toString( min ) +
                 ", paddingField=" + paddingField +
-                ", padding=" + Arrays.toString(padding) +
+                ", padding=" + Arrays.toString( padding ) +
                 ", referingPCs=" + referingPCs +
                 '}';
+    }
+
+    public List<List<Integer>> getIndexList() {
+        boolean finished = false;
+        List<List<Integer>> ret = new ArrayList<>();
+        List<Integer> currentIndex = new ArrayList<>();
+
+        for (int i = 0 ; i < this.dimension ; i++) {
+            currentIndex.add( 0 );
+        }
+
+        while (!finished) {
+            ret.add( currentIndex );
+            finished = true;
+
+            for (int i = 0 ; i < dimension ; i++) {
+                if (currentIndex.get( i ) < extents[ i ] - 1) {
+                    Integer val = currentIndex.get( i );
+                    val++;
+                    currentIndex.set( i, val );
+                    for (int j = 0 ; j < i ; j++) {
+                        currentIndex.set( j, 0 );
+                    }
+                    finished = false;
+                    break;
+                }
+            }
+        }
+
+        return ret;
     }
 }

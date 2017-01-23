@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import javafx.util.Pair;
+import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 import org.apache.logging.log4j.LogManager;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.*;
 
@@ -98,8 +98,10 @@ public abstract class Tree implements Comparable {
     }
 
     protected void copyExactTreeStructure(Tree tree, Object data, NodeToNode NodeCreation) {
-        assert (tree.getHead().order_num != -1);
-        assert (tree.getHead().isVisited() == false);
+        GeneralUtils.assertAndFail(tree.getHead().order_num != -1,
+                "TODO add error message");
+        GeneralUtils.assertAndFail(tree.getHead().isVisited() == false,
+                "TODO add error message");
 
         // Get all the nodes and the nodes to which it is connected
         List<Pair<Node, List<Integer>>> treeMap = new ArrayList<>(tree.getNumNodes());
@@ -235,7 +237,7 @@ public abstract class Tree implements Comparable {
 
     public void changeHeadNode() {
         if (head.operation == op_assign) {
-            assert (head.srcs.size() == 1);
+            GeneralUtils.assertAndFail(head.srcs.size() == 1,"TODO add proper error");
             Node newHead = (Node) head.srcs.get(0);
             newHead.prev.clear();
             newHead.pos.clear();
@@ -555,7 +557,7 @@ public abstract class Tree implements Comparable {
             @Override
             public Object mutate(Node node, Object value) {
                 if (node.operation == op_sub) {
-                    assert (node.srcs.size() == 2);
+                    GeneralUtils.assertAndFail(node.srcs.size() == 2,"TODO add peoper error");
                 }
                 return null;
             }
@@ -729,7 +731,7 @@ public abstract class Tree implements Comparable {
                         for (int j = 0; j < node.srcs.size(); j++) {
                             if (index != j) {
                                 for (int k = 0; k < imm_value; k++) {
-                                    nde.addForwardRefrence((Node) node.srcs.get(j));
+                                    nde.addForwardReference((Node) node.srcs.get(j));
                                 }
                             }
                         }
@@ -812,9 +814,9 @@ public abstract class Tree implements Comparable {
             for (Iterator<Node> preIter = node.prev.iterator(); preIter.hasNext(); ) {
                 Node preNode = preIter.next();
                 if (preNode.operation == op_add) {
-                    assert (node.srcs.size() == 2);
-                    preNode.addForwardRefrence(srcNode0);
-                    preNode.addForwardRefrence(srcNode1);
+                    GeneralUtils.assertAndFail(node.srcs.size() == 2,"TODO add error message");
+                    preNode.addForwardReference(srcNode0);
+                    preNode.addForwardReference(srcNode1);
 
                     srcNode1.minus = true;
                     changed = true;

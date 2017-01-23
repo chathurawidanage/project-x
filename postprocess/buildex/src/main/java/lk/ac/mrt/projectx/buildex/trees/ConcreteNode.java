@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by krv on 1/1/17.
  */
-public class ConcreteNode <T extends Number> extends Node<T> implements Comparable {
+public class ConcreteNode extends Node implements Comparable {
 
     //region private variables
 
@@ -32,7 +32,7 @@ public class ConcreteNode <T extends Number> extends Node<T> implements Comparab
         this.region = null;
     }
 
-    public ConcreteNode(MemoryType operandType, T value, Integer width) {
+    public ConcreteNode(MemoryType operandType, Number value, Integer width) {
         this.symbol = new Operand(operandType, width, value);
         this.operation = X86Analysis.Operation.op_unknown;
         this.order_num = -1;

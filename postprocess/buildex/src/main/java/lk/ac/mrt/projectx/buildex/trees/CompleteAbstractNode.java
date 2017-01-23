@@ -13,7 +13,7 @@ import static lk.ac.mrt.projectx.buildex.trees.AbstractNode.AbstractNodeType.IMM
 /**
  * Created by krv on 1/2/17.
  */
-public class CompleteAbstractNode <T> extends Node<T> implements Comparable {
+public class CompleteAbstractNode extends Node implements Comparable {
 
     //region private variables
 

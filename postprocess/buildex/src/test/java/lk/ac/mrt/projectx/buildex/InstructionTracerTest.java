@@ -1,10 +1,6 @@
 package lk.ac.mrt.projectx.buildex;
 
-import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
-import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import org.junit.Test;
-
-import java.util.List;
 
 /**
  * Created by wik2kassa on 12/3/2016.

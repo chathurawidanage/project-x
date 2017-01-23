@@ -1,5 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
+import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
@@ -32,10 +34,10 @@ public class ConcreteTree extends Tree {
 
     //region public constructors
 
-    public ConcreteTree(){
+    public ConcreteTree() {
         dummyTree = false;
         funcInside = false;
-        frontier = new ArrayList<>(MAX_FRONTIERS);
+        frontier = new ArrayList<>( MAX_FRONTIERS );
     }
 
     //endregion public constructors
@@ -48,27 +50,78 @@ public class ConcreteTree extends Tree {
     public void simplifyTree() {
     }
 
-    private Node searchNode(Operand opnd){
+    private Node searchNode(Operand opnd) {
         throw new NotImplementedException();
     }
 
 
-
-    private void addToFrntier(Integer hash, Node node){
+    private void addToFrntier(Integer hash, Node node) {
         throw new NotImplementedException();
     }
 
-    private void removeRegistersFromFrontier(){
+    private void removeRegistersFromFrontier() {
         throw new NotImplementedException();
     }
 
     public Boolean updateDependencyBackward(ReducedInstruction instr, Output cinstr, StaticInfo info,
-                                            Integer line, List<MemoryRegion> regions, List<FunctionInfo> funcInfo){
+                                            Integer line, List<MemoryRegion> regions, List<FuncInfo> funcInfos) {
 
-        if(funcInside){
-            if(info.getPc() == funcInfo.get( this.funcIndex ))
+        boolean INDIRECTION = true;
+        boolean ASSIGN_OPT = true;
+        boolean INTERMEDIATE_BUFFER_ANALYSIS = false;
+        boolean SIMPLIFICATIONS = false;
+
+
+        if (funcInside) {
+            if (info.getPc() == funcInfos.get( this.funcIndex ).getStart() &&
+                    info.getPc() <= funcInfos.get( this.funcIndex ).getEnd()) {
+                return false;
+            } else {
+                this.funcInside = false;
+            }
         }
 
+        // TODO [Helium] : have precomputed nodes for immediate integers -> can we do it for floats as well
+        // just need to point to them in future (space optimization)
+
+        //TODO : Damn this is the head node in the super class
+        Node head = this.getHead();
+
+        if (head == null) {
+            head = new ConcreteNode( instr.getDst(), regions );
+            this.setHead( head );
+            int hash = generateHash( instr.getDst() );
+            assert hash != -1 : "Hash cannot be -1";
+
+            if (hash != -1) {
+                int amount = frontier.get( hash ).getAmount();
+                frontier.get( hash ).getBucket().set( amount, head );
+                frontier.get( hash ).setAmount( amount + 1 );
+            }
+
+            if (INDIRECTION) {
+//                if ((info.getInstructionType().ordinal() & StaticInfo.InstructionType.INPUT_DEPENDENT_INDIRECT.ordinal())
+//                        == StaticInfo.InstructionType.INPUT_DEPENDENT_INDIRECT.ordinal())
+                if ((info.getInstructionType() == StaticInfo.InstructionType.INPUT_DEPENDENT_INDIRECT)) {
+                    if (!instr.getDst().getAddress().isEmpty()) {
+                        for (int buf = 0 ; buf < regions.size() ; buf++) {
+                            if (CommonUtil.isOverlapped( regions.get( buf ).getStartMemory(),
+                                    regions.get( buf ).getEndMemory(), instr.getDst().getValue().longValue(),
+                                    instr.getDst().getValue().longValue() + instr.getDst().getWidth() )) {
+                                addAddressDependency( head, instr.getDst().getAddress() );
+
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+
+        throw new NotImplementedException();
+    }
+
+    private void addAddressDependency(Node head, List<Operand> address) {
         throw new NotImplementedException();
     }
 
@@ -76,10 +129,10 @@ public class ConcreteTree extends Tree {
 
     //region private methods
 
-    private Integer generateHash(Operand opnd){
-        if(opnd.getType() == MemoryType.REG_TYPE) {
+    private Integer generateHash(Operand opnd) {
+        if (opnd.getType() == MemoryType.REG_TYPE) {
             return ((Integer) opnd.getValue()) / X86Analysis.MAX_SIZE_OF_REG;
-        }else if( (opnd.getType() == MemoryType.MEM_STACK_TYPE) || (opnd.getType() == MemoryType.MEM_HEAP_TYPE)){
+        } else if ((opnd.getType() == MemoryType.MEM_STACK_TYPE) || (opnd.getType() == MemoryType.MEM_HEAP_TYPE)) {
             int offset = ((Integer) opnd.getValue()) % MEM_REGION;
             return offset + MEM_OFFSET;
         }
@@ -91,12 +144,28 @@ public class ConcreteTree extends Tree {
     //region Inner Classes
     private class Frontier {
 
-        List<Node> bucket;
-        Integer amount;
+        private List<Node> bucket;
+        private Integer amount;
 
         public Frontier() {
             bucket = new ArrayList<>();
-            amount = new Integer(0);
+            amount = new Integer( 0 );
+        }
+
+        public Integer getAmount() {
+            return this.amount;
+        }
+
+        public void setAmount(Integer amount) {
+            this.amount = amount;
+        }
+
+        public List<Node> getBucket() {
+            return bucket;
+        }
+
+        public void setBucket(List<Node> bucket) {
+            this.bucket = bucket;
         }
     }
     //endregion Inner Classes

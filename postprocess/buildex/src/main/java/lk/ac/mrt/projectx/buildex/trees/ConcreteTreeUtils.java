@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.models.Pair;
+import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
@@ -11,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.servlet.jsp.tagext.FunctionInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class ConcreteTreeUtils {
 
     public static List<List<ConcreteTree>> clusterTrees(List<MemoryRegion> memRegions, List<MemoryRegion> totalRegions,
                                                         List<Long> startPoints, List<Pair<Output, StaticInfo>> instrs,
-                                                        Long farthest, String outputFolder, List<FunctionInfo> funcInfo) {
+                                                        Long farthest, String outputFolder, List<FuncInfo> funcInfo) {
 
         logger.debug( "Building trees for all locations in the output and clustering" );
         MemoryRegion mem = MemoryRegionUtils.getRandomOutputRegion( ((ArrayList<MemoryRegion>) memRegions) );
@@ -66,7 +66,7 @@ public class ConcreteTreeUtils {
     private static ConcreteTree buildConcreteTree(Long destination, Integer stride, List<Long> startPoints,
                                                   Integer startTrace, Integer endTrace, ConcreteTree tree,
                                                   List<Pair<Output, StaticInfo>> instrs, Long farthest,
-                                                  List<MemoryRegion> regions, List<FunctionInfo> funcInfo) {
+                                                  List<MemoryRegion> regions, List<FuncInfo> funcInfo) {
         logger.debug( "Build tree multi  " );
         Integer initialEntracne = endTrace;
 

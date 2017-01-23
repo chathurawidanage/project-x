@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.DefinesDotH;
 import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
 import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
@@ -13,6 +14,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RBP;
+import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RSP;
 
 /**
  * Created by krv on 1/2/17.
@@ -49,11 +53,6 @@ public class ConcreteTree extends Tree {
     @Override
     public void simplifyTree() {
     }
-
-    private Node searchNode(Operand opnd) {
-        throw new NotImplementedException();
-    }
-
 
     private void addToFrntier(Integer hash, Node node) {
         throw new NotImplementedException();
@@ -121,14 +120,6 @@ public class ConcreteTree extends Tree {
         throw new NotImplementedException();
     }
 
-    private void addAddressDependency(Node head, List<Operand> address) {
-        throw new NotImplementedException();
-    }
-
-    //endregion public methods
-
-    //region private methods
-
     private Integer generateHash(Operand opnd) {
         if (opnd.getType() == MemoryType.REG_TYPE) {
             return ((Integer) opnd.getValue()) / X86Analysis.MAX_SIZE_OF_REG;
@@ -137,6 +128,78 @@ public class ConcreteTree extends Tree {
             return offset + MEM_OFFSET;
         }
         return -1;
+    }
+
+    //endregion public methods
+
+    //region private methods
+
+    /**
+     * rbp - register base pointer (start of stack)
+     * rsp - register stack pointer (current location in stack, growing downwards)
+     *
+     * @param head
+     * @param opnds
+     */
+    private void addAddressDependency(Node node, List<Operand> opnds) {
+        // four operand here for [base + index + scale + disp]
+
+        //make sure that this is a base-disp address
+        if ((opnds.get( 0 ).getValue() == 0) && (opnds.get( 2 ).getValue() == 0)) {
+            return;
+        }
+        Operand operand0 = opnds.get( 0 );
+        Operand operand1 = opnds.get( 1 );
+
+        // should have home index
+        DefinesDotH.DR_REG reg1 = operand0.memRangeToRegister();
+        DefinesDotH.DR_REG reg2 = operand1.memRangeToRegister();
+
+        // absoulute addr and rsp, rbp combination filtering
+        // rbp - register base pointer (start of stack)
+        // rsp - register stack pointer (current location in stack, growing downwards)
+        // TODO : this condition should be moved to operand class
+        if ((reg1 == DR_REG_RSP || reg1 == DR_REG_RBP || operand0.getValue() == 0) &&
+                (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP || operand1.getValue() == 0)) {
+            return;
+        }
+
+        // reg type used but doesnt matter coz used as an operation only node
+        ConcreteNode indirectNode = new ConcreteNode( MemoryType.REG_TYPE, 0L, 0L, 0.0f );
+        indirectNode.setOperation( X86Analysis.Operation.op_indirect );
+        node.addForwardReference( indirectNode );
+
+        ConcreteNode currentNode = indirectNode;
+
+        /*ok now with cases*/
+        boolean reg1_rsp = (reg1 == DR_REG_RSP || reg1 == DR_REG_RBP);
+        boolean reg2_rsp = (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP);
+
+        // ok if one of the regs is a RSP or a RBP then, omit the displacement
+        if (reg1_rsp && !reg2_rsp) {
+            Node addr_node = searchNode( opnds.get( 1 ) );
+            if (addr_node == null) {
+                addr_node = new ConcreteNode( opnds.get( 1 ) );
+//                addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
+            }
+            currentNode.addForwardReference( addr_node );
+        }
+    }
+
+    private Node searchNode(Operand opnd) {
+        Long hash = generateHash( opnd ).longValue();
+        Number value = opnd.getValue();
+        Integer width = opnd.getWidth();
+
+        for (int i = 0 ; i < frontier.get( hash.intValue() ).getAmount() ; i++) {
+            // we don't need to check for types as we seperate them out in hashing
+            // could furthur optimize this search by having a type specific search algo
+            Node frntNode = frontier.get( hash.intValue() ).getBucket().get( i );
+            if (frntNode.symbol.getValue() == value && frntNode.symbol.getWidth() == width) {
+                return frntNode;
+            }
+        }
+        return null;
     }
 
     //endregion private methods

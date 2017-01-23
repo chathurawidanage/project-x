@@ -9,7 +9,6 @@ import lk.ac.mrt.projectx.buildex.models.output.ReducedInstruction;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import javax.servlet.jsp.tagext.FunctionInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +62,13 @@ public class ConcreteTree extends Tree {
         throw new NotImplementedException();
     }
 
-    public Boolean updateDependencyBackward(ReducedInstruction reducedInstruction, Output first, StaticInfo second, Integer curPos, List<MemoryRegion> regions, List<FunctionInfo> funcInfo){
+    public Boolean updateDependencyBackward(ReducedInstruction instr, Output cinstr, StaticInfo info,
+                                            Integer line, List<MemoryRegion> regions, List<FunctionInfo> funcInfo){
+
+        if(funcInside){
+            if(info.getPc() == funcInfo.get( this.funcIndex ))
+        }
+
         throw new NotImplementedException();
     }
 

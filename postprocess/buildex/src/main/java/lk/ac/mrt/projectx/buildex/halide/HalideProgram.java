@@ -122,7 +122,7 @@ public class HalideProgram {
         return -1;
     }
 
-    public void populateRedFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
+    public void populateReductionFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
         RDom rdom = new RDom();
         if (node != null) {
             rdom.setRedNode(node);
@@ -213,7 +213,7 @@ public class HalideProgram {
         List<AbstractNode> total = new ArrayList<>();
 
         for (int i = 0; i < trees.size(); i++) {
-            List<AbstractNode> temp = new ArrayList<>();
+            List<AbstractNode> temp;
             temp = parameters ? trees.get(i).retrieveParameters() : trees.get(i).getBufferRegionNodes();
             total.addAll(temp);
         }

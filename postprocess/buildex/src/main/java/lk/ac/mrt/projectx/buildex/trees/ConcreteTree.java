@@ -1,10 +1,15 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
+import lk.ac.mrt.projectx.buildex.models.output.Output;
+import lk.ac.mrt.projectx.buildex.models.output.ReducedInstruction;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.servlet.jsp.tagext.FunctionInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +63,7 @@ public class ConcreteTree extends Tree {
         throw new NotImplementedException();
     }
 
-    private Boolean updateDependencyBackward(){
+    public Boolean updateDependencyBackward(ReducedInstruction reducedInstruction, Output first, StaticInfo second, Integer curPos, List<MemoryRegion> regions, List<FunctionInfo> funcInfo){
         throw new NotImplementedException();
     }
 

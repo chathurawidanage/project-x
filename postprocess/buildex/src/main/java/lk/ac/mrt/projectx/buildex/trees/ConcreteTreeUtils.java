@@ -5,6 +5,8 @@ import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
+import lk.ac.mrt.projectx.buildex.models.output.ReducedInstruction;
+import lk.ac.mrt.projectx.buildex.models.output.ReducedInstructionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -64,17 +66,69 @@ public class ConcreteTreeUtils {
     private static ConcreteTree buildConcreteTree(Long destination, Integer stride, List<Long> startPoints,
                                                   Integer startTrace, Integer endTrace, ConcreteTree tree,
                                                   List<Pair<Output, StaticInfo>> instrs, Long farthest,
-                                                  List<MemoryRegion> totalRegions, List<FunctionInfo> funcInfo) {
+                                                  List<MemoryRegion> regions, List<FunctionInfo> funcInfo) {
         logger.debug( "Build tree multi  " );
         Integer initialEntracne = endTrace;
-        Integer curPos = startTrace;
 
         Pair<Integer, Integer> points = getStartAndEndPoints( startPoints, destination, stride, startTrace,
                 endTrace, instrs );
 
+        startTrace =  points.first;
+        endTrace = points.second;
+
+        if(endTrace == FILE_ENDING){
+            endTrace = instrs.size();
+        }
+
+        if (startTrace == FILE_BEGINNING) {
+            startTrace = 0;
+        }
+
+        assert endTrace >= startTrace : "Trace end should be greater than the trace start";
+
+        Long initialStart = startTrace.longValue();
+        Integer curPos = startTrace;
+
+        // now we need to read the next lint adn start from the correct destination
+        Output instr = instrs.get( curPos ).first;
+        List<ReducedInstruction> rinstr = ReducedInstructionUtils.cinstrToRinstrsEflags( instr,
+                instrs.get( curPos ).second.getDissasembly(), curPos );
+        int index = -1;
+        boolean destPresent = false;
+        for (int i = 0 ; i < rinstr.size() ; i++) {
+            ReducedInstruction rins = rinstr.get( i );
+            if (rins.getDst().getValue() == destination) {
+                index = i;
+                destPresent = true;
+                break;
+            }
+        }
+
+        if(!destPresent || index < 0 ){
+            return null;
+        }
+
+        // build the initial part of the tree
+        for (int i = index ; i >= 0  ; i--) {
+            tree.updateDependencyBackward( rinstr.get( i ), instrs.get( curPos ).first, instrs.get( curPos ).second,
+                    curPos, regions, funcInfo );
+        }
+
+
         throw new NotImplementedException();
     }
 
+    /**
+     *  Start is the one after the Output which points to the destination given
+     *  end is the next largest or equal value in startPoints list
+     * @param startPoints
+     * @param destination
+     * @param stride
+     * @param startTrace
+     * @param endTrace
+     * @param instrs
+     * @return Pair <start, end> Integer values
+     */
     private static Pair<Integer, Integer> getStartAndEndPoints(List<Long> startPoints, Long destination, Integer stride,
                                                                Integer startTrace, Integer endTrace, List<Pair<Output, StaticInfo>> instrs) {
         Integer start = startTrace;
@@ -87,7 +141,7 @@ public class ConcreteTreeUtils {
                 for (int j = 0 ; j < opt.getDsts().size() ; j++) {
                     Operand dstOperand = opt.getDsts().get( j );
                     if (dstOperand.getValue() == destination && dstOperand.getWidth() == stride) {
-                        start = i + 1;
+                        start = i;
                         found = true;
                         break;
                     }

@@ -125,7 +125,8 @@ public class MemoryLayoutOps {
         /* first check whether we have the same app_pc */
         if (module != null && module.trim().length() != 0) { /* here the module information comparison is requested by the input */
             for (PCMemoryRegion pcMemoryRegion : pcMemoryRegions) {
-                assert pcMemoryRegion.getModule().trim().length() != 0;
+                GeneralUtils.assertAndFail(pcMemoryRegion.getModule().trim().length() != 0,
+                        "module information is missing from mem_regions");
                 if (pcMemoryRegion.getModule().equals(module)) {
                 /* now check for the app_pc */
                     if (pcMemoryRegion.getPc() == appPC) {

@@ -13,9 +13,9 @@ public class TreeTest extends TestCase {
 
     Tree tree;
 
-    Node<Float> nde;
-    Node<Float> nde2;
-    Node<Float> nde3;
+    Node nde;
+    Node nde2;
+    Node nde3;
 
     public void setUp() throws Exception {
         super.setUp();
@@ -25,9 +25,9 @@ public class TreeTest extends TestCase {
 
             }
         };
-        nde = new AbstractNode<>();
-        nde2 = new AbstractNode<>();
-        nde3 = new AbstractNode<>();
+        nde = new AbstractNode();
+        nde2 = new AbstractNode();
+        nde3 = new AbstractNode();
         nde.srcs.add(nde2);
         nde2.srcs.add(nde3);
         tree.setHead(nde);

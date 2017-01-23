@@ -254,4 +254,51 @@ public class MemoryRegion {
 
         return retAddress;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MemoryRegion)) return false;
+
+        MemoryRegion that = (MemoryRegion) o;
+
+        if (getBytesPerPixel() != that.getBytesPerPixel()) return false;
+        if (getType() != that.getType()) return false;
+        if (getTreeDirections() != that.getTreeDirections()) return false;
+        if (getDimension() != that.getDimension()) return false;
+        if (isDependant() != that.isDependant()) return false;
+        if (getStartMemory() != that.getStartMemory()) return false;
+        if (getEndMemory() != that.getEndMemory()) return false;
+        if (getPaddingField() != that.getPaddingField()) return false;
+        if (getMemoryDumpType() != that.getMemoryDumpType()) return false;
+        if (getMemDirection() != that.getMemDirection()) return false;
+        if (getName() != null ? !getName().equals( that.getName() ) : that.getName() != null) return false;
+        if (!Arrays.equals( getExtents(), that.getExtents() )) return false;
+        if (!Arrays.equals( getStrides(), that.getStrides() )) return false;
+        if (!Arrays.equals( getMin(), that.getMin() )) return false;
+        if (!Arrays.equals( getPadding(), that.getPadding() )) return false;
+        return getReferingPCs() != null ? getReferingPCs().equals( that.getReferingPCs() ) : that.getReferingPCs() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getBytesPerPixel();
+        result = 31 * result + (int) (getType() ^ (getType() >>> 32));
+        result = 31 * result + (getMemoryDumpType() != null ? getMemoryDumpType().hashCode() : 0);
+        result = 31 * result + (int) (getTreeDirections() ^ (getTreeDirections() >>> 32));
+        result = 31 * result + (int) (getDimension() ^ (getDimension() >>> 32));
+        result = 31 * result + (isDependant() ? 1 : 0);
+        result = 31 * result + (getMemDirection() != null ? getMemDirection().hashCode() : 0);
+        result = 31 * result + (int) (getStartMemory() ^ (getStartMemory() >>> 32));
+        result = 31 * result + (int) (getEndMemory() ^ (getEndMemory() >>> 32));
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + Arrays.hashCode( getExtents() );
+        result = 31 * result + Arrays.hashCode( getStrides() );
+        result = 31 * result + Arrays.hashCode( getMin() );
+        result = 31 * result + (int) (getPaddingField() ^ (getPaddingField() >>> 32));
+        result = 31 * result + Arrays.hashCode( getPadding() );
+        result = 31 * result + (getReferingPCs() != null ? getReferingPCs().hashCode() : 0);
+        return result;
+
+    }
 }

@@ -7,6 +7,7 @@ import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,7 +21,7 @@ import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_mul;
 /**
  * Created by krv on 12/4/2016.
  */
-public abstract class Node <T> {
+public abstract class Node implements Serializable {//chathura - generics removed
 
     final static Logger logger = LogManager.getLogger(Node.class);
 
@@ -32,26 +33,26 @@ public abstract class Node <T> {
     public X86Analysis.Operation operation;  // Operation of this node
     public List<Node> srcs; ///< forward references also srcs of the destination
     public List<Node> prev; ///< keep the backward references
-    public List<Long> pos; ///< position of the parent node's srcs list for this child
+    public List<Integer> pos; ///< position of the parent node's srcs list for this child
 
     //endregion public variables
 
     //region unclassified variables
 
-    Boolean sign;   // Signed operation or not
-    Boolean minus;
-    String functionName;
+    public Boolean sign;   // Signed operation or not
+    public Boolean minus;
+    public String functionName;
 
-    Operand symbol;
+    public Operand symbol;
 
-    Long pc;
-    Long line;
+    public Long pc;
+    public Long line;
 
     // Auxiliary variables
-    Integer order_num;
-    Integer para_num;
-    Boolean is_para;
-    Boolean is_double;
+    public Integer order_num;
+    public Integer para_num;
+    public Boolean is_para;
+    public Boolean is_double;
 
     private Boolean visited;
     //endregion unclassified variables
@@ -77,7 +78,7 @@ public abstract class Node <T> {
         visited = false;
     }
 
-    public Node(Node node) {
+    public Node(Node node) {//todo is this for cloning? This won't actually deep copy. Migrate to clone method -chathura
         this.operation = node.operation;
         this.sign = node.sign;
         this.symbol = node.symbol;
@@ -120,7 +121,7 @@ public abstract class Node <T> {
      * Remove all forward references in source list
      */
     public void removeForwardReferenceAll() {
-        for (int i = 0 ; i < srcs.size() ; i++) {
+        for (int i = 0; i < srcs.size(); i++) {
             removeForwardReference(srcs.get(i));
         }
     }
@@ -143,7 +144,7 @@ public abstract class Node <T> {
      */
     private Boolean removeForwardReferenceSingle(Node ref) {
         // Removing from the src list
-        Integer idx = srcs.indexOf(ref);
+        int idx = srcs.indexOf(ref);
         if (srcs.remove(ref)) {
             // Updating the backward references of deleted node
             int jidx = ref.prev.indexOf(this);
@@ -157,7 +158,7 @@ public abstract class Node <T> {
             // Need to update pos list indexes of others connected to this
             //Since src list is changed
             // TODO : Check the possibility of being a own function
-            for (int i = 0 ; i < srcs.size() ; i++) {
+            for (int i = 0; i < srcs.size(); i++) {
                 Node curSrcNode = srcs.get(i);
                 int thisPosition = curSrcNode.prev.indexOf(this);
                 if (thisPosition != -1) {
@@ -218,7 +219,7 @@ public abstract class Node <T> {
      * @return if found a node with indirect operation return the index, -1 otherwise
      */
     public int isIndirect() {
-        for (int i = 0 ; i < srcs.size() ; i++) {
+        for (int i = 0; i < srcs.size(); i++) {
             Node node = srcs.get(i);
             if (node.operation == X86Analysis.Operation.op_indirect) {
                 return i;
@@ -279,14 +280,14 @@ public abstract class Node <T> {
         //TODO: logic is really bad (messing with loop variable)
         logger.debug("Entered Canonical node");
         boolean ret = false;
-        for (int i = 0 ; i < this.prev.size() ; i++) {
+        for (int i = 0; i < this.prev.size(); i++) {
             if (this.operation.isOperationAssociative() && this.operation == this.prev.get(i).operation) {
                 logger.debug("Canonical opportunity");
                 Node pre_node = this.prev.get(i);
                 int rem = pre_node.removeForwardReference(this);
                 if (rem > 0) {
-                    for (int j = 0 ; j < this.srcs.size() ; j++) {
-                        pre_node.addForwardRefrence(this.srcs.get(j));
+                    for (int j = 0; j < this.srcs.size(); j++) {
+                        pre_node.addForwardReference(this.srcs.get(j));
                     }
                     i--;
                     ret = true;
@@ -301,7 +302,7 @@ public abstract class Node <T> {
      *
      * @param ref node to be added
      */
-    public void addForwardRefrence(Node ref) {
+    public void addForwardReference(Node ref) {
         this.srcs.add(ref);
         ref.prev.add(this);
         ref.pos.add(this.srcs.size() - 1);
@@ -318,7 +319,7 @@ public abstract class Node <T> {
             return;
         }
 
-        for (int i = 0 ; i < this.srcs.size() ; i++) {
+        for (int i = 0; i < this.srcs.size(); i++) {
             Node srcNode = (Node) this.srcs.get(i);
             Pair<Integer, Node> pair = new Pair<>(i, srcNode);
             if (srcNode.symbol.getType() == MEM_HEAP_TYPE) {
@@ -342,33 +343,33 @@ public abstract class Node <T> {
         });
 
         this.srcs.clear();
-        for (int i = 0 ; i < imm.size() ; i++) {
+        for (int i = 0; i < imm.size(); i++) {
             Node immNode = imm.get(i).getValue();
             Integer immValue = imm.get(i).getKey();
             this.srcs.add(immNode);
-            for (int j = 0 ; j < immNode.prev.size() ; j++) {
+            for (int j = 0; j < immNode.prev.size(); j++) {
                 if (immNode.prev.get(j) == this && immNode.pos.get(j) == immValue) {
                     immNode.pos.set( j, immValue );
                 }
             }
         }
 
-        for (int i = 0 ; i < other.size() ; i++) {
+        for (int i = 0; i < other.size(); i++) {
             Node othNode = other.get(i).getValue();
             Integer othValue = other.get(i).getKey();
             this.srcs.add(othNode);
-            for (int j = 0 ; j < othNode.prev.size() ; j++) {
+            for (int j = 0; j < othNode.prev.size(); j++) {
                 if (othNode.prev.get(j) == this && othNode.pos.get(j) == othValue) {
                     othNode.pos.set(j, othValue);
                 }
             }
         }
 
-        for (int i = 0 ; i < heap.size() ; i++) {
+        for (int i = 0; i < heap.size(); i++) {
             Node heapNode = heap.get(i).getValue();
             Integer heapValue = other.get(i).getKey();
             this.srcs.add(heapNode);
-            for (int j = 0 ; j < heapNode.prev.size() ; j++) {
+            for (int j = 0; j < heapNode.prev.size(); j++) {
                 if (heapNode.prev.get(j) == this && heapNode.pos.get(j) == heapValue) {
                     heapNode.pos.set(j, heapValue);
                 }
@@ -380,7 +381,7 @@ public abstract class Node <T> {
         return visited;
     }
 
-    public void setVisited(Boolean visitOrNot){
+    public void setVisited(Boolean visitOrNot) {
         this.visited = visitOrNot;
     }
 

@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex.halide;
 
 import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
@@ -9,8 +10,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_assign;
 
 /**
@@ -23,9 +27,20 @@ public class HalideProgram {
     private AbstractTree abstractTree;
 
     private List<Function> funcs;
+    private List<String> vars;
+    private Map<Integer, Integer> parameterMatch;
+    private List<AbstractNode> params;
+
+    private List<AbstractNode> output;/* this is used to populate the arguments string */
+    private List<AbstractNode> inputs;
 
     public HalideProgram(AbstractTree abstractTree) {
         this.funcs = new ArrayList<>();
+        this.vars = new ArrayList<>();
+        this.parameterMatch = new HashMap<>();
+        this.params = new ArrayList<>();//not necessary, just in case
+        this.output = new ArrayList<>();
+        this.inputs = new ArrayList<>();
 
         this.abstractTree = abstractTree;
         halideProgramStr.append(
@@ -161,12 +176,109 @@ public class HalideProgram {
                             else assignNode.getIndexes().get(i).set(k, 0);
                         }
                     }
-                    assignNode.minus=false;
+                    assignNode.minus = false;
                     newTree.setHead(newHead);
                     newHead.addForwardReference(assignNode);
                     funcs.get(i).getPureTrees().add(newTree);
                 }
             }
+        }
+    }
+
+    public void populateVars(int dim) {
+        String x = "x";
+        for (int i = 0; i < dim; i++) {
+            vars.add(x + "_" + i);
+        }
+    }
+
+    public void populateInputParams(boolean parameters) {
+        List<AbstractTree> trees = new ArrayList<>();
+        for (int i = 0; i < funcs.size(); i++) {
+            trees.addAll(funcs.get(i).getPureTrees());
+            for (int j = 0; j < funcs.get(i).getReductionTrees().size(); j++) {
+                trees.addAll(funcs.get(i).getReductionTrees().get(j).second);
+            }
+        }
+
+
+	/*get the conditional trees as well*/
+        int size = trees.size();
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < trees.get(i).getConditionalTrees().size(); j++) {
+                trees.add(trees.get(i).getConditionalTrees().get(j).first);
+            }
+        }
+
+        List<AbstractNode> total = new ArrayList<>();
+
+        for (int i = 0; i < trees.size(); i++) {
+            List<AbstractNode> temp = new ArrayList<>();
+            temp = parameters ? trees.get(i).retrieveParameters() : trees.get(i).getBufferRegionNodes();
+            total.addAll(temp);
+        }
+
+        if (parameters) {
+        /* paras we can have duplicates */
+            for (int i = 0; i < total.size(); i++) {
+                boolean found = false;
+                AbstractNode abstractNodei = total.get(i);
+                for (int j = 0; j < i; j++) {
+                    AbstractNode abstractNodej = total.get(j);
+                    if (abstractNodei.symbol.getType() == abstractNodej.symbol.getType()
+                            && abstractNodei.symbol.getValue().equals(abstractNodej.symbol.getValue())
+                            && abstractNodei.symbol.getWidth() == abstractNodej.symbol.getWidth()
+                            ) {
+                        this.parameterMatch.put(abstractNodei.para_num, abstractNodej.para_num);
+
+                        //todo check if remove problems occur
+                        total.remove(i--);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    parameterMatch.put(total.get(i).para_num, total.get(i).para_num);
+                }
+            }
+            params = total;
+        } else {
+            for (int i = 0; i < total.size(); i++) {
+                for (int j = 0; j < total.size(); j++) {
+                    if (i == j) continue;
+                    if (total.get(i).getAssociatedMem().equals(total.get(j).getAssociatedMem())) {
+                        total.remove(i--);
+                        break;
+                    }
+                }
+            }
+
+		/* now first populate the outputs */
+            for (int i = 0; i < funcs.size(); i++) {
+                AbstractNode outputNode = (AbstractNode) funcs.get(i).getPureTrees().get(0).getHead();
+                output.add(outputNode);
+                MemoryRegion head_region = outputNode.getAssociatedMem();
+                long direction = head_region.getTreeDirections();
+                direction |= MemDirection.MEM_OUTPUT.getValue();
+                head_region.setTreeDirections(direction);
+            }
+
+            for (int i = 0; i < total.size(); i++) {
+                AbstractNode abstractNodei = total.get(i);
+                long direction = abstractNodei.getAssociatedMem().getTreeDirections();
+                direction |= MEM_INPUT.getValue();
+                abstractNodei.getAssociatedMem().setTreeDirections(direction);
+                for (int j = 0; j < output.size(); j++) {
+                    if (abstractNodei.getAssociatedMem() == output.get(j).getAssociatedMem()) {
+                        if (abstractNodei.isIndirect() != -1) {
+                            direction&=~(MEM_INPUT.getValue());
+                            abstractNodei.getAssociatedMem().setTreeDirections(direction);
+                        }
+                        break;
+                    }
+                }
+            }
+            inputs = total;
         }
     }
 

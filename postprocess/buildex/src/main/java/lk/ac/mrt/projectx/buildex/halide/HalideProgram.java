@@ -2,19 +2,16 @@ package lk.ac.mrt.projectx.buildex.halide;
 
 import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
-import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
+import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_OUTPUT;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_assign;
 
 /**
@@ -43,14 +40,122 @@ public class HalideProgram {
         this.inputs = new ArrayList<>();
 
         this.abstractTree = abstractTree;
-        halideProgramStr.append(
-                "#include <Halide.h>\n" +
-                        "#include <vector>\n " +
-                        "using namespace std;\n" +
-                        "using namespace Halide;\n " +
-                        "int main(){ \n"
-        );
     }
+
+    /*APPENDERS*/
+    private void appendNewLine(String line, boolean semicolon) {
+        halideProgramStr.append(line + (semicolon ? ";" : ""));
+        halideProgramStr.append("\n");
+    }
+
+    private void appendNewLine(String line) {
+        appendNewLine(line, true);
+    }
+
+    private void appendHalideHeader() {
+        appendNewLine("#include <Halide.h>", false);
+        appendNewLine("#include <vector>", false);
+        appendNewLine("using namespace std");
+        appendNewLine("using namespace Halide");
+        appendNewLine("int main(){", false);
+    }
+
+    private void appendHalideVariableDeclarations() {
+        for (String var : vars) {
+            appendNewLine("Var " + var);
+        }
+    }
+
+    private String getHalideDataType(int width, boolean sign, boolean isFloat) {
+        StringBuilder signString = new StringBuilder(sign ? "" : "U");
+
+        if (!isFloat)
+            return signString.append("Int(" + (width * 8) + ")").toString();
+        else
+            return "Float";
+    }
+
+    private void appendHalideInputDeclarations() {
+        for (AbstractNode node : inputs) {
+            if (node.getAssociatedMem().getMemDirection() != MEM_INPUT) {
+                continue;
+            }
+
+            String inString = node.getAssociatedMem().getMemDirection() == MEM_OUTPUT ? "_buf_in" : "";//todo check, never true
+
+            appendNewLine(String.format("ImageParam %s(%s,%s)",
+                    node.getAssociatedMem().getName() + inString,
+                    getHalideDataType(node.symbol.getWidth(), node.sign, node.is_double),
+                    node.getDimensions().toString()
+            ));
+        }
+    }
+
+    private void appendHalideParameterDeclarations() {
+        for (AbstractNode param : params) {
+            GeneralUtils.assertAndFail(param.getType() == AbstractNode.AbstractNodeType.PARAMETER, "ERROR: the node is not a parameter");
+
+            StringBuilder ret = new StringBuilder("Param<");
+
+            if (param.is_double) {
+                ret.append("double");
+            } else {
+                if (!param.sign) ret.append("u");
+                ret.append("int" + (param.symbol.getWidth() * 8) + "_t");
+            }
+            ret.append("> ");
+            ret.append(String.format("p_%d(\"p_%d\")", param.para_num, param.para_num));
+            appendNewLine(ret.toString());
+        }
+    }
+
+    private void appendHalideFunctionDeclarations() {
+        for (Function function : funcs) {
+            AbstractNode abstractNode = (AbstractNode) function.getPureTrees().get(0).getHead();
+            appendNewLine(String.format("Func %s", abstractNode.getAssociatedMem().getName()));
+        }
+    }
+
+    private void appendHalideArguments(String vectorName) {
+        StringBuilder arg = new StringBuilder(vectorName);
+        appendNewLine(String.format("vector<Argument> %s", arg));
+        for (AbstractNode param : params) {
+            appendNewLine(String.format("%s.push_back(p_%s)", arg, param.para_num));
+        }
+
+        for (AbstractNode input : inputs) {
+            appendNewLine(String.format("%s.push_back(p_%s)", input.getAssociatedMem().getName()));
+        }
+    }
+
+    private void appendHalideOutputToFile(String argsVectorName) {
+        int outIndex = 0;
+        for (AbstractNode out : output) {
+            appendNewLine(String.format("%s.compile_to_file(\"%s_%d\",%s)",
+                    out.getAssociatedMem().getName(), "halide_out", outIndex++, argsVectorName));
+        }
+    }
+    /*END OF APPENDERS*/
+
+    /*Function Sorters*/
+    private void sortFunctions(List<AbstractTree> abstractTrees) {
+        Collections.sort(abstractTrees, new Comparator<AbstractTree>() {
+            @Override
+            public int compare(AbstractTree o1, AbstractTree o2) {
+                return o1.getConditionalTrees().size() - o2.getConditionalTrees().size();
+            }
+        });
+    }
+
+    private void sortFunctions() {
+        for (int i = 0; i < funcs.size(); i++) {
+            sortFunctions(funcs.get(i).getPureTrees());
+            for (int j = 0; j < funcs.get(i).getReductionTrees().size(); j++) {
+                sortFunctions(funcs.get(i).getReductionTrees().get(j).second);
+            }
+        }
+    }
+    /*End of function sorters*/
 
     private Function checkFunction(MemoryRegion memoryRegion) {
         for (int i = 0; i < funcs.size(); i++) {
@@ -122,7 +227,7 @@ public class HalideProgram {
         return -1;
     }
 
-    public void populateRedFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
+    public void populateReductionFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
         RDom rdom = new RDom();
         if (node != null) {
             rdom.setRedNode(node);
@@ -213,7 +318,7 @@ public class HalideProgram {
         List<AbstractNode> total = new ArrayList<>();
 
         for (int i = 0; i < trees.size(); i++) {
-            List<AbstractNode> temp = new ArrayList<>();
+            List<AbstractNode> temp;
             temp = parameters ? trees.get(i).retrieveParameters() : trees.get(i).getBufferRegionNodes();
             total.addAll(temp);
         }
@@ -259,7 +364,7 @@ public class HalideProgram {
                 output.add(outputNode);
                 MemoryRegion head_region = outputNode.getAssociatedMem();
                 long direction = head_region.getTreeDirections();
-                direction |= MemDirection.MEM_OUTPUT.getValue();
+                direction |= MEM_OUTPUT.getValue();
                 head_region.setTreeDirections(direction);
             }
 
@@ -271,7 +376,7 @@ public class HalideProgram {
                 for (int j = 0; j < output.size(); j++) {
                     if (abstractNodei.getAssociatedMem() == output.get(j).getAssociatedMem()) {
                         if (abstractNodei.isIndirect() != -1) {
-                            direction&=~(MEM_INPUT.getValue());
+                            direction &= ~(MEM_INPUT.getValue());
                             abstractNodei.getAssociatedMem().setTreeDirections(direction);
                         }
                         break;
@@ -282,10 +387,45 @@ public class HalideProgram {
         }
     }
 
-    public String getFinalizedProgram() {
-        halideProgramStr.append(
-                "return 0;\n}"
-        );
+    public String getFinalizedProgram(List<String> reductionVariables) {
+        logger.debug("Finalizing halide program");
+
+        Iterator<Integer> paramMatchKeysIterator = parameterMatch.keySet().iterator();
+
+        while (paramMatchKeysIterator.hasNext()) {
+            Integer next = paramMatchKeysIterator.next();
+            halideProgramStr.append(next + " " + parameterMatch.get(next));
+        }
+
+        appendHalideHeader();
+
+        /****************** print declarations **********************/
+
+        appendHalideVariableDeclarations();
+
+        appendHalideInputDeclarations();
+
+        appendHalideParameterDeclarations();
+
+        sortFunctions();
+        appendHalideFunctionDeclarations();
+
+        /***************** print the functions ************************/
+
+        for (int i = 0; i < funcs.size(); i++) {
+
+        }
+
+        /***************finalizing - instructions for code generation ******/
+
+	/* print argument population - params and input params */
+	    String argumentsVector="arguments";
+        appendHalideArguments(argumentsVector);
+
+        appendHalideOutputToFile(argumentsVector);
+
+        appendNewLine("return 0");
+        appendNewLine("}", false);
         return halideProgramStr.toString();
     }
 }

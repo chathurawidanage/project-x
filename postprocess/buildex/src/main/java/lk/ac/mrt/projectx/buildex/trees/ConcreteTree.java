@@ -149,9 +149,65 @@ public class ConcreteTree extends Tree {
             // destination node
             getFullOverlapNodes( fullOverlapNodes, instr.getDst() );
 
+            // do we have nodes that are contain within the current dest
+            if (!fullOverlapNodes.isEmpty()) {
+                if (dst == null) {
+                    dst = new ConcreteNode( instr.getDst(), regions );
+                }
+
+                for (int i = 0 ; i < fullOverlapNodes.size() ; i++) {
+                    logger.debug( "Full overlap - %s", fullOverlapNodes.get( i ).getSymbol().toString() );
+                    addDependency( fullOverlapNodes.get( i ), dst, op_full_overlap );
+                    fullOverlapNodes.get( i ).setPc( info.getPc() );
+                    fullOverlapNodes.get( i ).setLine( line.longValue() );
+                    removeFromFrontier( fullOverlapNodes.get( i ).getSymbol() );
+                }
+            }
+
+            if (dst == null) {
+                logger.debug( "Not effecting the frontier" );
+                return false;
+            } else {
+
+                dst.setLine( line.longValue() );
+                dst.setPc( info.getPc() );
+
+                for (int i = 0 ; i < funcInfos.size() ; i++) {
+                    if ((funcInfos.get( i ).getStart() <= info.getPc()) &&
+                            (funcInfos.get( i ).getEnd() >= info.getPc())) {
+                        funcInside = true;
+                        funcIndex = i;
+                        removeFromFrontier( instr.getDst() );
+                        createCallDependency( this, dst, funcInfos.get( i ) );
+                        return true;
+                    }
+                }
+
+            }
+
         }
 
         throw new NotImplementedException();
+    }
+
+    private void createCallDependency(ConcreteTree tree, Node node, FuncInfo info) {
+        Node callNode = new ConcreteNode( REG_TYPE, 0L, ((Integer) node.getSymbol().getWidth()).longValue(), 0.0f );
+        callNode.setOperation( op_call );
+        callNode.setFunctionName( info.getFuncName() );
+
+        for (int i = 0 ; i < node.getPrev().size() ; i++) {
+            Node prevNode = node.getPrev().get( i );
+            if (prevNode.removeForwardReference( node ) > 0) {
+                i--;
+            }
+            prevNode.addForwardReference( callNode );
+        }
+
+        for (int i = 0 ; i < info.getParameters().size() ; i++) {
+            Node para = new ConcreteNode( info.getParameters().get( i ) );
+            callNode.addForwardReference( para );
+            tree.addToFrntier( tree.generateHash( info.getParameters().get( i ) ), para );
+        }
     }
 
     private void getFullOverlapNodes(List<Node> nodes, Operand opnd) {

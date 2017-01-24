@@ -185,6 +185,46 @@ public class ConcreteTree extends Tree {
 
             }
 
+            // update operation
+            dst.setOperation( instr.getOperation() );
+            logger.debug( "operation : %s", dst.getOperation() );
+            // now to remove the destination from frontiers
+            removeFromFrontier( instr.getDst() );
+            // assign operation optimization - space
+            boolean assignOpt = false;
+            // update srcs
+            for (int i = 0 ; i < cinstr.getSrcs().size() ; i++) {
+                // first check whether there are existing nodes in the frontier for these sources
+                // if there is we know the same definition of src is used for this, so we can just point to it rather
+                // than creating a new node -> space and time efficient
+                int hashSrc = generateHash( instr.getSrcs().get( i ) );
+                logger.debug( "hashSrc : %d, frontier amount : %d", hashSrc, frontier.get( hashSrc ).getAmount() );
+
+                boolean addNode = false;
+                Node src = null;
+                if (hashSrc == -1) {
+                    src = new ConcreteNode( instr.getSrcs().get( i ), regions );
+                } else {
+                    src = searchNode( instr.getSrcs().get( i ) );
+                }
+
+                // When do we need another node? if node is not present or if the destination matches src (eg: i < i
+                // + 1 ) we do not need to check for immediated here as src will point to a branc new Node in that
+                // case and hence will not enter the if statement
+                if ((src == null) || (src == dst)) {
+                    src = new ConcreteNode( instr.getSrcs().get( i ), regions );
+                    addNode = true;
+                    logger.debug( "New node added to the frontier" );
+                }
+
+                logger.debug( "src - %s", src.getSymbol() );
+
+                if (ASSIGN_OPT) {
+                    // this is just an assign then remove the current node and place the new src node -> compiler
+                    // didn't optimize for this?
+                }
+
+            }
         }
 
         throw new NotImplementedException();

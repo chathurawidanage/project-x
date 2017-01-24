@@ -140,12 +140,59 @@ public class ConcreteTree extends Tree {
 
             // get the destination -> the partial overlap may have created the destination if it was contained with
             // in a wide mem region
+            int hashDst = generateHash( instr.getDst() );
+            logger.debug( "dst_hash : %d, frontier amount : %d", hashDst, frontier.get( hashDst ).getAmount() );
+            Node dst = searchNode( instr.getDst() );
 
+            // now get the full overlap nodes
+            // nodes that contain with in current node - we can delete these by replacing with the current
+            // destination node
+            getFullOverlapNodes( fullOverlapNodes, instr.getDst() );
 
         }
 
         throw new NotImplementedException();
     }
+
+    private void getFullOverlapNodes(List<Node> nodes, Operand opnd) {
+        assert (opnd.getType() != IMM_INT_TYPE) && (opnd.getType() != IMM_FLOAT_TYPE) : "ERROR : Immediate types cannot " +
+                "be in frontier";
+        logger.debug( "Checking for full overlap nodes" );
+        if (opnd.getType() == REG_TYPE) {
+            Integer hash = generateHash( opnd );
+            for (int i = 0 ; i < frontier.get( hash ).getAmount() ; i++) {
+                Long start = frontier.get( hash ).getBucket().get( i ).getSymbol().getValue().longValue();
+                Integer width = frontier.get( hash ).getBucket().get( i ).getSymbol().getWidth();
+
+                if (((start >= opnd.getValue().longValue()) && (start + width <= opnd.getValue().longValue() + opnd
+                        .getWidth())) || (start >= opnd.getValue().longValue()) && (start + width < opnd.getValue()
+                        .longValue() + opnd.getWidth())) {
+                    logger.debug( "Reg full overlap found" );
+                    nodes.add( frontier.get( hash ).getBucket().get( i ) );
+                }
+            }
+        } else if ((opnd.getType() == MEM_HEAP_TYPE) || (opnd.getType() == MEM_STACK_TYPE)) {
+            for (int i = 0 ; i < memInFrontier.size() ; i++) {
+                Integer index = memInFrontier.get( i );
+                for (int j = 0 ; j < frontier.get( index ).getAmount() ; j++) {
+                    MemoryType type = frontier.get( index ).getBucket().get( j ).getSymbol().getType();
+                    if ((type == MEM_STACK_TYPE) || (type == MEM_HEAP_TYPE)) {
+                        Long start = frontier.get( index ).getBucket().get( j ).getSymbol().getValue().longValue();
+                        Integer width = frontier.get( index ).getBucket().get( j ).getSymbol().getWidth();
+
+                        // check whether this memory is fully contained within the current memory operand
+                        if (((start > opnd.getValue().longValue()) && (start + width <= opnd.getValue().longValue() +
+                                opnd.getWidth())) || ((start >= opnd.getValue().longValue()) && (start + width < opnd
+                                .getValue().longValue() + opnd.getWidth()))) {
+                            logger.debug( "Reg full overlap found" );
+                            nodes.add( frontier.get( index ).getBucket().get( j ) );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     private void addDependency(Node dst, Node src, X86Analysis.Operation operation) {
         int srcIndex = dst.getSrcs().size();

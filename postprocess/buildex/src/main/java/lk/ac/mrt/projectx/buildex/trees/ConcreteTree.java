@@ -448,7 +448,7 @@ public class ConcreteTree extends Tree {
         // four operand here for [base + index + scale + disp]
 
         //make sure that this is a base-disp address
-        if ((opnds.get( 0 ).getValue() == 0) && (opnds.get( 2 ).getValue() == 0)) {
+        if ((opnds.get( 0 ).getValue().intValue() == 0) && (opnds.get( 2 ).getValue().intValue() == 0)) {
             return;
         }
         Operand operand0 = opnds.get( 0 );
@@ -462,8 +462,8 @@ public class ConcreteTree extends Tree {
         // rbp - register base pointer (start of stack)
         // rsp - register stack pointer (current location in stack, growing downwards)
         // TODO : this condition should be moved to operand class
-        if ((reg1 == DR_REG_RSP || reg1 == DR_REG_RBP || operand0.getValue() == 0) &&
-                (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP || operand1.getValue() == 0)) {
+        if ((reg1 == DR_REG_RSP || reg1 == DR_REG_RBP || operand0.getValue().intValue() == 0) &&
+                (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP || operand1.getValue().intValue() == 0)) {
             return;
         }
 
@@ -495,13 +495,13 @@ public class ConcreteTree extends Tree {
             currentNode.addForwardReference( addr_node );
         } else if (!reg1_rsp && !reg2_rsp) { // [edx + 2] like addresses
             Node addr_node = null;
-            if (opnds.get( 0 ).getValue() == 0) {
+            if (opnds.get( 0 ).getValue().intValue() == 0) {
                 addr_node = searchNode( opnds.get( 1 ) );
                 if (addr_node == null) {
                     addr_node = new ConcreteNode( opnds.get( 1 ) );
                     addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
                 }
-            } else if (opnds.get( 1 ).getValue() == 0) {
+            } else if (opnds.get( 1 ).getValue().intValue() == 0) {
                 addr_node = searchNode( opnds.get( 0 ) );
                 if (addr_node == null) {
                     addr_node = new ConcreteNode( opnds.get( 0 ) );

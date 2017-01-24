@@ -2,7 +2,6 @@ package lk.ac.mrt.projectx.buildex.halide;
 
 import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
-import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
@@ -44,7 +43,6 @@ public class HalideProgram {
     }
 
     /*APPENDERS*/
-
     private void appendNewLine(String line, boolean semicolon) {
         halideProgramStr.append(line + (semicolon ? ";" : ""));
         halideProgramStr.append("\n");
@@ -110,8 +108,27 @@ public class HalideProgram {
             appendNewLine(ret.toString());
         }
     }
+    /*END OF APPENDERS*/
 
-            /*END OF APPENDERS*/
+    /*Function Sorters*/
+    private void sortFunctions(List<AbstractTree> abstractTrees) {
+        Collections.sort(abstractTrees, new Comparator<AbstractTree>() {
+            @Override
+            public int compare(AbstractTree o1, AbstractTree o2) {
+                return o1.getConditionalTrees().size() - o2.getConditionalTrees().size();
+            }
+        });
+    }
+
+    private void sortFunctions() {
+        for (int i = 0; i < funcs.size(); i++) {
+            sortFunctions(funcs.get(i).getPureTrees());
+            for (int j = 0; j < funcs.get(i).getReductionTrees().size(); j++) {
+                sortFunctions(funcs.get(i).getReductionTrees().get(j).second);
+            }
+        }
+    }
+    /*End of function sorters*/
 
     private Function checkFunction(MemoryRegion memoryRegion) {
         for (int i = 0; i < funcs.size(); i++) {
@@ -355,7 +372,6 @@ public class HalideProgram {
 
         appendHalideHeader();
 
-
         /****************** print declarations **********************/
     /* print Vars */
         appendHalideVariableDeclarations();
@@ -366,6 +382,7 @@ public class HalideProgram {
 	/* print Params */
         appendHalideParamaterDeclarations();
 
+        sortFunctions();
 
 
         halideProgramStr.append(

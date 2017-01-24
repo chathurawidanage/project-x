@@ -411,5 +411,9 @@ public abstract class Node implements Serializable {//chathura - generics remove
         this.order_num = order_num;
     }
 
+    public Operand getSymbol() {
+        return symbol;
+    }
+
     //endregion private methods
 }

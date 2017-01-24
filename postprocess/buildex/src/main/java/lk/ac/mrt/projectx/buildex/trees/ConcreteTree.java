@@ -111,7 +111,7 @@ public class ConcreteTree extends Tree {
                                     regions.get( buf ).getEndMemory(), instr.getDst().getValue().longValue(),
                                     instr.getDst().getValue().longValue() + instr.getDst().getWidth() )) {
                                 addAddressDependency( head, instr.getDst().getAddress() );
-
+                                break;
                             }
                         }
                     }

@@ -150,9 +150,41 @@ public class ConcreteTree extends Tree {
     private List<Pair<Node, List<Node>>> splitPartialOverlap(Operand opnd, Integer hash) {
         List<Pair<Node, List<Node>>> nodes = new ArrayList<>();
 
+        for (int i = 0 ; i < frontier.get( hash ).getAmount() ; i++) {
+            Node splitNode = frontier.get( hash ).getBucket().get( i );
+            Long start = frontier.get( hash ).getBucket().get( i ).getSymbol().getValue().longValue();
+            Integer width = frontier.get( hash ).getBucket().get( i ).getSymbol().getWidth();
+
+            List<Node> splits = new ArrayList<>();
+            if (opnd.getType() == splitNode.getSymbol().getType()) {
+                if ((start >= opnd.getValue().longValue()) && (start <= opnd.getValue().longValue() - opnd.getWidth()
+                        - 1) //start within
+                        && (start + width > opnd.getValue().longValue() + opnd.getWidth())) // end strictly after
+                {
+                    Operand first = new Operand( splitNode.getSymbol().getType(), opnd.getValue().intValue() + opnd
+                            .getWidth() - start.intValue(), start );
+                    Operand second = new Operand( splitNode.getSymbol().getType(), width - first.getWidth(), opnd
+                            .getValue().intValue() + opnd.getWidth() );
+                    splits.add( createOrGetNode( first ) );
+                    splits.add( createOrGetNode( second ) );
+
+                    nodes.add( new Pair<Node, List<Node>>( splitNode, splits ) );
+
+                }
+            }
+        }
 
         throw new NotImplementedException();
 //        return nodes;
+    }
+
+    private Node createOrGetNode(Operand first) {
+        Node node = searchNode( first );
+        if (node == null) {
+            node = new ConcreteNode( first );
+        }
+        return node;
+
     }
 
     private Integer generateHash(Operand opnd) {

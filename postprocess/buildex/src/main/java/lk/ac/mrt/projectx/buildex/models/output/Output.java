@@ -1,7 +1,6 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
-import lk.ac.mrt.projectx.buildex.DefinesDotH.*;
-import lk.ac.mrt.projectx.buildex.x86.X86Analysis.*;
+import lk.ac.mrt.projectx.buildex.DefinesDotH.OpCodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,33 +22,17 @@ public class Output {
         return opcode;
     }
 
+    public void setOpcode(String opcode) {
+        OpCodes op = OpCodes.values()[ Integer.parseInt( opcode ) ];
+        this.opcode = op;
+    }
+
     public void setOpcode(OpCodes opcode) {
         this.opcode = opcode;
     }
 
     public void setOpcode(Integer opcode) {
         this.opcode = OpCodes.values()[ opcode ];
-    }
-
-    public void setOpcode(String opcode) {
-        OpCodes op = OpCodes.values()[ Integer.parseInt( opcode ) ];
-        this.opcode = op;
-    }
-
-    public int getNumOfSources() {
-        return numOfSources;
-    }
-
-    public void setNumOfSources(int numOfSources) {
-        this.numOfSources = numOfSources;
-    }
-
-    public int getNumOfDestinations() {
-        return numOfDestinations;
-    }
-
-    public void setNumOfDestinations(int numOfDestinations) {
-        this.numOfDestinations = numOfDestinations;
     }
 
     public List<Operand> getSrcs() {
@@ -88,6 +71,29 @@ public class Output {
         return ((this.getNumOfDestinations() == d) && (this.getNumOfSources() == s));
     }
 
+    public int getNumOfSources() {
+//        return numOfSources;
+        return srcs.size();
+    }
+
+    public void setNumOfSources(int numOfSources) {
+        this.numOfSources = numOfSources;
+    }
+
+    public int getNumOfDestinations() {
+//        return numOfDestinations;
+        return dsts.size();
+    }
+
+    public void setNumOfDestinations(int numOfDestinations) {
+        this.numOfDestinations = numOfDestinations;
+    }
+
+    public void updateFPReg(String disams, int line) {
+        updateFPDest( disams, line );
+        updateFPSrc( disams, line );
+    }
+
     public void updateFPDest(String disams, int line) {
         for (Operand op : dsts) {
             if (op.isFloatingPointReg()) {
@@ -102,10 +108,5 @@ public class Output {
                 op.updateFloatingPointReg( disams, line );
             }
         }
-    }
-
-    public void updateFPReg(String disams, int line) {
-        updateFPDest( disams, line );
-        updateFPSrc( disams, line );
     }
 }

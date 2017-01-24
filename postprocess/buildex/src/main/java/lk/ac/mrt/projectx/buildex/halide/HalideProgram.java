@@ -93,6 +93,24 @@ public class HalideProgram {
         }
     }
 
+    private void appendHalideParamaterDeclarations() {
+        for (AbstractNode param : params) {
+            GeneralUtils.assertAndFail(param.getType() == AbstractNode.AbstractNodeType.PARAMETER, "ERROR: the node is not a parameter");
+
+            StringBuilder ret = new StringBuilder("Param<");
+
+            if (param.is_double) {
+                ret.append("double");
+            } else {
+                if (!param.sign) ret.append("u");
+                ret.append("int" + (param.symbol.getWidth() * 8) + "_t");
+            }
+            ret.append("> ");
+            ret.append(String.format("p_%d(\"p_%d\")", param.para_num, param.para_num));
+            appendNewLine(ret.toString());
+        }
+    }
+
             /*END OF APPENDERS*/
 
     private Function checkFunction(MemoryRegion memoryRegion) {
@@ -344,6 +362,10 @@ public class HalideProgram {
 
 	/* print InputParams */
         appendHalideInputDeclarations();
+
+	/* print Params */
+        appendHalideParamaterDeclarations();
+
 
 
         halideProgramStr.append(

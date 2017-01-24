@@ -77,7 +77,21 @@ public class HalideProgram {
             return "Float";
     }
 
+    private void appendHalideInputDeclarations() {
+        for (AbstractNode node : inputs) {
+            if (node.getAssociatedMem().getMemDirection() != MEM_INPUT) {
+                continue;
+            }
 
+            String inString = node.getAssociatedMem().getMemDirection() == MEM_OUTPUT ? "_buf_in" : "";//todo check, never true
+
+            appendNewLine(String.format("ImageParam %s(%s,%s)",
+                    node.getAssociatedMem().getName() + inString,
+                    getHalideDataType(node.symbol.getWidth(), node.sign, node.is_double),
+                    node.getDimensions().toString()
+            ));
+        }
+    }
 
             /*END OF APPENDERS*/
 
@@ -327,6 +341,9 @@ public class HalideProgram {
         /****************** print declarations **********************/
     /* print Vars */
         appendHalideVariableDeclarations();
+
+	/* print InputParams */
+        appendHalideInputDeclarations();
 
 
         halideProgramStr.append(

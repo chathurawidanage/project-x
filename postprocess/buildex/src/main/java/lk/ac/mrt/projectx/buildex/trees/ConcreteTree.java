@@ -20,6 +20,7 @@ import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RBP;
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RSP;
 import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.*;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_add;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_partial_overlap;
 
 /**
  * Created by krv on 1/2/17.
@@ -126,9 +127,53 @@ public class ConcreteTree extends Tree {
             // of the nodes returned
             List<Pair<Node, List<Node>>> partialOverlapNodes = getPartialOverlapNodes( instr.getDst() );
 
+            if (!partialOverlapNodes.isEmpty()) {
+                for (int i = 0 ; i < partialOverlapNodes.size() ; i++) {
+                    Node node = partialOverlapNodes.get( i ).first;
+                    List<Node> overlaps = partialOverlapNodes.get( i ).second;
+                    removeFromFrontier( node.getSymbol() );
+                    for (int j = 0 ; j < overlaps.size() ; j++) {
+                        addDependency( node, overlaps.get( j ), op_partial_overlap );
+                        addToFrntier( generateHash( overlaps.get( j ).getSymbol() ), overlaps.get( j ) );
+                    }
+                }
+            }
+
         }
 
         throw new NotImplementedException();
+    }
+
+    private void addDependency(Node node, Node node1, X86Analysis.Operation op_partial_overlap) {
+        throw new NotImplementedException();
+    }
+
+    private void removeFromFrontier(Operand opnd) {
+        assert opnd.getType() != IMM_INT_TYPE && opnd.getType() != IMM_FLOAT_TYPE : "Immediate types cannot be in the " +
+                "frontier";
+        int hash = generateHash( opnd );
+        int amount = frontier.get( hash ).getAmount();
+
+        Long value = opnd.getValue().longValue();
+        int width = opnd.getWidth();
+
+        boolean move = false;
+        for (int i = 0 ; i < amount ; i++) {
+            Operand op = frontier.get( hash ).getBucket().get( i ).getSymbol();
+            if ((op.getValue() == value) && (op.getWidth() == width)) {
+                frontier.get( hash ).getBucket().remove( i );
+                move = true;
+            }
+        }
+
+        if (move) {
+            assert frontier.get( hash ).getAmount() > 0 : "At least one element should have been deleted";
+            frontier.get( hash ).setAmount( frontier.get( hash ).getAmount() - 1 );
+            int amnt = frontier.get( hash ).getAmount();
+            if (amnt == 0 && (opnd.getType() == REG_TYPE)) {
+                memInFrontier.remove( hash );
+            }
+        }
     }
 
     private List<Pair<Node, List<Node>>> getPartialOverlapNodes(Operand opnd) {

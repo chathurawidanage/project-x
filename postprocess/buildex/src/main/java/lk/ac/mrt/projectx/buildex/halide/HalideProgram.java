@@ -91,7 +91,7 @@ public class HalideProgram {
         }
     }
 
-    private void appendHalideParamaterDeclarations() {
+    private void appendHalideParameterDeclarations() {
         for (AbstractNode param : params) {
             GeneralUtils.assertAndFail(param.getType() == AbstractNode.AbstractNodeType.PARAMETER, "ERROR: the node is not a parameter");
 
@@ -106,6 +106,13 @@ public class HalideProgram {
             ret.append("> ");
             ret.append(String.format("p_%d(\"p_%d\")", param.para_num, param.para_num));
             appendNewLine(ret.toString());
+        }
+    }
+
+    private void appendHalideFunctionDeclarations() {
+        for (Function function : funcs) {
+            AbstractNode abstractNode = (AbstractNode) function.getPureTrees().get(0).getHead();
+            appendNewLine(String.format("Func %s", abstractNode.getAssociatedMem().getName()));
         }
     }
     /*END OF APPENDERS*/
@@ -373,16 +380,16 @@ public class HalideProgram {
         appendHalideHeader();
 
         /****************** print declarations **********************/
-    /* print Vars */
+
         appendHalideVariableDeclarations();
 
-	/* print InputParams */
         appendHalideInputDeclarations();
 
-	/* print Params */
-        appendHalideParamaterDeclarations();
+        appendHalideParameterDeclarations();
 
         sortFunctions();
+        appendHalideFunctionDeclarations();
+
 
 
         halideProgramStr.append(

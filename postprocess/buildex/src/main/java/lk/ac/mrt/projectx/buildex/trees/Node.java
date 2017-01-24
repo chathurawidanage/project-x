@@ -415,5 +415,17 @@ public abstract class Node implements Serializable {//chathura - generics remove
         return symbol;
     }
 
-    //endregion private methods
+    public List<Node> getSrcs() {
+        return srcs;
+    }
+
+    public List<Node> getPrev() {
+        return prev;
+    }
+
+    public List<Integer> getPos() {
+        return pos;
+    }
+
+//endregion private methods
 }

@@ -1,13 +1,12 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import javafx.util.Pair;
-
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -349,8 +348,7 @@ public abstract class Node implements Serializable {//chathura - generics remove
             this.srcs.add(immNode);
             for (int j = 0; j < immNode.prev.size(); j++) {
                 if (immNode.prev.get(j) == this && immNode.pos.get(j) == immValue) {
-                    immNode.pos.remove(j);
-                    immNode.pos.add(j, immValue);
+                    immNode.pos.set( j, immValue );
                 }
             }
         }
@@ -361,8 +359,7 @@ public abstract class Node implements Serializable {//chathura - generics remove
             this.srcs.add(othNode);
             for (int j = 0; j < othNode.prev.size(); j++) {
                 if (othNode.prev.get(j) == this && othNode.pos.get(j) == othValue) {
-                    othNode.pos.remove(j);
-                    othNode.pos.add(j, othValue);
+                    othNode.pos.set(j, othValue);
                 }
             }
         }
@@ -373,8 +370,7 @@ public abstract class Node implements Serializable {//chathura - generics remove
             this.srcs.add(heapNode);
             for (int j = 0; j < heapNode.prev.size(); j++) {
                 if (heapNode.prev.get(j) == this && heapNode.pos.get(j) == heapValue) {
-                    heapNode.pos.remove(j);
-                    heapNode.pos.add(j, heapValue);
+                    heapNode.pos.set(j, heapValue);
                 }
             }
         }
@@ -395,7 +391,15 @@ public abstract class Node implements Serializable {//chathura - generics remove
         this.visited = true;
     }
 
-    //endregion public methods
+    public X86Analysis.Operation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(X86Analysis.Operation operation) {
+        this.operation = operation;
+    }
+
+//endregion public methods
 
     //region private methods
 
@@ -407,5 +411,21 @@ public abstract class Node implements Serializable {//chathura - generics remove
         this.order_num = order_num;
     }
 
-    //endregion private methods
+    public Operand getSymbol() {
+        return symbol;
+    }
+
+    public List<Node> getSrcs() {
+        return srcs;
+    }
+
+    public List<Node> getPrev() {
+        return prev;
+    }
+
+    public List<Integer> getPos() {
+        return pos;
+    }
+
+//endregion private methods
 }

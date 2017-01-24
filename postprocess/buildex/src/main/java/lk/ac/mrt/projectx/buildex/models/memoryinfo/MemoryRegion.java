@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex.models.memoryinfo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class MemoryRegion {
+
     private final static int DIMENSIONS = 3;
 
     private int bytesPerPixel;
@@ -37,9 +39,9 @@ public class MemoryRegion {
     private List<Long> referingPCs;
 
     public MemoryRegion() {
-        extents = new long[DIMENSIONS];
-        strides = new long[DIMENSIONS];
-        min = new long[DIMENSIONS];
+        extents = new long[ DIMENSIONS ];
+        strides = new long[ DIMENSIONS ];
+        min = new long[ DIMENSIONS ];
 
         type = 0;
         memDirection = MemDirection.READ;
@@ -193,13 +195,64 @@ public class MemoryRegion {
                 ", startMemory=" + startMemory +
                 ", endMemory=" + endMemory +
                 ", name='" + name + '\'' +
-                ", extents=" + Arrays.toString(extents) +
-                ", strides=" + Arrays.toString(strides) +
-                ", min=" + Arrays.toString(min) +
+                ", extents=" + Arrays.toString( extents ) +
+                ", strides=" + Arrays.toString( strides ) +
+                ", min=" + Arrays.toString( min ) +
                 ", paddingField=" + paddingField +
-                ", padding=" + Arrays.toString(padding) +
+                ", padding=" + Arrays.toString( padding ) +
                 ", referingPCs=" + referingPCs +
                 '}';
+    }
+
+    public List<List<Integer>> getIndexList() {
+        boolean finished = false;
+        List<List<Integer>> ret = new ArrayList<>();
+        List<Integer> currentIndex = new ArrayList<>();
+
+        for (int i = 0 ; i < this.dimension ; i++) {
+            currentIndex.add( 0 );
+        }
+
+        while (!finished) {
+            ret.add( currentIndex );
+            finished = true;
+
+            for (int i = 0 ; i < dimension ; i++) {
+                if (currentIndex.get( i ) < extents[ i ] - 1) {
+                    Integer val = currentIndex.get( i );
+                    val++;
+                    currentIndex.set( i, val );
+                    for (int j = 0 ; j < i ; j++) {
+                        currentIndex.set( j, 0 );
+                    }
+                    finished = false;
+                    break;
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    public Long getMemLocation(List<Integer> base, List<Integer> offset) {
+        assert base.size() == this.dimension : "dimensions done match up";
+        for (int i = 0 ; i < base.size() ; i++) {
+            if (base.get( i ) + offset.get( i ) > this.extents[ i ]) {
+                return null;
+            }
+        }
+        Long retAddress = startMemory;
+        if (this.startMemory < this.endMemory) {
+            for (int i = 0 ; i < base.size() ; i++) {
+                retAddress += this.strides[ i ] * base.get( i );
+            }
+        } else {
+            for (int i = 0 ; i < base.size() ; i++) {
+                retAddress -= this.strides[ i ] * base.get( i );
+            }
+        }
+
+        return retAddress;
     }
 
     @Override
@@ -219,12 +272,12 @@ public class MemoryRegion {
         if (getPaddingField() != that.getPaddingField()) return false;
         if (getMemoryDumpType() != that.getMemoryDumpType()) return false;
         if (getMemDirection() != that.getMemDirection()) return false;
-        if (getName() != null ? !getName().equals(that.getName()) : that.getName() != null) return false;
-        if (!Arrays.equals(getExtents(), that.getExtents())) return false;
-        if (!Arrays.equals(getStrides(), that.getStrides())) return false;
-        if (!Arrays.equals(getMin(), that.getMin())) return false;
-        if (!Arrays.equals(getPadding(), that.getPadding())) return false;
-        return getReferingPCs() != null ? getReferingPCs().equals(that.getReferingPCs()) : that.getReferingPCs() == null;
+        if (getName() != null ? !getName().equals( that.getName() ) : that.getName() != null) return false;
+        if (!Arrays.equals( getExtents(), that.getExtents() )) return false;
+        if (!Arrays.equals( getStrides(), that.getStrides() )) return false;
+        if (!Arrays.equals( getMin(), that.getMin() )) return false;
+        if (!Arrays.equals( getPadding(), that.getPadding() )) return false;
+        return getReferingPCs() != null ? getReferingPCs().equals( that.getReferingPCs() ) : that.getReferingPCs() == null;
     }
 
     @Override
@@ -239,12 +292,13 @@ public class MemoryRegion {
         result = 31 * result + (int) (getStartMemory() ^ (getStartMemory() >>> 32));
         result = 31 * result + (int) (getEndMemory() ^ (getEndMemory() >>> 32));
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
-        result = 31 * result + Arrays.hashCode(getExtents());
-        result = 31 * result + Arrays.hashCode(getStrides());
-        result = 31 * result + Arrays.hashCode(getMin());
+        result = 31 * result + Arrays.hashCode( getExtents() );
+        result = 31 * result + Arrays.hashCode( getStrides() );
+        result = 31 * result + Arrays.hashCode( getMin() );
         result = 31 * result + (int) (getPaddingField() ^ (getPaddingField() >>> 32));
-        result = 31 * result + Arrays.hashCode(getPadding());
+        result = 31 * result + Arrays.hashCode( getPadding() );
         result = 31 * result + (getReferingPCs() != null ? getReferingPCs().hashCode() : 0);
         return result;
+
     }
 }

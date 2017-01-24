@@ -436,8 +436,7 @@ public abstract class Tree implements Comparable {
                         int idx = (Integer) dst.pos.get(i);
                         srcNode.prev.add(preNode);
                         srcNode.pos.add(idx);
-                        preNode.srcs.remove(idx);
-                        preNode.srcs.add(idx, srcNode);
+                        preNode.srcs.set( idx, srcNode );
                     }
                 }
 

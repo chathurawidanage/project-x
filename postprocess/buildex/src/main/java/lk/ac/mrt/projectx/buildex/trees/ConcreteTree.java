@@ -1,6 +1,7 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.DefinesDotH;
+import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
 import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
@@ -17,7 +18,7 @@ import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RBP;
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RSP;
-import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.REG_TYPE;
+import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.*;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_add;
 
 /**
@@ -118,9 +119,40 @@ public class ConcreteTree extends Tree {
                 }
 
             }
+
+            List<Node> fullOverlapNodes = new ArrayList<>();
+
+            // first get the partial overlap nodes - if dest is part of the frontier of a wide region it will be part
+            // of the nodes returned
+            List<Pair<Node, List<Node>>> partialOverlapNodes = getPartialOverlapNodes( instr.getDst() );
+
         }
 
         throw new NotImplementedException();
+    }
+
+    private List<Pair<Node, List<Node>>> getPartialOverlapNodes(Operand opnd) {
+        logger.debug( "Checking for partial overlap nodes" );
+        List<Pair<Node, List<Node>>> ret = null;
+        if (opnd.getType() == REG_TYPE) {
+            Integer hash = generateHash( opnd );
+            ret = splitPartialOverlap( opnd, hash );
+        } else if ((opnd.getType() == MEM_STACK_TYPE) || (opnd.getType() == MEM_HEAP_TYPE)) {
+            for (int i = 0 ; i < memInFrontier.size() ; i++) {
+                Integer index = memInFrontier.get( i );
+                ret = splitPartialOverlap( opnd, index );
+            }
+        }
+
+        return ret;
+    }
+
+    private List<Pair<Node, List<Node>>> splitPartialOverlap(Operand opnd, Integer hash) {
+        List<Pair<Node, List<Node>>> nodes = new ArrayList<>();
+
+
+        throw new NotImplementedException();
+//        return nodes;
     }
 
     private Integer generateHash(Operand opnd) {

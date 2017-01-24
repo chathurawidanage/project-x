@@ -17,6 +17,8 @@ import java.util.List;
 
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RBP;
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RSP;
+import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.REG_TYPE;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_add;
 
 /**
  * Created by krv on 1/2/17.
@@ -122,7 +124,7 @@ public class ConcreteTree extends Tree {
     }
 
     private Integer generateHash(Operand opnd) {
-        if (opnd.getType() == MemoryType.REG_TYPE) {
+        if (opnd.getType() == REG_TYPE) {
             return ((Integer) opnd.getValue()) / X86Analysis.MAX_SIZE_OF_REG;
         } else if ((opnd.getType() == MemoryType.MEM_STACK_TYPE) || (opnd.getType() == MemoryType.MEM_HEAP_TYPE)) {
             int offset = ((Integer) opnd.getValue()) % MEM_REGION;
@@ -166,7 +168,7 @@ public class ConcreteTree extends Tree {
         }
 
         // reg type used but doesnt matter coz used as an operation only node
-        ConcreteNode indirectNode = new ConcreteNode( MemoryType.REG_TYPE, 0L, 0L, 0.0f );
+        ConcreteNode indirectNode = new ConcreteNode( REG_TYPE, 0L, 0L, 0.0f );
         indirectNode.setOperation( X86Analysis.Operation.op_indirect );
         node.addForwardReference( indirectNode );
 
@@ -184,6 +186,41 @@ public class ConcreteTree extends Tree {
                 addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
             }
             currentNode.addForwardReference( addr_node );
+        } else if (!reg1_rsp && reg2_rsp) {
+            Node addr_node = searchNode( opnds.get( 0 ) );
+            if (addr_node == null) {
+                addr_node = new ConcreteNode( opnds.get( 0 ) );
+                addToFrontier( generateHash( opnds.get( 0 ) ), addr_node );
+            }
+            currentNode.addForwardReference( addr_node );
+        } else if (!reg1_rsp && !reg2_rsp) { // [edx + 2] like addresses
+            Node addr_node = null;
+            if (opnds.get( 0 ).getValue() == 0) {
+                addr_node = searchNode( opnds.get( 1 ) );
+                if (addr_node == null) {
+                    addr_node = new ConcreteNode( opnds.get( 1 ) );
+                    addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
+                }
+            } else if (opnds.get( 1 ).getValue() == 0) {
+                addr_node = searchNode( opnds.get( 0 ) );
+                if (addr_node == null) {
+                    addr_node = new ConcreteNode( opnds.get( 0 ) );
+                    addToFrontier( generateHash( opnds.get( 0 ) ), addr_node );
+                }
+            } else {
+                assert false : "ERROR: not handled";
+            }
+
+            ConcreteNode add_node = new ConcreteNode( REG_TYPE, 0L, 4L, 0.0f ); //reg_type is used here; it doesn't
+            // really matter as this is an operation only node
+            add_node.setOperation( op_add );
+
+            currentNode.addForwardReference( add_node );
+            add_node.addForwardReference( addr_node );
+            ConcreteNode imm = new ConcreteNode( opnds.get( 3 ) );
+            add_node.addForwardReference( imm );
+        } else {
+            assert false : "ERROR: should not reach here";
         }
     }
 
@@ -195,7 +232,7 @@ public class ConcreteTree extends Tree {
         frontier.get( hash ).setAmount( frontier.get( hash ).getAmount() + 1 );
 
         // if this a memory operand we should memorize it
-        if (node.getSymbol().getType() == MemoryType.REG_TYPE) {
+        if (node.getSymbol().getType() == REG_TYPE) {
             if (!memInFrontier.contains( hash )) {
                 memInFrontier.add( hash );
             }

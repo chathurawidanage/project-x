@@ -25,6 +25,7 @@ public class ConcreteTree extends Tree {
 
 
     //region private variables
+    private static final int SIZE_PER_FRONTIER = 100;
     private static final int MAX_FRONTIERS = 1000;
     private static final int MEM_OFFSET = 200;
     private static final int MEM_REGION = (MAX_FRONTIERS - MEM_OFFSET);
@@ -180,9 +181,24 @@ public class ConcreteTree extends Tree {
             Node addr_node = searchNode( opnds.get( 1 ) );
             if (addr_node == null) {
                 addr_node = new ConcreteNode( opnds.get( 1 ) );
-//                addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
+                addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
             }
             currentNode.addForwardReference( addr_node );
+        }
+    }
+
+    private void addToFrontier(Integer hash, Node node) {
+        assert (node.getSymbol().getType() != MemoryType.IMM_INT_TYPE) && (node.getSymbol().getType() != MemoryType
+                .IMM_FLOAT_TYPE) : "Immediate types cannot be in the frontier";
+        assert frontier.get( hash ).getAmount() < SIZE_PER_FRONTIER : "Bucket size is full";
+        frontier.get( hash ).getBucket().set( frontier.get( hash ).getAmount(), node );
+        frontier.get( hash ).setAmount( frontier.get( hash ).getAmount() + 1 );
+
+        // if this a memory operand we should memorize it
+        if (node.getSymbol().getType() == MemoryType.REG_TYPE) {
+            if (!memInFrontier.contains( hash )) {
+                memInFrontier.add( hash );
+            }
         }
     }
 

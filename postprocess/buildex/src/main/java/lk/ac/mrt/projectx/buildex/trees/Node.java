@@ -427,5 +427,21 @@ public abstract class Node implements Serializable {//chathura - generics remove
         return pos;
     }
 
-//endregion private methods
+    public Long getPc() {
+        return pc;
+    }
+
+    public void setPc(Long pc) {
+        this.pc = pc;
+    }
+
+    public void setLine(Long line) {
+        this.line = line;
+    }
+
+    public void setFunctionName(String funcName) {
+        this.functionName = funcName;
+    }
+
+    //endregion private methods
 }

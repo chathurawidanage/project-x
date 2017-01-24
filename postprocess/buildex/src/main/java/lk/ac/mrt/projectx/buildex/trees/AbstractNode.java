@@ -16,7 +16,7 @@ import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.MEM_STACK_TYPE
  * Created by krv on 12/30/16.
  * Depends on classes: Node, MemoryRegion
  */
-public class AbstractNode <T> extends Node<T> implements Comparable {
+public class AbstractNode extends Node implements Comparable, Cloneable {//chathura - generics removed
 
     //region public enum
 
@@ -30,19 +30,64 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
     private ArrayList<ArrayList<Integer>> indexes;
     private ArrayList<Integer> pos;
     private MemoryRegion associatedMem;
+
     public AbstractNode() {
         super();
+    }
+
+    public void setType(AbstractNodeType type) {
+        this.type = type;
+    }
+
+    public Integer getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(Integer dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public Integer getHeadDiemensions() {
+        return headDiemensions;
+    }
+
+    public void setHeadDiemensions(Integer headDiemensions) {
+        this.headDiemensions = headDiemensions;
+    }
+
+    public ArrayList<ArrayList<Integer>> getIndexes() {
+        return indexes;
+    }
+
+    public void setIndexes(ArrayList<ArrayList<Integer>> indexes) {
+        this.indexes = indexes;
+    }
+
+    public ArrayList<Integer> getPos() {
+        return pos;
+    }
+
+    public void setPos(ArrayList<Integer> pos) {
+        this.pos = pos;
+    }
+
+    public MemoryRegion getAssociatedMem() {
+        return associatedMem;
+    }
+
+    public void setAssociatedMem(MemoryRegion associatedMem) {
+        this.associatedMem = associatedMem;
     }
 
     //endregion private variables
 
     //region public constructors
 
-    public AbstractNode(AbstractNode node) {
+    public AbstractNode(AbstractNode node) {//todo is this for cloning? If yes, this won't clone -chathura
         super(node);
     }
 
-    public AbstractNode(ConcreteNode head, ConcreteNode concreteNode, List<MemoryRegion> memRegions){
+    public AbstractNode(ConcreteNode head, ConcreteNode concreteNode, List<MemoryRegion> memRegions) {
         //TODO : Finish it refer (abs_node.cpp)
         super(concreteNode);
         this.minus = false;
@@ -52,14 +97,14 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         this.functionName = concreteNode.functionName;
 
         boolean filer = false;
-        if(concreteNode == head){
+        if (concreteNode == head) {
             filer = true;
-        }else if(concreteNode.srcs.isEmpty()){
+        } else if (concreteNode.srcs.isEmpty()) {
             filer = true;
-        }else{
-            for (Object nd: concreteNode.srcs) {
-                Node node = (Node)nd;
-                if(node.operation == X86Analysis.Operation.op_indirect){
+        } else {
+            for (Object nd : concreteNode.srcs) {
+                Node node = (Node) nd;
+                if (node.operation == X86Analysis.Operation.op_indirect) {
                     filer = true;
                     //TODO : No break here in Helium
                     break;
@@ -69,11 +114,11 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
         this.associatedMem = null;
         MemoryRegion mem = null;
-        if(concreteNode.symbol.getType() == MEM_STACK_TYPE || concreteNode.symbol.getType() == MEM_HEAP_TYPE){
-            mem = MemoryRegionUtils.getMemRegion((Integer)concreteNode.symbol.getValue(), memRegions);
+        if (concreteNode.symbol.getType() == MEM_STACK_TYPE || concreteNode.symbol.getType() == MEM_HEAP_TYPE) {
+            mem = MemoryRegionUtils.getMemRegion((Integer) concreteNode.symbol.getValue(), memRegions);
         }
 
-        if((mem != null) && filer){
+        if ((mem != null) && filer) {
 
         }
         throw new NotImplementedException();
@@ -151,7 +196,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         StringBuilder memSt = new StringBuilder();
         memSt.append(this.associatedMem.getName());
         memSt.append("(");
-        for (int i = 0 ; i < this.dimensions - 1 ; i++) {
+        for (int i = 0; i < this.dimensions - 1; i++) {
             memSt.append(this.pos.get(i));
             memSt.append(",");
         }
@@ -183,8 +228,8 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
         stringBuilder.append("(");
         boolean first = true;
 
-        for (int i = 0 ; i < this.dimensions ; i++) {
-            for (int j = 0 ; j < this.headDiemensions ; j++) {
+        for (int i = 0; i < this.dimensions; i++) {
+            for (int j = 0; j < this.headDiemensions; j++) {
                 if (this.indexes.get(i).get(j) == 1) {
                     if (!first) {
                         stringBuilder.append("+");
@@ -225,7 +270,7 @@ public class AbstractNode <T> extends Node<T> implements Comparable {
 
     private String getImmediateString(List<String> vars) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0 ; i < dimensions ; i++) {
+        for (int i = 0; i < dimensions; i++) {
             if (headDiemensions == i) {
                 stringBuilder.append(indexes.get(0).get(i).toString());
             } else if (0 != indexes.get(0).get(i)) {

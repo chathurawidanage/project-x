@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex.models.output;
 import lk.ac.mrt.projectx.buildex.DefinesDotH.OpCodes;
 import lk.ac.mrt.projectx.buildex.InstructionTraceUnit;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +54,7 @@ public class Output {
         this.opcode = OpCodes.values()[ opcode ];
     }
 
+
     public void setOpcode(String opcode) {
         OpCodes op = OpCodes.values()[ Integer.parseInt( opcode ) ];
         this.opcode = op;
@@ -60,6 +62,7 @@ public class Output {
 
     public void setOpcode(OpCodes opcode) {
         this.opcode = opcode;
+
     }
 
     public List<Operand> getSrcs() {
@@ -99,7 +102,7 @@ public class Output {
     }
 
     public int getNumOfSources() {
-        return numOfSources;
+        return srcs.size();
     }
 
     public void setNumOfSources(int numOfSources) {
@@ -107,7 +110,7 @@ public class Output {
     }
 
     public int getNumOfDestinations() {
-        return numOfDestinations;
+        return dsts.size();
     }
 
     public void setNumOfDestinations(int numOfDestinations) {

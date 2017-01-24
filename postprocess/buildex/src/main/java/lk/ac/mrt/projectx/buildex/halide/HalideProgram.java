@@ -9,12 +9,10 @@ import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
+import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_OUTPUT;
 import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_assign;
 
 /**
@@ -43,14 +41,45 @@ public class HalideProgram {
         this.inputs = new ArrayList<>();
 
         this.abstractTree = abstractTree;
-        halideProgramStr.append(
-                "#include <Halide.h>\n" +
-                        "#include <vector>\n " +
-                        "using namespace std;\n" +
-                        "using namespace Halide;\n " +
-                        "int main(){ \n"
-        );
     }
+
+    /*APPENDERS*/
+
+    private void appendNewLine(String line, boolean semicolon) {
+        halideProgramStr.append(line + (semicolon ? ";" : ""));
+        halideProgramStr.append("\n");
+    }
+
+    private void appendNewLine(String line) {
+        appendNewLine(line, true);
+    }
+
+    private void appendHalideHeader() {
+        appendNewLine("#include <Halide.h>", false);
+        appendNewLine("#include <vector>", false);
+        appendNewLine("using namespace std");
+        appendNewLine("using namespace Halide");
+        appendNewLine("int main(){", false);
+    }
+
+    private void appendHalideVariableDeclarations() {
+        for (String var : vars) {
+            appendNewLine("Var " + var);
+        }
+    }
+
+    private String getHalideDataType(int width, boolean sign, boolean isFloat) {
+        StringBuilder signString = new StringBuilder(sign ? "" : "U");
+
+        if (!isFloat)
+            return signString.append("Int(" + (width * 8) + ")").toString();
+        else
+            return "Float";
+    }
+
+
+
+            /*END OF APPENDERS*/
 
     private Function checkFunction(MemoryRegion memoryRegion) {
         for (int i = 0; i < funcs.size(); i++) {
@@ -259,7 +288,7 @@ public class HalideProgram {
                 output.add(outputNode);
                 MemoryRegion head_region = outputNode.getAssociatedMem();
                 long direction = head_region.getTreeDirections();
-                direction |= MemDirection.MEM_OUTPUT.getValue();
+                direction |= MEM_OUTPUT.getValue();
                 head_region.setTreeDirections(direction);
             }
 
@@ -271,7 +300,7 @@ public class HalideProgram {
                 for (int j = 0; j < output.size(); j++) {
                     if (abstractNodei.getAssociatedMem() == output.get(j).getAssociatedMem()) {
                         if (abstractNodei.isIndirect() != -1) {
-                            direction&=~(MEM_INPUT.getValue());
+                            direction &= ~(MEM_INPUT.getValue());
                             abstractNodei.getAssociatedMem().setTreeDirections(direction);
                         }
                         break;
@@ -282,7 +311,24 @@ public class HalideProgram {
         }
     }
 
-    public String getFinalizedProgram() {
+    public String getFinalizedProgram(List<String> reductionVariables) {
+        logger.debug("Finalizing halide program");
+
+        Iterator<Integer> paramMatchKeysIterator = parameterMatch.keySet().iterator();
+
+        while (paramMatchKeysIterator.hasNext()) {
+            Integer next = paramMatchKeysIterator.next();
+            halideProgramStr.append(next + " " + parameterMatch.get(next));
+        }
+
+        appendHalideHeader();
+
+
+        /****************** print declarations **********************/
+    /* print Vars */
+        appendHalideVariableDeclarations();
+
+
         halideProgramStr.append(
                 "return 0;\n}"
         );

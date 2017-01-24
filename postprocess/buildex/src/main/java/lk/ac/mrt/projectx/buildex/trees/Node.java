@@ -1,13 +1,12 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
 import javafx.util.Pair;
-
 import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -392,7 +391,15 @@ public abstract class Node implements Serializable {//chathura - generics remove
         this.visited = true;
     }
 
-    //endregion public methods
+    public X86Analysis.Operation getOperation() {
+        return operation;
+    }
+
+    public void setOperation(X86Analysis.Operation operation) {
+        this.operation = operation;
+    }
+
+//endregion public methods
 
     //region private methods
 
@@ -404,5 +411,21 @@ public abstract class Node implements Serializable {//chathura - generics remove
         this.order_num = order_num;
     }
 
-    //endregion private methods
+    public Operand getSymbol() {
+        return symbol;
+    }
+
+    public List<Node> getSrcs() {
+        return srcs;
+    }
+
+    public List<Node> getPrev() {
+        return prev;
+    }
+
+    public List<Integer> getPos() {
+        return pos;
+    }
+
+//endregion private methods
 }

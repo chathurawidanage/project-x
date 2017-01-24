@@ -48,16 +48,33 @@ public class ConcreteNode extends Node implements Comparable {
         assignMemRegion(regions);
     }
 
-    //endregion public constructors
-
-    //region public methods
-
     private void assignMemRegion(List<MemoryRegion> regions) {
         if (this.symbol.getType() == MemoryType.MEM_HEAP_TYPE ||
                 this.symbol.getType() == MemoryType.MEM_STACK_TYPE) {
 //            this.region = getMemRegion(this.symbol.value, regions);
             throw new NoSuchMethodError("getMemRegion(ConcreteNode, List<MemoryRegion>");
         }
+    }
+
+    //endregion public constructors
+
+    //region public methods
+
+    public ConcreteNode(MemoryType regType, Long value, Long width, float floatValue) {
+        Operand sym = new Operand();
+        sym.setType( regType );
+        sym.setValue( value );
+        sym.setWidth( width.intValue() );
+
+        this.symbol = sym;
+        this.operation = X86Analysis.Operation.op_unknown;
+        this.order_num = -1;
+
+        this.is_para = false;
+        this.is_double = false;
+        this.line = 0L;
+        this.pc = 0L;
+        this.region = null;
     }
 
     @Override

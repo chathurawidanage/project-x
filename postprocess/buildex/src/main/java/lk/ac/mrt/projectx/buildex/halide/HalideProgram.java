@@ -115,6 +115,26 @@ public class HalideProgram {
             appendNewLine(String.format("Func %s", abstractNode.getAssociatedMem().getName()));
         }
     }
+
+    private void appendHalideArguments(String vectorName) {
+        StringBuilder arg = new StringBuilder(vectorName);
+        appendNewLine(String.format("vector<Argument> %s", arg));
+        for (AbstractNode param : params) {
+            appendNewLine(String.format("%s.push_back(p_%s)", arg, param.para_num));
+        }
+
+        for (AbstractNode input : inputs) {
+            appendNewLine(String.format("%s.push_back(p_%s)", input.getAssociatedMem().getName()));
+        }
+    }
+
+    private void appendHalideOutputToFile(String argsVectorName) {
+        int outIndex = 0;
+        for (AbstractNode out : output) {
+            appendNewLine(String.format("%s.compile_to_file(\"%s_%d\",%s)",
+                    out.getAssociatedMem().getName(), "halide_out", outIndex++, argsVectorName));
+        }
+    }
     /*END OF APPENDERS*/
 
     /*Function Sorters*/
@@ -390,11 +410,22 @@ public class HalideProgram {
         sortFunctions();
         appendHalideFunctionDeclarations();
 
+        /***************** print the functions ************************/
 
+        for (int i = 0; i < funcs.size(); i++) {
 
-        halideProgramStr.append(
-                "return 0;\n}"
-        );
+        }
+
+        /***************finalizing - instructions for code generation ******/
+
+	/* print argument population - params and input params */
+	    String argumentsVector="arguments";
+        appendHalideArguments(argumentsVector);
+
+        appendHalideOutputToFile(argumentsVector);
+
+        appendNewLine("return 0");
+        appendNewLine("}", false);
         return halideProgramStr.toString();
     }
 }

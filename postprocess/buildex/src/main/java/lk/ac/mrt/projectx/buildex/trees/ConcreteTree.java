@@ -157,10 +157,12 @@ public class ConcreteTree extends Tree {
 
             List<Node> splits = new ArrayList<>();
             if (opnd.getType() == splitNode.getSymbol().getType()) {
+
                 if ((start >= opnd.getValue().longValue()) && (start <= opnd.getValue().longValue() - opnd.getWidth()
                         - 1) //start within
                         && (start + width > opnd.getValue().longValue() + opnd.getWidth())) // end strictly after
                 {
+
                     Operand first = new Operand( splitNode.getSymbol().getType(), opnd.getValue().intValue() + opnd
                             .getWidth() - start.intValue(), start );
                     Operand second = new Operand( splitNode.getSymbol().getType(), width - first.getWidth(), opnd
@@ -170,7 +172,43 @@ public class ConcreteTree extends Tree {
 
                     nodes.add( new Pair<Node, List<Node>>( splitNode, splits ) );
 
+                    logger.debug( "partial oveerlap %s %s", first.toString(), second.toString() );
+
+                } else if (start <= opnd.getValue().longValue() /* start strictly before */ && (start + width - 1 >= opnd
+                        .getValue().longValue()) && (start + width - 1 <= opnd.getValue().longValue() + opnd.getWidth() - 1))// end within
+                {
+
+                    Operand first = new Operand( splitNode.getSymbol().getType(), opnd.getValue().intValue() -
+                            start.intValue(), start );
+                    Operand second = new Operand( splitNode.getSymbol().getType(), width - first.getWidth(),
+                            opnd.getValue() );
+
+                    splits.add( createOrGetNode( first ) );
+                    splits.add( createOrGetNode( second ) );
+
+                    nodes.add( new Pair<Node, List<Node>>( splitNode, splits ) );
+
+                    logger.debug( "partial oveerlap %s %s", first.toString(), second.toString() );
+
+                } else if ((start < opnd.getValue().longValue()) && (start + width > opnd.getValue().longValue() +
+                        opnd.getWidth())) {
+
+                    Operand first = new Operand( splitNode.getSymbol().getType(), opnd.getValue().intValue() -
+                            start.intValue(), start );
+                    Operand second = new Operand( splitNode.getSymbol().getType(), width - first.getWidth() - opnd.getWidth(),
+                            opnd.getValue().longValue() + opnd.getWidth() );
+
+                    splits.add( createOrGetNode( first ) );
+                    splits.add( createOrGetNode( opnd ) );
+                    splits.add( createOrGetNode( second ) );
+
+                    nodes.add( new Pair<Node, List<Node>>( splitNode, splits ) );
+
+                    logger.debug( "partial oveerlap %s %s", first.toString(), second.toString() );
+
                 }
+
+
             }
         }
 

@@ -19,8 +19,7 @@ import java.util.List;
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RBP;
 import static lk.ac.mrt.projectx.buildex.DefinesDotH.DR_REG.DR_REG_RSP;
 import static lk.ac.mrt.projectx.buildex.models.output.MemoryType.*;
-import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_add;
-import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.op_partial_overlap;
+import static lk.ac.mrt.projectx.buildex.x86.X86Analysis.Operation.*;
 
 /**
  * Created by krv on 1/2/17.
@@ -144,8 +143,15 @@ public class ConcreteTree extends Tree {
         throw new NotImplementedException();
     }
 
-    private void addDependency(Node node, Node node1, X86Analysis.Operation op_partial_overlap) {
-        throw new NotImplementedException();
+    private void addDependency(Node dst, Node src, X86Analysis.Operation operation) {
+        int srcIndex = dst.getSrcs().size();
+        dst.getSrcs().add( src );
+        if (dst.getOperation() == op_unknown) {
+            dst.setOperation( operation );
+        }
+
+        src.getPrev().add( dst );
+        src.getPos().add( srcIndex );
     }
 
     private void removeFromFrontier(Operand opnd) {

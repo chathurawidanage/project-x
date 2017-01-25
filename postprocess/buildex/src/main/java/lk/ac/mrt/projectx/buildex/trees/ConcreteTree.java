@@ -266,10 +266,27 @@ public class ConcreteTree extends Tree {
 
                 }
 
+                logger.debug( "Completed adding a src" );
+
+                if (INDIRECTION) {
+                    if (info.getInstructionType() == StaticInfo.InstructionType.INPUT_DEPENDENT_INDIRECT) {
+                        if (instr.getSrcs().get( i ).getAddress() != null) { // ok we have an address calculation
+                            // dependancy, make sure this is a buffer
+                            for (int buf = 0 ; buf < regions.size() ; buf++) {
+                                if (CommonUtil.isOverlapped( regions.get( buf ).getStartMemory(),
+                                        regions.get( buf ).getEndMemory(), instr.getSrcs().get( i ).getValue().longValue(),
+                                        instr.getSrcs().get( i ).getValue().longValue() + instr.getSrcs().get( i ).getWidth() )) {
+                                    addAddressDependency( src, instr.getSrcs().get( i ).getAddress() );
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
-        throw new NotImplementedException();
+        return true;
     }
 
     private Boolean treeAddToFrontier(ReducedInstruction instr, Node src) {

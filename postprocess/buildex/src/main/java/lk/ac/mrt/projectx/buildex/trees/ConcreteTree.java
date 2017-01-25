@@ -58,10 +58,6 @@ public class ConcreteTree extends Tree {
     public void simplifyTree() {
     }
 
-    private void addToFrntier(Integer hash, Node node) {
-        throw new NotImplementedException();
-    }
-
     private void removeRegistersFromFrontier() {
         throw new NotImplementedException();
     }
@@ -133,7 +129,7 @@ public class ConcreteTree extends Tree {
                     removeFromFrontier( node.getSymbol() );
                     for (int j = 0 ; j < overlaps.size() ; j++) {
                         addDependency( node, overlaps.get( j ), op_partial_overlap );
-                        addToFrntier( generateHash( overlaps.get( j ).getSymbol() ), overlaps.get( j ) );
+                        addToFrontier( generateHash( overlaps.get( j ).getSymbol() ), overlaps.get( j ) );
                     }
                 }
             }
@@ -222,12 +218,84 @@ public class ConcreteTree extends Tree {
                 if (ASSIGN_OPT) {
                     // this is just an assign then remove the current node and place the new src node -> compiler
                     // didn't optimize for this?
+
+                    if ((instr.getSrcs().size() == 1) && (instr.getOperation() == op_assign)) {
+//                        Integer numReferences = dst.getPrev().size();
+                        for (int j = 0 ; j < dst.getPrev().size() ; j++) {
+                            src.getPrev().add( dst.getPrev().get( j ) );
+                            src.getPos().add( dst.getPos().get( j ) );
+                            dst.getPrev().get( j ).getSrcs().set( dst.getPos().get( j ), src );
+                            src.setLine( line.longValue() );
+                            src.setPc( info.getPc() );
+
+                            assignOpt = true;
+                        }
+
+                        if (instr.isFloating()) {
+                            src.is_double = instr.isFloating();
+                        }
+
+                        logger.debug( "Optimizing assign" );
+
+//                        if (assignOpt) {
+//                            delete dst;
+//                            // we have broken all linkages, so just delete it
+//                        }
+                    }
+                }
+
+                if (!assignOpt) {
+                    Integer srcIndex = dst.getSrcs().size();
+                    dst.getSrcs().add( src );
+                    src.getPrev().add( dst );
+                    src.getPos().add( srcIndex );
+
+                    if (instr.isFloating()) {
+                        src.is_double = instr.isFloating();
+                    }
+                }
+
+                // update the frontiers - include the sources to the frontier if new nodes created
+                if (addNode) {
+                    // first if we have a recurrance we dont want to expand any more
+                    ConcreteNode headConc = ((ConcreteNode) head);
+                    ConcreteNode srcConc = ((ConcreteNode) src);
+                    if (!INTERMEDIATE_BUFFER_ANALYSIS) {
+                        treeAddToFrontier( instr, src );
+                    }
+
                 }
 
             }
         }
 
         throw new NotImplementedException();
+    }
+
+    private Boolean treeAddToFrontier(ReducedInstruction instr, Node src) {
+        ConcreteNode headConc = ((ConcreteNode) this.getHead());
+        ConcreteNode srcConc = ((ConcreteNode) src);
+
+        boolean add = true;
+        if ((headConc.getRegion() != null) && (headConc.getRegion() == srcConc.getRegion())) {
+            add = false;
+        }
+
+        // <opnd> <0xff>
+        if (instr.getOperation() == op_or) {
+            for (int i = 0 ; i < instr.getSrcs().size() ; i++) {
+                if ((instr.getSrcs().get( i ).getValue().intValue() == -1) &&
+                        (instr.getSrcs().get( i ).getType() == IMM_INT_TYPE)) {
+                    add = false;
+                }
+            }
+        }
+
+        if (add) {
+            addToFrontier( generateHash( src.getSymbol() ), src );
+        }
+
+        return add;
     }
 
     private void createCallDependency(ConcreteTree tree, Node node, FuncInfo info) {
@@ -246,7 +314,7 @@ public class ConcreteTree extends Tree {
         for (int i = 0 ; i < info.getParameters().size() ; i++) {
             Node para = new ConcreteNode( info.getParameters().get( i ) );
             callNode.addForwardReference( para );
-            tree.addToFrntier( tree.generateHash( info.getParameters().get( i ) ), para );
+            tree.addToFrontier( tree.generateHash( info.getParameters().get( i ) ), para );
         }
     }
 

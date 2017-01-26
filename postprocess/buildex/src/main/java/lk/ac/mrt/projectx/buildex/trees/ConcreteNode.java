@@ -129,6 +129,10 @@ public class ConcreteNode extends Node implements Comparable {
         return region;
     }
 
+    public void setRegion(MemoryRegion region) {
+        this.region = region;
+    }
+
     //endregion private methods
 
 }

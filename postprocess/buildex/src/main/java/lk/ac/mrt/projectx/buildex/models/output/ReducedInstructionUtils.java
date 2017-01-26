@@ -19,6 +19,21 @@ public class ReducedInstructionUtils {
     final static Logger logger = LogManager.getLogger( ReducedInstructionUtils.class );
 
     /**
+     * This gets true dependancies + instructions affecting eflags
+     *
+     * @param cinst  ::Output pointer to a pre-populated complex x86 instruction
+     * @param disams ::String string of the disassembly of 'cinstr'. Can be used for debugging purposes
+     * @param line   ::Integer Line in which this instruction can be found in the instruction trace (after filtering)
+     * @return ::List<ReducedInstruction> Reduced instruction list (original amount pointer will be the size of the list)
+     */
+    public static List<ReducedInstruction> cinstrToRinstrsEflags(Output cinst, String disams, Integer line) {
+        List<ReducedInstruction> rinstr = cinstrToRinstr( cinst, disams, line );
+
+        boolean unhandled = false;
+        return rinstr;
+    }
+
+    /**
      * This is a pure function without side effects for cinstr -- Helium
      *
      * @param cinst  ::Output pointer to a pre-populated complex x86 instruction
@@ -26,7 +41,7 @@ public class ReducedInstructionUtils {
      * @param line   ::Integer Line in which this instruction can be found in the instruction trace (after filtering)
      * @return ::List<ReducedInstruction> Reduced instruction list (original amount pointer will be the size of the list)
      */
-    private static List<ReducedInstruction> cinstrToRinstr(Output cinst, String disams, Integer line) {
+    public static List<ReducedInstruction> cinstrToRinstr(Output cinst, String disams, Integer line) {
         logger.debug( "Enter canonicalization - app_pc" );
         Integer amount = 0; // this can be taken by the size of the return list
         List<ReducedInstruction> rInstructions = new ArrayList<>();
@@ -888,20 +903,5 @@ public class ReducedInstructionUtils {
             ins.setFloating( cinst.getOpcode().isFloatingPointIns() );
         }
         return rInstructions;
-    }
-
-    /**
-     * This gets true dependancies + instructions affecting eflags
-     *
-     * @param cinst  ::Output pointer to a pre-populated complex x86 instruction
-     * @param disams ::String string of the disassembly of 'cinstr'. Can be used for debugging purposes
-     * @param line   ::Integer Line in which this instruction can be found in the instruction trace (after filtering)
-     * @return ::List<ReducedInstruction> Reduced instruction list (original amount pointer will be the size of the list)
-     */
-    public static List<ReducedInstruction> cinstrToRinstrsEflags(Output cinst, String disams, Integer line) {
-        List<ReducedInstruction> rinstr = cinstrToRinstr( cinst, disams, line );
-
-        boolean unhandled = false;
-        return rinstr;
     }
 }

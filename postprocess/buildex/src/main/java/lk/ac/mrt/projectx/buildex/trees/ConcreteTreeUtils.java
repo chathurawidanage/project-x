@@ -174,11 +174,19 @@ public class ConcreteTreeUtils {
 
         if (tree.isRecursive()) {
             initialTree = new ConcreteTree();
-            // we need to build a tree for the initial uodate definition
+            // we need to build a tree for the initial udate definition
+            buildTreeInitialUpdate( destination, stride, startToInitial, endTrace, initialTree, instrs, initialStart,
+                    regions, funcInfo );
             throw new NotImplementedException();
         }
 
         return initialTree;
+    }
+
+    private static void buildTreeInitialUpdate(Long destination, Integer stride, Integer startToInitial, Integer endTrace,
+                                               ConcreteTree initialTree, List<Pair<Output, StaticInfo>> instrs,
+                                               Long initialStart, List<MemoryRegion> regions, List<FuncInfo> funcInfo) {
+        throw new NotImplementedException();
     }
 
     private static void buildConcTreeHelper(Integer startTrace, Integer endTrace, ConcreteTree tree,

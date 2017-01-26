@@ -67,7 +67,8 @@ public class ConcreteTreeUtils {
 //        return null;
     }
 
-    private static ConcreteTree buildConcreteTree(Long destination, Integer stride, List<Long> startPoints,
+
+    public static ConcreteTree buildConcreteTree(Long destination, Integer stride, List<Long> startPoints,
                                                   Integer startTrace, Integer endTrace, ConcreteTree tree,
                                                   List<Pair<Output, StaticInfo>> instrs, Long farthest,
                                                   List<MemoryRegion> regions, List<FuncInfo> funcInfo) {
@@ -360,6 +361,11 @@ public class ConcreteTreeUtils {
         }
 
         return new Pair<>( start, end );
+    }
+
+    public static void buildConcreteTreesForConditionals(List<Long> startPoints, ConcreteTree tree, List<Pair<Output,
+            StaticInfo>> instrs, Long farthest, List<MemoryRegion> regions, List<FuncInfo> funcInfos) {
+        throw new NotImplementedException();
     }
 }
 

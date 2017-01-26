@@ -178,7 +178,17 @@ public class ConcreteTreeUtils {
             // we need to build a tree for the initial udate definition
             buildTreeInitialUpdate( destination, stride, startToInitial, endTrace, initialTree, instrs, initialStart,
                     regions, funcInfo );
-            throw new NotImplementedException();
+            if (initialTree.getHead() == null) {
+                // there is not initial first create a new region if the dummy region is not built
+                MemoryRegion region = MemoryRegionUtils.getMemRegion( farthest.intValue(), regions );
+                if (region == null) {
+                    // dummy region
+                    ConcreteNode concreteNode = ((ConcreteNode) tree.getHead());
+                    //TODO @Chathura : Need a copy constructor here
+//                    region = new MemoryRegion( concreteNode.getRegion() );
+//                    region = ((MemoryRegion) GeneralUtils.deepCopy( concreteNode.getRegion() ));
+                }
+            }
         }
 
         return initialTree;
@@ -191,7 +201,6 @@ public class ConcreteTreeUtils {
         logger.debug( "Initial update tree building" );
         List<ReducedInstruction> rinstr = null;
         Output instr = null;
-        int amount = 0;
         int index = -1;
         int curpos = -1;
         // get the first assignment to the destination

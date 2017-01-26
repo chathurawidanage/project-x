@@ -305,6 +305,14 @@ public class HalideProgram {
         appendNewLine(ret.toString());
     }
 
+    private List<String> getReductionIndexVariables(String rvar){
+        List<String> rvars=new ArrayList<>();
+        for(String suff:new String[]{"x","y","z","w"}){
+            rvars.add(rvar+"."+suff);
+        }
+        return rvars;
+    }
+
     private void appendReductionTrees(Function function, List<String> reductionVariables) {
 
 	/* Assumption - If the RDom is the same, then the trees are different due to conditionals.
@@ -318,7 +326,7 @@ public class HalideProgram {
             String name = "r_" + rvars.size();
             rvars.add(name);
             appendRDom(function.getReductionTrees().get(i).first, reductionVariables);
-            //appendPredictedTree(function.getReductionTrees().get(i).second, "_r" + i + "_", get_reduction_index_variables(name));
+            appendPredictedTree(function.getReductionTrees().get(i).second, "_r" + i + "_", getReductionIndexVariables(name));
         }
     }
 

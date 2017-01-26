@@ -164,7 +164,6 @@ public class ConcreteTreeUtils {
             tree.removeMultiplication();
             tree.removePoNodes();
             tree.canonicalizeTree();
-            ;
             tree.simplifyImmediates();
             tree.removeOrMinus1();
             tree.removeIdentities();
@@ -174,6 +173,8 @@ public class ConcreteTreeUtils {
         }
 
         if (tree.isRecursive()) {
+            initialTree = new ConcreteTree();
+            // we need to build a tree for the initial uodate definition
             throw new NotImplementedException();
         }
 

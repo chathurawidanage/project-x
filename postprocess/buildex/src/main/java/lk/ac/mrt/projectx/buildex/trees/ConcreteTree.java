@@ -518,6 +518,12 @@ public class ConcreteTree extends Tree {
         return -1;
     }
 
+    public void updateJumpConditionals(List<Pair<Output, StaticInfo>> instrs, Integer curpos) {
+        throw new NotImplementedException();
+    }
+
+
+
     //endregion public methods
 
     //region private methods
@@ -638,6 +644,10 @@ public class ConcreteTree extends Tree {
             }
         }
         return null;
+    }
+
+    public void numberParameters(List<MemoryRegion> regions) {
+        throw new NotImplementedException();
     }
 
     //endregion private methods

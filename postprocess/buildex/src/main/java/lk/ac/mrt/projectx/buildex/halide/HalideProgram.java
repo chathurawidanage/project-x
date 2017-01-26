@@ -305,10 +305,10 @@ public class HalideProgram {
         appendNewLine(ret.toString());
     }
 
-    private List<String> getReductionIndexVariables(String rvar){
-        List<String> rvars=new ArrayList<>();
-        for(String suff:new String[]{"x","y","z","w"}){
-            rvars.add(rvar+"."+suff);
+    private List<String> getReductionIndexVariables(String rvar) {
+        List<String> rvars = new ArrayList<>();
+        for (String suff : new String[]{"x", "y", "z", "w"}) {
+            rvars.add(rvar + "." + suff);
         }
         return rvars;
     }
@@ -615,9 +615,7 @@ public class HalideProgram {
 
         /***************** print the functions ************************/
 
-        for (int i = 0; i < funcs.size(); i++) {
-            appendFunctions(reductionVariables);
-        }
+        appendFunctions(reductionVariables);
 
         /***************finalizing - instructions for code generation ******/
 

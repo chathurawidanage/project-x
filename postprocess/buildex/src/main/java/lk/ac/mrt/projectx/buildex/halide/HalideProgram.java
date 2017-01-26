@@ -176,9 +176,12 @@ public class HalideProgram {
         return ret.toString();
     }
 
-    private String getSelectStatement(Expression current, Expression next) {
-        //todo
-        return "";
+    private void appendSelectStatement(Expression current, Expression next) {
+        if (next != null) { /* we have a false value*/
+            appendNewLine("Expr " + current.getName() + " = select(" + current.getCondition() + "," + current.getTruthValue() + "," + next.getName() + ")");
+        } else {
+            appendNewLine("Expr " + current.getName() + " = " + current.getTruthValue());
+        }
     }
 
     private String getOutputFunctionDefinition(AbstractNode head) {
@@ -217,20 +220,14 @@ public class HalideProgram {
         }
 
 	/* final print statements */
-        List<String> statements = new ArrayList<>();
-
         for (int i = 0; i < exprs.size() - 1; i++) {
-            statements.add(getSelectStatement(exprs.get(i), exprs.get(i + 1)));
+            appendSelectStatement(exprs.get(i), exprs.get(i + 1));
         }
 
-        statements.add(getSelectStatement(exprs.get(exprs.size() - 1), null));
+        appendSelectStatement(exprs.get(exprs.size() - 1), null);
 
 
         StringBuilder output = new StringBuilder();
-
-        for (int i = statements.size() - 1; i >= 0; i--) {
-            output.append(statements.get(i));
-        }
 
 	/* finally update the final output location */
         output.append(getOutputFunctionDefinition((AbstractNode) trees.get(0).getHead()));

@@ -52,6 +52,10 @@ public abstract class Tree implements Comparable {
         return numParas;
     }
 
+    public static void setNumParas(Integer numParas) {
+        Tree.numParas = numParas;
+    }
+
     //TODO : move to util
     public static boolean areTreesSimilar(List<Tree> trees) {
         List<Node> nodes = new ArrayList<>();

@@ -352,8 +352,9 @@ public class ConcreteTree extends Tree {
 
 
     public void numberParameters(List<MemoryRegion> regions) {
-        throw new NotImplementedException();
+        numberParametersRecursive( this.getHead(), regions );
     }
+
 
     public List<Conditional> getConditionals() {
         return conditionals;
@@ -707,6 +708,32 @@ public class ConcreteTree extends Tree {
             return offset + MEM_OFFSET;
         }
         return -1;
+    }
+
+    private void numberParametersRecursive(Node head, List<MemoryRegion> memoryRegions) {
+        ConcreteNode concNode = ((ConcreteNode) head);
+        if (concNode.getSrcs().isEmpty()) {
+            if (concNode.getSymbol().getType() == REG_TYPE) {
+                if (concNode.getParaNum() == -1) {
+                    concNode.setParaNum( Tree.getNumParas() );
+                    Tree.setNumParas( concNode.para_num + 1 );
+                    concNode.setIsPara();
+                }
+            } else if ((concNode.getSymbol().getType() == MEM_HEAP_TYPE) || (concNode.getSymbol().getType() == MEM_STACK_TYPE)) {
+                if (MemoryRegionUtils.getMemRegion( concNode.getSymbol().getValue().intValue(), memoryRegions ) == null) {
+                    if (concNode.getParaNum() == -1) {
+                        concNode.setParaNum( Tree.getNumParas() );
+                        Tree.setNumParas( concNode.para_num + 1 );
+                        concNode.setIsPara();
+                    }
+                }
+            }
+
+        } else {
+            for (int i = 0 ; i < concNode.getSrcs().size() ; i++) {
+                numberParametersRecursive( concNode.getSrcs().get( i ), memoryRegions );
+            }
+        }
     }
     //endregion private methods
 

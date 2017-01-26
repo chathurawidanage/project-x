@@ -1,6 +1,6 @@
 package lk.ac.mrt.projectx.buildex.models.common;
 
-import javafx.util.Pair;
+import lk.ac.mrt.projectx.buildex.models.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +123,8 @@ public class StaticInfo {
         newInstance.conditionals = new ArrayList<>();
         if(conditionals != null) {
             for(Pair<JumpInfo, Boolean> conditional : conditionals) {
-                newInstance.conditionals.add(new Pair<JumpInfo, Boolean>(conditional.getKey().clone(), conditional.getValue()));
+                newInstance.conditionals.add( new Pair<JumpInfo, Boolean>( conditional.first.clone(), conditional
+                        .second ) );
             }
         }
         return newInstance;

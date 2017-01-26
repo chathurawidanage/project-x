@@ -184,9 +184,40 @@ public class HalideProgram {
         }
     }
 
+    private AbstractNode getIndirectNode(AbstractNode abstractNode) {
+        return (AbstractNode) abstractNode.getSrcs().get(0);
+    }
+
     private String getOutputFunctionDefinition(AbstractNode head) {
-        //todo
-        return "";
+        MemoryRegion mem = head.getAssociatedMem();
+
+        int pos = head.isIndirect();
+        boolean indirect = (pos != -1);
+
+        StringBuilder ret = new StringBuilder(mem.getName() + "(");
+
+	/* assume only one level of indirection */
+        if (indirect) {
+            AbstractNode indirectNode = getIndirectNode((AbstractNode) head.getSrcs().get(pos));
+            ret.append(indirectNode.getAssociatedMem().getName());
+            ret.append("(");
+            head = indirectNode;
+        }
+
+        for (int i = 0; i < head.getDimensions(); i++) {
+            ret.append(vars.get(i));
+            if (i == head.getDimensions() - 1) {
+                ret.append(")");
+            } else {
+                ret.append(",");
+            }
+        }
+
+        if (indirect) {
+            ret.append(")");
+        }
+
+        return ret.toString();
     }
 
     private String getCastString(AbstractNode abstractNode, boolean sign) {

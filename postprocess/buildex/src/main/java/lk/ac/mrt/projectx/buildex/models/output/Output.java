@@ -23,7 +23,7 @@ public class Output {
     }
 
     public void setOpcode(String opcode) {
-        OpCodes op = OpCodes.values()[ Integer.parseInt( opcode ) ];
+        OpCodes op = OpCodes.values()[Integer.parseInt(opcode)];
         this.opcode = op;
     }
 
@@ -32,7 +32,7 @@ public class Output {
     }
 
     public void setOpcode(Integer opcode) {
-        this.opcode = OpCodes.values()[ opcode ];
+        this.opcode = OpCodes.values()[opcode];
     }
 
     public List<Operand> getSrcs() {
@@ -72,7 +72,7 @@ public class Output {
     }
 
     public int getNumOfSources() {
-//        return numOfSources;
+        //return numOfSources;
         return srcs.size();
     }
 
@@ -81,7 +81,6 @@ public class Output {
     }
 
     public int getNumOfDestinations() {
-//        return numOfDestinations;
         return dsts.size();
     }
 
@@ -90,14 +89,14 @@ public class Output {
     }
 
     public void updateFPReg(String disams, int line) {
-        updateFPDest( disams, line );
-        updateFPSrc( disams, line );
+        updateFPDest(disams, line);
+        updateFPSrc(disams, line);
     }
 
     public void updateFPDest(String disams, int line) {
         for (Operand op : dsts) {
             if (op.isFloatingPointReg()) {
-                op.updateFloatingPointReg( disams, line );
+                op.updateFloatingPointReg(disams, line);
             }
         }
     }
@@ -105,7 +104,7 @@ public class Output {
     public void updateFPSrc(String disams, int line) {
         for (Operand op : srcs) {
             if (op.isFloatingPointReg()) {
-                op.updateFloatingPointReg( disams, line );
+                op.updateFloatingPointReg(disams, line);
             }
         }
     }

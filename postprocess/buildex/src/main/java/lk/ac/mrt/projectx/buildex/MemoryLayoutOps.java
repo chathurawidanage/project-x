@@ -64,16 +64,16 @@ public class MemoryLayoutOps {
                 instr.setOpcode(Integer.parseInt(stringTokenizer.nextToken()));
 
                 //destinations
-                instr.setNumOfDestinations(Integer.parseInt(stringTokenizer.nextToken()));
-                for (int i = 0; i < instr.getNumOfDestinations(); i++) {
+                int numOfDestinations = Integer.parseInt(stringTokenizer.nextToken());
+                for (int i = 0; i < numOfDestinations; i++) {
                     Operand destination = parseOperand(stringTokenizer, version);
                     instr.getDsts().add(destination);
                 }
 
                 //get the number of sources
-                instr.setNumOfSources(Integer.parseInt(stringTokenizer.nextToken()));
+                int numOfSources = Integer.parseInt(stringTokenizer.nextToken());
 
-                for (int i = 0; i < instr.getNumOfSources(); i++) {
+                for (int i = 0; i < numOfSources; i++) {
                     Operand source = parseOperand(stringTokenizer, version);
                     instr.getSrcs().add(source);
                 }

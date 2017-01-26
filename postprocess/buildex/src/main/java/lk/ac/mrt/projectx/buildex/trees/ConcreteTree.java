@@ -4,6 +4,7 @@ import lk.ac.mrt.projectx.buildex.DefinesDotH;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
 import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
+import lk.ac.mrt.projectx.buildex.models.common.JumpInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
@@ -56,10 +57,6 @@ public class ConcreteTree extends Tree {
     //region public methods
     @Override
     public void simplifyTree() {
-    }
-
-    private void addToFrntier(Integer hash, Node node) {
-        throw new NotImplementedException();
     }
 
     private void removeRegistersFromFrontier() {
@@ -133,7 +130,7 @@ public class ConcreteTree extends Tree {
                     removeFromFrontier( node.getSymbol() );
                     for (int j = 0 ; j < overlaps.size() ; j++) {
                         addDependency( node, overlaps.get( j ), op_partial_overlap );
-                        addToFrntier( generateHash( overlaps.get( j ).getSymbol() ), overlaps.get( j ) );
+                        addToFrontier( generateHash( overlaps.get( j ).getSymbol() ), overlaps.get( j ) );
                     }
                 }
             }
@@ -222,12 +219,297 @@ public class ConcreteTree extends Tree {
                 if (ASSIGN_OPT) {
                     // this is just an assign then remove the current node and place the new src node -> compiler
                     // didn't optimize for this?
+
+                    if ((instr.getSrcs().size() == 1) && (instr.getOperation() == op_assign)) {
+//                        Integer numReferences = dst.getPrev().size();
+                        for (int j = 0 ; j < dst.getPrev().size() ; j++) {
+                            src.getPrev().add( dst.getPrev().get( j ) );
+                            src.getPos().add( dst.getPos().get( j ) );
+                            dst.getPrev().get( j ).getSrcs().set( dst.getPos().get( j ), src );
+                            src.setLine( line.longValue() );
+                            src.setPc( info.getPc() );
+
+                            assignOpt = true;
+                        }
+
+                        if (instr.isFloating()) {
+                            src.is_double = instr.isFloating();
+                        }
+
+                        logger.debug( "Optimizing assign" );
+
+//                        if (assignOpt) {
+//                            delete dst;
+//                            // we have broken all linkages, so just delete it
+//                        }
+                    }
                 }
 
+                if (!assignOpt) {
+                    Integer srcIndex = dst.getSrcs().size();
+                    dst.getSrcs().add( src );
+                    src.getPrev().add( dst );
+                    src.getPos().add( srcIndex );
+
+                    if (instr.isFloating()) {
+                        src.is_double = instr.isFloating();
+                    }
+                }
+
+                // update the frontiers - include the sources to the frontier if new nodes created
+                if (addNode) {
+                    // first if we have a recurrance we dont want to expand any more
+                    ConcreteNode headConc = ((ConcreteNode) head);
+                    ConcreteNode srcConc = ((ConcreteNode) src);
+                    if (!INTERMEDIATE_BUFFER_ANALYSIS) {
+                        treeAddToFrontier( instr, src );
+                    }
+
+                }
+
+                logger.debug( "Completed adding a src" );
+
+                if (INDIRECTION) {
+                    if (info.getInstructionType() == StaticInfo.InstructionType.INPUT_DEPENDENT_INDIRECT) {
+                        if (instr.getSrcs().get( i ).getAddress() != null) { // ok we have an address calculation
+                            // dependancy, make sure this is a buffer
+                            for (int buf = 0 ; buf < regions.size() ; buf++) {
+                                if (CommonUtil.isOverlapped( regions.get( buf ).getStartMemory(),
+                                        regions.get( buf ).getEndMemory(), instr.getSrcs().get( i ).getValue().longValue(),
+                                        instr.getSrcs().get( i ).getValue().longValue() + instr.getSrcs().get( i ).getWidth() )) {
+                                    addAddressDependency( src, instr.getSrcs().get( i ).getAddress() );
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
+        return true;
+    }
+
+
+    public void updateJumpConditionals(List<Pair<Output, StaticInfo>> instrs, Integer pos) {
+        Output instr = instrs.get( pos ).first;
+        StaticInfo staticInfo = instrs.get( pos ).second;
+        List<Pair<JumpInfo, Boolean>> inputDepConditional = staticInfo.getConditionals();
+        logger.debug( "Checking for conditionals attached - insr %d", instr.getPc() );
+
+        for (int i = 0 ; i < inputDepConditional.size() ; i++) {
+            JumpInfo jumpInfo = inputDepConditional.get( i ).first;
+            Boolean taken = inputDepConditional.get( i ).second;
+            // get the line number for this jump
+            Integer lineCond = 0;
+            Integer lineJump = 0;
+
+            for (int j = pos ; j < instrs.size() ; j++) { //changed pos + 1 to pos
+                Output insrJ = instrs.get( j ).first;
+                if (insrJ.getPc() == jumpInfo.getJump_pc()) {
+                    lineJump = j;
+                }
+                if (insrJ.getPc() == jumpInfo.getCond_pc()) {
+                    lineCond = j;
+                    break;
+                }
+            }
+
+            assert lineCond != 0 : "Couldn't find the conditional instruction";
+            assert lineJump != 0 : "Couldn't find the jump instruction";
+
+            // added
+            boolean actualTaken = instrs.get( lineJump ).first.getOpcode().isBranchTaken( instrs.get( lineJump ).first
+                    .getEflags() );
+
+            if (jumpInfo.getTarget_pc() != jumpInfo.getFall_pc()) {
+                assert actualTaken == taken : "Bracnh direction information is inconsistent";
+            } else { // for sbbs and adcs
+                taken = actualTaken;
+            }
+
+            boolean isThere = false;
+            for (int j = 0 ; j < this.conditionals.size() ; j++) {
+                Conditional loopCond = conditionals.get( j );
+                if ((jumpInfo == loopCond.getJumpInfo()) && (lineCond == loopCond.getLineCond()) &&
+                        (taken == loopCond.getTaken()) && (lineJump == loopCond.getLineJump())) {
+                    isThere = true;
+                    break;
+                }
+            }
+
+            if (!isThere) {
+                Conditional condition = new Conditional();
+                condition.setJumpInfo( jumpInfo );
+                condition.setLineCond( lineCond );
+                condition.setLineJump( lineJump );
+                condition.setTaken( taken );
+                this.conditionals.add( condition );
+            }
+
+        }
+    }
+
+
+    public void numberParameters(List<MemoryRegion> regions) {
+        numberParametersRecursive( this.getHead(), regions );
+    }
+
+
+    public List<Conditional> getConditionals() {
+        return conditionals;
+    }
+
+    public void removeRegLeaves() {
         throw new NotImplementedException();
+    }
+
+//endregion public methods
+
+    //region private methods
+
+    /**
+     * rbp - register base pointer (start of stack)
+     * rsp - register stack pointer (current location in stack, growing downwards)
+     *
+     * @param head
+     * @param opnds
+     */
+    private void addAddressDependency(Node node, List<Operand> opnds) {
+        // four operand here for [base + index + scale + disp]
+
+        //make sure that this is a base-disp address
+        if ((opnds.get( 0 ).getValue().intValue() == 0) && (opnds.get( 2 ).getValue().intValue() == 0)) {
+            return;
+        }
+        Operand operand0 = opnds.get( 0 );
+        Operand operand1 = opnds.get( 1 );
+
+        // should have home index
+        DefinesDotH.DR_REG reg1 = operand0.memRangeToRegister();
+        DefinesDotH.DR_REG reg2 = operand1.memRangeToRegister();
+
+        // absoulute addr and rsp, rbp combination filtering
+        // rbp - register base pointer (start of stack)
+        // rsp - register stack pointer (current location in stack, growing downwards)
+        // TODO : this condition should be moved to operand class
+        if ((reg1 == DR_REG_RSP || reg1 == DR_REG_RBP || operand0.getValue().intValue() == 0) &&
+                (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP || operand1.getValue().intValue() == 0)) {
+            return;
+        }
+
+        // reg type used but doesnt matter coz used as an operation only node
+        ConcreteNode indirectNode = new ConcreteNode( REG_TYPE, 0L, 0L, 0.0f );
+        indirectNode.setOperation( X86Analysis.Operation.op_indirect );
+        node.addForwardReference( indirectNode );
+
+        ConcreteNode currentNode = indirectNode;
+
+        /*ok now with cases*/
+        boolean reg1_rsp = (reg1 == DR_REG_RSP || reg1 == DR_REG_RBP);
+        boolean reg2_rsp = (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP);
+
+        // ok if one of the regs is a RSP or a RBP then, omit the displacement
+        if (reg1_rsp && !reg2_rsp) {
+            Node addr_node = searchNode( opnds.get( 1 ) );
+            if (addr_node == null) {
+                addr_node = new ConcreteNode( opnds.get( 1 ) );
+                addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
+            }
+            currentNode.addForwardReference( addr_node );
+        } else if (!reg1_rsp && reg2_rsp) {
+            Node addr_node = searchNode( opnds.get( 0 ) );
+            if (addr_node == null) {
+                addr_node = new ConcreteNode( opnds.get( 0 ) );
+                addToFrontier( generateHash( opnds.get( 0 ) ), addr_node );
+            }
+            currentNode.addForwardReference( addr_node );
+        } else if (!reg1_rsp && !reg2_rsp) { // [edx + 2] like addresses
+            Node addr_node = null;
+            if (opnds.get( 0 ).getValue().intValue() == 0) {
+                addr_node = searchNode( opnds.get( 1 ) );
+                if (addr_node == null) {
+                    addr_node = new ConcreteNode( opnds.get( 1 ) );
+                    addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
+                }
+            } else if (opnds.get( 1 ).getValue().intValue() == 0) {
+                addr_node = searchNode( opnds.get( 0 ) );
+                if (addr_node == null) {
+                    addr_node = new ConcreteNode( opnds.get( 0 ) );
+                    addToFrontier( generateHash( opnds.get( 0 ) ), addr_node );
+                }
+            } else {
+                assert false : "ERROR: not handled";
+            }
+
+            ConcreteNode add_node = new ConcreteNode( REG_TYPE, 0L, 4L, 0.0f ); //reg_type is used here; it doesn't
+            // really matter as this is an operation only node
+            add_node.setOperation( op_add );
+
+            currentNode.addForwardReference( add_node );
+            add_node.addForwardReference( addr_node );
+            ConcreteNode imm = new ConcreteNode( opnds.get( 3 ) );
+            add_node.addForwardReference( imm );
+        } else {
+            assert false : "ERROR: should not reach here";
+        }
+    }
+
+    private void addToFrontier(Integer hash, Node node) {
+        assert (node.getSymbol().getType() != MemoryType.IMM_INT_TYPE) && (node.getSymbol().getType() != MemoryType
+                .IMM_FLOAT_TYPE) : "Immediate types cannot be in the frontier";
+        assert frontier.get( hash ).getAmount() < SIZE_PER_FRONTIER : "Bucket size is full";
+        frontier.get( hash ).getBucket().set( frontier.get( hash ).getAmount(), node );
+        frontier.get( hash ).setAmount( frontier.get( hash ).getAmount() + 1 );
+
+        // if this a memory operand we should memorize it
+        if (node.getSymbol().getType() == REG_TYPE) {
+            if (!memInFrontier.contains( hash )) {
+                memInFrontier.add( hash );
+            }
+        }
+    }
+
+    private Node searchNode(Operand opnd) {
+        Long hash = generateHash( opnd ).longValue();
+        Number value = opnd.getValue();
+        Integer width = opnd.getWidth();
+
+        for (int i = 0 ; i < frontier.get( hash.intValue() ).getAmount() ; i++) {
+            // we don't need to check for types as we seperate them out in hashing
+            // could furthur optimize this search by having a type specific search algo
+            Node frntNode = frontier.get( hash.intValue() ).getBucket().get( i );
+            if (frntNode.symbol.getValue() == value && frntNode.symbol.getWidth() == width) {
+                return frntNode;
+            }
+        }
+        return null;
+    }
+
+    private Boolean treeAddToFrontier(ReducedInstruction instr, Node src) {
+        ConcreteNode headConc = ((ConcreteNode) this.getHead());
+        ConcreteNode srcConc = ((ConcreteNode) src);
+
+        boolean add = true;
+        if ((headConc.getRegion() != null) && (headConc.getRegion() == srcConc.getRegion())) {
+            add = false;
+        }
+
+        // <opnd> <0xff>
+        if (instr.getOperation() == op_or) {
+            for (int i = 0 ; i < instr.getSrcs().size() ; i++) {
+                if ((instr.getSrcs().get( i ).getValue().intValue() == -1) &&
+                        (instr.getSrcs().get( i ).getType() == IMM_INT_TYPE)) {
+                    add = false;
+                }
+            }
+        }
+
+        if (add) {
+            addToFrontier( generateHash( src.getSymbol() ), src );
+        }
+
+        return add;
     }
 
     private void createCallDependency(ConcreteTree tree, Node node, FuncInfo info) {
@@ -246,7 +528,7 @@ public class ConcreteTree extends Tree {
         for (int i = 0 ; i < info.getParameters().size() ; i++) {
             Node para = new ConcreteNode( info.getParameters().get( i ) );
             callNode.addForwardReference( para );
-            tree.addToFrntier( tree.generateHash( info.getParameters().get( i ) ), para );
+            tree.addToFrontier( tree.generateHash( info.getParameters().get( i ) ), para );
         }
     }
 
@@ -288,7 +570,6 @@ public class ConcreteTree extends Tree {
             }
         }
     }
-
 
     private void addDependency(Node dst, Node src, X86Analysis.Operation operation) {
         int srcIndex = dst.getSrcs().size();
@@ -433,128 +714,33 @@ public class ConcreteTree extends Tree {
         return -1;
     }
 
-    //endregion public methods
-
-    //region private methods
-
-    /**
-     * rbp - register base pointer (start of stack)
-     * rsp - register stack pointer (current location in stack, growing downwards)
-     *
-     * @param head
-     * @param opnds
-     */
-    private void addAddressDependency(Node node, List<Operand> opnds) {
-        // four operand here for [base + index + scale + disp]
-
-        //make sure that this is a base-disp address
-        if ((opnds.get( 0 ).getValue().intValue() == 0) && (opnds.get( 2 ).getValue().intValue() == 0)) {
-            return;
-        }
-        Operand operand0 = opnds.get( 0 );
-        Operand operand1 = opnds.get( 1 );
-
-        // should have home index
-        DefinesDotH.DR_REG reg1 = operand0.memRangeToRegister();
-        DefinesDotH.DR_REG reg2 = operand1.memRangeToRegister();
-
-        // absoulute addr and rsp, rbp combination filtering
-        // rbp - register base pointer (start of stack)
-        // rsp - register stack pointer (current location in stack, growing downwards)
-        // TODO : this condition should be moved to operand class
-        if ((reg1 == DR_REG_RSP || reg1 == DR_REG_RBP || operand0.getValue().intValue() == 0) &&
-                (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP || operand1.getValue().intValue() == 0)) {
-            return;
-        }
-
-        // reg type used but doesnt matter coz used as an operation only node
-        ConcreteNode indirectNode = new ConcreteNode( REG_TYPE, 0L, 0L, 0.0f );
-        indirectNode.setOperation( X86Analysis.Operation.op_indirect );
-        node.addForwardReference( indirectNode );
-
-        ConcreteNode currentNode = indirectNode;
-
-        /*ok now with cases*/
-        boolean reg1_rsp = (reg1 == DR_REG_RSP || reg1 == DR_REG_RBP);
-        boolean reg2_rsp = (reg2 == DR_REG_RSP || reg2 == DR_REG_RBP);
-
-        // ok if one of the regs is a RSP or a RBP then, omit the displacement
-        if (reg1_rsp && !reg2_rsp) {
-            Node addr_node = searchNode( opnds.get( 1 ) );
-            if (addr_node == null) {
-                addr_node = new ConcreteNode( opnds.get( 1 ) );
-                addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
-            }
-            currentNode.addForwardReference( addr_node );
-        } else if (!reg1_rsp && reg2_rsp) {
-            Node addr_node = searchNode( opnds.get( 0 ) );
-            if (addr_node == null) {
-                addr_node = new ConcreteNode( opnds.get( 0 ) );
-                addToFrontier( generateHash( opnds.get( 0 ) ), addr_node );
-            }
-            currentNode.addForwardReference( addr_node );
-        } else if (!reg1_rsp && !reg2_rsp) { // [edx + 2] like addresses
-            Node addr_node = null;
-            if (opnds.get( 0 ).getValue().intValue() == 0) {
-                addr_node = searchNode( opnds.get( 1 ) );
-                if (addr_node == null) {
-                    addr_node = new ConcreteNode( opnds.get( 1 ) );
-                    addToFrontier( generateHash( opnds.get( 1 ) ), addr_node );
+    // TODO : Need to check this as using a static integer number in Tree class, need to check how this effects the
+    // creation of other types of trees like abstract trees
+    private void numberParametersRecursive(Node head, List<MemoryRegion> memoryRegions) {
+        ConcreteNode concNode = ((ConcreteNode) head);
+        if (concNode.getSrcs().isEmpty()) {
+            if (concNode.getSymbol().getType() == REG_TYPE) {
+                if (concNode.getParaNum() == -1) {
+                    concNode.setParaNum( Tree.getNumParas() );
+                    Tree.setNumParas( concNode.para_num + 1 );
+                    concNode.setIsPara();
                 }
-            } else if (opnds.get( 1 ).getValue().intValue() == 0) {
-                addr_node = searchNode( opnds.get( 0 ) );
-                if (addr_node == null) {
-                    addr_node = new ConcreteNode( opnds.get( 0 ) );
-                    addToFrontier( generateHash( opnds.get( 0 ) ), addr_node );
+            } else if ((concNode.getSymbol().getType() == MEM_HEAP_TYPE) || (concNode.getSymbol().getType() == MEM_STACK_TYPE)) {
+                if (MemoryRegionUtils.getMemRegion( concNode.getSymbol().getValue().intValue(), memoryRegions ) == null) {
+                    if (concNode.getParaNum() == -1) {
+                        concNode.setParaNum( Tree.getNumParas() );
+                        Tree.setNumParas( concNode.para_num + 1 );
+                        concNode.setIsPara();
+                    }
                 }
-            } else {
-                assert false : "ERROR: not handled";
             }
 
-            ConcreteNode add_node = new ConcreteNode( REG_TYPE, 0L, 4L, 0.0f ); //reg_type is used here; it doesn't
-            // really matter as this is an operation only node
-            add_node.setOperation( op_add );
-
-            currentNode.addForwardReference( add_node );
-            add_node.addForwardReference( addr_node );
-            ConcreteNode imm = new ConcreteNode( opnds.get( 3 ) );
-            add_node.addForwardReference( imm );
         } else {
-            assert false : "ERROR: should not reach here";
-        }
-    }
-
-    private void addToFrontier(Integer hash, Node node) {
-        assert (node.getSymbol().getType() != MemoryType.IMM_INT_TYPE) && (node.getSymbol().getType() != MemoryType
-                .IMM_FLOAT_TYPE) : "Immediate types cannot be in the frontier";
-        assert frontier.get( hash ).getAmount() < SIZE_PER_FRONTIER : "Bucket size is full";
-        frontier.get( hash ).getBucket().set( frontier.get( hash ).getAmount(), node );
-        frontier.get( hash ).setAmount( frontier.get( hash ).getAmount() + 1 );
-
-        // if this a memory operand we should memorize it
-        if (node.getSymbol().getType() == REG_TYPE) {
-            if (!memInFrontier.contains( hash )) {
-                memInFrontier.add( hash );
+            for (int i = 0 ; i < concNode.getSrcs().size() ; i++) {
+                numberParametersRecursive( concNode.getSrcs().get( i ), memoryRegions );
             }
         }
     }
-
-    private Node searchNode(Operand opnd) {
-        Long hash = generateHash( opnd ).longValue();
-        Number value = opnd.getValue();
-        Integer width = opnd.getWidth();
-
-        for (int i = 0 ; i < frontier.get( hash.intValue() ).getAmount() ; i++) {
-            // we don't need to check for types as we seperate them out in hashing
-            // could furthur optimize this search by having a type specific search algo
-            Node frntNode = frontier.get( hash.intValue() ).getBucket().get( i );
-            if (frntNode.symbol.getValue() == value && frntNode.symbol.getWidth() == width) {
-                return frntNode;
-            }
-        }
-        return null;
-    }
-
     //endregion private methods
 
     //region Inner Classes

@@ -10,6 +10,7 @@ import lk.ac.mrt.projectx.buildex.models.output.Operand;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
 import lk.ac.mrt.projectx.buildex.models.output.ReducedInstruction;
 import lk.ac.mrt.projectx.buildex.models.output.ReducedInstructionUtils;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -184,14 +185,49 @@ public class ConcreteTreeUtils {
                 if (region == null) {
                     // dummy region
                     ConcreteNode concreteNode = ((ConcreteNode) tree.getHead());
-                    //TODO @Chathura : Need a copy constructor here
-//                    region = new MemoryRegion( concreteNode.getRegion() );
-//                    region = ((MemoryRegion) GeneralUtils.deepCopy( concreteNode.getRegion() ));
+                    region = ((MemoryRegion) GeneralUtils.deepCopy( concreteNode.getRegion() ));
+                    region.setStartMemory( farthest );
+                    region.setEndMemory( concreteNode.getRegion().getEndMemory() - concreteNode.getRegion()
+                            .getStartMemory() + farthest );
+                    region.setName( concreteNode.getRegion().getName() + "_in" );
+                    // need a check for integer overflow
+                    regions.add( region );
                 }
+
+                // dummy tree
+                buildDummyInitialTree( initialTree, tree, region );
+                initialTree.dummyTree = true;
+            }
+            if (conctreeOpt) {
+                initialTree.removeAssignedNodes();
+                initialTree.removeMultiplication();
+                initialTree.removePoNodes();
+                ;
+                initialTree.canonicalizeTree();
+                initialTree.simplifyImmediates();
+                initialTree.numberParameters( regions );
             }
         }
 
         return initialTree;
+    }
+
+    private static void buildDummyInitialTree(ConcreteTree initialTree, ConcreteTree redTree, MemoryRegion newRegion) {
+        logger.debug( "Dummy initial tree" );
+        ConcreteNode node = ((ConcreteNode) redTree.getHead());
+        MemoryRegion region = node.getRegion();
+
+        assert region != null : "Error: the head should have an output region";
+        ConcreteNode dupNode = new ConcreteNode( node.getSymbol() );
+        initialTree.setHead( dupNode );
+        dupNode.setOperation( X86Analysis.Operation.op_assign );
+
+        ConcreteNode newNode = new ConcreteNode( node.getSymbol() );
+        newNode.getSymbol().setValue( node.getSymbol().getValue().longValue() - region.getStartMemory() + newRegion
+                .getStartMemory() );
+        newNode.setRegion( newRegion );
+
+        dupNode.addForwardReference( newNode );
     }
 
     private static void buildTreeInitialUpdate(Long destination, Integer stride, Integer start, Integer end,

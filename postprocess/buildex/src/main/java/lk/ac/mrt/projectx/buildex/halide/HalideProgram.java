@@ -5,6 +5,7 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
+import lk.ac.mrt.projectx.buildex.trees.Node;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -134,6 +135,134 @@ public class HalideProgram {
             appendNewLine(String.format("%s.compile_to_file(\"%s_%d\",%s)",
                     out.getAssociatedMem().getName(), "halide_out", outIndex++, argsVectorName));
         }
+    }
+
+    private String getExpressionName(String expressionName, int condiotional) {
+        return expressionName + "_" + condiotional;
+    }
+
+    private String getAbstractTree(Node nnode, Node head) {
+        //todo
+        return null;
+    }
+
+    private String getConditionalTrees(List<Pair<AbstractTree, Boolean>> conditions) {
+        StringBuilder ret = new StringBuilder();
+
+        for (int i = 0; i < conditions.size(); i++) {
+            AbstractNode node = (AbstractNode) conditions.get(i).first.getHead();
+        /* because the head node is just the output node - verify this fact */
+            GeneralUtils.assertAndFail(node.srcs.size() == 1, "ERROR: expected single source");
+
+            boolean taken = conditions.get(i).second;
+
+            if (!taken) {
+                ret.append("! (");
+            }
+
+            ret.append(getAbstractTree(node.srcs.get(0), node));
+            if (i != conditions.size() - 1) {
+                ret.append(" && ");
+            }
+
+            if (!taken) {
+                ret.append(")");
+            }
+        }
+
+        if (ret.toString().isEmpty()) {
+            ret.append("true");
+        }
+        return ret.toString();
+    }
+
+    private String getSelectStatement(Expression current, Expression next) {
+        //todo
+        return "";
+    }
+
+    private String getOutputFunctionDefinition(AbstractNode head) {
+        //todo
+        return "";
+    }
+
+    private String getCastString(AbstractNode abstractNode, boolean sign) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("cast<");
+
+        if (abstractNode.is_double) {
+            ret.append("double>");
+        } else {
+            if (!sign) ret.append("u");
+            ret.append("int" + abstractNode.symbol.getWidth() * 8 + "_t>");
+        }
+
+        return ret.toString();
+    }
+
+    private void appendPureTrees(Function function) {
+        //appending predicted tree
+        List<AbstractTree> trees = function.getPureTrees();
+        String expr_tag = "_p_";
+
+        List<Expression> exprs = new ArrayList<>();
+        /* populate the expressions */
+        for (int i = 0; i < trees.size(); i++) {
+            AbstractNode head = (AbstractNode) trees.get(i).getHead();
+            Expression expr = new Expression();
+            expr.setName(getExpressionName(head.getAssociatedMem().getName() + expr_tag, i));
+            expr.setCondition(getConditionalTrees(trees.get(i).getConditionalTrees()));
+            expr.setTruthValue(getAbstractTree(trees.get(i).getHead(), trees.get(i).getHead()));
+            exprs.add(expr);
+        }
+
+	/* final print statements */
+        List<String> statements = new ArrayList<>();
+
+        for (int i = 0; i < exprs.size() - 1; i++) {
+            statements.add(getSelectStatement(exprs.get(i), exprs.get(i + 1)));
+        }
+
+        statements.add(getSelectStatement(exprs.get(exprs.size() - 1), null));
+
+
+        StringBuilder output = new StringBuilder();
+
+        for (int i = statements.size() - 1; i >= 0; i--) {
+            output.append(statements.get(i));
+        }
+
+	/* finally update the final output location */
+        output.append(getOutputFunctionDefinition((AbstractNode) trees.get(0).getHead()));
+
+        AbstractNode head_node = (AbstractNode) trees.get(0).getHead();
+
+        long clamp_max = Math.max(32 - head_node.symbol.getWidth() * 8, 65535);
+        long clamp_min = 0;
+
+	/* BUG - what to do with the sign?? */
+        output.append(" = ");
+        output.append(getCastString(head_node, false));
+        output.append("( clamp(");
+        output.append(exprs.get(0).getName());
+        output.append(clamp_min + "," + clamp_max);
+        output.append(") ))");
+
+        appendNewLine(output.toString());
+    }
+
+    private String appendReductionTrees(Function function, List<String> reductionVariables) {
+        //todo
+        return null;
+    }
+
+
+    private void appendFunction(List<String> reductionVariables) {
+        for (Function function : funcs) {
+            appendPureTrees(function);
+            appendReductionTrees(function, reductionVariables);
+        }
+
     }
     /*END OF APPENDERS*/
 
@@ -413,13 +542,13 @@ public class HalideProgram {
         /***************** print the functions ************************/
 
         for (int i = 0; i < funcs.size(); i++) {
-
+            appendFunction(reductionVariables);
         }
 
         /***************finalizing - instructions for code generation ******/
 
 	/* print argument population - params and input params */
-	    String argumentsVector="arguments";
+        String argumentsVector = "arguments";
         appendHalideArguments(argumentsVector);
 
         appendHalideOutputToFile(argumentsVector);

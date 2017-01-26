@@ -151,6 +151,10 @@ public abstract class Tree implements Comparable {
         this.head = head;
     }
 
+    public boolean isRecursive() {
+        return recursive;
+    }
+
     public void setRecursive(boolean recursive) {
         this.recursive = recursive;
     }

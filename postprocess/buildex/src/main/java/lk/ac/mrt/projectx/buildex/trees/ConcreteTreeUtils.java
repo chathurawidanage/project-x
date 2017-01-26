@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
@@ -24,6 +25,7 @@ public class ConcreteTreeUtils {
 
     private static final int FILE_BEGINNING = -2;
     private static final int FILE_ENDING = -1;
+    private static final boolean conctreeOpt = true;
 
     public static List<List<ConcreteTree>> clusterTrees(List<MemoryRegion> memRegions, List<MemoryRegion> totalRegions,
                                                         List<Long> startPoints, List<Pair<Output, StaticInfo>> instrs,
@@ -73,10 +75,10 @@ public class ConcreteTreeUtils {
         Pair<Integer, Integer> points = getStartAndEndPoints( startPoints, destination, stride, startTrace,
                 endTrace, instrs );
 
-        startTrace =  points.first;
+        startTrace = points.first;
         endTrace = points.second;
 
-        if(endTrace == FILE_ENDING){
+        if (endTrace == FILE_ENDING) {
             endTrace = instrs.size();
         }
 
@@ -86,8 +88,8 @@ public class ConcreteTreeUtils {
 
         assert endTrace >= startTrace : "Trace end should be greater than the trace start";
 
-        Long initialStart = startTrace.longValue();
-        Integer curPos = startTrace;
+        Long initialStart = (Long) GeneralUtils.deepCopy( startTrace );
+        Integer curPos = (Integer) GeneralUtils.deepCopy( startTrace );
 
         // now we need to read the next lint adn start from the correct destination
         Output instr = instrs.get( curPos ).first;
@@ -104,18 +106,108 @@ public class ConcreteTreeUtils {
             }
         }
 
-        if(!destPresent || index < 0 ){
+        if (!destPresent || index < 0) {
             return null;
         }
 
         // build the initial part of the tree
-        for (int i = index ; i >= 0  ; i--) {
+        for (int i = index ; i >= 0 ; i--) {
             tree.updateDependencyBackward( rinstr.get( i ), instrs.get( curPos ).first, instrs.get( curPos ).second,
                     curPos, regions, funcInfo );
         }
 
+        startTrace++;
+        Integer startToInitial = (Integer) GeneralUtils.deepCopy( startTrace );
+        index = -1;
 
-        throw new NotImplementedException();
+//        for (int i = 0 ; i < startPoints.size() ; i++) {
+//            if (startPoints.get( i ).intValue() == endTrace) {
+//                index = i;
+//            }
+//        }
+
+        for (int i = startPoints.size() - 1 ; i >= 0 ; i--) {
+            if (startPoints.get( i ).intValue() == endTrace) {
+                index = i;
+                break;
+            }
+        }
+
+        for (int i = startPoints.size() - 1 ; i >= 0 ; i--) {
+            if (startPoints.get( i ).intValue() < startToInitial) {
+                startToInitial = startPoints.get( i ).intValue();
+                break;
+            }
+        }
+
+        if (startToInitial == startTrace) {
+            startToInitial = 0;
+        }
+
+        if (index == -1) {
+            endTrace = instrs.size();
+        }
+
+        // now build the tree
+//      while ((startTrace != instrs.size()) && (startTrace != initialEntracne)) {
+        if ((startTrace != instrs.size()) && (startTrace != initialEntracne)) {
+            logger.debug( "%d - %d", startTrace, endTrace );
+            buildConcTreeHelper( startTrace, endTrace, tree, instrs, regions, funcInfo );
+////             startTrace = endTrace - affects initial tree building
+////             if(index + 1 < start_points.size()) endTrace = start_points[++index]
+//            break;
+//        }
+        }
+        ConcreteTree initialTree = null;
+        if (conctreeOpt) {
+            tree.removeAssignedNodes();
+            tree.removeMultiplication();
+            tree.removePoNodes();
+            tree.canonicalizeTree();
+            ;
+            tree.simplifyImmediates();
+            tree.removeOrMinus1();
+            tree.removeIdentities();
+            tree.numberParameters( regions );
+            tree.setRecursive( false );
+            tree.markRecursive();
+        }
+
+        if (tree.isRecursive()) {
+            throw new NotImplementedException();
+        }
+
+        return initialTree;
+    }
+
+    private static void buildConcTreeHelper(Integer startTrace, Integer endTrace, ConcreteTree tree,
+                                            List<Pair<Output, StaticInfo>> instrs, List<MemoryRegion> regions,
+                                            List<FuncInfo> funcInfo) {
+        List<Pair<Long, Long>> lines = new ArrayList<>();
+        // build the rest of expression tree building
+        Integer curpos = startTrace;
+        List<ReducedInstruction> rinstr = null;
+        for ( ; curpos < endTrace ; curpos++) {
+            Output instr = instrs.get( curpos ).first;
+            rinstr = ReducedInstructionUtils.cinstrToRinstr( instr, instrs.get( curpos )
+                    .second.getDissasembly(), curpos );
+
+            boolean updated = false;
+            boolean affected = false;
+
+            for (int i = rinstr.size() - 1 ; i >= 0 ; i--) {
+                updated = tree.updateDependencyBackward( rinstr.get( i ), instrs.get( curpos ).first,
+                        instrs.get( curpos ).second, curpos, regions, funcInfo );
+
+                if (updated) {
+                    affected = true;
+                    lines.add( new Pair( curpos, instr.getPc() ) );
+                }
+            }
+            if (affected) { // this is this instr affect the frontier
+                tree.updateJumpConditionals( instrs, curpos );
+            }
+        }
     }
 
     /**
@@ -165,3 +257,4 @@ public class ConcreteTreeUtils {
         return new Pair<>( start, end );
     }
 }
+

@@ -2,6 +2,7 @@ package lk.ac.mrt.projectx.buildex.trees;
 
 import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
+import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
 import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
@@ -183,10 +184,59 @@ public class ConcreteTreeUtils {
         return initialTree;
     }
 
-    private static void buildTreeInitialUpdate(Long destination, Integer stride, Integer startToInitial, Integer endTrace,
-                                               ConcreteTree initialTree, List<Pair<Output, StaticInfo>> instrs,
-                                               Long initialStart, List<MemoryRegion> regions, List<FuncInfo> funcInfo) {
-        throw new NotImplementedException();
+    private static void buildTreeInitialUpdate(Long destination, Integer stride, Integer start, Integer end,
+                                               ConcreteTree tree, List<Pair<Output, StaticInfo>> instrs,
+                                               Long originalStart, List<MemoryRegion> regions, List<FuncInfo>
+                                                       funcInfo) {
+        logger.debug( "Initial update tree building" );
+        List<ReducedInstruction> rinstr = null;
+        Output instr = null;
+        int amount = 0;
+        int index = -1;
+        int curpos = -1;
+        // get the first assignment to the destination
+        for (int i = end - 1 ; i >= 0 ; i--) {
+            instr = instrs.get( i ).first;
+            boolean found = false;
+            for (int j = 0 ; j < instr.getNumOfDestinations() ; j++) {
+                Operand opnd = instr.getDsts().get( j );
+                if (CommonUtil.isOverlapped( destination, destination + stride - 1, opnd.getValue().longValue(), opnd
+                        .getValue().longValue() + opnd.getWidth() - 1 )) {
+                    rinstr = ReducedInstructionUtils.cinstrToRinstrsEflags( instr, instrs.get( i ).second
+                            .getDissasembly(), i );
+                    for (int k = rinstr.size() ; k >= 0 ; k--) {
+                        if (rinstr.get( k ).getDst().getValue().longValue() == opnd.getValue().longValue() &&
+                                rinstr.get( k ).getDst().getWidth() == opnd.getWidth()) {
+                            found = true;
+                            index = k;
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+            if (found) {
+                curpos = i;
+                break;
+            }
+        }
+
+        if (curpos == originalStart) {
+            return;
+        }
+
+        assert index != -1 : "Error : could not find the destination or overlap";
+        for (int i = index ; i >= 0 ; i--) {
+            tree.updateDependencyBackward( rinstr.get( i ), instr, instrs.get( curpos ).second, curpos, regions, funcInfo );
+        }
+
+        Integer startTrace = curpos + 1;
+        Integer endTrace = end;
+
+        assert index != -1 : "Error : Should find end trace in start points";
+
+        // build the tree
+        buildConcTreeHelper( startTrace, endTrace, tree, instrs, regions, funcInfo );
     }
 
     private static void buildConcTreeHelper(Integer startTrace, Integer endTrace, ConcreteTree tree,
@@ -220,8 +270,9 @@ public class ConcreteTreeUtils {
     }
 
     /**
-     *  Start is the one after the Output which points to the destination given
-     *  end is the next largest or equal value in startPoints list
+     * Start is the one after the Output which points to the destination given
+     * end is the next largest or equal value in startPoints list
+     *
      * @param startPoints
      * @param destination
      * @param stride
@@ -254,7 +305,7 @@ public class ConcreteTreeUtils {
         }
 
         // TODO : Unsafe casting
-        if(endTrace == FILE_ENDING){
+        if (endTrace == FILE_ENDING) {
             for (int i = 0 ; i < startPoints.size() ; i++) {
                 if (start <= startPoints.get( i )) {
                     end = startPoints.get( i ).intValue();

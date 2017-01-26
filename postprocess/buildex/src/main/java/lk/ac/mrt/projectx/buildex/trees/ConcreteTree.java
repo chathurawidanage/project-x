@@ -360,6 +360,10 @@ public class ConcreteTree extends Tree {
         return conditionals;
     }
 
+    public void removeRegLeaves() {
+        throw new NotImplementedException();
+    }
+
 //endregion public methods
 
     //region private methods

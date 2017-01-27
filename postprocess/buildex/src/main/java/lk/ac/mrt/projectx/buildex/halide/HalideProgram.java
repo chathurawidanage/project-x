@@ -5,7 +5,9 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
+import lk.ac.mrt.projectx.buildex.trees.AbstractTreeCharacteristic;
 import lk.ac.mrt.projectx.buildex.trees.Node;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,7 +24,6 @@ public class HalideProgram {
     private final Logger logger = LogManager.getLogger(HalideProgram.class);
 
     private StringBuilder halideProgramStr = new StringBuilder();
-    private AbstractTree abstractTree;
 
     private List<Function> funcs;
     private List<String> vars;
@@ -33,7 +34,7 @@ public class HalideProgram {
     private List<AbstractNode> output;/* this is used to populate the arguments string */
     private List<AbstractNode> inputs;
 
-    public HalideProgram(AbstractTree abstractTree) {
+    public HalideProgram() {
         this.funcs = new ArrayList<>();
         this.vars = new ArrayList<>();
         this.rvars = new ArrayList<>();
@@ -41,8 +42,6 @@ public class HalideProgram {
         this.params = new ArrayList<>();//not necessary, just in case
         this.output = new ArrayList<>();
         this.inputs = new ArrayList<>();
-
-        this.abstractTree = abstractTree;
     }
 
     /*APPENDERS*/
@@ -143,9 +142,147 @@ public class HalideProgram {
         return expressionName + "_" + condiotional;
     }
 
+    private String getFullOverlapNode(AbstractNode node, Node head, List<String> vars) {
+        /* here, we will some times we need to use shifting and anding */
+        AbstractNode overlap = (AbstractNode) node.getSrcs().get( 0 );
+
+        long overlapEnd = overlap.getSymbol().getValue().longValue() +
+                overlap.getSymbol().getWidth();
+        long nodeEnd = node.getSymbol().getValue().longValue() + node.getSymbol().getWidth();
+
+	/* BUG - overlapEnd == nodeEnd ? this is not always true if mem and reg values are*/
+
+
+        StringBuilder ret = new StringBuilder( "" );
+
+        if (node.getSymbol().getWidth() == overlap.getSymbol().getWidth()) { /* where the nodes are of reg and memory etc.*/
+            ret.append( getAbstractTree( overlap, head, vars ) );
+            return ret.toString();
+        }
+
+        long mask = ~0 >> (32 - node.getSymbol().getWidth() * 8);
+        mask = mask > 65535 ? 65535 : mask;
+
+        ret.append( " ( " );
+        ret.append( getAbstractTree( overlap, head, vars ) );
+        ret.append( " ) & " + mask );
+
+        return ret.toString();
+    }
+
+    private String getPartialOverlapNode(AbstractNode node, Node head, List<String> vars) {
+        return "";//todo
+    }
+
+    private String getIndirectString(AbstractNode node, Node head, List<String> vars) {
+        return getAbstractTree( node, head, vars );
+    }
+
+
     private String getAbstractTree(Node nnode, Node head, List<String> vars) {
-        //todo
-        return null;
+        AbstractNode node = (AbstractNode) nnode;
+
+        StringBuilder ret = new StringBuilder();
+
+        if (node.minus) {
+            ret.append( "- (" );
+        }
+
+        if (node.getType() == AbstractNode.AbstractNodeType.OPERATION_ONLY) {
+            if (node.getOperation() == X86Analysis.Operation.op_full_overlap) {
+                ret.append( " ( " );
+                ret.append( getFullOverlapNode( node, head, vars ) );
+                ret.append( " ) " );
+            } else if (node.getOperation() == X86Analysis.Operation.op_partial_overlap) {
+                ret.append( " ( " );
+                ret.append( getPartialOverlapNode( node, head, vars ) );
+                ret.append( " ) " );
+            } else if (node.getOperation() == X86Analysis.Operation.op_split_h) {
+                ret.append( " ( " );
+                ret.append( getAbstractTree( node.getSrcs().get( 0 ), head, vars ) );
+                ret.append( " ) >> ( " + (node.getSrcs().get( 0 ).getSymbol().getWidth() * 8 / 2) + ")" );
+            } else if (node.getOperation() == X86Analysis.Operation.op_split_l) {
+                ret.append( " ( " );
+                ret.append( getAbstractTree( node.srcs.get( 0 ), head, vars ) );
+                ret.append( " ) & " + ((node.getSrcs().get( 0 ).getSymbol().getWidth() / 2) * 8) );
+            } else if (node.getOperation() == X86Analysis.Operation.op_indirect) {
+                ret.append( "(" );
+                ret.append( getIndirectString( node, head, vars ) );
+                ret.append( ")" );
+            } else if (node.getOperation() == X86Analysis.Operation.op_call) {
+                ret.append( "(" );
+                ret.append( node.functionName + "(" );
+                for (int k = 0 ; k < node.getSrcs().size() ; k++) {
+                    AbstractNode abstractNode = (AbstractNode) node.getSrcs().get( k );
+                    ret.append( getAbstractTree( abstractNode, head, vars ) );
+                    if (k != node.getSrcs().size() - 1) {
+                        ret.append( "," );
+                    }
+                }
+                ret.append( ")" );
+            } else if (node.getSrcs().size() == 1) {
+                ret.append( " " + node.getSymbolicString( vars ) + " " );
+                ret.append( getAbstractTree( node.getSrcs().get( 0 ), head, vars ) );
+            } else {
+                ret.append( "(" );
+                for (int i = 0 ; i < node.getSrcs().size() ; i++) {
+                    if (node.getSrcs().get( i ).getSymbol().getWidth() != node.getSymbol().getWidth()) {
+                        ret.append( getCastString( node, node.getSrcs().get( 0 ).minus ) + "(" );
+                    }
+                    ret.append( getAbstractTree( node.getSrcs().get( i ), head, vars ) );
+                    if (node.getSrcs().get( i ).getSymbol().getWidth() != node.getSymbol().getWidth()) {
+                        ret.append( ")" );
+                    }
+                    if (i != node.getSrcs().size() - 1) {
+                        ret.append( " " + node.getSymbolicString( vars ) + " " );
+                    }
+                }
+                ret.append( ")" );
+            }
+        } else if (node.getType() == AbstractNode.AbstractNodeType.SUBTREE_BOUNDARY) {
+
+        } else {
+            int pos = node.isIndirect();
+            boolean indirect = (pos != -1);
+
+            if (node != head) {
+                if (indirect) {
+                    ret.append( node.getAssociatedMem().getName() );
+                    ret.append( getAbstractTree( node.getSrcs().get( pos ), head, vars ) ); /* assumes that these nodes are at the leaves */
+                } else {
+                    if (node.getType() == AbstractNode.AbstractNodeType.PARAMETER) {
+                        ret.append( "p_" + parameterMatch.get( node.para_num ) + " " );
+                    } else {
+                        ret.append( node.getSymbolicString( vars ) + " " );
+                    }
+                }
+            } else {
+                Node indirectNode = null;
+                if (indirect) {
+                    indirectNode = node.getSrcs().get( pos );
+                    node.getSrcs().remove( pos );
+                }
+
+                if (node.getOperation() != op_assign) {  /* the node contains some other operation */
+                    AbstractNode.AbstractNodeType originalType = node.getType();
+                    node.setType( AbstractNode.AbstractNodeType.OPERATION_ONLY );
+                    ret.append( getAbstractTree( node, head, vars ) );
+                    node.setType( originalType );
+                } else {
+                    ret.append( getAbstractTree( node.getSrcs().get( 0 ), head, vars ) );
+                }
+
+                if (indirect) {
+                    node.getSrcs().add( pos, indirectNode );
+                }
+            }
+        }
+
+        if (node.minus) {
+            ret.append( ")" );
+        }
+
+        return ret.toString();
     }
 
     private String getConditionalTrees(List<Pair<AbstractTree, Boolean>> conditions, List<String> vars) {
@@ -383,7 +520,7 @@ public class HalideProgram {
         return null;
     }
 
-    public void pupulatePureFunction(AbstractTree abstractTree) {
+    private void populatePureFunction(AbstractTree abstractTree) {
         AbstractNode abstractNode = (AbstractNode) abstractTree.getHead();
 
         MemoryRegion associatedMemRegion = abstractNode.getAssociatedMem();
@@ -430,7 +567,7 @@ public class HalideProgram {
         return -1;
     }
 
-    public void populateReductionFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
+    private void populateReductionFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
         RDom rdom = new RDom();
         if (node != null) {
             rdom.setRedNode(node);
@@ -459,7 +596,7 @@ public class HalideProgram {
         }
     }
 
-    public void resolveConditionals() {
+    private void resolveConditionals() {
         /* if there is no else; if assume it is coming from outside */
 
 	/* todo need to handle all cases */
@@ -493,14 +630,14 @@ public class HalideProgram {
         }
     }
 
-    public void populateVars(int dim) {
+    private void populateVars(int dim) {
         String x = "x";
         for (int i = 0; i < dim; i++) {
             vars.add(x + "_" + i);
         }
     }
 
-    public void populateInputParams(boolean parameters) {
+    private void populateInputParams(boolean parameters) {
         List<AbstractTree> trees = new ArrayList<>();
         for (int i = 0; i < funcs.size(); i++) {
             trees.addAll(funcs.get(i).getPureTrees());
@@ -590,7 +727,7 @@ public class HalideProgram {
         }
     }
 
-    public String getFinalizedProgram(List<String> reductionVariables) {
+    private String getFinalizedProgram(List<String> reductionVariables) {
         logger.debug("Finalizing halide program");
 
         Iterator<Integer> paramMatchKeysIterator = parameterMatch.keySet().iterator();
@@ -628,5 +765,27 @@ public class HalideProgram {
         appendNewLine("return 0");
         appendNewLine("}", false);
         return halideProgramStr.toString();
+    }
+
+    public String generateHalide(AbstractTree finalAbstractTree, List<AbstractTreeCharacteristic> absTrees, List<String> reductionVariables) {
+        if (absTrees.isEmpty()) {
+            this.populatePureFunction( finalAbstractTree );
+        } else {
+            for (int i = 0 ; i < absTrees.size() ; i++) {
+                if (absTrees.get( i ).isRecusrsive()) {
+                    logger.debug( "reduction func populated" );
+                    this.populateReductionFunctions( absTrees.get( i ).getAbstractTree(),
+                            absTrees.get( i ).getExtents(), absTrees.get( i ).getRedNode() );
+                } else {
+                    logger.debug( "pure func populated" );
+                    this.populatePureFunction( absTrees.get( i ).getAbstractTree() );
+                }
+            }
+        }
+        this.resolveConditionals();
+        this.populateVars( 4 );
+        this.populateInputParams( false );
+        this.populateInputParams( true );
+        return this.getFinalizedProgram( reductionVariables );
     }
 }

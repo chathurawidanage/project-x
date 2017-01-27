@@ -109,5 +109,9 @@ public class Buildex {
         }
         OutputInstructionUtils.updateFloatingPointRegs( instrsForward, 1, staticInfos, startPcsInteger );
 
+
+        /*Halide generation*/
+        /*HalideProgram halideProgram=new HalideProgram();
+        halideProgram.generateHalide();*/
     }
 }

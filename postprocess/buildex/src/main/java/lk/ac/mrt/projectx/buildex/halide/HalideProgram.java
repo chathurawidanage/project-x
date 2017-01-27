@@ -5,6 +5,7 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
+import lk.ac.mrt.projectx.buildex.trees.AbstractTreeCharacteristic;
 import lk.ac.mrt.projectx.buildex.trees.Node;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
@@ -23,7 +24,6 @@ public class HalideProgram {
     private final Logger logger = LogManager.getLogger(HalideProgram.class);
 
     private StringBuilder halideProgramStr = new StringBuilder();
-    private AbstractTree abstractTree;
 
     private List<Function> funcs;
     private List<String> vars;
@@ -34,7 +34,7 @@ public class HalideProgram {
     private List<AbstractNode> output;/* this is used to populate the arguments string */
     private List<AbstractNode> inputs;
 
-    public HalideProgram(AbstractTree abstractTree) {
+    public HalideProgram() {
         this.funcs = new ArrayList<>();
         this.vars = new ArrayList<>();
         this.rvars = new ArrayList<>();
@@ -42,8 +42,6 @@ public class HalideProgram {
         this.params = new ArrayList<>();//not necessary, just in case
         this.output = new ArrayList<>();
         this.inputs = new ArrayList<>();
-
-        this.abstractTree = abstractTree;
     }
 
     /*APPENDERS*/
@@ -522,7 +520,7 @@ public class HalideProgram {
         return null;
     }
 
-    public void pupulatePureFunction(AbstractTree abstractTree) {
+    private void populatePureFunction(AbstractTree abstractTree) {
         AbstractNode abstractNode = (AbstractNode) abstractTree.getHead();
 
         MemoryRegion associatedMemRegion = abstractNode.getAssociatedMem();
@@ -569,7 +567,7 @@ public class HalideProgram {
         return -1;
     }
 
-    public void populateReductionFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
+    private void populateReductionFunctions(AbstractTree tree, List<Pair<Long, Long>> boundaries, AbstractNode node) {
         RDom rdom = new RDom();
         if (node != null) {
             rdom.setRedNode(node);
@@ -598,7 +596,7 @@ public class HalideProgram {
         }
     }
 
-    public void resolveConditionals() {
+    private void resolveConditionals() {
         /* if there is no else; if assume it is coming from outside */
 
 	/* todo need to handle all cases */
@@ -632,14 +630,14 @@ public class HalideProgram {
         }
     }
 
-    public void populateVars(int dim) {
+    private void populateVars(int dim) {
         String x = "x";
         for (int i = 0; i < dim; i++) {
             vars.add(x + "_" + i);
         }
     }
 
-    public void populateInputParams(boolean parameters) {
+    private void populateInputParams(boolean parameters) {
         List<AbstractTree> trees = new ArrayList<>();
         for (int i = 0; i < funcs.size(); i++) {
             trees.addAll(funcs.get(i).getPureTrees());
@@ -729,7 +727,7 @@ public class HalideProgram {
         }
     }
 
-    public String getFinalizedProgram(List<String> reductionVariables) {
+    private String getFinalizedProgram(List<String> reductionVariables) {
         logger.debug("Finalizing halide program");
 
         Iterator<Integer> paramMatchKeysIterator = parameterMatch.keySet().iterator();
@@ -767,5 +765,27 @@ public class HalideProgram {
         appendNewLine("return 0");
         appendNewLine("}", false);
         return halideProgramStr.toString();
+    }
+
+    public String generateHalide(AbstractTree finalAbstractTree, List<AbstractTreeCharacteristic> absTrees, List<String> reductionVariables) {
+        if (absTrees.isEmpty()) {
+            this.populatePureFunction(finalAbstractTree);
+        } else {
+            for (int i = 0; i < absTrees.size(); i++) {
+                if (absTrees.get(i).isRecusrsive()) {
+                    logger.debug("reduction func populated");
+                    this.populateReductionFunctions(absTrees.get(i).getAbstractTree(),
+                            absTrees.get(i).getExtents(), absTrees.get(i).getRedNode());
+                } else {
+                    logger.debug("pure func populated");
+                    this.populatePureFunction(absTrees.get(i).getAbstractTree());
+                }
+            }
+        }
+        this.resolveConditionals();
+        this.populateVars(4);
+        this.populateInputParams(false);
+        this.populateInputParams(true);
+        return this.getFinalizedProgram(reductionVariables);
     }
 }

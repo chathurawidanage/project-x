@@ -6,6 +6,7 @@ import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
 import lk.ac.mrt.projectx.buildex.trees.Node;
+import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -143,9 +144,147 @@ public class HalideProgram {
         return expressionName + "_" + condiotional;
     }
 
+    private String getFullOverlapNode(AbstractNode node, Node head, List<String> vars) {
+        /* here, we will some times we need to use shifting and anding */
+        AbstractNode overlap = (AbstractNode) node.getSrcs().get(0);
+
+        long overlapEnd = overlap.getSymbol().getValue().longValue() +
+                overlap.getSymbol().getWidth();
+        long nodeEnd = node.getSymbol().getValue().longValue() + node.getSymbol().getWidth();
+
+	/* BUG - overlapEnd == nodeEnd ? this is not always true if mem and reg values are*/
+
+
+        StringBuilder ret = new StringBuilder("");
+
+        if (node.getSymbol().getWidth() == overlap.getSymbol().getWidth()) { /* where the nodes are of reg and memory etc.*/
+            ret.append(getAbstractTree(overlap, head, vars));
+            return ret.toString();
+        }
+
+        long mask = ~0 >> (32 - node.getSymbol().getWidth() * 8);
+        mask = mask > 65535 ? 65535 : mask;
+
+        ret.append(" ( ");
+        ret.append(getAbstractTree(overlap, head, vars));
+        ret.append(" ) & " + mask);
+
+        return ret.toString();
+    }
+
+    private String getPartialOverlapNode(AbstractNode node, Node head, List<String> vars) {
+        return "";//todo
+    }
+
+    private String getIndirectString(AbstractNode node, Node head, List<String> vars) {
+        return getAbstractTree(node, head, vars);
+    }
+
+
     private String getAbstractTree(Node nnode, Node head, List<String> vars) {
-        //todo
-        return null;
+        AbstractNode node = (AbstractNode) nnode;
+
+        StringBuilder ret = new StringBuilder();
+
+        if (node.minus) {
+            ret.append("- (");
+        }
+
+        if (node.getType() == AbstractNode.AbstractNodeType.OPERATION_ONLY) {
+            if (node.getOperation() == X86Analysis.Operation.op_full_overlap) {
+                ret.append(" ( ");
+                ret.append(getFullOverlapNode(node, head, vars));
+                ret.append(" ) ");
+            } else if (node.getOperation() == X86Analysis.Operation.op_partial_overlap) {
+                ret.append(" ( ");
+                ret.append(getPartialOverlapNode(node, head, vars));
+                ret.append(" ) ");
+            } else if (node.getOperation() == X86Analysis.Operation.op_split_h) {
+                ret.append(" ( ");
+                ret.append(getAbstractTree(node.getSrcs().get(0), head, vars));
+                ret.append(" ) >> ( " + (node.getSrcs().get(0).getSymbol().getWidth() * 8 / 2) + ")");
+            } else if (node.getOperation() == X86Analysis.Operation.op_split_l) {
+                ret.append(" ( ");
+                ret.append(getAbstractTree(node.srcs.get(0), head, vars));
+                ret.append(" ) & " + ((node.getSrcs().get(0).getSymbol().getWidth() / 2) * 8));
+            } else if (node.getOperation() == X86Analysis.Operation.op_indirect) {
+                ret.append("(");
+                ret.append(getIndirectString(node, head, vars));
+                ret.append(")");
+            } else if (node.getOperation() == X86Analysis.Operation.op_call) {
+                ret.append("(");
+                ret.append(node.functionName + "(");
+                for (int k = 0; k < node.getSrcs().size(); k++) {
+                    AbstractNode abstractNode = (AbstractNode) node.getSrcs().get(k);
+                    ret.append(getAbstractTree(abstractNode, head, vars));
+                    if (k != node.getSrcs().size() - 1) {
+                        ret.append(",");
+                    }
+                }
+                ret.append(")");
+            } else if (node.getSrcs().size() == 1) {
+                ret.append(" " + node.getSymbolicString(vars) + " ");
+                ret.append(getAbstractTree(node.getSrcs().get(0), head, vars));
+            } else {
+                ret.append("(");
+                for (int i = 0; i < node.getSrcs().size(); i++) {
+                    if (node.getSrcs().get(i).getSymbol().getWidth() != node.getSymbol().getWidth()) {
+                        ret.append(getCastString(node, node.getSrcs().get(0).minus) + "(");
+                    }
+                    ret.append(getAbstractTree(node.getSrcs().get(i), head, vars));
+                    if (node.getSrcs().get(i).getSymbol().getWidth() != node.getSymbol().getWidth()) {
+                        ret.append(")");
+                    }
+                    if (i != node.getSrcs().size() - 1) {
+                        ret.append(" " + node.getSymbolicString(vars) + " ");
+                    }
+                }
+                ret.append(")");
+            }
+        } else if (node.getType() == AbstractNode.AbstractNodeType.SUBTREE_BOUNDARY) {
+
+        } else {
+            int pos = node.isIndirect();
+            boolean indirect = (pos != -1);
+
+            if (node != head) {
+                if (indirect) {
+                    ret.append(node.getAssociatedMem().getName());
+                    ret.append(getAbstractTree(node.getSrcs().get(pos), head, vars)); /* assumes that these nodes are at the leaves */
+                } else {
+                    if (node.getType() == AbstractNode.AbstractNodeType.PARAMETER) {
+                        ret.append("p_" + parameterMatch.get(node.para_num) + " ");
+                    } else {
+                        ret.append(node.getSymbolicString(vars) + " ");
+                    }
+                }
+            } else {
+                Node indirectNode = null;
+                if (indirect) {
+                    indirectNode = node.getSrcs().get(pos);
+                    node.getSrcs().remove(pos);
+                }
+
+                if (node.getOperation() != op_assign) {  /* the node contains some other operation */
+                    AbstractNode.AbstractNodeType originalType = node.getType();
+                    node.setType(AbstractNode.AbstractNodeType.OPERATION_ONLY);
+                    ret.append(getAbstractTree(node, head, vars));
+                    node.setType(originalType);
+                } else {
+                    ret.append(getAbstractTree(node.getSrcs().get(0), head, vars));
+                }
+
+                if (indirect) {
+                    node.getSrcs().add(pos, indirectNode);
+                }
+            }
+        }
+
+        if (node.minus) {
+            ret.append(")");
+        }
+
+        return ret.toString();
     }
 
     private String getConditionalTrees(List<Pair<AbstractTree, Boolean>> conditions, List<String> vars) {

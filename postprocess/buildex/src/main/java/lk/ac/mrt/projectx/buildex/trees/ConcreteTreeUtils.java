@@ -4,12 +4,10 @@ import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
 import lk.ac.mrt.projectx.buildex.models.common.FuncInfo;
+import lk.ac.mrt.projectx.buildex.models.common.JumpInfo;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
-import lk.ac.mrt.projectx.buildex.models.output.Operand;
-import lk.ac.mrt.projectx.buildex.models.output.Output;
-import lk.ac.mrt.projectx.buildex.models.output.ReducedInstruction;
-import lk.ac.mrt.projectx.buildex.models.output.ReducedInstructionUtils;
+import lk.ac.mrt.projectx.buildex.models.output.*;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,9 +67,9 @@ public class ConcreteTreeUtils {
 
 
     public static ConcreteTree buildConcreteTree(Long destination, Integer stride, List<Long> startPoints,
-                                                  Integer startTrace, Integer endTrace, ConcreteTree tree,
-                                                  List<Pair<Output, StaticInfo>> instrs, Long farthest,
-                                                  List<MemoryRegion> regions, List<FuncInfo> funcInfo) {
+                                                 Integer startTrace, Integer endTrace, ConcreteTree tree,
+                                                 List<Pair<Output, StaticInfo>> instrs, Long farthest,
+                                                 List<MemoryRegion> regions, List<FuncInfo> funcInfo) {
         logger.debug( "Build tree multi  " );
         Integer initialEntracne = endTrace;
 
@@ -365,7 +363,73 @@ public class ConcreteTreeUtils {
 
     public static void buildConcreteTreesForConditionals(List<Long> startPoints, ConcreteTree tree, List<Pair<Output,
             StaticInfo>> instrs, Long farthest, List<MemoryRegion> regions, List<FuncInfo> funcInfos) {
-        throw new NotImplementedException();
+        logger.debug( "Build conc tree for conditionals.." );
+
+        for (Conditional conditional : tree.getConditionals()) {
+            JumpInfo info = conditional.getJumpInfo();
+            Integer lineCond = conditional.getLineCond();
+            Integer lineJump = conditional.getLineJump();
+            Output instr = instrs.get( lineCond ).first;
+
+            List<ConcreteTree> condTrees = new ArrayList<>();
+
+            // cmp x1, x2 -  2 srcs and no dest
+
+            for (Operand srcOpnd : instr.getSrcs()) {
+                // build the trees
+                if ((srcOpnd.getType() != MemoryType.IMM_INT_TYPE) && (srcOpnd.getType() == MemoryType.IMM_FLOAT_TYPE)) {
+                    // find the dst when these srcs are written
+                    Integer dstLine = 0;
+                    int k = -1;
+                    for (Pair<Output, StaticInfo> outputStaticInfoPair : instrs) {
+                        k++;
+                        Output temp = outputStaticInfoPair.first;
+                        boolean found = false;
+                        for (Operand dstOpnd : temp.getDsts()) {
+                            if (dstOpnd.getType() == srcOpnd.getType() && dstOpnd.getValue() == srcOpnd.getValue()) {
+                                dstLine = k;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+
+                    ConcreteTree condTree = new ConcreteTree();
+                    buildConcreteTree( srcOpnd.getValue().longValue(), srcOpnd.getWidth(), startPoints, dstLine + 1, FILE_ENDING,
+                            condTree, instrs, farthest, regions, funcInfos );
+                    condTrees.add( condTree );
+                } else {
+                    ConcreteTree condTree = new ConcreteTree();
+                    Node head = null;
+                    if (srcOpnd.getType() == MemoryType.IMM_INT_TYPE) {
+                        head = new ConcreteNode( srcOpnd.getType(), srcOpnd.getValue().longValue(), srcOpnd.getWidth
+                                ().longValue(), 0.0f );
+                    } else {
+                        head = new ConcreteNode( srcOpnd.getType(), 0L, ((Integer) srcOpnd.getWidth
+                                ()).longValue(), srcOpnd.getValue().longValue() );
+                    }
+                    condTree.setHead( head );
+                    condTrees.add( condTree );
+                }
+            }
+
+            // common things
+
+            // remove assign nodes head
+            for (ConcreteTree condTree : condTrees) {
+                condTree.changeHeadNode();
+            }
+
+            // get the computation node
+            Node compNode = tree.getHead();
+            Node newHeadNode = new ConcreteNode( compNode.getSymbol().getType(), compNode.getSymbol().getValue()
+                    .longValue(), compNode.getSymbol().getWidth().longValue(), 0.0f );
+
+        }
     }
 }
+
 

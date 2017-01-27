@@ -35,15 +35,15 @@ public class Operand implements Comparable<Operand> {
         return type;
     }
 
-    public void setType(MemoryType type) {
-        this.type = type;
-    }
-
     public void setType(int type) {
         this.type = MemoryType.values()[ type ];
     }
 
-    public int getWidth() {
+    public void setType(MemoryType type) {
+        this.type = type;
+    }
+
+    public Integer getWidth() {
         return width;
     }
 
@@ -118,6 +118,31 @@ public class Operand implements Comparable<Operand> {
             ret = DR_REG_INVALID;
         }
         return ret;
+    }
+
+    @Override
+    public int compareTo(Operand other) {
+        //TODO : not complete but similar to Helium
+        return Double.valueOf( this.value.doubleValue() ).
+                compareTo( Double.valueOf( other.value.doubleValue() ) );
+    }
+
+    public boolean isFloatingPointReg() {
+        DefinesDotH.DR_REG reg = memRangeToRegister();
+        Boolean answer = (type == MemoryType.REG_TYPE) && (reg.ordinal() >= DR_REG_ST0.ordinal())
+                && (reg.ordinal() <= DR_REG_ST7.ordinal());
+        return answer;
+    }
+
+    // TODO [KRV] : Check
+    @Deprecated // use the function with tos
+    public void updateFloatingPointReg(String disams, int line) {
+        logger.error( "please use updateFloatingPointReg method with 'tos' parameter " );
+        int reg = memRangeToRegister().ordinal();
+        int offset = reg - DR_REG_ST0.ordinal();
+        int ret = DR_REG_ST8.ordinal() - offset;
+        this.value = ret;
+        regToMemRange();
     }
 
     /**
@@ -463,31 +488,6 @@ public class Operand implements Comparable<Operand> {
                 logger.debug( "mem vaalue - %d, min allowed - %d", value, MAX_SIZE_OF_REG * 57 );
             }
         }
-    }
-
-    @Override
-    public int compareTo(Operand other) {
-        //TODO : not complete but similar to Helium
-        return Double.valueOf( this.value.doubleValue() ).
-                compareTo( Double.valueOf( other.value.doubleValue() ) );
-    }
-
-    public boolean isFloatingPointReg() {
-        DefinesDotH.DR_REG reg = memRangeToRegister();
-        Boolean answer = (type == MemoryType.REG_TYPE) && (reg.ordinal() >= DR_REG_ST0.ordinal())
-                && (reg.ordinal() <= DR_REG_ST7.ordinal());
-        return answer;
-    }
-
-    // TODO [KRV] : Check
-    @Deprecated // use the function with tos
-    public void updateFloatingPointReg(String disams, int line) {
-        logger.error( "please use updateFloatingPointReg method with 'tos' parameter " );
-        int reg = memRangeToRegister().ordinal();
-        int offset = reg - DR_REG_ST0.ordinal();
-        int ret = DR_REG_ST8.ordinal() - offset;
-        this.value = ret;
-        regToMemRange();
     }
 
     public void updateFloatingPointReg(String disams, int line, int tos) {

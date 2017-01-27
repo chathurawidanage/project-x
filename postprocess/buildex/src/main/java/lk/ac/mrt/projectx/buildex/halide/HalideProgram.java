@@ -5,6 +5,7 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.trees.AbstractNode;
 import lk.ac.mrt.projectx.buildex.trees.AbstractTree;
+import lk.ac.mrt.projectx.buildex.trees.Node;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +26,7 @@ public class HalideProgram {
 
     private List<Function> funcs;
     private List<String> vars;
+    private List<String> rvars;//reduction variables
     private Map<Integer, Integer> parameterMatch;
     private List<AbstractNode> params;
 
@@ -34,6 +36,7 @@ public class HalideProgram {
     public HalideProgram(AbstractTree abstractTree) {
         this.funcs = new ArrayList<>();
         this.vars = new ArrayList<>();
+        this.rvars = new ArrayList<>();
         this.parameterMatch = new HashMap<>();
         this.params = new ArrayList<>();//not necessary, just in case
         this.output = new ArrayList<>();
@@ -134,6 +137,206 @@ public class HalideProgram {
             appendNewLine(String.format("%s.compile_to_file(\"%s_%d\",%s)",
                     out.getAssociatedMem().getName(), "halide_out", outIndex++, argsVectorName));
         }
+    }
+
+    private String getExpressionName(String expressionName, int condiotional) {
+        return expressionName + "_" + condiotional;
+    }
+
+    private String getAbstractTree(Node nnode, Node head, List<String> vars) {
+        //todo
+        return null;
+    }
+
+    private String getConditionalTrees(List<Pair<AbstractTree, Boolean>> conditions, List<String> vars) {
+        StringBuilder ret = new StringBuilder();
+
+        for (int i = 0; i < conditions.size(); i++) {
+            AbstractNode node = (AbstractNode) conditions.get(i).first.getHead();
+        /* because the head node is just the output node - verify this fact */
+            GeneralUtils.assertAndFail(node.srcs.size() == 1, "ERROR: expected single source");
+
+            boolean taken = conditions.get(i).second;
+
+            if (!taken) {
+                ret.append("! (");
+            }
+
+            ret.append(getAbstractTree(node.srcs.get(0), node, vars));
+            if (i != conditions.size() - 1) {
+                ret.append(" && ");
+            }
+
+            if (!taken) {
+                ret.append(")");
+            }
+        }
+
+        if (ret.toString().isEmpty()) {
+            ret.append("true");
+        }
+        return ret.toString();
+    }
+
+    private void appendSelectStatement(Expression current, Expression next) {
+        if (next != null) { /* we have a false value*/
+            appendNewLine("Expr " + current.getName() + " = select(" + current.getCondition() + "," + current.getTruthValue() + "," + next.getName() + ")");
+        } else {
+            appendNewLine("Expr " + current.getName() + " = " + current.getTruthValue());
+        }
+    }
+
+    private AbstractNode getIndirectNode(AbstractNode abstractNode) {
+        return (AbstractNode) abstractNode.getSrcs().get(0);
+    }
+
+    private String getOutputFunctionDefinition(AbstractNode head) {
+        MemoryRegion mem = head.getAssociatedMem();
+
+        int pos = head.isIndirect();
+        boolean indirect = (pos != -1);
+
+        StringBuilder ret = new StringBuilder(mem.getName() + "(");
+
+	/* assume only one level of indirection */
+        if (indirect) {
+            AbstractNode indirectNode = getIndirectNode((AbstractNode) head.getSrcs().get(pos));
+            ret.append(indirectNode.getAssociatedMem().getName());
+            ret.append("(");
+            head = indirectNode;
+        }
+
+        for (int i = 0; i < head.getDimensions(); i++) {
+            ret.append(vars.get(i));
+            if (i == head.getDimensions() - 1) {
+                ret.append(")");
+            } else {
+                ret.append(",");
+            }
+        }
+
+        if (indirect) {
+            ret.append(")");
+        }
+
+        return ret.toString();
+    }
+
+    private String getCastString(AbstractNode abstractNode, boolean sign) {
+        StringBuilder ret = new StringBuilder();
+        ret.append("cast<");
+
+        if (abstractNode.is_double) {
+            ret.append("double>");
+        } else {
+            if (!sign) ret.append("u");
+            ret.append("int" + abstractNode.symbol.getWidth() * 8 + "_t>");
+        }
+
+        return ret.toString();
+    }
+
+    private void appendPredictedTree(List<AbstractTree> trees, String exprTag, List<String> vars) {
+        //appending predicted tree
+
+        List<Expression> exprs = new ArrayList<>();
+        /* populate the expressions */
+        for (int i = 0; i < trees.size(); i++) {
+            AbstractNode head = (AbstractNode) trees.get(i).getHead();
+            Expression expr = new Expression();
+            expr.setName(getExpressionName(head.getAssociatedMem().getName() + exprTag, i));
+            expr.setCondition(getConditionalTrees(trees.get(i).getConditionalTrees(), vars));
+            expr.setTruthValue(getAbstractTree(trees.get(i).getHead(), trees.get(i).getHead(), vars));
+            exprs.add(expr);
+        }
+
+	/* final print statements */
+        for (int i = 0; i < exprs.size() - 1; i++) {
+            appendSelectStatement(exprs.get(i), exprs.get(i + 1));
+        }
+
+        appendSelectStatement(exprs.get(exprs.size() - 1), null);
+
+
+        StringBuilder output = new StringBuilder();
+
+	/* finally update the final output location */
+        output.append(getOutputFunctionDefinition((AbstractNode) trees.get(0).getHead()));
+
+        AbstractNode head_node = (AbstractNode) trees.get(0).getHead();
+
+        long clamp_max = Math.max(32 - head_node.symbol.getWidth() * 8, 65535);
+        long clamp_min = 0;
+
+	/* BUG - what to do with the sign?? */
+        output.append(" = ");
+        output.append(getCastString(head_node, false));
+        output.append("( clamp(");
+        output.append(exprs.get(0).getName());
+        output.append(clamp_min + "," + clamp_max);
+        output.append(") ))");
+
+        appendNewLine(output.toString());
+    }
+
+    private void appendPureTrees(Function function) {
+        appendPredictedTree(function.getPureTrees(), "_p_", vars);
+    }
+
+    private void appendRDom(RDom rDom, List<String> variables) {
+        String name = rvars.get(rvars.size() - 1);
+        StringBuilder ret = new StringBuilder("RDom " + name + "(");
+        if (rDom.getrDomType() == RDomType.INDIRECT_REF) {
+            ret.append(rDom.getRedNode().getAssociatedMem().getName());
+        } else {
+            for (int i = 0; i < rDom.getAbstractIndexes().size(); i++) {
+                for (int j = 0; j < rDom.getAbstractIndexes().get(i).size(); j++) {
+                    ret.append(rDom.getAbstractIndexes().get(i).get(j) + " * " + variables.get(j));
+                    if (j != rDom.getAbstractIndexes().get(i).size() - 1) {
+                        ret.append(" + ");
+                    }
+                }
+                if (i != rDom.getAbstractIndexes().size()) {
+                    ret.append(" , ");
+                }
+            }
+        }
+        ret.append(" )");
+        appendNewLine(ret.toString());
+    }
+
+    private List<String> getReductionIndexVariables(String rvar) {
+        List<String> rvars = new ArrayList<>();
+        for (String suff : new String[]{"x", "y", "z", "w"}) {
+            rvars.add(rvar + "." + suff);
+        }
+        return rvars;
+    }
+
+    private void appendReductionTrees(Function function, List<String> reductionVariables) {
+
+	/* Assumption - If the RDom is the same, then the trees are different due to conditionals.
+    If the RDom's are not the same, then those trees are computed without overlap */
+        GeneralUtils.assertAndFail(function.getPureTrees().size() > 0, "Reduction updates should have initial pure definitions");
+
+        if (function.getReductionTrees().isEmpty()) return;
+
+
+        for (int i = 0; i < function.getReductionTrees().size(); i++) {
+            String name = "r_" + rvars.size();
+            rvars.add(name);
+            appendRDom(function.getReductionTrees().get(i).first, reductionVariables);
+            appendPredictedTree(function.getReductionTrees().get(i).second, "_r" + i + "_", getReductionIndexVariables(name));
+        }
+    }
+
+
+    private void appendFunctions(List<String> reductionVariables) {
+        for (Function function : funcs) {
+            appendPureTrees(function);
+            appendReductionTrees(function, reductionVariables);
+        }
+
     }
     /*END OF APPENDERS*/
 
@@ -412,14 +615,12 @@ public class HalideProgram {
 
         /***************** print the functions ************************/
 
-        for (int i = 0; i < funcs.size(); i++) {
-
-        }
+        appendFunctions(reductionVariables);
 
         /***************finalizing - instructions for code generation ******/
 
 	/* print argument population - params and input params */
-	    String argumentsVector="arguments";
+        String argumentsVector = "arguments";
         appendHalideArguments(argumentsVector);
 
         appendHalideOutputToFile(argumentsVector);

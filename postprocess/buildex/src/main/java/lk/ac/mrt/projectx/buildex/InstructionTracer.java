@@ -338,4 +338,8 @@ public class InstructionTracer {
 
         }
     }
+
+    public lk.ac.mrt.projectx.buildex.models.Pair<Long, Long> getStartEndPcs(List<StaticInfo> staticInfos, StaticInfo first) {
+        return new lk.ac.mrt.projectx.buildex.models.Pair<>( 4096L, 5161L );
+    }
 }

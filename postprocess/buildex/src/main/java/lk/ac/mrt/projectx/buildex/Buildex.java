@@ -4,6 +4,7 @@ import lk.ac.mrt.projectx.buildex.exceptions.NoSuitableFileFoundException;
 import lk.ac.mrt.projectx.buildex.files.AppPCFile;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.files.MemoryDumpFile;
+import lk.ac.mrt.projectx.buildex.halide.HalideProgram;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.PCMemoryRegion;
@@ -69,5 +70,10 @@ public class Buildex {
         MemoryLayoutOps.mergeMemoryInfoPCMemoryRegion(memoryLayoutMemoryInfo, memoryLayoutPCMemoryRegion);
         logger.info("Merged memory regions {}", memoryLayoutMemoryInfo.toString());
         /*END OF MEMORY INFO STAGE*/
+
+
+        /*Halide generation*/
+        /*HalideProgram halideProgram=new HalideProgram();
+        halideProgram.generateHalide();*/
     }
 }

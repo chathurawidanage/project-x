@@ -132,10 +132,6 @@ public class AbstractNode extends Node implements Comparable, Cloneable {//chath
 
     //region public methods
 
-    public String GetSymbolicString(List<String> vars) {
-        throw new NotImplementedException();
-    }
-
     @Override
     public int compareTo(Object o) {
         AbstractNode node = (AbstractNode) o;
@@ -164,7 +160,7 @@ public class AbstractNode extends Node implements Comparable, Cloneable {//chath
         }
     }
 
-    private String getSymbolicString(List<String> vars) {
+    public String getSymbolicString(List<String> vars) {
         String stRet;
         if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
                 || this.type == AbstractNodeType.INTERMEDIATE_NODE) {

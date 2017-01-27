@@ -46,15 +46,15 @@ public class Operand implements Comparable<Operand> {
         return type;
     }
 
-    public void setType(MemoryType type) {
-        this.type = type;
-    }
-
     public void setType(int type) {
         this.type = MemoryType.values()[ type ];
     }
 
-    public int getWidth() {
+    public void setType(MemoryType type) {
+        this.type = type;
+    }
+
+    public Integer getWidth() {
         return width;
     }
 

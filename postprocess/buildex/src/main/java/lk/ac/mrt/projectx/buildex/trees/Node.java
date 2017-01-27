@@ -399,6 +399,26 @@ public abstract class Node implements Serializable {//chathura - generics remove
         this.operation = operation;
     }
 
+    public Boolean getIsPara() {
+        return is_para;
+    }
+
+    public void setIsPara(Boolean is_para) {
+        this.is_para = is_para;
+    }
+
+    public void setIsPara() {
+        this.is_para = true;
+    }
+
+    public Integer getParaNum() {
+        return para_num;
+    }
+
+    public void setParaNum(Integer para_num) {
+        this.para_num = para_num;
+    }
+
 //endregion public methods
 
     //region private methods

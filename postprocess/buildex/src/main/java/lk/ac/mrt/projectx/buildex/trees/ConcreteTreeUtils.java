@@ -1,5 +1,6 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.DefinesDotH;
 import lk.ac.mrt.projectx.buildex.GeneralUtils;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
@@ -428,7 +429,55 @@ public class ConcreteTreeUtils {
             Node newHeadNode = new ConcreteNode( compNode.getSymbol().getType(), compNode.getSymbol().getValue()
                     .longValue(), compNode.getSymbol().getWidth().longValue(), 0.0f );
 
+            if (instr.getOpcode() == DefinesDotH.OpCodes.OP_cmp) {
+                // now create the tree
+                ConcreteNode node = new ConcreteNode( MemoryType.REG_TYPE, 150L, 4L, 0.0f );
+                node.setOperation( instrs.get( lineJump ).first.getOpcode().drLogicalToOperation() );
+
+                // merge the trees together
+                Node left = condTrees.get( 0 ).getHead();
+                Node right = condTrees.get( 1 ).getHead();
+
+                createDependancy( node, left );
+                createDependancy( node, right );
+                createDependancy( newHeadNode, node );
+
+                ConcreteTree newCondTree = new ConcreteTree();
+                newCondTree.setHead( newHeadNode );
+                conditional.setTree( newCondTree );
+            } else if (instr.getOpcode() == DefinesDotH.OpCodes.OP_test) {
+                ConcreteNode headNode = new ConcreteNode( MemoryType.REG_TYPE, 150L, 4L, 0.0f );
+                headNode.setOperation( instrs.get( lineJump ).first.getOpcode().drLogicalToOperation() );
+
+                // create an and node
+                ConcreteNode andNode = new ConcreteNode( MemoryType.REG_TYPE, 150L, 4L, 0.0f );
+                andNode.setOperation( X86Analysis.Operation.op_and );
+
+                // merge the trees together
+                Node left = condTrees.get( 0 ).getHead();
+                Node right = condTrees.get( 1 ).getHead();
+
+                createDependancy( andNode, left );
+                createDependancy( andNode, right );
+
+                createDependancy( headNode, andNode );
+                createDependancy( headNode, new ConcreteNode( MemoryType.IMM_INT_TYPE, 0L, 4L, 0.0f ) );
+
+                createDependancy( newHeadNode, headNode );
+
+                ConcreteTree newCondTree = new ConcreteTree();
+                newCondTree.setHead( newHeadNode );
+                conditional.setTree( newCondTree );
+            } else {
+                assert false : "Conditionals for other instructions are not done";
+            }
         }
+    }
+
+    private static void createDependancy(Node src, Node dst) {
+        src.getSrcs().add( dst );
+        dst.getPrev().add( src );
+        dst.getPos().add( src.getSrcs().size() - 1 );
     }
 }
 

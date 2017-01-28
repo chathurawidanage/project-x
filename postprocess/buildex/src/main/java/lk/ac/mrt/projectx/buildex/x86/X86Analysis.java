@@ -172,6 +172,42 @@ public class X86Analysis {
         OVERFLOW_LAHF
     }
 
+    public enum EflagBits {
+
+        Reserved_31,
+        Reserved_30,
+        Reserved_29,
+        Reserved_28,
+        Reserved_27,
+        Reserved_26,
+        Reserved_25,
+        Reserved_24,
+        Reserved_23,
+        Reserved_22,
+        ID_Flag,
+        Virtual_Interrupt_Pending,
+        Virtual_Interrupt_Flag,
+        Alignment_Check,
+        Virtual_Mode,
+        Resume_Flag,
+        Reserved_15,
+        Nested_Task,
+        IO_Privilege_Level,
+        Overflow_Flag,
+        Direction_Flag,
+        Interrupt_Enable_Flag,
+        Trap_Flag,
+        Sign_Flag,
+        Zero_Flag,
+        Reserved_5,
+        Auxiliary_Carry_Flag,
+        Reserved_3,
+        Parity_Flag,
+        Reserved_1,
+        Carry_Flag
+
+    }
+
     // TODO [KRV] : check the impact of using long instead of int
     public static Boolean checkLAHFBit(LahfBits flagType, Long regVal){
         Long ah = (regVal >> 8 ) & 0xFF;
@@ -183,5 +219,10 @@ public class X86Analysis {
             ans = (ah&(1<< flagType.ordinal())) == (1<< flagType.ordinal());
         }
         return ans;
+    }
+
+    // TODO [KRV] : check the impact of using long instead of int
+    public static Boolean checkEFlagBit(EflagBits flagType, Long regVal){
+        return ((regVal & (1 << flagType.ordinal())) == (1 << flagType.ordinal()));
     }
 }

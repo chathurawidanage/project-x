@@ -15,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -60,10 +61,55 @@ public class ConcreteTreeUtils {
 
             ConcreteTree initialTree = buildConcreteTree( location, mem.getBytesPerPixel(), startPoints, FILE_BEGINNING,
                     FILE_ENDING, tree, instrs, farthest, totalRegions, funcInfo );
+            buildConcreteTreesForConditionals( startPoints, tree, instrs, farthest, totalRegions, funcInfo );
+            trees.add( tree );
+            if (initialTree != null) {
+                buildConcreteTreesForConditionals( startPoints, initialTree, instrs, farthest, totalRegions, funcInfo );
+                trees.add( initialTree );
+            }
+
+            count++;
+            if (mem.getStartMemory() > mem.getEndMemory()) {
+                i--;
+            } else {
+                i++;
+            }
+
+            if (count == indexes.size() / 1) { // fraction
+                done = true;
+            }
         }
 
+        logger.debug( "Clustering Trees" );
+
+        for (Iterator<ConcreteTree> treeIterator = trees.iterator() ; treeIterator.hasNext() ; ) {
+            ConcreteTree tree = treeIterator.next();
+            if (tree.getHead() == null) {
+                trees.remove( tree );
+            }
+        }
+
+        // cluster based on similarity
+        List<List<ConcreteTree>> clusteredTrees = categorizeTrees( trees );
+
         throw new NotImplementedException();
-//        return null;
+    }
+
+    private static List<List<ConcreteTree>> categorizeTrees(List<ConcreteTree> trees) {
+        List<List<ConcreteTree>> cateGorizedTrees = new ArrayList<>();
+        while (!trees.isEmpty()) {
+            List<ConcreteTree> similarTrees = new ArrayList<>();
+            similarTrees.add( trees.remove( 0 ) );
+            for (Iterator<ConcreteTree> treeIterator = trees.iterator() ; treeIterator.hasNext() ; ) {
+                ConcreteTree tree = treeIterator.next();
+                if (similarTrees.get( 0 ) == tree) {
+                    similarTrees.add( tree );
+                    trees.remove( tree );
+                }
+            }
+            cateGorizedTrees.add( similarTrees );
+        }
+        return cateGorizedTrees;
     }
 
 

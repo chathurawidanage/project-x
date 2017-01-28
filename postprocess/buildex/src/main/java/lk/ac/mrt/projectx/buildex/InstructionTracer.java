@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex;
 import javafx.util.Pair;
 import lk.ac.mrt.projectx.buildex.files.InstructionTraceFile;
 import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
+import lk.ac.mrt.projectx.buildex.models.output.Output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,6 +31,32 @@ public class InstructionTracer {
 
     public static InstructionTracer getInstance() {
         return instance;
+    }
+
+    public static lk.ac.mrt.projectx.buildex.models.Pair<Long, Long> getStartEndPcs(List<StaticInfo> staticInfos,
+                                                                                    StaticInfo first) {
+        Long start = first.getPc();
+        List<Long> pcs = new ArrayList<>();
+
+        // get all ret instructions
+        for (StaticInfo staticInfo : staticInfos) {
+            if (staticInfo.getDissasembly().contains( "ret" )) {
+                pcs.add( staticInfo.getPc() );
+            }
+        }
+
+        assert pcs.size() > 0 : "ERROR : No return instructions found";
+
+        Long end = 0L;
+
+        for (Long pc : pcs) {
+            if (pc > start) {
+                end = pc;
+                break;
+            }
+        }
+
+        return new lk.ac.mrt.projectx.buildex.models.Pair<>( start, end );
     }
 
     public void performInstrunctionTrace(InstructionTraceFile debugDisassemblyInstructionTrace, InstructionTraceFile
@@ -340,28 +367,23 @@ public class InstructionTracer {
         }
     }
 
-    public lk.ac.mrt.projectx.buildex.models.Pair<Long, Long> getStartEndPcs(List<StaticInfo> staticInfos, StaticInfo first) {
-        Long start = first.getPc();
-        List<Long> pcs = new ArrayList<>();
+    public List<Long> getInstraceStartpoints(List<lk.ac.mrt.projectx.buildex.models.Pair<Output, StaticInfo>> instrs, List<Long> pcs) {
+        List<Long> startPoints = new ArrayList<>();
 
-        // get all ret instructions
-        for (StaticInfo staticInfo : staticInfos) {
-            if (staticInfo.getDissasembly().contains( "ret" )) {
-                pcs.add( staticInfo.getPc() );
+        Long line = 0L;
+        for (lk.ac.mrt.projectx.buildex.models.Pair<Output, StaticInfo> outputStaticInfoPair : instrs) {
+            line++;
+            Output instr = outputStaticInfoPair.first;
+            if (instr != null) {
+                for (Long startPc : pcs) {
+                    if (startPc == instr.getPc()) {
+                        startPoints.add( line );
+                    }
+                }
             }
+
         }
 
-        assert pcs.size() > 0 : "ERROR : No return instructions found";
-
-        Long end = 0L;
-
-        for (Long pc : pcs) {
-            if (pc > start) {
-                end = pc;
-                break;
-            }
-        }
-
-        return new lk.ac.mrt.projectx.buildex.models.Pair<>( start, end );
+        return startPoints;
     }
 }

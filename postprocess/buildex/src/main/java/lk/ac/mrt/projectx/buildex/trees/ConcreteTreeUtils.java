@@ -12,7 +12,6 @@ import lk.ac.mrt.projectx.buildex.models.output.*;
 import lk.ac.mrt.projectx.buildex.x86.X86Analysis;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -92,7 +91,15 @@ public class ConcreteTreeUtils {
         // cluster based on similarity
         List<List<ConcreteTree>> clusteredTrees = categorizeTrees( trees );
 
-        throw new NotImplementedException();
+        // so each tree is a sperate cluster; assume that all the trees are in a single cluster and this would fails
+        // in similarity checking in abstrees
+        if (clusteredTrees.size() == trees.size()) {
+            logger.warn( "Each tree is a cluster" );
+            clusteredTrees.clear();
+            clusteredTrees.add( trees );
+        }
+        logger.debug( "Number of tree clusters : %d", clusteredTrees.size() );
+        return clusteredTrees;
     }
 
     private static List<List<ConcreteTree>> categorizeTrees(List<ConcreteTree> trees) {

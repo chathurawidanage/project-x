@@ -1,9 +1,10 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
-import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,60 +18,6 @@ public class MemoryRegionUtils {
     private static final Logger logger = LogManager.getLogger(MemoryRegionUtils.class);
 
     //region public methods
-
-    /* extracting random locations from the mem regions */
-    ArrayList<Long> getNbdOfRandomPoints(ArrayList<MemoryRegion> memoryRegions, int seed, int stride) {
-
-	    /*ok we need find a set of random locations */
-        MemoryRegion randomMemRegion = getRandomOutputRegion(memoryRegions);
-        //cout << hex << random_mem_region->start << endl;
-        long memLocation = getRandomMemLocation(randomMemRegion, seed);
-        logger.info("random mem location we got - {}", memLocation);
-        stride = randomMemRegion.getBytesPerPixel();
-
-        ArrayList<Long> nbdLocations = new ArrayList<>();
-        ArrayList<Integer> base = getMemPosition(randomMemRegion, memLocation);
-        nbdLocations.add(memLocation);
-
-        //get a nbd of locations - diagonally choose pixels
-        int boundary = (int) ((randomMemRegion.getDimension() + 2) / 2.0);
-        logger.info("boundary : {}", boundary);
-
-        int count = 0;
-
-        int[] val = new int[(int) randomMemRegion.getDimension()];
-
-        for (int i = -boundary; i <= boundary; i++) {
-
-            if (i == 0) {
-                continue;
-            }
-
-            ArrayList<Integer> offset = new ArrayList<>();
-            int affected = count % (int) randomMemRegion.getDimension();
-            for (int j = 0; j < base.size(); j++) {
-                if (j == affected) {
-                    if (base.get(j) + i < 0 || base.get(j) + i >= randomMemRegion.getExtents()[j]) {
-                        offset.add(0);
-                    } else {
-                        offset.add(i);
-                    }
-
-                } else offset.add(0);
-            }
-
-            memLocation = getMemLocation(base, offset, randomMemRegion);
-
-            if (memLocation == 0) {
-                logger.error("ERROR: random memory location out of bounds");
-            }
-
-            nbdLocations.add(memLocation);
-            count++;
-        }
-
-        return nbdLocations;
-    }
 
     // stride was a pointer. - Not considered it as a pointer here. if needs, it should be implemented
     public static ArrayList<Long> getNbdOfRandomPoints2(ArrayList<MemoryRegion> memoryRegions, int seed, int stride) {
@@ -108,16 +55,16 @@ public class MemoryRegionUtils {
             int affected = count % (int) randomMemRegion.getDimension();
             if (count == 4) {
                 count++;
-                val[affected]++;
+                val[ affected ]++;
                 continue;
             }
             for (int j = 0; j < base.size(); j++) {
                 if (j == affected) {
-                    val[j]++;
-                    if (val[j] + base.get(j) < randomMemRegion.getExtents()[j] && val[j] + base.get(j) > 0) {
-                        offset.add(val[j]);
+                    val[ j ]++;
+                    if (val[ j ] + base.get( j ) < randomMemRegion.getExtents()[ j ] && val[ j ] + base.get( j ) > 0) {
+                        offset.add( val[ j ] );
                     } else {
-                        offset.add(0);
+                        offset.add( 0 );
                     }
 
                 } else offset.add(0);
@@ -151,11 +98,98 @@ public class MemoryRegionUtils {
 
         long size = 1;
         int dimension = (int) region.getDimension();
-        for (int i = 0; i < dimension; i++) {
-            size *= region.getExtents()[i];
+        for (int i = 0 ; i < dimension ; i++) {
+            size *= region.getExtents()[ i ];
         }
         return size;
 
+    }
+
+    public static MemoryRegion getMemRegion(Integer value, List<MemoryRegion> memoryRegions) {
+        MemoryRegion region = null;
+        for (MemoryRegion memRegion : memoryRegions) {
+            if (memRegion.getStartMemory() < memRegion.getEndMemory()) {
+                // start <= value <= end
+                if ((memRegion.getStartMemory() <= value) && memRegion.getEndMemory() >= value) {
+                    region = memRegion;
+                    break;
+                }
+            } else {
+                // end <= value <= start
+                if ((memRegion.getStartMemory() >= value) && (memRegion.getEndMemory() <= value)) {
+                    region = memRegion;
+                    break;
+                }
+            }
+        }
+        return region;
+    }
+
+    public static boolean isWithinMemRegion(MemoryRegion memoryRegion, int value) {
+
+        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
+            return (value >= memoryRegion.getStartMemory()) && (value <= memoryRegion.getEndMemory());
+        } else {
+            return (value >= memoryRegion.getEndMemory()) && (value <= memoryRegion.getStartMemory());
+        }
+    }
+
+    public static Long getFarthestMemAccessPoint(List<MemoryRegion> totalMemRegions) {
+        throw new NotImplementedException();
+    }
+
+    /* extracting random locations from the mem regions */
+    ArrayList<Long> getNbdOfRandomPoints(ArrayList<MemoryRegion> memoryRegions, int seed, int stride) {
+
+	    /*ok we need find a set of random locations */
+        MemoryRegion randomMemRegion = getRandomOutputRegion(memoryRegions);
+        //cout << hex << random_mem_region->start << endl;
+        long memLocation = getRandomMemLocation(randomMemRegion, seed);
+        logger.info("random mem location we got - {}", memLocation);
+        stride = randomMemRegion.getBytesPerPixel();
+
+        ArrayList<Long> nbdLocations = new ArrayList<>();
+        ArrayList<Integer> base = getMemPosition(randomMemRegion, memLocation);
+        nbdLocations.add(memLocation);
+
+        //get a nbd of locations - diagonally choose pixels
+        int boundary = (int) ((randomMemRegion.getDimension() + 2) / 2.0);
+        logger.info("boundary : {}", boundary);
+
+        int count = 0;
+
+        int[] val = new int[(int) randomMemRegion.getDimension()];
+
+        for (int i = -boundary ; i <= boundary; i++) {
+
+            if (i == 0) {
+                continue;
+            }
+
+            ArrayList<Integer> offset = new ArrayList<>();
+            int affected = count % (int) randomMemRegion.getDimension();
+            for (int j = 0 ; j < base.size(); j++) {
+                if (j == affected) {
+                    if (base.get( j ) + i < 0 || base.get( j ) + i >= randomMemRegion.getExtents()[ j ]) {
+                        offset.add(0);
+                    } else {
+                        offset.add( i );
+                    }
+
+                } else offset.add(0);
+            }
+
+            memLocation = getMemLocation(base, offset, randomMemRegion);
+
+            if (memLocation == 0) {
+                logger.error("ERROR: random memory location out of bounds");
+            }
+
+            nbdLocations.add(memLocation);
+            count++;
+        }
+
+        return nbdLocations;
     }
 
     public static long getRandomMemLocation(MemoryRegion region, int seed) {
@@ -194,38 +228,6 @@ public class MemoryRegionUtils {
         return memLocation;
     }
 
-    public static MemoryRegion getRandomOutputRegion(ArrayList<MemoryRegion> regions) {
-
-        logger.info("selecting a random output region now.......");
-
-	    /*get the number of intermediate and output regions*/
-        int noRegions = 0;
-        for (int i = 0; i < regions.size(); i++) {
-            if (regions.get(i).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get(i).getMemDirection() == MemDirection.MEM_OUTPUT) {
-                noRegions++;
-            }
-        }
-
-        Random rand = new Random();
-        int random = rand.nextInt(noRegions);
-
-        noRegions = 0;
-
-        for (int i = 0; i < regions.size(); i++) {
-            if (regions.get(i).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get(i).getMemDirection() == MemDirection.MEM_OUTPUT) {
-                if (noRegions == random) {
-                    logger.info("random output region seleted");
-                    return regions.get(i);
-                }
-                noRegions++;
-            }
-        }
-
-        return null; /*should not reach this point*/
-
-
-    }
-
     /* abstracting memory locations from mem_regions */
     public static long getMemLocation(ArrayList<Integer> base, ArrayList<Integer> offset, MemoryRegion memRegion) {
 
@@ -259,6 +261,38 @@ public class MemoryRegionUtils {
         }
 
         return retAddr;
+
+    }
+
+    public static MemoryRegion getRandomOutputRegion(ArrayList<MemoryRegion> regions) {
+
+        logger.info( "selecting a random output region now......." );
+
+	    /*get the number of intermediate and output regions*/
+        int noRegions = 0;
+        for (int i = 0 ; i < regions.size() ; i++) {
+            if (regions.get( i ).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get( i ).getMemDirection() == MemDirection.MEM_OUTPUT) {
+                noRegions++;
+            }
+        }
+
+        Random rand = new Random();
+        int random = rand.nextInt( noRegions );
+
+        noRegions = 0;
+
+        for (int i = 0 ; i < regions.size() ; i++) {
+            if (regions.get( i ).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get( i ).getMemDirection() == MemDirection.MEM_OUTPUT) {
+                if (noRegions == random) {
+                    logger.info( "random output region seleted" );
+                    return regions.get( i );
+                }
+                noRegions++;
+            }
+        }
+
+        return null; /*should not reach this point*/
+
 
     }
 
@@ -296,35 +330,6 @@ public class MemoryRegionUtils {
 
         return pos;
 
-    }
-
-    public static MemoryRegion getMemRegion(Integer value, List<MemoryRegion> memoryRegions) {
-        MemoryRegion region = null;
-        for (MemoryRegion memRegion : memoryRegions) {
-            if (memRegion.getStartMemory() < memRegion.getEndMemory()) {
-                // start <= value <= end
-                if ((memRegion.getStartMemory() <= value) && memRegion.getEndMemory() >= value) {
-                    region = memRegion;
-                    break;
-                }
-            } else {
-                // end <= value <= start
-                if ((memRegion.getStartMemory() >= value) && (memRegion.getEndMemory() <= value)) {
-                    region = memRegion;
-                    break;
-                }
-            }
-        }
-        return region;
-    }
-
-    public static boolean isWithinMemRegion(MemoryRegion memoryRegion, int value) {
-
-        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
-            return (value >= memoryRegion.getStartMemory()) && (value <= memoryRegion.getEndMemory());
-        } else {
-            return (value >= memoryRegion.getEndMemory()) && (value <= memoryRegion.getStartMemory());
-        }
     }
     //endregion public methods
 

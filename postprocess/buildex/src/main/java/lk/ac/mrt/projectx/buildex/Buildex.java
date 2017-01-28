@@ -11,6 +11,8 @@ import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.PCMemoryRegion;
 import lk.ac.mrt.projectx.buildex.models.output.Output;
 import lk.ac.mrt.projectx.buildex.models.output.OutputInstructionUtils;
+import lk.ac.mrt.projectx.buildex.trees.ConcreteTree;
+import lk.ac.mrt.projectx.buildex.trees.MemoryRegionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -97,9 +99,16 @@ public class Buildex {
         lis = ir.filterInstructionTrace( startPcs, endPcs, lis );
 
         List<Pair<Output, StaticInfo>> instrsForward = OutputInstructionUtils.instraceToOutputAdabpter( lis );
+        List<Pair<Output, StaticInfo>> instrsBackward = new ArrayList<>();
+
+        for (Pair<Output, StaticInfo> outputStaticInfoPair : instrsForward) {
+            instrsBackward.add( 0, outputStaticInfoPair );
+        }
 
         // TODO [YASIRU] : -- KRV
         OutputInstructionUtils.updateRegsToMemRange( instrsForward );
+        OutputInstructionUtils.updateRegsToMemRange( instrsBackward );
+
         // TODO [YASIRU] : -- KRV
         List<Integer> startPcsInteger = new ArrayList<>();
         for (Iterator<Long> it = startPcs.iterator() ; it.hasNext() ; ) {
@@ -107,8 +116,40 @@ public class Buildex {
             Integer numInt = num.intValue();
             startPcsInteger.add( numInt );
         }
+        OutputInstructionUtils.updateFloatingPointRegs( instrsBackward, 2, staticInfos, startPcsInteger );
         OutputInstructionUtils.updateFloatingPointRegs( instrsForward, 1, staticInfos, startPcsInteger );
 
+        /* ---------------------------- Tree Construction ------------------------------*/
+        logger.debug( "Tree Building" );
+
+        List<List<ConcreteTree>> clusteredTrees = null;
+        List<ConcreteTree> concreteTrees = null;
+
+        // capture the function start points if the end trace is not given specifically
+        List<Long> startPoints = null;
+        List<Long> startPointsForward = null;
+
+//        if (true) { // endTrace == FILE_ENDING
+        startPoints = InstructionTracer.getInstance().getInstraceStartpoints( instrsBackward, startPcs );
+        startPointsForward = InstructionTracer.getInstance().getInstraceStartpoints( instrsForward, startPcs );
+//        }
+
+
+//        if (true) { // tree_build == BUILD_CLUSTERS = 4
+        List<MemoryRegion> totalMemRegions = new ArrayList<>();
+        Long farthest = MemoryRegionUtils.getFarthestMemAccessPoint( totalMemRegions );
+//        clusteredTrees = ConcreteTreeUtils.clusterTrees( imageRegions, totalMemRegions, startPoints,
+//                instrsBackwards, farthest, outputFolder + fileSubString, funcReplacements );
+//        }
+
+        // number the trees - for all conc tree built
+//        if (true) { // tree_build == BUILD_CLUSTERS = 4
+        for (List<ConcreteTree> clusteredTree : clusteredTrees) {
+            for (ConcreteTree concreteTree : clusteredTree) {
+                concreteTree.numberTreeNodes();
+            }
+        }
+//        }
 
         /*Halide generation*/
         /*HalideProgram halideProgram=new HalideProgram();

@@ -3412,12 +3412,12 @@ public class DefinesDotH {
          *          conditional jump that is queried.
          */
         public Boolean isJmpConditionalAffected(long flags) {
-            boolean cf = X86Analysis.checkLAHFBit( CARRY_LAHF, flags );
-            boolean zf = X86Analysis.checkLAHFBit( ZERO_LAHF, flags );
-            boolean of = X86Analysis.checkLAHFBit( OVERFLOW_LAHF, flags );
-            boolean af = X86Analysis.checkLAHFBit( AUXILIARY_LAHF, flags );
-            boolean pf = X86Analysis.checkLAHFBit( PARITY_LAHF, flags );
-            boolean sf = X86Analysis.checkLAHFBit( SIGN_LAHF, flags );
+            boolean cf = X86Analysis.checkEFlagBit( X86Analysis.EflagBits.Carry_Flag, flags );
+            boolean zf = X86Analysis.checkEFlagBit( X86Analysis.EflagBits.Zero_Flag, flags );
+            boolean of = X86Analysis.checkEFlagBit( X86Analysis.EflagBits.Overflow_Flag, flags );
+            boolean af = X86Analysis.checkEFlagBit( X86Analysis.EflagBits.Auxiliary_Carry_Flag, flags );
+            boolean pf = X86Analysis.checkEFlagBit( X86Analysis.EflagBits.Parity_Flag, flags );
+            boolean sf = X86Analysis.checkEFlagBit( X86Analysis.EflagBits.Sign_Flag, flags );
             boolean answer = false;
             // TODO : BUG - need to change it to a OR
             switch (this) {

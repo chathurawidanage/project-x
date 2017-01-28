@@ -172,7 +172,7 @@ public class X86Analysis {
         OVERFLOW_LAHF
     }
 
-    enum EflagBits {
+    public enum EflagBits {
 
         Reserved_31,
         Reserved_30,

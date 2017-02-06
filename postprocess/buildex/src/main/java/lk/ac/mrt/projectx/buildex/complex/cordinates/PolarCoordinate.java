@@ -6,9 +6,10 @@ package lk.ac.mrt.projectx.buildex.complex.cordinates;
 public class PolarCoordinate {
     private double theta;
     private double r;
-    public PolarCoordinate(double theta, double r){
-        this.theta=theta;
-        this.r=r;
+
+    public PolarCoordinate(double theta, double r) {
+        this.theta = theta;
+        this.r = r;
     }
 
     public double getTheta() {
@@ -25,5 +26,10 @@ public class PolarCoordinate {
 
     public void setR(double r) {
         this.r = r;
+    }
+
+    @Override
+    public String toString() {
+        return this.theta + "," + this.r;
     }
 }

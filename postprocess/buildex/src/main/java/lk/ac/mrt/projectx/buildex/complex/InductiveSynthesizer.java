@@ -88,15 +88,13 @@ public class InductiveSynthesizer {
         DescriptiveStatistics tComponentRTCoefficient = new DescriptiveStatistics();
         DescriptiveStatistics tComponentConstCoefficient = new DescriptiveStatistics();
 
-        int window = widthIn*4;//(int) Math.sqrt(width * height);
-        Iterator<Pair<CartesianCoordinate, CartesianCoordinate>> rIterator = examples.iterator();
+        int window = widthIn * heightIn/4;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {
-            Pair<CartesianCoordinate, CartesianCoordinate> r = rIterator.next();
             int size = window;
             double xR[][] = new double[size][variablesCountR];
             double yR[] = new double[size];
 
-            double xT[][] = new double[size][3];
+            double xT[][] = new double[size][variablesCountT + 1];//+1 for Math.PI*n constant normalization
             double yT[] = new double[size];
             for (int j = i; j < i + size; j++) {
                 Pair<CartesianCoordinate, CartesianCoordinate> p = examples.get(j);
@@ -105,17 +103,17 @@ public class InductiveSynthesizer {
                 PolarCoordinate polarCoordinateD = CoordinateTransformer.cartesian2Polar(widthOut, heightOut, p.second, false);
 
                 /*Operations to R*/
-                double rVarsVale[] = new double[variableCombinationR.length];
-                rVarsVale[0] = polarCoordinateS.getR();
-                rVarsVale[1] = MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
-                rVarsVale[2] = Math.pow(polarCoordinateS.getR(), 2);
-                rVarsVale[3] = Math.pow(polarCoordinateS.getTheta(), 2);
-                rVarsVale[4] = polarCoordinateS.getR() * MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
-//                xR[j - i][4] = polarCoordinateS.getR() * MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
+                double varValues[] = new double[variableCombinationR.length];
+                varValues[0] = polarCoordinateS.getR();
+                varValues[1] = MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
+                varValues[2] = Math.pow(polarCoordinateS.getR(), 2);
+                varValues[3] = Math.pow(polarCoordinateS.getTheta(), 2);
+                varValues[4] = polarCoordinateS.getR() * MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
+
                 int pivot = 0;
                 for (int comb = 0; comb < variableCombinationR.length; comb++) {
                     if (variableCombinationR[comb]) {
-                        xR[j - i][pivot++] = rVarsVale[comb];
+                        xR[j - i][pivot++] = varValues[comb];
                     }
                 }
 
@@ -123,9 +121,17 @@ public class InductiveSynthesizer {
 
 
                 /*Operations to T*/
-                xT[j - i][0] = polarCoordinateS.getR();
-                xT[j - i][1] = polarCoordinateS.getTheta();
-                xT[j - i][2] = Math.PI;//to avoid the error due to normalizing angle to 360deg
+                varValues[1] = polarCoordinateS.getTheta();
+                varValues[4] = polarCoordinateS.getR() * polarCoordinateS.getTheta();
+
+
+                pivot = 0;
+                for (int comb = 0; comb < variableCombinationT.length; comb++) {
+                    if (variableCombinationT[comb]) {
+                        xT[j - i][pivot++] = varValues[comb];
+                    }
+                }
+                xT[j - i][pivot] = Math.PI;//to avoid the error due to normalizing angle to 360deg
                 yT[j - i] = polarCoordinateD.getTheta();
                 //   System.out.println(polarCoordinateD.getTheta()+":"+(polarCoordinateS.getR()+polarCoordinateS.getTheta()));
             }
@@ -146,24 +152,41 @@ public class InductiveSynthesizer {
                 if (constantR) {
                     rVarCoefs[rVarCoefs.length - 1] = synthesizeR[pivot];
                 }
-                int rIndex = 0;
-                rComponentRCoefficient.addValue(rVarCoefs[rIndex++]);
-                rComponentTCoefficient.addValue(rVarCoefs[rIndex++]);
-                rComponentR2Coefficient.addValue(rVarCoefs[rIndex++]);
-                rComponentT2Coefficient.addValue(rVarCoefs[rIndex++]);
-                rComponentRTCoefficient.addValue(rVarCoefs[rIndex++]);
-                rComponentConstCoefficient.addValue(rVarCoefs[rIndex++]);
+                int coefficientIndex = 0;
+                rComponentRCoefficient.addValue(rVarCoefs[coefficientIndex++]);
+                rComponentTCoefficient.addValue(rVarCoefs[coefficientIndex++]);
+                rComponentR2Coefficient.addValue(rVarCoefs[coefficientIndex++]);
+                rComponentT2Coefficient.addValue(rVarCoefs[coefficientIndex++]);
+                rComponentRTCoefficient.addValue(rVarCoefs[coefficientIndex++]);
+                rComponentConstCoefficient.addValue(rVarCoefs[coefficientIndex++]);
                 //System.out.println(round(synthesizeR[2])+","+synthesizeR[3]);
 
 
+                //assuming T has no coefficient term. Might have to change in future
                 double[] synthesizeT = complexSynthesizer.synthesize(yT, xT, true);
-                double normalizedValue = synthesizeT[2];
+                double normalizedValue = synthesizeT[synthesizeT.length - 1];
                 for (int k = 0; k < yT.length; k++) {
                     yT[k] -= normalizedValue;
                 }
                 synthesizeT = complexSynthesizer.synthesize(yT, xT, true);
-                tComponentRCoefficient.addValue(synthesizeT[0]);
-                tComponentTCoefficient.addValue(synthesizeT[1]);
+
+                double tVarCoefs[] = new double[variableCombinationR.length + 1];//+1 for constant
+                pivot = 0;
+                for (int l = 0; l < variableCombinationT.length; l++) {
+                    if (variableCombinationT[l]) {
+                        tVarCoefs[l] = synthesizeT[pivot++];
+                    } else {
+                        tVarCoefs[l] = 0;
+                    }
+                }
+
+                coefficientIndex = 0;
+                tComponentRCoefficient.addValue(tVarCoefs[coefficientIndex++]);
+                tComponentTCoefficient.addValue(tVarCoefs[coefficientIndex++]);
+                tComponentR2Coefficient.addValue(tVarCoefs[coefficientIndex++]);
+                tComponentT2Coefficient.addValue(tVarCoefs[coefficientIndex++]);
+                tComponentRTCoefficient.addValue(tVarCoefs[coefficientIndex++]);
+                tComponentConstCoefficient.addValue(tVarCoefs[coefficientIndex++]);
                 //dsT3.addValue(round());
             } catch (Exception e) {
                 logger.error(e.getMessage());//no need to print stack trace
@@ -174,7 +197,7 @@ public class InductiveSynthesizer {
         int loweP = 25;
         int higherP = 75;
 
-        //System.out.println(rComponentRCoefficient.getValues());
+        /*Approximating R coefficients*/
 
         LoopBounds loopBoundsR = new LoopBounds();
         loopBoundsR.r.low = loopBound(rComponentRCoefficient.getPercentile(loweP));
@@ -207,37 +230,47 @@ public class InductiveSynthesizer {
         logger.debug("R->t2 : {},{},{}", rComponentT2Coefficient.getPercentile(loweP),
                 rComponentT2Coefficient.getPercentile(50), rComponentT2Coefficient.getPercentile(higherP));
 
+        logger.debug("iterations : {}", loopBoundsR.getIterations());
+        logger.debug("Loop bounds R {}", loopBoundsR);
+        //Guesses approximate = Approximator.approximate(loopBoundsR, examples, true, widthIn, heightIn);
+        //logger.debug("R : {}", approximate);
 
-        logger.debug("T1 : {},{},{}", tComponentRCoefficient.getPercentile(loweP),
+        /*Approximating T coefficients*/
+        LoopBounds loopBoundsT = new LoopBounds();
+        loopBoundsT.r.low = loopBound(tComponentRCoefficient.getPercentile(loweP));
+        loopBoundsT.r.high = loopBound(tComponentRCoefficient.getPercentile(higherP));
+        logger.debug("T->r : {},{},{}", tComponentRCoefficient.getPercentile(loweP),
                 tComponentRCoefficient.getPercentile(50), tComponentRCoefficient.getPercentile(higherP));
 
-        logger.debug("T2 : {},{},{}", tComponentTCoefficient.getPercentile(loweP),
+        loopBoundsT.t.low = loopBound(tComponentTCoefficient.getPercentile(loweP));
+        loopBoundsT.t.high = loopBound(tComponentTCoefficient.getPercentile(higherP));
+        logger.debug("T->t : {},{},{}", tComponentTCoefficient.getPercentile(loweP),
                 tComponentTCoefficient.getPercentile(50), tComponentTCoefficient.getPercentile(higherP));
 
-        int r1RcoefLow = (int) (rComponentRCoefficient.getPercentile(loweP) * 1000);
-        int r1RcoefHigh = (int) (rComponentRCoefficient.getPercentile(higherP) * 1000);
+        loopBoundsT.r2.low = loopBound(tComponentR2Coefficient.getPercentile(loweP));
+        loopBoundsT.r2.high = loopBound(tComponentR2Coefficient.getPercentile(higherP));
+        logger.debug("T->r2 : {},{},{}", tComponentR2Coefficient.getPercentile(loweP),
+                tComponentR2Coefficient.getPercentile(50), tComponentR2Coefficient.getPercentile(higherP));
 
-        int r1TcoefLow = (int) (rComponentTCoefficient.getPercentile(loweP) * 1000);
-        int r1TcoefHigh = (int) (rComponentTCoefficient.getPercentile(higherP) * 1000);
+        loopBoundsT.rt.low = loopBound(tComponentRTCoefficient.getPercentile(loweP));
+        loopBoundsT.rt.high = loopBound(tComponentRTCoefficient.getPercentile(higherP));
+        logger.debug("T->rt : {},{},{}", tComponentRTCoefficient.getPercentile(loweP),
+                tComponentRTCoefficient.getPercentile(50), tComponentRTCoefficient.getPercentile(higherP));
 
+        loopBoundsT.c.low = loopBound(tComponentConstCoefficient.getPercentile(loweP));
+        loopBoundsT.c.high = loopBound(tComponentConstCoefficient.getPercentile(higherP));
+        logger.debug("T->const : {},{},{}", tComponentConstCoefficient.getPercentile(loweP),
+                tComponentConstCoefficient.getPercentile(50), tComponentConstCoefficient.getPercentile(higherP));
 
-        long iterations = (r1RcoefHigh - r1RcoefLow) * (r1TcoefHigh - r1TcoefLow);
-        logger.debug("iterations : {}", loopBoundsR.getIterations());
+        loopBoundsT.t2.low = loopBound(tComponentT2Coefficient.getPercentile(loweP));
+        loopBoundsT.t2.high = loopBound(tComponentT2Coefficient.getPercentile(higherP));
+        logger.debug("T->t2 : {},{},{}", tComponentT2Coefficient.getPercentile(loweP),
+                tComponentT2Coefficient.getPercentile(50), tComponentT2Coefficient.getPercentile(higherP));
 
-        logger.debug("Loop bounds R {}", loopBoundsR);
-        Guesses approximate = Approximator.approximate(loopBoundsR, examples, true, widthIn, heightIn);
-        logger.debug("R : {}", approximate);
-
-
-       /* r1RcoefLow = (int) (tComponentRCoefficient.getPercentile(loweP) * 1000);
-        r1RcoefHigh = (int) (tComponentRCoefficient.getPercentile(higherP) * 1000);
-
-        r1TcoefLow = (int) (dsT2.getPercentile(loweP) * 1000);
-        r1TcoefHigh = (int) (dsT2.getPercentile(higherP) * 1000);
-        iterations = (r1RcoefHigh - r1RcoefLow) * (r1TcoefHigh - r1TcoefLow);
-        logger.debug("iterations {}", iterations);
-        approximate = Approximator.approximate(r1RcoefLow, r1RcoefHigh, r1TcoefLow, r1TcoefHigh, examples, false, widthIn, heightIn);
-        logger.info("T : {}", approximate);*/
+        logger.debug("iterations : {}", loopBoundsT.getIterations());
+        logger.debug("Loop bounds T {}", loopBoundsT);
+        Guesses approximate = Approximator.approximate(loopBoundsT, examples, false, widthIn, heightIn);
+        logger.debug("T : {}", approximate);
 
     }
 

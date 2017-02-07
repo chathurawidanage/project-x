@@ -19,40 +19,55 @@ import java.util.concurrent.TimeUnit;
 public class Approximator {
     private static final Logger logger = LogManager.getLogger(Approximator.class);
 
-    public static Guesses approximate(int rCoefLow, int rCoefHigh,
-                                      int tCoefLow, int tCoeHigh, final List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs, final boolean isR, final int width, final int height) {
-        final List<Pair<CartesianCoordinate,CartesianCoordinate>> tests=getTestCases(pairs);
+    public static Guesses approximate(final LoopBounds loopBounds, final List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs, final boolean isR, final int width, final int height) {
+        final List<Pair<CartesianCoordinate, CartesianCoordinate>> tests = getTestCases(pairs);
         final List<Guesses> votes = new ArrayList<>();
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
-        for (int i = rCoefLow; i <= rCoefHigh; i++) {
+        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        for (int i = loopBounds.r.low; i <= loopBounds.r.high; i++) {
             final double rcof = i * 1.0 / 1000d;
-            for (int j = tCoefLow; j <= tCoeHigh; j++) {
-                final double tcof = j * 1.0 / 1000d;
-                executorService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        Guesses guesses = new Guesses();
-                        guesses.setRcof(rcof);
-                        guesses.setTcof(tcof);
-                        synchronized (votes) {
-                            votes.add(guesses);
-                        }
-                        for (int l = 0; l < tests.size(); l++) {
-                            Pair<CartesianCoordinate, CartesianCoordinate> pair = tests.get(l);
-                            CartesianCoordinate cartesianCoordinate = pair.first;
+            executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    for (int j = loopBounds.t.low; j <= loopBounds.t.high; j++) {
+                        final double tcof = j * 1.0 / 1000d;
+                        for (int k = loopBounds.r2.low; k <= loopBounds.r2.high; k++) {
+                            final double r2cof = k * 1.0 / 1000d;
+                            for (int l = loopBounds.t2.low; l <= loopBounds.t2.high; l++) {
+                                final double t2cof = l * 1.0 / 1000d;
+                                for (int m = loopBounds.rt.low; m <= loopBounds.rt.high; m++) {
+                                    final double rtcof = m * 1.0 / 1000d;
+                                    for (int n = loopBounds.c.low; n <= loopBounds.c.high; n++) {
+                                        final double ccof = n * 1.0 / 1000d;
 
-                            PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
+                                        Guesses guesses = new Guesses();
+                                        guesses.setRcof(rcof);
+                                        guesses.setTcof(tcof);
+                                        guesses.setT2cof(t2cof);
+                                        guesses.setR2cof(r2cof);
+                                        guesses.setRtcof(rtcof);
+                                        guesses.setCcof(ccof);
+                                        synchronized (votes) {
+                                            votes.add(guesses);
+                                        }
+                                        for (int p = 0; p < tests.size(); p++) {
+                                            Pair<CartesianCoordinate, CartesianCoordinate> pair = tests.get(p);
+                                            CartesianCoordinate cartesianCoordinate = pair.first;
 
-                            double newValue = (polarCoordinate.getTheta() * tcof) + (polarCoordinate.getR() * rcof);
-                            PolarCoordinate newPola;
-                            if (isR) {
-                                newPola = new PolarCoordinate(polarCoordinate.getTheta(), newValue);
-                            } else {
-                                newValue=MathUtils.normalizeAngle(newValue, FastMath.PI);
-                                newPola = new PolarCoordinate(newValue, polarCoordinate.getR());
-                            }
+                                            PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
 
-                            PolarCoordinate realOut = CoordinateTransformer.cartesian2Polar(width, height, pair.second,true);
+                                            double newValue = (polarCoordinate.getTheta() * tcof) +
+                                                    (polarCoordinate.getR() * rcof) + (Math.pow(polarCoordinate.getTheta(), 2)) * t2cof
+                                                    + (Math.pow(polarCoordinate.getR(), 2)) * r2cof + (polarCoordinate.getR() * polarCoordinate.getTheta() * rtcof)
+                                                    + ccof;
+                                            PolarCoordinate newPola;
+                                            if (isR) {
+                                                newPola = new PolarCoordinate(polarCoordinate.getTheta(), newValue);
+                                            } else {
+                                                newValue = MathUtils.normalizeAngle(newValue, FastMath.PI);
+                                                newPola = new PolarCoordinate(newValue, polarCoordinate.getR());
+                                            }
+
+                                            PolarCoordinate realOut = CoordinateTransformer.cartesian2Polar(width, height, pair.second, true);
 
                             /*CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian(newPola);
                             if(pair.second.getX()>=width || newCartCord.getX()<0 || newCartCord.getY()>=height || newCartCord.getY()<0){
@@ -64,21 +79,28 @@ public class Approximator {
                             double distance = Math.sqrt(
                                     Math.pow(assumedCoordinate.getX() - pair.second.getX(), 2) + Math.pow(assumedCoordinate.getY() - pair.second.getY(), 2));
                            */
-                            double distance = 5;
-                            if (isR) {
-                                distance = Math.abs(realOut.getR() - newPola.getR()) / newPola.getR();
-                            } else {
-                                distance = Math.abs(realOut.getTheta() - newPola.getTheta()) / newPola.getTheta();
+                                            double distance = 5;
+                                            if (isR) {
+                                                distance = Math.abs(realOut.getR() - newPola.getR()) / newPola.getR();
+                                            } else {
+                                                distance = Math.abs(realOut.getTheta() - newPola.getTheta()) / newPola.getTheta();
+                                            }
+                                            if (distance <= 0.0001) {
+                                                guesses.incrVote();
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                            if (distance <= 0.001) {
-                                guesses.incrVote();
-                            }
+
                         }
+
                     }
-                });
+                }
 
                 //logger.debug(completedIts * 100.0d / (iterations * 1.0d));
-            }
+            });
+
         }
 
         executorService.shutdown();
@@ -130,8 +152,8 @@ public class Approximator {
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q3 = new ArrayList<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q4 = new ArrayList<>();
         Random r = new Random();
-        for (int i = 0; i < pairs.size()/4; ) {
-            if(q1.add(pairs.get(r.nextInt(pairs.size())))){
+        for (int i = 0; i < pairs.size() / 4; ) {
+            if (q1.add(pairs.get(r.nextInt(pairs.size())))) {
                 i++;
             }
         }

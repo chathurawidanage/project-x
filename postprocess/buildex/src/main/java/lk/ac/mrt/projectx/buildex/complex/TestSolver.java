@@ -2,6 +2,8 @@ package lk.ac.mrt.projectx.buildex.complex;
 
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
+import lk.ac.mrt.projectx.buildex.complex.generators.TwirlGenerator;
+import lk.ac.mrt.projectx.buildex.complex.generators.WaveGenerator;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.util.FastMath;
@@ -9,6 +11,7 @@ import org.apache.commons.math3.util.MathUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -22,6 +25,21 @@ public class TestSolver {
     private final static Logger logger = LogManager.getLogger(TestSolver.class);
 
     public static void main(String[] args) {
+        BufferedImage inImg = new BufferedImage(128, 128, BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage outImg = new BufferedImage(128, 128, BufferedImage.TYPE_3BYTE_BGR);
+        InductiveSynthesizer inductiveSynthesizer = new InductiveSynthesizer();
+//        inductiveSynthesizer.solve(new TwirlGenerator().generate(128, 128), inImg, outImg);
+        long startT = System.currentTimeMillis();
+        inductiveSynthesizer.solve(new TwirlGenerator().generate(128, 128), inImg, outImg);
+        logger.debug("Synthesized in {}ms", System.currentTimeMillis() - startT);
+        if (true)
+            return;
+
+
+
+
+
+
         /*double matL[]={8,9,10};
         double matR[][]={{7,8,9},{9,9,8},{1,1,1}};
         RealMatrix realMatrixL= MatrixUtils.createColumnRealMatrix(matL);
@@ -208,159 +226,7 @@ public class TestSolver {
         List<Double> r2=new ArrayList<>();
         List<Double> r3=new ArrayList<>();*/
 
-        List<Pair<CartesianCoordinate, CartesianCoordinate>> goodPairs = new ArrayList<>();
-        for (Pair<CartesianCoordinate, CartesianCoordinate> p : pairs) {
-            if (p.second.getX() == width - 1 || p.second.getX() == 0
-                    || p.second.getY() == height - 1 || p.second.getY() == 0) {//to get rid of errors due to clamping
-                //System.out.println("drop");
-            } else {
-                goodPairs.add(p);
-            }
-        }
-        System.out.println("Dropped : " + (pairs.size() - goodPairs.size()));
-        pairs = goodPairs;
 
-
-        DescriptiveStatistics dsR1 = new DescriptiveStatistics();
-        DescriptiveStatistics dsR2 = new DescriptiveStatistics();
-        DescriptiveStatistics dsT1 = new DescriptiveStatistics();
-        DescriptiveStatistics dsT2 = new DescriptiveStatistics();
-        DescriptiveStatistics dsT3 = new DescriptiveStatistics();
-        int window = 32;//(int) Math.sqrt(width * height);
-        for (int i = 0; i < pairs.size() - window; i += window) {
-            double xR[][] = new double[window][2];
-            double yR[] = new double[window];
-
-            double xT[][] = new double[window][2];
-            double yT[] = new double[window];
-            for (int j = i; j < i + window; j++) {
-                Pair<CartesianCoordinate, CartesianCoordinate> p = pairs.get(j);
-
-                PolarCoordinate polarCoordinateS = CoordinateTransformer.cartesian2Polar(width, height, p.first, false);
-                PolarCoordinate polarCoordinateD = CoordinateTransformer.cartesian2Polar(width, height, p.second, false);
-                //System.out.println(polarCoordinateD.getTheta() + "," + ((polarCoordinateS.getTheta() + polarCoordinateS.getR() / 10)));
-
-                xR[j - i][0] = polarCoordinateS.getR();
-                xR[j - i][1] = MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
-                yR[j - i] = polarCoordinateD.getR();
-
-                xT[j - i][0] = polarCoordinateS.getR();
-                xT[j - i][1] = polarCoordinateS.getTheta();
-                yT[j - i] = polarCoordinateD.getTheta();
-                //   System.out.println(polarCoordinateD.getTheta()+":"+(polarCoordinateS.getR()+polarCoordinateS.getTheta()));
-            }
-            try {
-                ComplexSynthesizer complexSynthesizer = new ComplexSynthesizer();
-                double[] synthesizeR = complexSynthesizer.synthesize(yR, xR, true);
-
-                //System.out.println(round(synthesizeR[1])+","+synthesizeR[2]);
-                //R1.add(round(synthesize[1]));
-                dsR1.addValue(round(synthesizeR[0]));
-                dsR2.addValue(round(synthesizeR[1]));
-
-
-                double[] synthesizeT = complexSynthesizer.synthesize(yT, xT, false);
-                double intercept = synthesizeT[0];
-                for (int k = 0; k < yT.length; k++) {
-                    yT[k] -= intercept;
-                }
-                synthesizeT = complexSynthesizer.synthesize(yT, xT, true);
-                dsT1.addValue(round(synthesizeT[0]));
-                dsT2.addValue(round(synthesizeT[1]));
-                //dsT3.addValue(round());
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-
-           /* double[][] arr2d = new double[3][3];
-            double[] consR = new double[3];
-            double[] consT = new double[3];
-            int j = 0;
-            for (Pair<CartesianCoordinate, CartesianCoordinate> p : pairs.subList(i,i+3)) {
-                PolarCoordinate polarCoordinateS = CoordinateTransformer.cartesian2Polar(p.first);
-                PolarCoordinate polarCoordinateD = CoordinateTransformer.cartesian2Polar(p.second);
-
-               *//* polarCoordinateS=CoordinateTransformer.cartesian2Polar(
-                        clamp(width,height,CoordinateTransformer.polar2Cartesian(polarCoordinateS)));
-*//*
-                arr2d[j][0] = polarCoordinateS.getTheta();
-                arr2d[j][1] = polarCoordinateS.getR();
-                arr2d[j][2] = 1;
-
-
-                //System.out.println(polarCoordinateS+":"+polarCoordinateD);
-
-                consR[j] = polarCoordinateD.getR();
-                consT[j] = polarCoordinateD.getTheta();
-                j++;
-            }*/
-
-
-
-     /*       RealMatrix coef = new Array2DRowRealMatrix(arr2d);
-            DecompositionSolver decompositionSolver = new LUDecomposition(coef).getSolver();
-
-            RealVector constantsR = new ArrayRealVector(consR);
-            RealVector constantsT = new ArrayRealVector(consT);
-            try {
-                RealVector solveR = decompositionSolver.solve(constantsR);
-                RealVector solveT = decompositionSolver.solve(constantsT);
-                r1.add(solveR.getEntry(0));
-                r2.add(solveR.getEntry(1));
-                r3.add(solveR.getEntry(2));
-                System.out.println("R :"+solveR);
-                System.out.println("T :"+solveT);
-                //System.exit(0);
-            } catch (Exception e) {
-                System.out.println(e);
-            }*/
-        }
-
-        int loweP = 40;
-        int higherP = 60;
-        System.out.println("\nR1 ");
-        System.out.println(dsR1.getPercentile(loweP));
-        System.out.println(dsR1.getPercentile(50));
-        System.out.println(dsR1.getPercentile(higherP));
-
-        System.out.println("\nR2");
-        System.out.println(dsR2.getPercentile(loweP));
-        System.out.println(dsR2.getPercentile(50));
-        System.out.println(dsR2.getPercentile(higherP));
-
-        System.out.println("\nT1");
-        System.out.println(dsT1.getPercentile(loweP));
-        System.out.println(dsT1.getPercentile(50));
-        System.out.println(dsT1.getPercentile(higherP));
-
-        System.out.println("\nT2");
-        System.out.println(dsT2.getPercentile(loweP));
-        System.out.println(dsT2.getPercentile(50));
-        System.out.println(dsT2.getPercentile(higherP));
-
-        int r1RcoefLow = (int) (dsR1.getPercentile(loweP) * 1000);
-        int r1RcoefHigh = (int) (dsR1.getPercentile(higherP) * 1000);
-
-        int r1TcoefLow = (int) (dsR2.getPercentile(loweP) * 1000);
-        int r1TcoefHigh = (int) (dsR2.getPercentile(higherP) * 1000);
-
-
-        long iterations = (r1RcoefHigh - r1RcoefLow) * (r1TcoefHigh - r1TcoefLow);
-        System.out.println("iterations : " + iterations);
-
-        Guesses approximate = Approximator.approximate(r1RcoefLow, r1RcoefHigh, r1TcoefLow, r1TcoefHigh, pairs, true, width, height);
-        System.out.println("R : " + approximate);
-
-
-        r1RcoefLow = (int) (dsT1.getPercentile(loweP) * 1000);
-        r1RcoefHigh = (int) (dsT1.getPercentile(higherP) * 1000);
-
-        r1TcoefLow = (int) (dsT2.getPercentile(loweP) * 1000);
-        r1TcoefHigh = (int) (dsT2.getPercentile(higherP) * 1000);
-        iterations = (r1RcoefHigh - r1RcoefLow) * (r1TcoefHigh - r1TcoefLow);
-        System.out.println("iterations : " + iterations);
-        approximate = Approximator.approximate(r1RcoefLow, r1RcoefHigh, r1TcoefLow, r1TcoefHigh, pairs, false, width, height);
-        System.out.println("T : " + approximate);
 
 
         /*List<Guesses> votes = new ArrayList<>();

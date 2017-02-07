@@ -21,7 +21,6 @@ public class GuessesValidationService {
     private Queue<Guesses> guesses = new LinkedList<>();
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
     private List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases;
-    private boolean running = true;
     private AtomicInteger executingCounter = new AtomicInteger(0);
 
     private int width, height;
@@ -35,26 +34,27 @@ public class GuessesValidationService {
     }
 
     public void submit(Guesses guess) {
-        synchronized (guesses) {
-            guesses.add(guess);
-        }
+        System.out.println(executingCounter);
+        guesses.add(guess);
         checkAndExecute();
     }
 
     public void awaitTermination() throws InterruptedException {
         while (!guesses.isEmpty()) {
+            Thread.sleep(10000);
         }
         executorService.shutdown();
         executorService.awaitTermination(1, TimeUnit.DAYS);
     }
 
     private void checkAndExecute() {
-        if (executingCounter.intValue() < 1000) {
+        if (executingCounter.intValue() < 400) {
+            Guesses poll;
             synchronized (guesses) {
-                Guesses poll = guesses.poll();
-                if (poll != null) {
-                    submitNewTask(poll);
-                }
+                poll = guesses.poll();
+            }
+            if (poll != null) {
+                submitNewTask(poll);
             }
         }
     }

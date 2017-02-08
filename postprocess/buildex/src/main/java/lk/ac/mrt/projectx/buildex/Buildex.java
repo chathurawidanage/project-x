@@ -60,9 +60,9 @@ public class Buildex {
 
         /*MEMORY INFO STAGE*/
         MemoryAnalyser memoryAnalyser = MemoryAnalyser.getInstance();
-        List<MemoryRegion> imageRegions = memoryAnalyser.getImageRegions( memoryDumpFileList, inputImage, outputImage );
-        logger.info( "Found {} image regions", imageRegions.size() );
-        logger.debug( imageRegions.toString() );
+        List<MemoryRegion> dumpRegions = memoryAnalyser.getImageRegions( memoryDumpFileList, inputImage, outputImage );
+        logger.info( "Found {} image regions", dumpRegions.size() );
+        logger.debug( dumpRegions.toString() );
 
         List<MemoryInfo> memoryLayoutMemoryInfo = MemoryLayoutOps.createMemoryLayoutMemoryInfo( instructionTraceFile, 1 );
         logger.info( "Found {} memory infos", memoryLayoutMemoryInfo.size() );
@@ -127,6 +127,12 @@ public class Buildex {
         MemoryRegionUtils.removePossibleStackFrames( memoryLayoutPCMemoryRegion, memoryLayoutMemoryInfo, staticInfos,
                 instrsForward );
 
+        /* merge thse two information - instrace mem info + mem dump info */
+        List<MemoryRegion> totalMemRegions = new ArrayList<>();
+        List<MemoryRegion> imageRegions = MemoryRegionUtils.mergeInstraceAndDumpRegions( totalMemRegions,
+                memoryLayoutMemoryInfo, dumpRegions );
+
+
         /* ---------------------------- forward analysis -------------------------------*/
 
         ArrayList<Long> appPc = new ArrayList<>();
@@ -161,7 +167,6 @@ public class Buildex {
 
 
 //        if (true) { // tree_build == BUILD_CLUSTERS = 4
-        List<MemoryRegion> totalMemRegions = new ArrayList<>();
         Long farthest = MemoryRegionUtils.getFarthestMemAccessPoint( totalMemRegions );
 //        clusteredTrees = ConcreteTreeUtils.clusterTrees( imageRegions, totalMemRegions, startPoints,
 //                instrsBackwards, farthest, outputFolder + fileSubString, funcReplacements );

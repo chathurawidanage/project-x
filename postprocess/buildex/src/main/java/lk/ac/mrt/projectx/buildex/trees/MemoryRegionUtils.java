@@ -321,7 +321,7 @@ public class MemoryRegionUtils {
                                 if ((opnd.getType() == MemoryType.MEM_HEAP_TYPE) || (opnd.getType() == MemoryType.MEM_STACK_TYPE)) {
                                     // TODO : why only two addresses
                                     for (int addr = 0 ; addr < 2 ; addr++) {
-                                        if (opnd.getAddress().get( addr ).getValue() != 0) {
+                                        if (opnd.getAddress().get( addr ).getValue().intValue() != 0) {
                                             if ((opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
                                                     .DR_REG.DR_REG_RBP) && (opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
                                                     .DR_REG.DR_REG_RSP)) {
@@ -338,7 +338,7 @@ public class MemoryRegionUtils {
                             for (Operand opnd : instr.getSrcs()) {
                                 if ((opnd.getType() == MemoryType.MEM_HEAP_TYPE) || (opnd.getType() == MemoryType.MEM_STACK_TYPE)) {
                                     for (int addr = 0 ; addr < 2 ; addr++) {
-                                        if (opnd.getAddress().get( addr ).getValue() != 0) {
+                                        if (opnd.getAddress().get( addr ).getValue().intValue() != 0) {
                                             if ((opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
                                                     .DR_REG.DR_REG_RBP) && (opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
                                                     .DR_REG.DR_REG_RSP)) {
@@ -367,6 +367,13 @@ public class MemoryRegionUtils {
         }
 
         logger.debug( "mem infor size after - %d", mem.size() );
+    }
+
+    public static List<MemoryRegion> mergeInstraceAndDumpRegions(List<MemoryRegion> totalRegions, List<MemoryInfo>
+            memInfos, List<MemoryRegion> memoryRegions) {
+        List<MemoryRegion> finalRegions = new ArrayList<>();
+
+        return finalRegions;
     }
 
     /* extracting random locations from the mem regions */

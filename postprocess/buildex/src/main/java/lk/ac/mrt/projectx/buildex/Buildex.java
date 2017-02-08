@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -120,6 +119,13 @@ public class Buildex {
         }
         OutputInstructionUtils.updateFloatingPointRegs( instrsBackward, 2, staticInfos, startPcsInteger );
         OutputInstructionUtils.updateFloatingPointRegs( instrsForward, 1, staticInfos, startPcsInteger );
+        /* ---------------------------- memory input output selection---------------------*/
+        logger.debug( "Memory input output selection" );
+        List<Long> candidateIns = new ArrayList<>();
+        List<Long> startPointMem = InstructionTracer.getInstance().getInstraceStartpoints( instrsForward, startPcs );
+
+        MemoryRegionUtils.removePossibleStackFrames( memoryLayoutPCMemoryRegion, memoryLayoutMemoryInfo, staticInfos,
+                instrsForward );
 
         /* ---------------------------- forward analysis -------------------------------*/
 
@@ -129,12 +135,12 @@ public class Buildex {
         ArrayList<ArrayList<Long>> appPcVec = new ArrayList<>();
         ArrayList<JumpInfo> condAppPc;
 
-        logger.info("before filter static ins : {}",staticInfos.size());
-        Preprocess.filterDisamVector(instrsForward,staticInfos);
-        logger.info("after filter static ins : {}",staticInfos.size());
+        logger.info( "before filter static ins : {}", staticInfos.size() );
+        Preprocess.filterDisamVector( instrsForward, staticInfos );
+        logger.info( "after filter static ins : {}", staticInfos.size() );
 
-        appPcVec.add(appPc);
-        appPcVec.add(appPcTotal);
+        appPcVec.add( appPc );
+        appPcVec.add( appPcTotal );
 
         // others seems to be useless - to check
 

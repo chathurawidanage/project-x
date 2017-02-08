@@ -1,13 +1,27 @@
 package lk.ac.mrt.projectx.buildex.trees;
 
+import lk.ac.mrt.projectx.buildex.DefinesDotH;
+import lk.ac.mrt.projectx.buildex.models.Pair;
+import lk.ac.mrt.projectx.buildex.models.common.CommonUtil;
+import lk.ac.mrt.projectx.buildex.models.common.StaticInfo;
+import lk.ac.mrt.projectx.buildex.models.common.StaticInfoUtil;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryInfo;
 import lk.ac.mrt.projectx.buildex.models.memoryinfo.MemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.memoryinfo.PCMemoryRegion;
+import lk.ac.mrt.projectx.buildex.models.output.MemoryType;
+import lk.ac.mrt.projectx.buildex.models.output.Operand;
+import lk.ac.mrt.projectx.buildex.models.output.Output;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
+import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
+import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_OUTPUT;
 
 /**
  * Created by Lasantha on 04-Jan-17.
@@ -172,7 +186,7 @@ public class MemoryRegionUtils {
 	    /*get the number of intermediate and output regions*/
         int noRegions = 0;
         for (int i = 0 ; i < regions.size() ; i++) {
-            if (regions.get( i ).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get( i ).getMemDirection() == MemDirection.MEM_OUTPUT) {
+            if (regions.get( i ).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get( i ).getMemDirection() == MEM_OUTPUT) {
                 noRegions++;
             }
         }
@@ -183,7 +197,7 @@ public class MemoryRegionUtils {
         noRegions = 0;
 
         for (int i = 0 ; i < regions.size() ; i++) {
-            if (regions.get( i ).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get( i ).getMemDirection() == MemDirection.MEM_OUTPUT) {
+            if (regions.get( i ).getMemDirection() == MemDirection.MEM_INTERMEDIATE || regions.get( i ).getMemDirection() == MEM_OUTPUT) {
                 if (noRegions == random) {
                     logger.info( "random output region seleted" );
                     return regions.get( i );
@@ -283,6 +297,76 @@ public class MemoryRegionUtils {
             }
         }
         return maxAddr + 16;
+    }
+
+    public static void removePossibleStackFrames(List<PCMemoryRegion> pcMem, List<MemoryInfo> mem, List<StaticInfo>
+            info, List<Pair<Output, StaticInfo>> instrs) {
+        logger.debug( "Removing stack frames and out of scope mem infos" );
+        logger.debug( "Mem info size - %d", mem.size() );
+
+        for (Iterator<MemoryInfo> memoryInfoIterator = mem.iterator() ; memoryInfoIterator.hasNext() ; ) {
+            boolean found = false;
+            MemoryInfo curMem = memoryInfoIterator.next();
+            for (PCMemoryRegion pcMemRegion : pcMem) {
+                List<MemoryInfo> memoryInfos = pcMemRegion.getRegions();
+                for (MemoryInfo memInfo : memoryInfos) {
+                    if (CommonUtil.isOverlapped( curMem.getStart(), curMem.getEnd(), memInfo.getStart(), memInfo.getEnd() )) {
+                        StaticInfo staticInfo = StaticInfoUtil.getStaticInfo( info, pcMemRegion.getPc() );
+                        if (staticInfo.getExampleLine() == -1) {
+                            continue;
+                        }
+                        Output instr = instrs.get( staticInfo.getExampleLine() ).first;
+                        if ((memInfo.getDirection() & MemDirection.MEM_OUTPUT.ordinal()) == MemDirection.MEM_OUTPUT.ordinal()) {
+                            for (Operand opnd : instr.getDsts()) {
+                                if ((opnd.getType() == MemoryType.MEM_HEAP_TYPE) || (opnd.getType() == MemoryType.MEM_STACK_TYPE)) {
+                                    // TODO : why only two addresses
+                                    for (int addr = 0 ; addr < 2 ; addr++) {
+                                        if (opnd.getAddress().get( addr ).getValue() != 0) {
+                                            if ((opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
+                                                    .DR_REG.DR_REG_RBP) && (opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
+                                                    .DR_REG.DR_REG_RSP)) {
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    } // for (int addr = 0 ; addr < 2 ; addr++)
+                                }
+                            } // for (Operand opnd : instr.getDsts())
+                        } //if ((memInfo.getDirection() & MemDirection.MEM_OUTPUT.ordinal()) == MemDirection.MEM_OUTPUT.ordinal())
+
+                        if ((memInfo.getDirection() & MEM_INPUT.ordinal()) == MEM_INPUT.ordinal()) {
+                            for (Operand opnd : instr.getSrcs()) {
+                                if ((opnd.getType() == MemoryType.MEM_HEAP_TYPE) || (opnd.getType() == MemoryType.MEM_STACK_TYPE)) {
+                                    for (int addr = 0 ; addr < 2 ; addr++) {
+                                        if (opnd.getAddress().get( addr ).getValue() != 0) {
+                                            if ((opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
+                                                    .DR_REG.DR_REG_RBP) && (opnd.getAddress().get( addr ).memRangeToRegister() != DefinesDotH
+                                                    .DR_REG.DR_REG_RSP)) {
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                    if (found) {
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+
+            if (!found) {
+                mem.remove( curMem );
+            }
+        }
+
+        logger.debug( "mem infor size after - %d", mem.size() );
     }
 
     /* extracting random locations from the mem regions */

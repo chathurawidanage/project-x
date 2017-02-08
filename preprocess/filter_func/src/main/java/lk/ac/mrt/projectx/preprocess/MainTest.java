@@ -1,18 +1,17 @@
 package lk.ac.mrt.projectx.preprocess;
 
+import lk.ac.mrt.projectx.buildex.ProjectXImage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
-
-import lk.ac.mrt.projectx.buildex.ProjectXImage;
-
-import javax.imageio.ImageIO;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  * Created by Lasantha on 02-Dec-16.
@@ -20,37 +19,10 @@ import javax.imageio.ImageIO;
 
 public class MainTest {
     private static final Logger logger = LogManager.getLogger(MainTest.class);
-
-    public static void main(String[] args) {
-        MainTest mainTest = new MainTest();
-
-        mainTest.setOutputFolderPath("E:\\FYP\\Java Ported\\Test Files\\output_files");
-        mainTest.setImageFolderPath("E:\\FYP\\Java Ported\\Test Files\\images");
-        mainTest.setFilterFilesFolderPath("E:\\FYP\\Java Ported\\Test Files\\filter_files");
-        mainTest.setInImageFileName("arith.png");
-        mainTest.setOutImageFileName("aritht.png");
-        mainTest.setExeFileName("halide_threshold_test.exe");
-        mainTest.setThreshold(80);
-        mainTest.setFilterMode(1);
-        mainTest.setBufferSize(0);
-
-        try {
-            mainTest.runAlgorithmDiffMode();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public MainTest() {
-        this.profileData = new ArrayList<byte[]>();
-        this.memtraceData = new ArrayList<byte[]>();
-    }
-
-
+    private static final int MAX_RECURSE = 200;
     private final int DIFF_MODE = 1;
     private final int TWO_IMAGE_MODE = 2;
     private final int ONE_IMAGE_MODE = 3;
-
     private String outputFolderPath;
     private String filterFilesFolderPath;
     private String imageFolderPath;
@@ -62,6 +34,97 @@ public class MainTest {
     private int threshold;  // continuous chunck % of image
     private ArrayList<byte[]> profileData;
     private ArrayList<byte[]> memtraceData;
+
+    public MainTest() {
+        this.profileData = new ArrayList<byte[]>();
+        this.memtraceData = new ArrayList<byte[]>();
+    }
+
+    public static void main(String[] args) {
+        MainTest mainTest = new MainTest();
+        mainTest.setOutputFolderPath( "/home/krv/Projects/FYP/KTest/generated_files/output_files" );
+        mainTest.setImageFolderPath( "/home/krv/Projects/FYP/KTest/images" );
+        mainTest.setFilterFilesFolderPath( "/home/krv/Projects/FYP/KTest/generated_files/filter_files" );
+        mainTest.setInImageFileName( "a.png" );
+        mainTest.setOutImageFileName( "a.png" );
+        mainTest.setExeFileName( "halide_blur_hvscan_test.exe" );
+        mainTest.setThreshold( 80 );
+        mainTest.setFilterMode( 1 );
+        mainTest.setBufferSize( 0 );
+
+        try {
+            mainTest.runAlgorithmDiffMode();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static long getProbableFuncEntrypoint(ModuleInfo current, LinkedList<RetAddress> bbStart, ArrayList<Integer> processed, int maxRecurse) {
+        if (maxRecurse > MAX_RECURSE) {
+            logger.warn( "WARNING: max recursion limit reached!" );
+            return 0;
+        }
+
+        if (bbStart.isEmpty()) {
+            return 0;
+        }
+
+        RetAddress retAddress = bbStart.poll();
+        processed.add( retAddress.address );
+
+        BasicBlockInfo bbinfo = findBbExact( current, retAddress.address );
+        if (bbinfo == null) {
+            return getProbableFuncEntrypoint( current, bbStart, processed, maxRecurse + 1 );
+        }
+
+        if (bbinfo.isCallTarget()) {
+            retAddress.ret--;
+        }
+        if (retAddress.ret < 0) {
+            return bbinfo.getStartAddress();
+        }
+
+        if (bbinfo.isRet() && maxRecurse > 0) {
+            retAddress.ret++;
+        }
+
+        logger.info( "Addr : {} , ret : {} , Freq : {}", retAddress.address, retAddress.ret, bbinfo.getFrequency() );
+
+        for (int i = 0 ; i < bbinfo.getFromBasicBlocks().size() ; i++) {
+            if (!processed.contains( bbinfo.getFromBasicBlocks().get( i ).getTarget() )) {
+                bbStart.add( new RetAddress( bbinfo.getFromBasicBlocks().get( i ).getTarget(), retAddress.ret ) );
+            }
+        }
+        return getProbableFuncEntrypoint( current, bbStart, processed, maxRecurse + 1 );
+    }
+
+    private static BasicBlockInfo findBbExact(ModuleInfo module, long addr) {
+        for (int i = 0 ; i < module.getFunctions().size() ; i++) {
+            FunctionInfo func = module.getFunctions().get( i );
+            for (int j = 0 ; j < func.getBasicBlocks().size() ; j++) {
+                BasicBlockInfo bb = func.getBasicBlocks().get( j );
+                if (bb.getStartAddress() == addr) {
+                    return bb;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static long getProbableFunction(ModuleInfo current, long startAddr) {
+
+        BasicBlockInfo bb = BasicBlockInfo.findBasicBlock( current, startAddr );
+        if (bb != null) {
+            RetAddress retAddress = new RetAddress( (int) bb.getStartAddress(), 0 );
+            LinkedList<RetAddress> queue = new LinkedList<>();
+            queue.add( retAddress );
+            ArrayList<Integer> processed = new ArrayList<>();
+
+            return getProbableFuncEntrypoint( current, queue, processed, 0 );
+        } else {
+            return 0;
+        }
+    }
 
     public void setOutputFolderPath(String outputFolderPath) {
         this.outputFolderPath = outputFolderPath;
@@ -293,59 +356,15 @@ public class MainTest {
 
     }
 
-
-    private static final int MAX_RECURSE = 200;
-
-    private static long getProbableFuncEntrypoint(ModuleInfo current, LinkedList<RetAddress> bbStart, ArrayList<Integer> processed, int maxRecurse) {
-        if (maxRecurse > MAX_RECURSE) {
-            logger.warn("WARNING: max recursion limit reached!");
-            return 0;
+    private byte[] getFileContent(String filename) {
+        byte[] data = null;
+        logger.info( "Reading file {}", filename );
+        try {
+            data = Files.readAllBytes( Paths.get( filename ) );
+        } catch (IOException e) {
+            logger.error( e.getMessage() );
         }
-
-        if (bbStart.isEmpty()) {
-            return 0;
-        }
-
-        RetAddress retAddress = bbStart.poll();
-        processed.add(retAddress.address);
-
-        BasicBlockInfo bbinfo = findBbExact(current, retAddress.address);
-        if (bbinfo == null) {
-            return getProbableFuncEntrypoint(current, bbStart, processed, maxRecurse + 1);
-        }
-
-        if (bbinfo.isCallTarget()) {
-            retAddress.ret--;
-        }
-        if (retAddress.ret < 0) {
-            return bbinfo.getStartAddress();
-        }
-
-        if (bbinfo.isRet() && maxRecurse > 0) {
-            retAddress.ret++;
-        }
-
-        logger.info("Addr : {} , ret : {} , Freq : {}", retAddress.address, retAddress.ret, bbinfo.getFrequency());
-
-        for (int i = 0; i < bbinfo.getFromBasicBlocks().size(); i++) {
-            if (!processed.contains(bbinfo.getFromBasicBlocks().get(i).getTarget())) {
-                bbStart.add(new RetAddress(bbinfo.getFromBasicBlocks().get(i).getTarget(), retAddress.ret));
-            }
-        }
-        return getProbableFuncEntrypoint(current, bbStart, processed, maxRecurse + 1);
-    }
-
-    private static BasicBlockInfo findBbExact(ModuleInfo module, long addr) {
-        for (int i = 0; i < module.getFunctions().size(); i++) {
-            FunctionInfo func = module.getFunctions().get(i);
-            for (int j = 0; j < func.getBasicBlocks().size(); j++) {
-                BasicBlockInfo bb = func.getBasicBlocks().get(j);
-                if (bb.getStartAddress() == addr) {
-                    return bb;
-                }
-            }
-        }
-        return null;
+        return data;
     }
 
     private static class RetAddress {
@@ -381,32 +400,6 @@ public class MainTest {
                 return 0;
             }
         }
-    }
-
-    private static long getProbableFunction(ModuleInfo current, long startAddr) {
-
-        BasicBlockInfo bb = BasicBlockInfo.findBasicBlock(current, startAddr);
-        if (bb != null) {
-            RetAddress retAddress = new RetAddress((int) bb.getStartAddress(), 0);
-            LinkedList<RetAddress> queue = new LinkedList<>();
-            queue.add(retAddress);
-            ArrayList<Integer> processed = new ArrayList<>();
-
-            return getProbableFuncEntrypoint(current, queue, processed, 0);
-        } else {
-            return 0;
-        }
-    }
-
-    private byte[] getFileContent(String filename) {
-        byte[] data = null;
-        logger.info("Reading file {}", filename);
-        try {
-            data = Files.readAllBytes(Paths.get(filename));
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        return data;
     }
 
 }

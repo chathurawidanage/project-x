@@ -371,9 +371,85 @@ public class MemoryRegionUtils {
 
     public static List<MemoryRegion> mergeInstraceAndDumpRegions(List<MemoryRegion> totalRegions, List<MemoryInfo>
             memInfos, List<MemoryRegion> memoryRegions) {
+
+        logger.info( "Merge instrace and dump regions" );
+
         List<MemoryRegion> finalRegions = new ArrayList<>();
 
+        Boolean[] mergedMemInfo = new Boolean[ memInfos.size() ];
+        for (int i = 0 ; i < memInfos.size() ; i++) {
+            mergedMemInfo[ i ] = false;
+        }
+
+        // mem regions are from dumps and check whether overlap with instrace regions
+        for (MemoryRegion memoryRegion : memoryRegions) {
+            Long regionStart = 0L;
+            Long regionEnd = 0L;
+            if (memoryRegion.getStartMemory() > memoryRegion.getEndMemory()) {
+                regionStart = memoryRegion.getEndMemory();
+                regionEnd = memoryRegion.getStartMemory();
+                logger.debug( "Region start is greater than end" );
+            } else {
+                regionStart = memoryRegion.getStartMemory();
+                regionEnd = memoryRegion.getEndMemory();
+                logger.debug( "Region start is less than end" );
+            }
+
+            for (int j = 0 ; j < memInfos.size() ; j++) {
+                if (CommonUtil.isOverlapped( regionStart, regionEnd - 1, memInfos.get( j ).getStart(),
+                        memInfos.get( j ).getEnd() - 1 )) {
+                    mergedMemInfo[ j ] = true;
+                    memoryRegion.setMemDirection( MemDirection.values()[ ((int) memInfos.get( j ).getDirection()) ] );
+
+                    // not printing the debug information
+
+                    MemoryInfo info = getDeepestEnclosing( memoryRegion, memInfos.get( j ) );
+                    // If the memory region is completely contained in the region constructed by meminfo
+                    if (info != null) {
+                        logger.debug( "Found deepest enclosing : start : %d end : %d ", info.getStart(), info.getEnd() );
+                        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
+                            Long start = memoryRegion.getStartMemory();
+
+
+                            // how much to the left of start is the meminfo spread
+                            List<Long> leftSpread = new ArrayList<>();
+                            Long end = memoryRegion.getEndMemory();
+                            for (long stride : memoryRegion.getStrides()) {
+                                Long spread = (info.getEnd() - end) / stride;
+                                end = memoryRegion.getEndMemory() + spread * stride;
+                                leftSpread.add( spread );
+                            }
+
+                            // how much to the right of the end
+
+
+                        }
+                    }
+                }
+            }
+
+
+        }
+
         return finalRegions;
+    }
+
+    private static MemoryInfo getDeepestEnclosing(MemoryRegion region, MemoryInfo info) {
+        Long regionStart = region.getStartMemory() > region.getEndMemory() ? region.getEndMemory() : region
+                .getStartMemory();
+        Long regionEnd = region.getStartMemory() > region.getEndMemory() ? region.getStartMemory() : region.getEndMemory();
+        MemoryInfo mem = null;
+        if (info.getStart() <= regionStart && info.getEnd() >= regionEnd) {
+            mem = info;
+        }
+
+        for (MemoryInfo memoryInfo : info.getMergedMemoryInfos()) {
+            MemoryInfo ret = getDeepestEnclosing( region, memoryInfo );
+            if (ret != null) {
+                mem = ret;
+            }
+        }
+        return mem;
     }
 
     /* extracting random locations from the mem regions */

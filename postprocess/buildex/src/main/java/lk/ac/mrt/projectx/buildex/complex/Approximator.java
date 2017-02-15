@@ -19,10 +19,9 @@ import java.util.concurrent.TimeUnit;
 public class Approximator {
     private static final Logger logger = LogManager.getLogger(Approximator.class);
 
-    public static Guesses approximate(final LoopBounds loopBounds, final List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs, final boolean isR, final int width, final int height) {
+    public static Guesses approximate(final LoopBounds loopBounds, final List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs, final boolean isR, Guesses rGuess,final int width, final int height) {
         final List<Pair<CartesianCoordinate, CartesianCoordinate>> tests = getTestCases(pairs);
-        final List<Guesses> votes = new ArrayList<>();
-        GuessesValidationService gvs = new GuessesValidationService(tests, width, height, isR);
+        GuessesValidationService gvs = new GuessesValidationService(tests, width, height, isR,rGuess);
         for (int i = loopBounds.r.low; i <= loopBounds.r.high; i++) {
             final double rcof = i * 1.0 / 1000d;
             for (int j = loopBounds.t.low; j <= loopBounds.t.high; j++) {
@@ -42,8 +41,11 @@ public class Approximator {
                                 guesses.setR2cof(r2cof);
                                 guesses.setRtcof(rtcof);
                                 guesses.setCcof(ccof);
-                                votes.add(guesses);
-                                gvs.submit(guesses);
+                                try {
+                                    gvs.submit(guesses);
+                                } catch (InterruptedException e) {
+                                    logger.error("Error in submitting guess",e);
+                                }
                             }
                         }
                     }
@@ -53,33 +55,14 @@ public class Approximator {
 
         try {
             logger.debug("Waiting for test termination");
-            gvs.awaitTermination();
+            List<Guesses> maxVoters = gvs.awaitTermination();
+            logger.debug("Maximum voters ", maxVoters);
+            logger.debug("Maximum votes is {} out of {}", maxVoters.get(0).getVotes(), tests.size());
+            return maxVoters.get(0);
         } catch (InterruptedException e) {
             e.printStackTrace();
+            return null;
         }
-
-        Collections.sort(votes, new Comparator<Guesses>() {
-            @Override
-            public int compare(Guesses o1, Guesses o2) {
-                return (o2.getVotes() - o1.getVotes());
-            }
-        });
-/*
-        System.out.println(votes);
-        System.out.println(votes.get(votes.size() - 1));
-        System.out.println(votes.get(votes.size() - 1).getVotes() + " votes");*/
-        //logger.debug(votes);
-        int maxVotes = votes.get(0).getVotes();
-        int untilIndex = 0;
-        for (Guesses g : votes) {
-            if (g.getVotes() == maxVotes) {
-                untilIndex++;
-            } else {
-                break;
-            }
-        }
-        System.out.println(votes.subList(0, untilIndex));
-        return votes.get(0);
     }
 
     private static List<Pair<CartesianCoordinate, CartesianCoordinate>> getTestCases(List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs) {
@@ -87,11 +70,13 @@ public class Approximator {
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q2 = new ArrayList<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q3 = new ArrayList<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q4 = new ArrayList<>();
+        Set<Integer> indexes=new HashSet<>();
         Random r = new Random();
-        for (int i = 0; i < pairs.size() / 4; ) {
-            if (q1.add(pairs.get(r.nextInt(pairs.size())))) {
-                i++;
-            }
+        while ( indexes.size() < Math.min(1000,Math.sqrt(pairs.size())) ) {
+            indexes.add(r.nextInt(pairs.size()));
+        }
+        for(int index:indexes){
+            q1.add(pairs.get(index));
         }
         return new ArrayList<>(q1);
     }

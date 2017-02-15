@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex.complex;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
 import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.util.MathUtils;
 
 /**
  * @author Chathura Widanage
@@ -13,10 +14,11 @@ public class CoordinateTransformer {
         PolarCoordinate polarCoordinate = cartesian2Polar(width, height, cartesianCoordinate);
         if (normalize) {
             double processedTheta = polarCoordinate.getTheta();
+            double theta=MathUtils.normalizeAngle(processedTheta,FastMath.PI);
+            polarCoordinate.setTheta(theta);/*
             if (processedTheta < 0) {
                 processedTheta += (FastMath.PI * 2);
-                polarCoordinate.setTheta(processedTheta);
-            }
+            }*/
         }
         return polarCoordinate;
     }

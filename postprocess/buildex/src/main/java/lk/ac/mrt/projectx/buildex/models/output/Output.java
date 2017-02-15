@@ -1,6 +1,8 @@
 package lk.ac.mrt.projectx.buildex.models.output;
 
 import lk.ac.mrt.projectx.buildex.DefinesDotH.OpCodes;
+import lk.ac.mrt.projectx.buildex.InstructionTraceUnit;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +20,40 @@ public class Output {
     private long eflags;
     private long pc;
 
+    public Output(InstructionTraceUnit instructionTraceUnit) {
+        this.opcode = OpCodes.values()[ ((int) instructionTraceUnit.getOpcode()) ];
+        this.numOfSources = instructionTraceUnit.srcs.size();
+        this.numOfDestinations = instructionTraceUnit.dsts.size();
+        this.eflags = instructionTraceUnit.getEflags();
+        this.pc = instructionTraceUnit.getPc();
+        for (int i = 0 ; i < instructionTraceUnit.srcs.size() ; i++) {
+            Operand srcOp = new Operand( instructionTraceUnit.dsts.get( i ) );
+            this.dsts.add( srcOp );
+        }
+
+        for (int i = 0 ; i < instructionTraceUnit.dsts.size() ; i++) {
+            Operand dstOp = new Operand( instructionTraceUnit.srcs.get( i ) );
+            this.srcs.add( dstOp );
+        }
+
+    }
+
+    public Output() {
+        this.opcode = OpCodes.OP_INVALID;
+        this.numOfSources = 0;
+        this.numOfDestinations = 0;
+        this.eflags = 0;
+        this.pc = -1;
+    }
+
     public OpCodes getOpcode() {
         return opcode;
     }
+
+    public void setOpcode(Integer opcode) {
+        this.opcode = OpCodes.values()[ opcode ];
+    }
+
 
     public void setOpcode(String opcode) {
         OpCodes op = OpCodes.values()[Integer.parseInt(opcode)];
@@ -29,10 +62,6 @@ public class Output {
 
     public void setOpcode(OpCodes opcode) {
         this.opcode = opcode;
-    }
-
-    public void setOpcode(Integer opcode) {
-        this.opcode = OpCodes.values()[opcode];
     }
 
     public List<Operand> getSrcs() {
@@ -72,7 +101,6 @@ public class Output {
     }
 
     public int getNumOfSources() {
-        //return numOfSources;
         return srcs.size();
     }
 

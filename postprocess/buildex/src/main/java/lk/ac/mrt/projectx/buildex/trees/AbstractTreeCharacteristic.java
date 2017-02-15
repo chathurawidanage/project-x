@@ -9,9 +9,10 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class AbstractTreeCharacteristic {
+
     private AbstractTree abstractTree;
     private boolean recusrsive;
-    private List<Pair<Long,Long>> extents=new ArrayList<>();
+    private List<Pair<Long, Long>> extents = new ArrayList<>();
     private boolean gapsInRandom;
     private AbstractNode redNode;
 

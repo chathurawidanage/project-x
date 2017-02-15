@@ -35,54 +35,6 @@ public class AbstractNode extends Node implements Comparable, Cloneable {//chath
         super();
     }
 
-    public void setType(AbstractNodeType type) {
-        this.type = type;
-    }
-
-    public Integer getDimensions() {
-        return dimensions;
-    }
-
-    public void setDimensions(Integer dimensions) {
-        this.dimensions = dimensions;
-    }
-
-    public Integer getHeadDiemensions() {
-        return headDiemensions;
-    }
-
-    public void setHeadDiemensions(Integer headDiemensions) {
-        this.headDiemensions = headDiemensions;
-    }
-
-    public ArrayList<ArrayList<Integer>> getIndexes() {
-        return indexes;
-    }
-
-    public void setIndexes(ArrayList<ArrayList<Integer>> indexes) {
-        this.indexes = indexes;
-    }
-
-    public ArrayList<Integer> getPos() {
-        return pos;
-    }
-
-    public void setPos(ArrayList<Integer> pos) {
-        this.pos = pos;
-    }
-
-    public MemoryRegion getAssociatedMem() {
-        return associatedMem;
-    }
-
-    public void setAssociatedMem(MemoryRegion associatedMem) {
-        this.associatedMem = associatedMem;
-    }
-
-    //endregion private variables
-
-    //region public constructors
-
     public AbstractNode(AbstractNode node) {//todo is this for cloning? If yes, this won't clone -chathura
         super(node);
     }
@@ -124,13 +76,49 @@ public class AbstractNode extends Node implements Comparable, Cloneable {//chath
         throw new NotImplementedException();
     }
 
+    public Integer getDimensions() {
+        return dimensions;
+    }
+
+    public void setDimensions(Integer dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public Integer getHeadDiemensions() {
+        return headDiemensions;
+    }
+
+    public void setHeadDiemensions(Integer headDiemensions) {
+        this.headDiemensions = headDiemensions;
+    }
+
+    public ArrayList<ArrayList<Integer>> getIndexes() {
+        return indexes;
+    }
+
+    public void setIndexes(ArrayList<ArrayList<Integer>> indexes) {
+        this.indexes = indexes;
+    }
+
+    public MemoryRegion getAssociatedMem() {
+        return associatedMem;
+    }
+
+    public void setAssociatedMem(MemoryRegion associatedMem) {
+        this.associatedMem = associatedMem;
+    }
+
     public AbstractNodeType getType() {
         return type;
     }
 
-    //endregion public constructors
+    //endregion private variables
 
-    //region public methods
+    //region public constructors
+
+    public void setType(AbstractNodeType type) {
+        this.type = type;
+    }
 
     @Override
     public int compareTo(Object o) {
@@ -173,6 +161,10 @@ public class AbstractNode extends Node implements Comparable, Cloneable {//chath
         return stRet;
     }
 
+    //endregion public constructors
+
+    //region public methods
+
     @Override
     public String getNodeString() {
         if (this.type == AbstractNodeType.INPUT_NODE || this.type == AbstractNodeType.OUTPUT_NODE
@@ -209,6 +201,14 @@ public class AbstractNode extends Node implements Comparable, Cloneable {//chath
     @Override
     public String getSimpleString() {
         throw new NotImplementedException();
+    }
+
+    public ArrayList<Integer> getPos() {
+        return pos;
+    }
+
+    public void setPos(ArrayList<Integer> pos) {
+        this.pos = pos;
     }
 
     //endregion public methods

@@ -50,12 +50,12 @@ public class InductiveSynthesizer {
         //logger.debug(rExamples.keySet());
 
         logger.debug("Dropped {} example pairs", examples.size() - goodExamples.size());
-        examples = goodExamples;
+        //examples = goodExamples;
 
-        boolean variableCombinationR[] = {true, true, false, false, true};//R,T,R2,T2,RT,C
+        boolean variableCombinationR[] = {true, true, false, false, false};//R,T,R2,T2,RT,C
         boolean constantR = false;
 
-        boolean variableCombinationT[] = {true, true, false, false, true};//R,T,R2,T2,RT,C
+        boolean variableCombinationT[] = {true, true, false, false, false};//R,T,R2,T2,RT,C
         boolean constantT = false;
 
         int variablesCountR = 0;
@@ -88,7 +88,7 @@ public class InductiveSynthesizer {
         DescriptiveStatistics tComponentRTCoefficient = new DescriptiveStatistics();
         DescriptiveStatistics tComponentConstCoefficient = new DescriptiveStatistics();
 
-        int window = widthIn * heightIn/4;//(int) Math.sqrt(width * height);
+        int window = widthIn;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {
             int size = window;
             double xR[][] = new double[size][variablesCountR];
@@ -105,10 +105,10 @@ public class InductiveSynthesizer {
                 /*Operations to R*/
                 double varValues[] = new double[variableCombinationR.length];
                 varValues[0] = polarCoordinateS.getR();
-                varValues[1] = MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
+                varValues[1] = polarCoordinateS.getTheta();
                 varValues[2] = Math.pow(polarCoordinateS.getR(), 2);
                 varValues[3] = Math.pow(polarCoordinateS.getTheta(), 2);
-                varValues[4] = polarCoordinateS.getR() * MathUtils.normalizeAngle(polarCoordinateS.getTheta(), FastMath.PI);
+                varValues[4] = polarCoordinateS.getR() * polarCoordinateS.getTheta();
 
                 int pivot = 0;
                 for (int comb = 0; comb < variableCombinationR.length; comb++) {
@@ -121,8 +121,8 @@ public class InductiveSynthesizer {
 
 
                 /*Operations to T*/
-                varValues[1] = polarCoordinateS.getTheta();
-                varValues[4] = polarCoordinateS.getR() * polarCoordinateS.getTheta();
+               // varValues[1] = polarCoordinateS.getTheta();
+               // varValues[4] = polarCoordinateS.getR() * polarCoordinateS.getTheta();
 
 
                 pivot = 0;
@@ -202,6 +202,7 @@ public class InductiveSynthesizer {
         LoopBounds loopBoundsR = new LoopBounds();
         loopBoundsR.r.low = loopBound(rComponentRCoefficient.getPercentile(loweP));
         loopBoundsR.r.high = loopBound(rComponentRCoefficient.getPercentile(higherP));
+
         logger.debug("R->r : {},{},{}", rComponentRCoefficient.getPercentile(loweP),
                 rComponentRCoefficient.getPercentile(50), rComponentRCoefficient.getPercentile(higherP));
 
@@ -232,8 +233,8 @@ public class InductiveSynthesizer {
 
         logger.debug("iterations : {}", loopBoundsR.getIterations());
         logger.debug("Loop bounds R {}", loopBoundsR);
-        //Guesses approximate = Approximator.approximate(loopBoundsR, examples, true, widthIn, heightIn);
-        //logger.debug("R : {}", approximate);
+        Guesses approximateR = Approximator.approximate(loopBoundsR, examples, true,null, widthIn, heightIn);
+        logger.debug("R : {}", approximateR);
 
         /*Approximating T coefficients*/
         LoopBounds loopBoundsT = new LoopBounds();
@@ -269,8 +270,8 @@ public class InductiveSynthesizer {
 
         logger.debug("iterations : {}", loopBoundsT.getIterations());
         logger.debug("Loop bounds T {}", loopBoundsT);
-        Guesses approximate = Approximator.approximate(loopBoundsT, examples, false, widthIn, heightIn);
-        logger.debug("T : {}", approximate);
+        Guesses approximateT = Approximator.approximate(loopBoundsT, examples, false, approximateR,widthIn, heightIn);
+        logger.debug("T : {}", approximateT);
 
     }
 

@@ -1,5 +1,6 @@
-package lk.ac.mrt.projectx.buildex.complex;
+package lk.ac.mrt.projectx.buildex.complex.filters;
 
+import lk.ac.mrt.projectx.buildex.complex.CoordinateTransformer;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
 
@@ -17,8 +18,8 @@ public class TwirlJava {
                 CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(i, j);
                 PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
 
-                double thetaNew = polarCoordinate.getTheta() * 0.964 + (polarCoordinate.getR() * 0.05);
-                double rNew = 0.122 * polarCoordinate.getTheta() + (polarCoordinate.getR() * 1.033);
+                double thetaNew = polarCoordinate.getTheta() * 1.003 + (polarCoordinate.getR() * 0.012);
+                double rNew = 0 * polarCoordinate.getTheta() + (polarCoordinate.getR() * 1);
                 //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 
@@ -42,7 +43,7 @@ public class TwirlJava {
                 double dx = sx - x0;
                 double dy = sy - y0;
                 double r = Math.sqrt(dx * dx + dy * dy);
-                double angle = Math.PI / 64 * r;
+                double angle = Math.PI / 256 * r;
                 int tx = (int) (+dx * Math.cos(angle) - dy * Math.sin(angle) + x0);
                 int ty = (int) (+dx * Math.sin(angle) + dy * Math.cos(angle) + y0);
 

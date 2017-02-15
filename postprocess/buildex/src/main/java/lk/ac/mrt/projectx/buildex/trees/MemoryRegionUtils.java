@@ -408,21 +408,37 @@ public class MemoryRegionUtils {
                     if (info != null) {
                         logger.debug( "Found deepest enclosing : start : %d end : %d ", info.getStart(), info.getEnd() );
                         if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
+
+
                             Long start = memoryRegion.getStartMemory();
-
-
                             // how much to the left of start is the meminfo spread
                             List<Long> leftSpread = new ArrayList<>();
-                            Long end = memoryRegion.getEndMemory();
                             for (long stride : memoryRegion.getStrides()) {
-                                Long spread = (info.getEnd() - end) / stride;
-                                end = memoryRegion.getEndMemory() + spread * stride;
+                                Long spread = (start - info.getStart()) / stride;
+                                start = memoryRegion.getStartMemory() - spread * stride;
                                 leftSpread.add( spread );
                             }
 
-                            // how much to the right of the end
+                            logger.debug( "Left spread ------------" );
 
+                            // how much to the right of the end of the meminfo are we spread
+                            Long end = memoryRegion.getEndMemory();
+                            List<Long> rightSpread = new ArrayList<>();
+                            for (long stride : memoryRegion.getStrides()) {
+                                Long spread = (info.getEnd() - end) / stride;
+                                end = memoryRegion.getEndMemory() + spread * stride;
+                                rightSpread.add( spread );
+                            }
 
+                            logger.debug( "Right spread ------------" );
+
+                        }
+                        if (memoryRegion.getStartMemory() < memoryRegion.getEndMemory()) {
+                            memoryRegion.setStartMemory( info.getStart() );
+                            memoryRegion.setEndMemory( info.getEnd() );
+                        } else {
+                            memoryRegion.setStartMemory( info.getEnd() );
+                            memoryRegion.setEndMemory( info.getStart() );
                         }
                     }
                 }

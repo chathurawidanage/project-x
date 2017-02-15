@@ -1,5 +1,6 @@
-package lk.ac.mrt.projectx.buildex.complex;
+package lk.ac.mrt.projectx.buildex.complex.filters;
 
+import lk.ac.mrt.projectx.buildex.complex.CoordinateTransformer;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
 
@@ -17,8 +18,10 @@ public class WaveJava {
                 CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(i, j);
                 PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
 
-                double thetaNew = polarCoordinate.getTheta() * 0.95 + (polarCoordinate.getR() * 0);
-                double rNew = 0* polarCoordinate.getTheta() + (polarCoordinate.getR() * 1);
+                double thetaNew =
+                        polarCoordinate.getTheta() * 1.018 + (polarCoordinate.getR() * 0.011)
+                        -0.024*Math.pow(polarCoordinate.getTheta(),2)                        ;
+                double rNew = 0.225* polarCoordinate.getTheta() + (polarCoordinate.getR() * 0.989)-0.007*(polarCoordinate.getR()*polarCoordinate.getTheta());
                 //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 

@@ -1,12 +1,11 @@
 package lk.ac.mrt.projectx.buildex.complex;
 
+import lk.ac.mrt.projectx.buildex.complex.filters.WaveJava;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Chathura Widanage

@@ -20,6 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import static lk.ac.mrt.projectx.buildex.MemoryLayoutOps.MergeOpportunityUtils.getExtents;
+import static lk.ac.mrt.projectx.buildex.MemoryLayoutOps.MergeOpportunityUtils.getStride;
 import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
 import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_OUTPUT;
 
@@ -411,25 +413,24 @@ public class MemoryRegionUtils {
 
 
                             Long start = memoryRegion.getStartMemory();
+                            Long end = memoryRegion.getEndMemory();
                             // how much to the left of start is the meminfo spread
                             List<Long> leftSpread = new ArrayList<>();
-                            for (long stride : memoryRegion.getStrides()) {
-                                Long spread = (start - info.getStart()) / stride;
-                                start = memoryRegion.getStartMemory() - spread * stride;
-                                leftSpread.add( spread );
+                            // how much to the right of the end of the meminfo are we spread
+                            List<Long> rightSpread = new ArrayList<>();
+
+                            for (int k = ((int) memoryRegion.getDimension()) - 1 ; k >= 0 ; k--) {
+                                long stride = memoryRegion.getStrides()[ k ];
+                                Long lSpread = (start - info.getStart()) / stride;
+                                start = memoryRegion.getStartMemory() - lSpread * stride;
+                                leftSpread.add( lSpread );
+
+                                Long rSpread = (info.getEnd() - end) / stride;
+                                end = memoryRegion.getEndMemory() + rSpread * stride;
+                                rightSpread.add( rSpread );
                             }
 
                             logger.debug( "Left spread ------------" );
-
-                            // how much to the right of the end of the meminfo are we spread
-                            Long end = memoryRegion.getEndMemory();
-                            List<Long> rightSpread = new ArrayList<>();
-                            for (long stride : memoryRegion.getStrides()) {
-                                Long spread = (info.getEnd() - end) / stride;
-                                end = memoryRegion.getEndMemory() + spread * stride;
-                                rightSpread.add( spread );
-                            }
-
                             logger.debug( "Right spread ------------" );
 
                         }
@@ -440,13 +441,76 @@ public class MemoryRegionUtils {
                             memoryRegion.setStartMemory( info.getEnd() );
                             memoryRegion.setEndMemory( info.getStart() );
                         }
+
+                        logger.debug( "dims : ", info.getNumberDimensions() );
+                        logger.debug( "new start : ", memInfos.get( j ).getStart() );
+                        logger.debug( "new end : ", memInfos.get( j ).getEnd() );
+
+                        if (memoryRegion.getDimension() == info.getNumberDimensions()) {
+                            /*
+                                if we get the dimensionality correct on out memory analysys we should
+                                use it instead of the memory dump information
+                             */
+                            for (int k = 0 ; k < memoryRegion.getDimension() ; k++) {
+                                memoryRegion.getExtents()[ k ] = getExtents( info, k + 1, info.getNumberDimensions() );
+                            }
+                        }
+
+                        // added - for invert
+                        if (memoryRegion.getBytesPerPixel() != info.getProbStride()) {
+                            Long factor = info.getProbStride() / memoryRegion.getBytesPerPixel();
+                            // TODO : check casting data loss
+                            memoryRegion.setBytesPerPixel( ((int) info.getProbStride()) );
+                            memoryRegion.getStrides()[ 0 ] = info.getProbStride();
+                            memoryRegion.getExtents()[ 0 ] /= factor;
+                        }
+
+                        finalRegions.add( memoryRegion );
+                        totalRegions.add( memoryRegion );
+                        memoryRegion.setOrder( memInfos.get( j ).getOrder() );
+                        break;
+                    } else { // TODO : FIX ME
+                        logger.warn( "Regions is greater than what is accesses; may be not whole image accessed" );
+                        finalRegions.add( memoryRegion );
+                        totalRegions.add( memoryRegion );
+                        memoryRegion.setOrder( memInfos.get( j ).getOrder() );
+                        break;
                     }
                 }
             }
-
-
         }
 
+        // create new mem_regions for the remaining mem_info which of type MEM_HEAP - postpone the implementation;
+        // these are intermediate nodes
+        for (int i = 0 ; i < memInfos.size() ; i++) {
+            MemoryInfo memoryInfo = memInfos.get( i );
+            if (mergedMemInfo[ i ] == false) { // if not merged
+                if (memInfos.get( i ).getType() == MemoryType.MEM_HEAP_TYPE) {
+                    MemoryRegion mem = new MemoryRegion();
+                    mem.setStartMemory( memoryInfo.getStart() );
+                    mem.setEndMemory( memoryInfo.getEnd() );
+                    mem.setDimension( memoryInfo.getNumberDimensions() ); // we don't know the dimension of this yet
+                    mem.setBytesPerPixel( ((int) memoryInfo.getProbStride()) );
+                    for (int j = 1 ; j < mem.getDimension() ; j++) {
+                        mem.getStrides()[ j - 1 ] = getStride( memoryInfo, j, mem.getDimension() );
+                        mem.getExtents()[ j - 1 ] = getExtents( memoryInfo, j, mem.getDimension() );
+                    }
+                    mem.setPaddingFilled( 0 );
+                    mem.setMemDirection( MemDirection.values()[ memoryInfo.getDirection() ] );
+                    mem.setOrder( memoryInfo.getOrder() );
+                    totalRegions.add( mem );
+                }
+            }
+        }
+
+        // naming the memory region
+        int inputs = 0;
+        int intermediates = 0;
+        int outputs = 0;
+
+        for (int i = 0 ; i < ; i++) {
+
+        }
         return finalRegions;
     }
 

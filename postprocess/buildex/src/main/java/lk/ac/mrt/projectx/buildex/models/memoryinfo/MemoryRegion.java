@@ -39,6 +39,8 @@ public class MemoryRegion implements Serializable {
 
     private List<Long> referingPCs;
 
+    private long order; // krv - needed in merge instrace and dump regions
+
     public MemoryRegion() {
         extents = new long[ DIMENSIONS ];
         strides = new long[ DIMENSIONS ];
@@ -155,6 +157,28 @@ public class MemoryRegion implements Serializable {
         if (!Arrays.equals( getMin(), that.getMin() )) return false;
         if (!Arrays.equals( getPadding(), that.getPadding() )) return false;
         return getReferingPCs() != null ? getReferingPCs().equals( that.getReferingPCs() ) : that.getReferingPCs() == null;
+    }
+
+    @Override
+    public String toString() {
+        return "MemoryRegion{" +
+                "bytesPerPixel=" + bytesPerPixel +
+                ", type=" + type +
+                ", dumpType=" + memoryDumpType +
+                ", treeDirections=" + treeDirections +
+                ", dimension=" + dimension +
+                ", dependant=" + dependant +
+                ", direction=" + memDirection +
+                ", startMemory=" + startMemory +
+                ", endMemory=" + endMemory +
+                ", name='" + name + '\'' +
+                ", extents=" + Arrays.toString( extents ) +
+                ", strides=" + Arrays.toString( strides ) +
+                ", min=" + Arrays.toString( min ) +
+                ", paddingField=" + paddingField +
+                ", padding=" + Arrays.toString( padding ) +
+                ", referingPCs=" + referingPCs +
+                '}';
     }
 
     public int getBytesPerPixel() {
@@ -281,25 +305,11 @@ public class MemoryRegion implements Serializable {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "MemoryRegion{" +
-                "bytesPerPixel=" + bytesPerPixel +
-                ", type=" + type +
-                ", dumpType=" + memoryDumpType +
-                ", treeDirections=" + treeDirections +
-                ", dimension=" + dimension +
-                ", dependant=" + dependant +
-                ", direction=" + memDirection +
-                ", startMemory=" + startMemory +
-                ", endMemory=" + endMemory +
-                ", name='" + name + '\'' +
-                ", extents=" + Arrays.toString( extents ) +
-                ", strides=" + Arrays.toString( strides ) +
-                ", min=" + Arrays.toString( min ) +
-                ", paddingField=" + paddingField +
-                ", padding=" + Arrays.toString( padding ) +
-                ", referingPCs=" + referingPCs +
-                '}';
+    public long getOrder() {
+        return order;
+    }
+
+    public void setOrder(long order) {
+        this.order = order;
     }
 }

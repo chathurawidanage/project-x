@@ -14,7 +14,7 @@ public class CoordinateTransformerTest {
     public void atant2() throws Exception {
         for(int x=-10;x<10;x++){
             for(int y=-10;y<10;y++){
-                double theta = CoordinateTransformer.atant2(y,x);
+                double theta = CoordinateTransformer.atan2(y,x);
                 System.out.println(Math.toDegrees(theta));
                 double r=Math.hypot(x,y);
                 double genX=r*Math.cos(theta);

@@ -1,12 +1,11 @@
 package lk.ac.mrt.projectx.buildex.complex.operations;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-
 /**
  * @author Chathura Widanage
  */
 public abstract class Operation {
     private String name;
+    private String code;
 
     public String getName() {
         return name;
@@ -18,6 +17,15 @@ public abstract class Operation {
 
     public Operation(String name) {
         this.name = name;
+    }
+
+    public Operation(String name,String code) {
+        this.name = name;
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     @Override

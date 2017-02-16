@@ -56,7 +56,7 @@ public class Approximator {
         try {
             logger.debug("Waiting for test termination");
             List<Guesses> maxVoters = gvs.awaitTermination();
-            logger.debug("Maximum voters ", maxVoters);
+            logger.debug("Maximum voters {}", maxVoters);
             logger.debug("Maximum votes is {} out of {}", maxVoters.get(0).getVotes(), tests.size());
             return maxVoters.get(0);
         } catch (InterruptedException e) {

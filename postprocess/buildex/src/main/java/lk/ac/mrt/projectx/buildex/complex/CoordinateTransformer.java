@@ -2,30 +2,34 @@ package lk.ac.mrt.projectx.buildex.complex;
 
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
+import lk.ac.mrt.projectx.buildex.models.Pair;
 import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.MathUtils;
+
+import java.util.List;
 
 /**
  * @author Chathura Widanage
  */
 public class CoordinateTransformer {
 
-    public void cartesianToCenter(int width, int height, CartesianCoordinate cartesianCoordinate) {
+    public static void cartesianToCenter(int width, int height, CartesianCoordinate cartesianCoordinate) {
         cartesianCoordinate.setX(cartesianCoordinate.getX() - (width / 2));
         cartesianCoordinate.setY(cartesianCoordinate.getY() - (height / 2));
     }
 
-    public static PolarCoordinate cartesian2Polar(int width, int height, CartesianCoordinate cartesianCoordinate, boolean normalize) {
-        PolarCoordinate polarCoordinate = cartesian2Polar(width, height, cartesianCoordinate);
-        if (normalize) {
-            double processedTheta = polarCoordinate.getTheta();
-            double theta = MathUtils.normalizeAngle(processedTheta, FastMath.PI);
-            polarCoordinate.setTheta(theta);/*
-            if (processedTheta < 0) {
-                processedTheta += (FastMath.PI * 2);
-            }*/
+
+    public static void cartesianToCenter(int width, int height, List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs) {
+        for (Pair<CartesianCoordinate, CartesianCoordinate> p : pairs) {
+            cartesianToCenter(width, height, p.first);
+            cartesianToCenter(width, height, p.second);
         }
-        return polarCoordinate;
+    }
+
+
+    public void cartesianToCorner(int width, int height, CartesianCoordinate cartesianCoordinate) {
+        cartesianCoordinate.setX(cartesianCoordinate.getX() + (width / 2));
+        cartesianCoordinate.setY(cartesianCoordinate.getY() + (height / 2));
     }
 
     public static PolarCoordinate cartesian2Polar(int width, int height, CartesianCoordinate cartesianCoordinate) {
@@ -39,7 +43,7 @@ public class CoordinateTransformer {
 
     public static PolarCoordinate cartesian2Polar(CartesianCoordinate cartesianCoordinate) {
         return new PolarCoordinate(
-                Math.atan2(cartesianCoordinate.getY(), cartesianCoordinate.getX()),
+                atan2(cartesianCoordinate.getY(), cartesianCoordinate.getX()),
                 Math.hypot(cartesianCoordinate.getX(), cartesianCoordinate.getY()));
     }
 
@@ -56,7 +60,7 @@ public class CoordinateTransformer {
         return new CartesianCoordinate(x, y);
     }
 
-    public static double atant2(double y, double x) {
+    public static double atan2(double y, double x) {
         double theta = Math.atan2(y, x);
         return theta < 0 ? theta + (Math.PI * 2) : theta;
     }

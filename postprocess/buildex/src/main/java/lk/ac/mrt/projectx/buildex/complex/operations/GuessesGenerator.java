@@ -52,9 +52,9 @@ public class GuessesGenerator {
     }
 
     public BigInteger getTotalIterations() {
-        BigInteger totalIterations = BigInteger.ZERO;
+        BigInteger totalIterations = BigInteger.ONE;
         for (Statistics s : statisticsList) {
-            totalIterations = totalIterations.add(BigInteger.valueOf(s.getTotalIterations()));
+            totalIterations = totalIterations.multiply(BigInteger.valueOf(s.getTotalIterations()));
         }
         return totalIterations;
     }

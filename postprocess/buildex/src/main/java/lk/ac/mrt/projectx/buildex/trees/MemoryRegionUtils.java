@@ -20,8 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import static lk.ac.mrt.projectx.buildex.MemoryLayoutOps.MergeOpportunityUtils.getExtents;
-import static lk.ac.mrt.projectx.buildex.MemoryLayoutOps.MergeOpportunityUtils.getStride;
+import static lk.ac.mrt.projectx.buildex.models.common.CommonUtil.getExtents;
+import static lk.ac.mrt.projectx.buildex.models.common.CommonUtil.getStride;
 import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
 import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_OUTPUT;
 
@@ -508,9 +508,9 @@ public class MemoryRegionUtils {
         int intermediates = 0;
         int outputs = 0;
 
-        for (int i = 0 ; i < ; i++) {
-
-        }
+//        for (int i = 0 ; i < ; i++) {
+//
+//        }
         return finalRegions;
     }
 

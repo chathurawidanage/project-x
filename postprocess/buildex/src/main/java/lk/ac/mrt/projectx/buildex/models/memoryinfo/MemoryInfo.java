@@ -61,6 +61,21 @@ public class MemoryInfo {
         return getMergedMemoryInfos() != null ? getMergedMemoryInfos().equals( that.getMergedMemoryInfos() ) : that.getMergedMemoryInfos() == null;
     }
 
+    @Override
+    public String toString() {
+        return "MemoryInfo{" +
+                "type=" + type +
+                ", direction=" + direction +
+                ", start=" + start +
+                ", end=" + end +
+                ", probStride=" + probStride +
+                ", strideFrequency=" + strideFrequency +
+                ", mergedMemoryInfos=" + mergedMemoryInfos +
+                ", paddingMerge=" + paddingMerge +
+                ", order=" + order +
+                '}';
+    }
+
     public MemoryType getType() {
         return type;
     }
@@ -133,27 +148,12 @@ public class MemoryInfo {
         this.order = order;
     }
 
-    @Override
-    public String toString() {
-        return "MemoryInfo{" +
-                "type=" + type +
-                ", direction=" + direction +
-                ", start=" + start +
-                ", end=" + end +
-                ", probStride=" + probStride +
-                ", strideFrequency=" + strideFrequency +
-                ", mergedMemoryInfos=" + mergedMemoryInfos +
-                ", paddingMerge=" + paddingMerge +
-                ", order=" + order +
-                '}';
-    }
-
     public long getNumberDimensions() {
-        Long dim = 1L;
-        MemoryInfo local_mem = this;
-        while (local_mem.getMergedMemoryInfos().size() > 0) {
+        long dim = 1;
+        MemoryInfo localMemInfo = this;
+        while (!localMemInfo.getMergedMemoryInfos().isEmpty()) {
             dim++;
-            local_mem = local_mem.getMergedMemoryInfos().get( 0 );
+            localMemInfo = localMemInfo.getMergedMemoryInfos().get( 0 );
         }
         return dim;
     }

@@ -780,53 +780,15 @@ public class MemoryLayoutOps {
         }
 
         public static long getNumberOfDimensions(MemoryInfo memoryInfo) {
-            long dim = 1;
-            MemoryInfo localMemInfo = memoryInfo;
-            while (!localMemInfo.getMergedMemoryInfos().isEmpty()) {
-                dim++;
-                localMemInfo = localMemInfo.getMergedMemoryInfos().get( 0 );
-            }
-            return dim;
+            return memoryInfo.getNumberDimensions();
         }
 
         public static long getExtents(MemoryInfo memoryInfo, long dim, long totalDims) {
-            List<MemoryInfo> localMemoryInfos = new ArrayList<>();
-            localMemoryInfos.add( memoryInfo );
-
-            MemoryInfo local = memoryInfo;
-
-            while (!local.getMergedMemoryInfos().isEmpty()) {
-                localMemoryInfos.add( local.getMergedMemoryInfos().get( 0 ) );
-                local = local.getMergedMemoryInfos().get( 0 );
-            }
-
-            MemoryInfo wanted = localMemoryInfos.get( (int) (totalDims - dim) );
-            if (!wanted.getMergedMemoryInfos().isEmpty()) {
-                return wanted.getMergedMemoryInfos().size();
-            } else {
-                return (wanted.getEnd() - wanted.getStart()) / wanted.getProbStride();
-            }
-
+            return CommonUtil.getExtents( memoryInfo, dim, totalDims );
         }
 
         public static long getStride(MemoryInfo memoryInfo, long dim, long totalDims) {
-            List<MemoryInfo> localMemoryInfos = new ArrayList<>();
-            localMemoryInfos.add( memoryInfo );
-
-            MemoryInfo local = memoryInfo;
-
-            while (!local.getMergedMemoryInfos().isEmpty()) {
-                localMemoryInfos.add( local.getMergedMemoryInfos().get( 0 ) );
-                local = local.getMergedMemoryInfos().get( 0 );
-            }
-
-            MemoryInfo wanted = localMemoryInfos.get( (int) (totalDims - dim) );
-            if (!wanted.getMergedMemoryInfos().isEmpty()) {
-                return wanted.getMergedMemoryInfos().get( 1 ).getStart() - wanted.getMergedMemoryInfos().get( 0 ).getStart();
-            } else {
-                return wanted.getProbStride();
-            }
-
+            return CommonUtil.getStride( memoryInfo, dim, totalDims );
         }
     }
 

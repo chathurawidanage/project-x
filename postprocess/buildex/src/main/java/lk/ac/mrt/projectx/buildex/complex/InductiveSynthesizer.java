@@ -25,27 +25,42 @@ public class InductiveSynthesizer {
         int widthOut = imageOut.getWidth();
         int heightOut = imageOut.getHeight();
 
+        CoordinateTransformer.cartesianToCenter(widthIn, heightIn, examples);//making all points center originated
+
         /*Filtering good pairs*/
         List<Pair<CartesianCoordinate, CartesianCoordinate>> goodExamples = new ArrayList<>();
-        //Map<Integer, List<Pair<CartesianCoordinate, CartesianCoordinate>>> rExamples = new HashMap<>();
+        Map<Double, List<Pair<CartesianCoordinate, CartesianCoordinate>>> thetaExamples = new HashMap<>();
         for (Pair<CartesianCoordinate, CartesianCoordinate> e : examples) {
-           /* PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(e.first);
-            int r = (int) Math.round(polarCoordinate.getR());
-            List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs = rExamples.get(r);
-            if (pairs == null) {
-                pairs = new ArrayList<>();
-                rExamples.put(r, pairs);
-            }
-            pairs.add(e);*/
 
-            if (e.second.getX() == widthOut - 1 || e.second.getX() == 0
-                    || e.second.getY() == heightOut - 1 || e.second.getY() == 0) {//to get rid of errors due to clamping
+            if (e.first.getX() == widthOut - 1 || e.first.getX() == 0
+                    || e.first.getY() == heightOut - 1 || e.first.getY() == 0) {//to get rid of errors due to clamping
                 //System.out.println("drop");
+                PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(e.first);
+                double theta = round(polarCoordinate.getTheta(), 2);
+                List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs = thetaExamples.get(theta);
+                if (pairs == null) {
+                    pairs = new ArrayList<>();
+                    thetaExamples.put(theta, pairs);
+                }
+                pairs.add(e);
             } else {
 
                 goodExamples.add(e);
             }
         }
+
+        /*Iterator<Double> thetaExamplesIterator = thetaExamples.keySet().iterator();
+        int s = 0;
+        while (thetaExamplesIterator.hasNext()) {
+            double t = thetaExamplesIterator.next();
+            List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs = thetaExamples.get(t);
+            if (pairs.size() > s) {
+                examples = pairs;
+                s = pairs.size();
+            }
+        }
+
+        System.out.println(examples);*/
 
         //logger.debug(rExamples.keySet());
 
@@ -55,7 +70,7 @@ public class InductiveSynthesizer {
         boolean variableCombinationR[] = {true, true, false, false, false};//R,T,R2,T2,RT,C
         boolean constantR = false;
 
-        boolean variableCombinationT[] = {true, true, false, false, false};//R,T,R2,T2,RT,C
+        boolean variableCombinationT[] = {true, true, false, false, true};//R,T,R2,T2,RT,C
         boolean constantT = false;
 
         int variablesCountR = 0;
@@ -88,7 +103,7 @@ public class InductiveSynthesizer {
         DescriptiveStatistics tComponentRTCoefficient = new DescriptiveStatistics();
         DescriptiveStatistics tComponentConstCoefficient = new DescriptiveStatistics();
 
-        int window = widthIn;//(int) Math.sqrt(width * height);
+        int window = widthIn*widthOut/5;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {
             int size = window;
             double xR[][] = new double[size][variablesCountR];
@@ -99,8 +114,8 @@ public class InductiveSynthesizer {
             for (int j = i; j < i + size; j++) {
                 Pair<CartesianCoordinate, CartesianCoordinate> p = examples.get(j);
 
-                PolarCoordinate polarCoordinateS = CoordinateTransformer.cartesian2Polar(widthIn, heightIn, p.first, false);
-                PolarCoordinate polarCoordinateD = CoordinateTransformer.cartesian2Polar(widthOut, heightOut, p.second, false);
+                PolarCoordinate polarCoordinateS = CoordinateTransformer.cartesian2Polar(p.first);
+                PolarCoordinate polarCoordinateD = CoordinateTransformer.cartesian2Polar(p.second);
 
                 /*Operations to R*/
                 double varValues[] = new double[variableCombinationR.length];
@@ -121,8 +136,8 @@ public class InductiveSynthesizer {
 
 
                 /*Operations to T*/
-               // varValues[1] = polarCoordinateS.getTheta();
-               // varValues[4] = polarCoordinateS.getR() * polarCoordinateS.getTheta();
+                // varValues[1] = polarCoordinateS.getTheta();
+                // varValues[4] = polarCoordinateS.getR() * polarCoordinateS.getTheta();
 
 
                 pivot = 0;
@@ -164,13 +179,21 @@ public class InductiveSynthesizer {
 
                 //assuming T has no coefficient term. Might have to change in future
                 double[] synthesizeT = complexSynthesizer.synthesize(yT, xT, true);
+                //System.out.println(synthesizeT[2]);
                 double normalizedValue = synthesizeT[synthesizeT.length - 1];
                 for (int k = 0; k < yT.length; k++) {
                     yT[k] -= normalizedValue;
                 }
-                synthesizeT = complexSynthesizer.synthesize(yT, xT, true);
+                double xTnew[][] = new double[xT.length][xT[0].length - 1];
+                for (int k = 0; k < xTnew.length; k++) {
+                    for (int l = 0; l < xT[0].length - 1; l++) {
+                        xTnew[k][l] = xT[k][l];
+                    }
+                }
+                synthesizeT = complexSynthesizer.synthesize(yT, xTnew, true);
 
                 double tVarCoefs[] = new double[variableCombinationR.length + 1];//+1 for constant
+
                 pivot = 0;
                 for (int l = 0; l < variableCombinationT.length; l++) {
                     if (variableCombinationT[l]) {
@@ -179,6 +202,8 @@ public class InductiveSynthesizer {
                         tVarCoefs[l] = 0;
                     }
                 }
+
+//                System.out.println(synthesizeT[0]);
 
                 coefficientIndex = 0;
                 tComponentRCoefficient.addValue(tVarCoefs[coefficientIndex++]);
@@ -233,7 +258,7 @@ public class InductiveSynthesizer {
 
         logger.debug("iterations : {}", loopBoundsR.getIterations());
         logger.debug("Loop bounds R {}", loopBoundsR);
-        Guesses approximateR = Approximator.approximate(loopBoundsR, examples, true,null, widthIn, heightIn);
+        Guesses approximateR = Approximator.approximate(loopBoundsR, examples, true, null, widthIn, heightIn);
         logger.debug("R : {}", approximateR);
 
         /*Approximating T coefficients*/
@@ -270,7 +295,7 @@ public class InductiveSynthesizer {
 
         logger.debug("iterations : {}", loopBoundsT.getIterations());
         logger.debug("Loop bounds T {}", loopBoundsT);
-        Guesses approximateT = Approximator.approximate(loopBoundsT, examples, false, approximateR,widthIn, heightIn);
+        Guesses approximateT = Approximator.approximate(loopBoundsT, examples, false, approximateR, widthIn, heightIn);
         logger.debug("T : {}", approximateT);
 
     }
@@ -281,6 +306,11 @@ public class InductiveSynthesizer {
 
     private double round(double value) {
         return (double) Math.round(value * 1000d) / 1000d;
+    }
+
+    private double round(double value, int zeros) {
+        double mul = Math.pow(10, zeros);
+        return (double) Math.round(value * mul) / mul;
     }
 }
 

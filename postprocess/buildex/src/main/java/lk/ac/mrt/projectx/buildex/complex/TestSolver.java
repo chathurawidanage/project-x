@@ -1,22 +1,13 @@
 package lk.ac.mrt.projectx.buildex.complex;
 
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
-import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
-import lk.ac.mrt.projectx.buildex.complex.generators.FishEyeGenerator;
 import lk.ac.mrt.projectx.buildex.complex.generators.TwirlGenerator;
-import lk.ac.mrt.projectx.buildex.complex.generators.WaveGenerator;
-import lk.ac.mrt.projectx.buildex.models.Pair;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**

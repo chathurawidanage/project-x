@@ -21,9 +21,9 @@ public class FishEyeJava {
                 double thetaNew =1 * polarCoordinate.getTheta() +
                         (polarCoordinate.getR() * 0) + 0 * (polarCoordinate.getR() * polarCoordinate.getTheta()) +
                         0 * Math.pow(polarCoordinate.getR(), 2) + 0 * Math.pow(polarCoordinate.getTheta(), 2);
-                double rNew = -0.078 * polarCoordinate.getTheta() +
-                        (polarCoordinate.getR() * 0.306) + 0 * (polarCoordinate.getR() * polarCoordinate.getTheta()) +
-                        0.001* Math.pow(polarCoordinate.getR(), 2) +4.292* Math.pow(polarCoordinate.getTheta(), 2)+0;
+                double rNew = (0 * polarCoordinate.getTheta()) +
+                        (polarCoordinate.getR() * 0.481) + 0 * (polarCoordinate.getR() * polarCoordinate.getTheta()) +
+                        (0.001* Math.pow(polarCoordinate.getR(), 2)) +(0* Math.pow(polarCoordinate.getTheta(), 2))+0;
                 //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 

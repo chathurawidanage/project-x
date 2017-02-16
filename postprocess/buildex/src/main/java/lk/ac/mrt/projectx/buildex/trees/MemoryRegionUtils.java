@@ -22,8 +22,7 @@ import java.util.Random;
 
 import static lk.ac.mrt.projectx.buildex.models.common.CommonUtil.getExtents;
 import static lk.ac.mrt.projectx.buildex.models.common.CommonUtil.getStride;
-import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_INPUT;
-import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.MEM_OUTPUT;
+import static lk.ac.mrt.projectx.buildex.models.memoryinfo.MemDirection.*;
 
 /**
  * Created by Lasantha on 04-Jan-17.
@@ -508,9 +507,23 @@ public class MemoryRegionUtils {
         int intermediates = 0;
         int outputs = 0;
 
-//        for (int i = 0 ; i < ; i++) {
-//
-//        }
+        for (MemoryRegion totalRegion : totalRegions) {
+            if (totalRegion.getMemDirection() == MEM_INPUT) {
+                inputs++;
+                totalRegion.setName( "input_" + inputs );
+            } else if (totalRegion.getMemDirection() == MEM_OUTPUT) {
+                outputs++;
+                totalRegion.setName( "output_" + outputs );
+            } else if (totalRegion.getMemDirection() == MEM_INTERMEDIATE) {
+                intermediates++;
+                totalRegion.setName( "inter_" + intermediates );
+            }
+        }
+
+        logger.debug( "No of image mem regions after merging - %d", finalRegions.size() );
+        logger.debug( "Total number of mem regions (from instrace) - %d", totalRegions.size() );
+        logger.debug( "mergeInstraceAndDumpRegions - done" );
+
         return finalRegions;
     }
 

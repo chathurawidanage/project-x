@@ -15,7 +15,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Chathura Widanage
@@ -25,8 +27,10 @@ public class GuessesValidationService {
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
     private List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases;
     private AtomicInteger executingCounter = new AtomicInteger(0);
+    private AtomicLong itCount=new AtomicLong();
 
     Semaphore semaphore = new Semaphore(1);
+    Lock lock = new ReentrantLock();
     private Integer maxVotes = 0;
     private List<Guesses> maxVoters = new ArrayList<>();
 
@@ -37,15 +41,16 @@ public class GuessesValidationService {
 
     public GuessesValidationService(List<Pair<CartesianCoordinate,
             CartesianCoordinate>> testCases, int width,
-                                    int height, boolean isR,Guesses rGuess) {
+                                    int height, boolean isR, Guesses rGuess) {
         this.testCases = testCases;
         this.width = width;
         this.height = height;
         this.isR = isR;
-        this.rGuess=rGuess;
+        this.rGuess = rGuess;
     }
 
     public void submit(Guesses guess) throws InterruptedException {
+        lock.lock();
         guesses.add(guess);
         checkAndExecute();
     }
@@ -60,6 +65,9 @@ public class GuessesValidationService {
     }
 
     private void checkAndExecute() {
+        if (guesses.size() < 100) {
+            lock.unlock();
+        }
         if (executingCounter.intValue() < 400) {
             Guesses poll;
             synchronized (guesses) {
@@ -76,52 +84,55 @@ public class GuessesValidationService {
             @Override
             public void run() {
                 executingCounter.incrementAndGet();
+                System.out.print("\r"+itCount.incrementAndGet());
                 for (int p = 0; p < testCases.size(); p++) {
                     Pair<CartesianCoordinate, CartesianCoordinate> pair = testCases.get(p);
-                    CartesianCoordinate cartesianCoordinate = pair.first;
+                    CartesianCoordinate cartesianCoordinateFirst = pair.first;
+                    CartesianCoordinate cartesianCoordinateSecond = pair.second;
 
-                    PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
+                    PolarCoordinate polarCoordinateFirst = CoordinateTransformer.cartesian2Polar(cartesianCoordinateFirst);
+                    PolarCoordinate polarCoordinateSecond = CoordinateTransformer.cartesian2Polar(cartesianCoordinateSecond);
 
-                    double newValue = (polarCoordinate.getTheta() * guess.getTcof()) +
-                            (polarCoordinate.getR() * guess.getRcof()) + (Math.pow(polarCoordinate.getTheta(), 2)) * guess.getT2cof()
-                            + (Math.pow(polarCoordinate.getR(), 2)) * guess.getR2cof() + (polarCoordinate.getR() * polarCoordinate.getTheta() * guess.getRtcof())
+                    double newValue = (polarCoordinateFirst.getTheta() * guess.getTcof()) +
+                            (polarCoordinateFirst.getR() * guess.getRcof()) + (Math.pow(polarCoordinateFirst.getTheta(), 2)) * guess.getT2cof()
+                            + (Math.pow(polarCoordinateFirst.getR(), 2)) * guess.getR2cof() + (polarCoordinateFirst.getR() * polarCoordinateFirst.getTheta() * guess.getRtcof())
                             + guess.getCcof();
-                    PolarCoordinate newPola;
+                    PolarCoordinate newPolar;
                     if (isR) {
-                        newPola = new PolarCoordinate(polarCoordinate.getTheta(), newValue);
+                        newPolar = new PolarCoordinate(polarCoordinateFirst.getTheta(), newValue);
                     } else {
 
-                        double rVal=(polarCoordinate.getTheta() * rGuess.getTcof()) +
-                                (polarCoordinate.getR() * rGuess.getRcof()) +
-                                (Math.pow(polarCoordinate.getTheta(), 2)) * rGuess.getT2cof()
-                                + (Math.pow(polarCoordinate.getR(), 2)) * rGuess.getR2cof() +
-                                (polarCoordinate.getR() * polarCoordinate.getTheta() * rGuess.getRtcof())
+                        double rVal = (polarCoordinateFirst.getTheta() * rGuess.getTcof()) +
+                                (polarCoordinateFirst.getR() * rGuess.getRcof()) +
+                                (Math.pow(polarCoordinateFirst.getTheta(), 2) * rGuess.getT2cof())
+                                + (Math.pow(polarCoordinateFirst.getR(), 2) * rGuess.getR2cof()) +
+                                (polarCoordinateFirst.getR() * polarCoordinateFirst.getTheta() * rGuess.getRtcof())
                                 + rGuess.getCcof();
 
                         newValue = MathUtils.normalizeAngle(newValue, FastMath.PI);
                         //System.out.println(newValue);
-                        newPola = new PolarCoordinate(newValue, rVal);
+                        //System.out.println(polarCoordinateSecond.getR()+","+rVal);
+                        newPolar = new PolarCoordinate(newValue, rVal);
                     }
 
 
                     double distance = 5;
                     if (isR) {
-                        double x=pair.second.getX()-width/2;
-                        double y=pair.second.getY()-height/2;
-                        distance = Math.abs(Math.hypot(x,y) - newPola.getR());
+                        distance = Math.abs(polarCoordinateSecond.getR() - newPolar.getR());
                     } else {
-                        CartesianCoordinate genertaed=CoordinateTransformer.polar2Cartesian(width,height,newPola);
-                        double x=pair.second.getX()-width/2;
-                        double y=pair.second.getY()-height/2;
+                        CartesianCoordinate genertaed = CoordinateTransformer.polar2Cartesian(newPolar);
+                        double x = pair.second.getX();
+                        double y = pair.second.getY();
                         distance = Math.sqrt(
-                                Math.pow(genertaed.getX()-x,2)
-                                        +Math.pow(genertaed.getY()-y,2)
-                        );// / newPola.getTheta();
-                        //System.out.println(genertaed+","+pair.second);
+                                Math.pow(genertaed.getX() - x, 2)
+                                        + Math.pow(genertaed.getY() - y, 2)
+                        );// / newPolar.getTheta();
+                        //System.out.println(x+","+genertaed.getX());
+                        //System.out.println(distance);
                     }
                     if (isR && distance <= Math.sqrt(2)) {
                         guess.incrVote();
-                    }else if(!isR && distance<=1.5){
+                    } else if (!isR && distance <= 25) {
                         guess.incrVote();
                     }
                 }

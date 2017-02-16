@@ -11,6 +11,16 @@ import java.util.List;
 public class Guess {
     private List<Pair<Operation, Double>> guesses = new ArrayList<>();
 
+    private long votes;
+
+    public long getVotes() {
+        return votes;
+    }
+
+    public void incrementVote() {
+        votes++;
+    }
+
     public void addGuess(Pair<Operation, Double> guess) {
         guesses.add(guess);
     }
@@ -21,5 +31,13 @@ public class Guess {
             sum += (guess.first.operate(r, theta) * guess.second);
         }
         return sum;
+    }
+
+    @Override
+    public String toString() {
+        return "Guess{" +
+                "guesses=" + guesses +
+                ", votes=" + votes +
+                '}';
     }
 }

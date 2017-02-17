@@ -11,26 +11,31 @@ public class Statistics {
 
     private boolean changed = true;
 
-    private int low, heigh;
+    private int lowerPercentage = 25;
+    private int higherPercentage = 75;
+
+    private int low, high;
 
     public int getLow() {
-        if (changed) {
-            setChanged(false);
-            low = (int) (statistics.getPercentile(25) * 1000d);//todo make 1000 a parameter
-        }
+        generateHighLow();
         return low;
     }
 
     public int getHigh() {
+        generateHighLow();
+        return high;
+    }
+
+    private void generateHighLow() {
         if (changed) {
             setChanged(false);
-            heigh = (int) (statistics.getPercentile(75) * 1000d);
+            low = (int) (statistics.getPercentile(lowerPercentage) * 1000d);//todo make 1000 a parameter
+            high = (int) (statistics.getPercentile(higherPercentage) * 1000d);
         }
-        return heigh;
     }
 
     public int getTotalIterations() {
-        return this.getHigh() - this.getLow();
+        return (this.getHigh() - this.getLow())+1;
     }
 
     private void setChanged(boolean changed) {

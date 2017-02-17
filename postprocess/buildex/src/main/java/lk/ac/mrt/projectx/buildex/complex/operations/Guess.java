@@ -48,9 +48,7 @@ public class Guess {
         for (int i = 0; i < guesses.size(); i++) {
             Pair<Operation, Double> p = guesses.get(i);
             stringBuilder.append(p.second + "*" + p.first.getCode());
-            if (i == guesses.size() - 1) {
-                stringBuilder.append(";");
-            } else {
+            if (i != guesses.size() - 1) {
                 stringBuilder.append("+");
             }
         }
@@ -58,11 +56,11 @@ public class Guess {
             return String.format(this.guessOperator.operation, stringBuilder.toString());
         }
 
-        return stringBuilder.toString();
+        return stringBuilder.append(";").toString();
     }
 
     public enum GuessOperator {//should do the inverse of each operator
-        NONE("%s"), TAN("Math.atan(%s)"), ATAN("Math.tan(%s)"),
+        NONE("%s"), TAN("Math.atan(%s)"), //ATAN("Math.tan(%s)"),
         SQUARE("Math.sqrt(%s)");//,
         /* SQRT("Math.pow(%s,2)"),
          SIN("Math.asin(%s)"),
@@ -78,9 +76,9 @@ public class Guess {
                 return Math.pow(val, 2);
             } else if (this.equals(TAN)) {
                 return Math.tan(val);
-            } else if (this.equals(ATAN)) {
+            }/* else if (this.equals(ATAN)) {
                 return Math.atan(val);
-            }/* else if (this.equals(SQRT)) {
+            }*//* else if (this.equals(SQRT)) {
                 return Math.sqrt(val);
             } else if (this.equals(SIN)) {
                 return Math.sin(val);
@@ -96,9 +94,9 @@ public class Guess {
                 return Math.sqrt(val);
             } else if (this.equals(TAN)) {
                 return Math.atan(val);
-            } else if (this.equals(ATAN)) {
+            }/*else if (this.equals(ATAN)) {
                 return Math.tan(val);
-            } /*else if (this.equals(SQRT)) {
+            }*/ /*else if (this.equals(SQRT)) {
                 return Math.pow(val, 2);
             } else if (this.equals(SIN)) {
                 return Math.asin(val);

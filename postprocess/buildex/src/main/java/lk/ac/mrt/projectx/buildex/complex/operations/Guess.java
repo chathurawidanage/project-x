@@ -13,6 +13,16 @@ public class Guess {
 
     private long votes;
 
+    private GuessOperator guessOperator;
+
+    public GuessOperator getGuessOperator() {
+        return guessOperator;
+    }
+
+    public void setGuessOperator(GuessOperator guessOperator) {
+        this.guessOperator = guessOperator;
+    }
+
     public long getVotes() {
         return votes;
     }
@@ -31,6 +41,33 @@ public class Guess {
             sum += (guess.first.operate(r, theta) * guess.second);
         }
         return sum;
+    }
+
+    public String getGeneratedCode() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < guesses.size(); i++) {
+            Pair<Operation, Double> p = guesses.get(i);
+            stringBuilder.append(p.second + "*" + p.first.getCode());
+            if (i == guesses.size() - 1) {
+                stringBuilder.append(";");
+            } else {
+                stringBuilder.append("+");
+            }
+        }
+        if (this.guessOperator != null) {
+            return String.format(this.guessOperator.operation, stringBuilder.toString());
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public enum GuessOperator {//should do the inverse of each operator
+        SQUARE("Math.sqrt(%s)"), SQRT("Math.pow(%s,2)"), SIN("Math.asin(%s)"), COS("Math.acos(%s)");
+        String operation;
+
+        GuessOperator(String operation) {
+            this.operation = operation;
+        }
     }
 
     @Override

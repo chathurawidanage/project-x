@@ -21,9 +21,11 @@ public class PolarJava {
                 CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(i, j);
                 PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
 
-                double thetaNew = Math.atan(0.0*Math.pow(polarCoordinate.getR(),2)+0.0188*(polarCoordinate.getR()/polarCoordinate.getTheta()));
-                double rNew =Math.sqrt(1.44*Math.pow(polarCoordinate.getR(),2)+4052.847*Math.pow(polarCoordinate.getTheta(),2));
-                thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
+
+                double thetaNew = Math.atan(0.0188*(polarCoordinate.getR()/polarCoordinate.getTheta()));
+                double rNew = Math.sqrt(1.439*Math.pow(polarCoordinate.getR(),2)+4052.847*Math.pow(polarCoordinate.getTheta(),2));
+
+                thetaNew = MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 
                 CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian(width, height, newPola);

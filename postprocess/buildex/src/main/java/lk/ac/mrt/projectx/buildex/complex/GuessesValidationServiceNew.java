@@ -69,14 +69,9 @@ public class GuessesValidationServiceNew {
         if (guesses.size() < 100) {
             lock.unlock();
         }
-        if (executingCounter.intValue() < 400) {
-            Guess poll;
-            synchronized (guesses) {
-                poll = guesses.poll();
-            }
-            if (poll != null) {
-                submitNewTask(poll);
-            }
+        Guess poll = guesses.poll();
+        if (poll != null) {
+            submitNewTask(poll);
         }
     }
 
@@ -96,11 +91,17 @@ public class GuessesValidationServiceNew {
 
 
                     double newValue = guess.getProcessedValue(polarCoordinateFirst.getR(), polarCoordinateFirst.getTheta());
+                    if (guess.getGuessOperator() != null) {
+                        newValue = guess.getGuessOperator().operateInv(newValue);
+                    }
                     PolarCoordinate newPolar;
                     if (isR) {
                         newPolar = new PolarCoordinate(polarCoordinateFirst.getTheta(), newValue);
                     } else {
                         double rVal = rGuess.getProcessedValue(polarCoordinateFirst.getR(), polarCoordinateFirst.getTheta());
+                        if (rGuess.getGuessOperator() != null) {
+                            rVal = rGuess.getGuessOperator().operateInv(rVal);
+                        }
 
                         newValue = MathUtils.normalizeAngle(newValue, FastMath.PI);
                         //System.out.println(newValue);
@@ -125,7 +126,7 @@ public class GuessesValidationServiceNew {
                     }
                     if (isR && distance <= Math.sqrt(2)) {
                         guess.incrementVote();
-                    } else if (!isR && distance <= 25) {
+                    } else if (!isR && distance <= 5) {
                         guess.incrementVote();
                     }
                 }

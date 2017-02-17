@@ -62,11 +62,56 @@ public class Guess {
     }
 
     public enum GuessOperator {//should do the inverse of each operator
-        SQUARE("Math.sqrt(%s)"), SQRT("Math.pow(%s,2)"), SIN("Math.asin(%s)"), COS("Math.acos(%s)");
+        NONE("%s"), TAN("Math.atan(%s)"), ATAN("Math.tan(%s)"),
+        SQUARE("Math.sqrt(%s)");//,
+        /* SQRT("Math.pow(%s,2)"),
+         SIN("Math.asin(%s)"),
+         COS("Math.acos(%s)");*/
         String operation;
 
         GuessOperator(String operation) {
             this.operation = operation;
+        }
+
+        public double operate(double val) {
+            if (this.equals(SQUARE)) {
+                return Math.pow(val, 2);
+            } else if (this.equals(TAN)) {
+                return Math.tan(val);
+            } else if (this.equals(ATAN)) {
+                return Math.atan(val);
+            }/* else if (this.equals(SQRT)) {
+                return Math.sqrt(val);
+            } else if (this.equals(SIN)) {
+                return Math.sin(val);
+            } else if (this.equals(COS)) {
+                return Math.cos(val);
+            }*/ else {
+                return val;
+            }
+        }
+
+        public double operateInv(double val) {
+            if (this.equals(SQUARE)) {
+                return Math.sqrt(val);
+            } else if (this.equals(TAN)) {
+                return Math.atan(val);
+            } else if (this.equals(ATAN)) {
+                return Math.tan(val);
+            } /*else if (this.equals(SQRT)) {
+                return Math.pow(val, 2);
+            } else if (this.equals(SIN)) {
+                return Math.asin(val);
+            } else if (this.equals(COS)) {
+                return Math.acos(val);
+            }*/ else {
+                return val;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.operation;
         }
     }
 

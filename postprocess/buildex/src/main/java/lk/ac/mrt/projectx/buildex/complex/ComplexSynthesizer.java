@@ -14,13 +14,13 @@ public class ComplexSynthesizer {
         regression.setNoIntercept(noIntercept);
         regression.newSampleData(y, x);
         double[] doubles = regression.estimateRegressionParameters();
-        if (!noIntercept) {//make intercept the last of the array, in default it is the first
+        /*if (!noIntercept) {//make intercept the last of the array, in default it is the first
             double intercept = doubles[doubles.length - 1];
             for (int i = 0; i < doubles.length - 1; i++) {
                 doubles[i] = doubles[i + 1];
             }
             doubles[doubles.length - 1] = intercept;
-        }
+        }*/
 
 
         double[] residuals = regression.estimateResiduals();

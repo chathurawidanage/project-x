@@ -6,6 +6,8 @@ import lk.ac.mrt.projectx.buildex.complex.operations.Guess;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import org.apache.commons.math3.util.FastMath;
 import org.apache.commons.math3.util.MathUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,8 +26,10 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Chathura Widanage
  */
 public class GuessesValidationServiceNew {
+    private final static Logger logger = LogManager.getLogger(GuessesValidationServiceNew.class);
+
     private Queue<Guess> guesses = new LinkedList<>();
-    private ExecutorService executorService = Executors.newFixedThreadPool(4);
+    private ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
     private List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases;
     private AtomicInteger executingCounter = new AtomicInteger(0);
     private AtomicLong itCount = new AtomicLong();
@@ -124,11 +128,18 @@ public class GuessesValidationServiceNew {
                         //System.out.println(x+","+genertaed.getX());
                         //System.out.println(distance);
                     }
-                    if (isR && distance <= Math.sqrt(2)) {
+                    if (isR && distance <= Math.sqrt(2) * 3) {
                         guess.incrementVote();
-                    } else if (!isR && distance <= 5) {
+                    } else if (!isR && distance <= 15) {
                         guess.incrementVote();
                     }
+
+                    //stop if not going to make it better than the current best
+                    if ((testCases.size() - maxVotes) < (p - guess.getVotes())) {//no point of continuing
+                        //logger.debug("Abandoning guess due to no possible winning : {}", guess);
+                        continue;
+                    }
+
                 }
                 try {
                     semaphore.acquire();
@@ -139,9 +150,10 @@ public class GuessesValidationServiceNew {
                     } else if (maxVotes == guess.getVotes()) {
                         maxVoters.add(guess);
                     }
-                    semaphore.release();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } finally {
+                    semaphore.release();
                 }
                 executingCounter.decrementAndGet();
                 checkAndExecute();

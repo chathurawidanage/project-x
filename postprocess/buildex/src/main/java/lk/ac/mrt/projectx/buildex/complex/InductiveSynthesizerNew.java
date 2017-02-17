@@ -121,16 +121,56 @@ public class InductiveSynthesizerNew {
 
 
         List<Operation> operations = new ArrayList<>();
-        operations.add(r);
+        //operations.add(r);
         operations.add(r2);
         operations.add(t2);
-        operations.add(t);
-        operations.add(rt);
+        //operations.add(t);
+        //operations.add(rt);
 
-        /*Guess guess2 = guessR(examples, operations, widthIn, heightIn, false, Guess.GuessOperator.SQUARE);
+        Guess guess2 = guessR(examples, operations, widthIn, heightIn, false, Guess.GuessOperator.SQUARE);
         System.out.println(guess2);
+
+        Attribute one = new Attribute("one", "1", 1);
+        Attribute width = new Attribute("width", "width", widthIn);
+        Attribute height = new Attribute("height", "height", heightIn);
+        Attribute maxR = new Attribute("maxR", "(Math.hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
+        Attribute pi4 = new Attribute("maxR", "(Math.PI*4)", Math.PI * 4);
+
+
+        List<Attribute> attributes = new ArrayList<>();
+        attributes.add(one);
+        attributes.add(width);
+        attributes.add(height);
+        attributes.add(maxR);
+        attributes.add(pi4);
+
+        List<Pair<Operation, Double>> guesses = guess2.getGuesses();
+        List<Guess.GuessOperator> goops = Arrays.asList(Guess.GuessOperator.values());
+        outer:
+        for (Pair<Operation, Double> gs : guesses) {
+            for (int neumeratorCoefs = 1; neumeratorCoefs <= attributes.size(); neumeratorCoefs++) {
+                List<List<Attribute>> combinationNum = Combinations.combination(attributes, neumeratorCoefs);
+                for (List<Attribute> num : combinationNum) {
+                    for (int denominatorCoefs = 1; denominatorCoefs <= attributes.size(); denominatorCoefs++) {
+                        List<List<Attribute>> combinationDenum = Combinations.combination(attributes, denominatorCoefs);
+                        for (List<Attribute> den : combinationDenum) {
+                            for (Guess.GuessOperator g : goops) {
+                                double numMul = mul(num);
+                                double denMul = mul(den);
+                                //System.out.println(gs.second+":"+(numMul / denMul));
+                                if (round(g.operate(gs.second)) == round(numMul / denMul)) {
+                                    System.out.println(gs.second + "=" + String.format(g.toString(), codeGen(num) + "/" + codeGen(den)));
+                                    continue outer;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         System.exit(0);
-*/
+
         operations.add(rOverTheta);
         //operations.add(tOverR);
         //operations.add(r2sqrt);
@@ -158,6 +198,9 @@ public class InductiveSynthesizerNew {
         }
         logger.info("R BEST Guess : {}", bestGuessR);
         logger.info("R code : {}", bestGuessR.getGeneratedCode());
+
+
+        System.exit(0);
 
         maxVotes = 0;
         for (Guess.GuessOperator gops : guessOperators) {
@@ -534,6 +577,25 @@ public class InductiveSynthesizerNew {
     private double round(double value, int zeros) {
         double mul = Math.pow(10, zeros);
         return (double) Math.round(value * mul) / mul;
+    }
+
+    public double mul(List<Attribute> atts) {
+        double val = 1;
+        for (Attribute a : atts) {
+            val *= a.getValue();
+        }
+        return val;
+    }
+
+    public String codeGen(List<Attribute> atts) {
+        StringBuilder sb = new StringBuilder("(");
+        for (int i = 0; i < atts.size(); i++) {
+            sb.append(atts.get(i).getCode());
+            if (i != atts.size() - 1) {
+                sb.append("*");
+            }
+        }
+        return sb.append(")").toString();
     }
 }
 

@@ -15,11 +15,17 @@ public class GuessesGenerator {
 
     private boolean hasNext = true;
 
+    private Guess.GuessOperator guessOperator;
+
     public GuessesGenerator(List<Statistics> statisticsList) {
         this.statisticsList = statisticsList;
         for (Statistics s : statisticsList) {
             currentValues.add(s.getLow());
         }
+    }
+
+    public void setGuessOperator(Guess.GuessOperator guessOperator) {
+        this.guessOperator = guessOperator;
     }
 
     public boolean hasNext() {
@@ -32,6 +38,10 @@ public class GuessesGenerator {
         }
         /*Creating teh new guess from current values*/
         Guess guess = new Guess();
+        if (guessOperator != null) {
+            guess.setGuessOperator(guessOperator);
+        }
+
         for (int i = 0; i < statisticsList.size(); i++) {
             guess.addGuess(new Pair<>(statisticsList.get(i).getOperation(),
                     currentValues.get(i) * 1.0d / 1000d));//todo make 1000 a parameter

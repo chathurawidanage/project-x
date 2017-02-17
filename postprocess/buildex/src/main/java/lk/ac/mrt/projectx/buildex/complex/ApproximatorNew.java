@@ -39,19 +39,36 @@ public class ApproximatorNew {
         }
     }
 
-    private static List<Pair<CartesianCoordinate, CartesianCoordinate>> getTestCases(List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs) {
-        Set<Pair<CartesianCoordinate, CartesianCoordinate>> q1 = new HashSet<>();
+    private static List<Pair<CartesianCoordinate, CartesianCoordinate>> getTestCases(
+            List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs) {
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> q1 = new ArrayList<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q2 = new ArrayList<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q3 = new ArrayList<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> q4 = new ArrayList<>();
-        Set<Integer> indexes = new HashSet<>();
-        Random r = new Random();
-        while (indexes.size() < Math.min(1000, Math.sqrt(pairs.size()))) {
-            indexes.add(r.nextInt(pairs.size()));
+        for (Pair<CartesianCoordinate, CartesianCoordinate> p : pairs) {
+            CartesianCoordinate first = p.first;
+            if (first.getX() > 0 && first.getY() > 0) {
+                q1.add(p);
+            } else if (first.getX() > 0 && first.getY() < 0) {
+                q4.add(p);
+            } else if (first.getX() < 0 && first.getY() > 0) {
+                q2.add(p);
+            } else {
+                q3.add(p);
+            }
         }
-        for (int index : indexes) {
-            q1.add(pairs.get(index));
-        }
-        return new ArrayList<>(q1);
+
+        Collections.shuffle(q1);
+        Collections.shuffle(q2);
+        Collections.shuffle(q3);
+        Collections.shuffle(q4);
+
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases = new ArrayList<>();
+        testCases.addAll(q1.subList(0, Math.min(26, q1.size())));
+        testCases.addAll(q2.subList(0, Math.min(26, q1.size())));
+        testCases.addAll(q3.subList(0, Math.min(26, q1.size())));
+        testCases.addAll(q4.subList(0, Math.min(26, q1.size())));
+
+        return testCases;
     }
 }

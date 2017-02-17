@@ -59,10 +59,14 @@ public class Guess {
         return stringBuilder.append(";").toString();
     }
 
+    public List<Pair<Operation, Double>> getGuesses() {
+        return guesses;
+    }
+
     public enum GuessOperator {//should do the inverse of each operator
         NONE("%s"), TAN("Math.atan(%s)"), //ATAN("Math.tan(%s)"),
-        SQUARE("Math.sqrt(%s)");//,
-        /* SQRT("Math.pow(%s,2)"),
+        SQUARE("Math.sqrt(%s)"),
+        SQRT("Math.pow(%s,2)");/*
          SIN("Math.asin(%s)"),
          COS("Math.acos(%s)");*/
         String operation;
@@ -78,9 +82,9 @@ public class Guess {
                 return Math.tan(val);
             }/* else if (this.equals(ATAN)) {
                 return Math.atan(val);
-            }*//* else if (this.equals(SQRT)) {
+            }*/else if (this.equals(SQRT)) {
                 return Math.sqrt(val);
-            } else if (this.equals(SIN)) {
+            } /*else if (this.equals(SIN)) {
                 return Math.sin(val);
             } else if (this.equals(COS)) {
                 return Math.cos(val);
@@ -96,9 +100,9 @@ public class Guess {
                 return Math.atan(val);
             }/*else if (this.equals(ATAN)) {
                 return Math.tan(val);
-            }*/ /*else if (this.equals(SQRT)) {
+            }*/else if (this.equals(SQRT)) {
                 return Math.pow(val, 2);
-            } else if (this.equals(SIN)) {
+            } /*else if (this.equals(SIN)) {
                 return Math.asin(val);
             } else if (this.equals(COS)) {
                 return Math.acos(val);

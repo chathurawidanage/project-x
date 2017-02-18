@@ -121,13 +121,13 @@ public class InductiveSynthesizerNew {
 
 
         List<Operation> operations = new ArrayList<>();
-        //operations.add(r);
-        operations.add(r2);
-        operations.add(t2);
-        //operations.add(t);
+        operations.add(r);
+        //operations.add(r2);
+        //operations.add(t2);
+        operations.add(t);
         //operations.add(rt);
 
-        Guess guess2 = guessR(examples, operations, widthIn, heightIn, false, Guess.GuessOperator.SQUARE);
+/*        Guess guess2 = guessR(examples, operations, widthIn, heightIn, false, Guess.GuessOperator.SQUARE);
         System.out.println(guess2);
 
         Attribute one = new Attribute("one", "1", 1);
@@ -170,8 +170,8 @@ public class InductiveSynthesizerNew {
         }
 
         System.exit(0);
-
-        operations.add(rOverTheta);
+*/
+        //operations.add(rOverTheta);
         //operations.add(tOverR);
         //operations.add(r2sqrt);
         //operations.add(r2T2Sqrt);
@@ -181,41 +181,74 @@ public class InductiveSynthesizerNew {
 
         List<Guess.GuessOperator> guessOperators = Arrays.asList(Guess.GuessOperator.values());
 
-        long maxVotes = 0;
+        GuessesValidationServiceNew gvs = new GuessesValidationServiceNew(
+                getTestCases(examples, null), widthIn, heightIn, true, null
+        );//now using same gvs for all guesses, reducing thread creations and making guesses stop if it goes below current best
+
         for (Guess.GuessOperator gops : guessOperators) {
             logger.info("Trying Guess operator : {}", gops);
             for (int i = 1; i <= operations.size(); i++) {
                 List<List<Operation>> combination = Combinations.combination(operations, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operation> ops = combination.get(j);
-                    Guess guess = guessR(examples, ops, widthIn, heightIn, false, gops);
-                    if (guess.getVotes() > maxVotes) {
+                    guessR(examples, ops, false, gops, gvs);
+                    logger.info("Current max voters : {}", gvs.getMaxVoters());
+                    /*if (guess.getVotes() > maxVotes) {
                         bestGuessR = guess;
                         maxVotes = guess.getVotes();
-                    }
+                    }*/
                 }
             }
         }
+        try {
+            List<Guess> guesses = gvs.awaitTermination();
+            if (guesses.size() > 1) {
+                logger.info("Tie breaking {} guesses", guesses.size());
+                logger.info("Max voted guesses {}", guesses);
+                gvs = new GuessesValidationServiceNew(
+                        getTestCases(examples, examples.size() / 4), widthIn, heightIn, true, null
+                );
+                for (Guess guess : guesses) {
+                    gvs.submit(guess);
+                }
+                guesses = gvs.awaitTermination();
+                logger.info("{} guesses after tie breaking", guesses.size());
+            }
+            bestGuessR = guesses.get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         logger.info("R BEST Guess : {}", bestGuessR);
         logger.info("R code : {}", bestGuessR.getGeneratedCode());
 
 
-        System.exit(0);
+        gvs = new GuessesValidationServiceNew(
+                getTestCases(examples, null), widthIn, heightIn, false, bestGuessR
+        );
 
-        maxVotes = 0;
         for (Guess.GuessOperator gops : guessOperators) {
-            for (int i = 1; i < operations.size(); i++) {
+            for (int i = 1; i <= operations.size(); i++) {
                 List<List<Operation>> combination = Combinations.combination(operations, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operation> ops = combination.get(j);
-                    Guess guess = guessTheta(examples, ops, widthIn, heightIn, bestGuessR, gops);
-                    if (guess.getVotes() > maxVotes) {
+                    guessTheta(examples, ops, gops, gvs);
+                    logger.info("Current max voters : {}", gvs.getMaxVoters());
+                   /* if (guess.getVotes() > maxVotes) {
                         bestGuessT = guess;
                         maxVotes = guess.getVotes();
-                    }
+                    }*/
                 }
             }
         }
+
+        try {
+            List<Guess> guesses = gvs.awaitTermination();
+            bestGuessT = guesses.get(0);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         logger.info("T BEST Guess : {}", bestGuessT);
 
         System.out.println("#####\n");
@@ -430,7 +463,12 @@ public class InductiveSynthesizerNew {
 
     }
 
-    private Guess guessR(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, List<Operation> variableCombinationR, int widthIn, int heightIn, boolean constantR, Guess.GuessOperator guessOperator) {
+    /**
+     * Returns the current best guess
+     */
+    private void guessR(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples,
+                        List<Operation> variableCombinationR, boolean constantR,
+                        Guess.GuessOperator guessOperator, GuessesValidationServiceNew gvs) {
         List<Statistics> statisticsR = new ArrayList<>();
         for (Operation oR : variableCombinationR) {
             statisticsR.add(new Statistics(oR));
@@ -487,15 +525,20 @@ public class InductiveSynthesizerNew {
         logger.debug("Total iterations : {}", guessesGeneratorR.getTotalIterations());
         if (guessesGeneratorR.getTotalIterations().longValue() > 1000000 || guessesGeneratorR.getTotalIterations().longValue() < 0) {
             logger.info("Too much iterations. Skipping.");
-            return new Guess();
+            //return new Guess();
+        } else {
+            ApproximatorNew.approximate(guessesGeneratorR, gvs);
         }
-
-        Guess approximateR = ApproximatorNew.approximate(guessesGeneratorR, examples, true, null, widthIn, heightIn);
+/*
+        Guess approximateR = ApproximatorNew.approximate(guessesGeneratorR, gvs);
         logger.debug("R : {}", approximateR);
-        return approximateR;
+        return approximateR;*/
     }
 
-    private Guess guessTheta(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, List<Operation> variableCombinationT, int widthIn, int heightIn, Guess rGuess, Guess.GuessOperator guessOperator) {
+    private void guessTheta(List<Pair<CartesianCoordinate,
+            CartesianCoordinate>> examples,
+                            List<Operation> variableCombinationT,
+                            Guess.GuessOperator guessOperator, GuessesValidationServiceNew gvs) {
         List<Statistics> statisticsT = new ArrayList<>();
         for (Operation oT : variableCombinationT) {
             statisticsT.add(new Statistics(oT));
@@ -558,12 +601,56 @@ public class InductiveSynthesizerNew {
         logger.debug("Total iterations : {}", guessesGeneratorT.getTotalIterations());
         if (guessesGeneratorT.getTotalIterations().longValue() > 1000000 || guessesGeneratorT.getTotalIterations().longValue() < 0) {
             logger.info("Too much iterations. Skipping.");
-            return new Guess();
+            //return new Guess();
+        } else {
+            ApproximatorNew.approximate(guessesGeneratorT, gvs);
+        }/*
+
+        Guess approximateT = ApproximatorNew.approximate(guessesGeneratorT, gvs);
+        logger.debug("T : {}", approximateT);
+        return approximateT;*/
+    }
+
+    private List<Pair<CartesianCoordinate, CartesianCoordinate>> getTestCases(
+            List<Pair<CartesianCoordinate, CartesianCoordinate>> pairs,
+            Integer size
+    ) {
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> q1 = new ArrayList<>();
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> q2 = new ArrayList<>();
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> q3 = new ArrayList<>();
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> q4 = new ArrayList<>();
+        for (Pair<CartesianCoordinate, CartesianCoordinate> p : pairs) {
+            CartesianCoordinate first = p.first;
+            if (first.getX() > 0 && first.getY() > 0) {
+                q1.add(p);
+            } else if (first.getX() > 0 && first.getY() < 0) {
+                q4.add(p);
+            } else if (first.getX() < 0 && first.getY() > 0) {
+                q2.add(p);
+            } else {
+                q3.add(p);
+            }
         }
 
-        Guess approximateT = ApproximatorNew.approximate(guessesGeneratorT, examples, false, rGuess, widthIn, heightIn);
-        logger.debug("T : {}", approximateT);
-        return approximateT;
+        Collections.shuffle(q1);
+        Collections.shuffle(q2);
+        Collections.shuffle(q3);
+        Collections.shuffle(q4);
+
+
+        int limit;
+        if (size == null) {
+            limit = (int) (Math.sqrt(pairs.size()) / 4);
+        } else {
+            limit = size / 4;
+        }
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases = new ArrayList<>();
+        testCases.addAll(q1.subList(0, Math.min(limit, q1.size())));
+        testCases.addAll(q2.subList(0, Math.min(limit, q1.size())));
+        testCases.addAll(q3.subList(0, Math.min(limit, q1.size())));
+        testCases.addAll(q4.subList(0, Math.min(limit, q1.size())));
+
+        return testCases;
     }
 
     private int loopBound(double value) {

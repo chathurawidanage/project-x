@@ -20,7 +20,9 @@ public class ApproximatorNew {
         while (guessesGenerator.hasNext()) {
             Guess guess = guessesGenerator.next();
             try {
-                gvs.submit(guess);
+                if (guess != null) {
+                    gvs.submit(guess);
+                }
             } catch (InterruptedException e) {
                 logger.error("Interrupted while submitting a guess", e);
             }

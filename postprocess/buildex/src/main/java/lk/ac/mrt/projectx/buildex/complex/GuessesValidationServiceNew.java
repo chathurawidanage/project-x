@@ -29,7 +29,7 @@ public class GuessesValidationServiceNew {
     private final static Logger logger = LogManager.getLogger(GuessesValidationServiceNew.class);
 
     private Queue<Guess> guesses = new LinkedList<>();
-    private ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private ExecutorService executorService = Executors.newFixedThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() / 2));
     private List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases;
     private AtomicInteger executingCounter = new AtomicInteger(0);
     private AtomicLong itCount = new AtomicLong();
@@ -52,6 +52,26 @@ public class GuessesValidationServiceNew {
         this.height = height;
         this.isR = isR;
         this.rGuess = rGuess;
+    }
+
+    public void newBatch() {
+        this.itCount.set(0);
+    }
+
+    public int getTestsSize() {
+        return testCases.size();
+    }
+
+    public List<Guess> getMaxVoters() {
+        try {//prevent concurrent exception while logging
+            semaphore.acquire();
+            List<Guess> mv = new ArrayList<>(maxVoters);
+            return mv;
+        } catch (InterruptedException e) {
+            return null;
+        } finally {
+            semaphore.release();
+        }
     }
 
     public void submit(Guess guess) throws InterruptedException {
@@ -85,6 +105,7 @@ public class GuessesValidationServiceNew {
             public void run() {
                 executingCounter.incrementAndGet();
                 System.out.print("\r" + itCount.incrementAndGet());
+                boolean skipped = false;
                 for (int p = 0; p < testCases.size(); p++) {
                     Pair<CartesianCoordinate, CartesianCoordinate> pair = testCases.get(p);
                     CartesianCoordinate cartesianCoordinateFirst = pair.first;
@@ -114,7 +135,7 @@ public class GuessesValidationServiceNew {
                     }
 
 
-                    double distance = 5;
+                    double distance = 500;
                     if (isR) {
                         distance = Math.abs(polarCoordinateSecond.getR() - newPolar.getR());
                     } else {
@@ -128,7 +149,7 @@ public class GuessesValidationServiceNew {
                         //System.out.println(x+","+genertaed.getX());
                         //System.out.println(distance);
                     }
-                    if (isR && distance <= Math.sqrt(2) * 3) {
+                    if (isR && distance <= Math.sqrt(2)) {
                         guess.incrementVote();
                     } else if (!isR && distance <= 15) {
                         guess.incrementVote();
@@ -137,23 +158,26 @@ public class GuessesValidationServiceNew {
                     //stop if not going to make it better than the current best
                     if ((testCases.size() - maxVotes) < (p - guess.getVotes())) {//no point of continuing
                         //logger.debug("Abandoning guess due to no possible winning : {}", guess);
+                        skipped = true;
                         continue;
                     }
 
                 }
-                try {
-                    semaphore.acquire();
-                    if (maxVotes < guess.getVotes()) {
-                        maxVotes = guess.getVotes();
-                        maxVoters.clear();
-                        maxVoters.add(guess);
-                    } else if (maxVotes == guess.getVotes()) {
-                        maxVoters.add(guess);
+                if (!skipped) {//prevent unnecessary thread blocking if skipped
+                    try {
+                        semaphore.acquire();
+                        if (maxVotes < guess.getVotes()) {
+                            maxVotes = guess.getVotes();
+                            maxVoters.clear();
+                            maxVoters.add(guess);
+                        } else if (maxVotes == guess.getVotes()) {
+                            maxVoters.add(guess);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } finally {
+                        semaphore.release();
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    semaphore.release();
                 }
                 executingCounter.decrementAndGet();
                 checkAndExecute();

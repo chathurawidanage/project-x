@@ -27,6 +27,8 @@ public class EluwaEngine {
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
+                if(colorLocationDirectory.containsKey(sourceImg.getRGB(j, i)))
+                    throw new Exception("Malformed source image. Image contains non unique pixels");
                 colorLocationDirectory.put(sourceImg.getRGB(j, i), new CartesianCoordinate(j, i));
             }
         }

@@ -13,13 +13,13 @@ public class Guess {
 
     private long votes;
 
-    private GuessOperator guessOperator;
+    private OperandDecorator guessOperator;
 
-    public GuessOperator getGuessOperator() {
+    public OperandDecorator getGuessOperator() {
         return guessOperator;
     }
 
-    public void setGuessOperator(GuessOperator guessOperator) {
+    public void setGuessOperator(OperandDecorator guessOperator) {
         this.guessOperator = guessOperator;
     }
 
@@ -47,7 +47,11 @@ public class Guess {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < guesses.size(); i++) {
             Pair<Operation, Double> p = guesses.get(i);
-            stringBuilder.append(p.second + "*" + p.first.getCode());
+            stringBuilder.append("(")
+                    .append(p.second)
+                    .append("*")
+                    .append(p.first.getCode())
+                    .append(")");
             if (i != guesses.size() - 1) {
                 stringBuilder.append("+");
             }
@@ -55,66 +59,13 @@ public class Guess {
         if (this.guessOperator != null) {
             return String.format(this.guessOperator.operation, stringBuilder.toString());
         }
+        stringBuilder.append(";");
 
-        return stringBuilder.append(";").toString();
+        return stringBuilder.toString();
     }
 
     public List<Pair<Operation, Double>> getGuesses() {
         return guesses;
-    }
-
-    public enum GuessOperator {//should do the inverse of each operator
-        NONE("%s"), TAN("Math.atan(%s)"), //ATAN("Math.tan(%s)"),
-        SQUARE("Math.sqrt(%s)"),
-        SQRT("Math.pow(%s,2)");/*
-         SIN("Math.asin(%s)"),
-         COS("Math.acos(%s)");*/
-        String operation;
-
-        GuessOperator(String operation) {
-            this.operation = operation;
-        }
-
-        public double operate(double val) {
-            if (this.equals(SQUARE)) {
-                return Math.pow(val, 2);
-            } else if (this.equals(TAN)) {
-                return Math.tan(val);
-            }/* else if (this.equals(ATAN)) {
-                return Math.atan(val);
-            }*/else if (this.equals(SQRT)) {
-                return Math.sqrt(val);
-            } /*else if (this.equals(SIN)) {
-                return Math.sin(val);
-            } else if (this.equals(COS)) {
-                return Math.cos(val);
-            }*/ else {
-                return val;
-            }
-        }
-
-        public double operateInv(double val) {
-            if (this.equals(SQUARE)) {
-                return Math.sqrt(val);
-            } else if (this.equals(TAN)) {
-                return Math.atan(val);
-            }/*else if (this.equals(ATAN)) {
-                return Math.tan(val);
-            }*/else if (this.equals(SQRT)) {
-                return Math.pow(val, 2);
-            } /*else if (this.equals(SIN)) {
-                return Math.asin(val);
-            } else if (this.equals(COS)) {
-                return Math.acos(val);
-            }*/ else {
-                return val;
-            }
-        }
-
-        @Override
-        public String toString() {
-            return this.operation;
-        }
     }
 
     @Override

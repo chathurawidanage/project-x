@@ -15,7 +15,7 @@ public class GuessesGenerator {
 
     private boolean hasNext = true;
 
-    private Guess.GuessOperator guessOperator;
+    private OperandDecorator guessOperator;
 
     public GuessesGenerator(List<Statistics> statisticsList) {
         this.statisticsList = statisticsList;
@@ -24,7 +24,7 @@ public class GuessesGenerator {
         }
     }
 
-    public void setGuessOperator(Guess.GuessOperator guessOperator) {
+    public void setGuessOperator(OperandDecorator guessOperator) {
         this.guessOperator = guessOperator;
     }
 

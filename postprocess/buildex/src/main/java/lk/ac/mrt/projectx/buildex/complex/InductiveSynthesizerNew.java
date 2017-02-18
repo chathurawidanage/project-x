@@ -2,13 +2,14 @@ package lk.ac.mrt.projectx.buildex.complex;
 
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
+import lk.ac.mrt.projectx.buildex.complex.langs.HalideGenerator;
 import lk.ac.mrt.projectx.buildex.complex.operations.*;
 import lk.ac.mrt.projectx.buildex.models.Pair;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -51,65 +52,62 @@ public class InductiveSynthesizerNew {
             pairsR.add(e);
         }*/
 
-        Operation r = new Operation("R", "polarCoordinate.getR()") {
+        Operation r = new Operation("R", "r_in") {
             @Override
             public double operate(double r, double theta) {
                 return r;
             }
         };
-        Operation r2 = new Operation("R2", "Math.pow(polarCoordinate.getR(),2)") {
+        Operation r2 = new Operation("R2", "pow(r_in,2)") {
             @Override
             public double operate(double r, double theta) {
                 return r * r;
             }
         };
 
-        Operation r2sqrt = new Operation("r2sqrt", "(polarCoordinate.getR()+(1-Math.sqrt(1-(Math.pow(polarCoordinate.getR(),2)))))") {
+        Operation r2sqrt = new Operation("r2sqrt", "(r_in+(1-sqrt(1-(pow(r_in,2)))))") {
             @Override
             public double operate(double r, double theta) {
                 return (r + (1 - (Math.sqrt(1 - r * r))));
             }
         };
 
-        Operation rt = new Operation("RT", "(polarCoordinate.getR()*polarCoordinate.getTheta())") {
+        Operation rt = new Operation("RT", "(r_in*theta_in)") {
             @Override
             public double operate(double r, double theta) {
                 return theta * r;
             }
         };
 
-        Operation t = new Operation("T", "polarCoordinate.getTheta()") {
+        Operation t = new Operation("T", "theta_in") {
             @Override
             public double operate(double r, double theta) {
                 return theta;
             }
         };
 
-        Operation t2 = new Operation("T2", "Math.pow(polarCoordinate.getTheta(),2)") {
+        Operation t2 = new Operation("T2", "pow(theta_in,2)") {
             @Override
             public double operate(double r, double theta) {
                 return theta * theta;
             }
         };
 
-        final double h = imageIn.getHeight();
-        final double R = Math.hypot(imageIn.getWidth() / 2, imageIn.getHeight() / 2);
-
-        Operation r2T2Sqrt = new Operation("R2T2Sqrt", "Math.hypot(polarCoordinate.getR(),polarCoordinate.getTheta())") {
+        Operation r2T2Sqrt = new Operation("R2T2Sqrt", "hypot(r_in,theta_in)") {
             @Override
             public double operate(double r, double theta) {
                 return Math.hypot(r, theta);
             }
         };
 
-        Operation rOverTheta = new Operation("R/T", "(polarCoordinate.getR()/polarCoordinate.getTheta())") {
+        Operation rOverTheta = new Operation("R/T", "(r_in/theta_in)") {
             @Override
             public double operate(double r, double theta) {
                 return r / theta;
             }
         };
 
-        Operation tOverR = new Operation("T/R", "(polarCoordinate.getTheta()/polarCoordinate.getR())") {
+        Operation tOverR = new Operation("T/R", "(theta_in/r_in)") {
             @Override
             public double operate(double r, double theta) {
                 return theta / r;
@@ -121,11 +119,15 @@ public class InductiveSynthesizerNew {
 
 
         List<Operation> operations = new ArrayList<>();
-        operations.add(r);
-        //operations.add(r2);
-        //operations.add(t2);
-        operations.add(t);
+        //operations.add(r);
+        operations.add(r2);
+        operations.add(t2);
+        //operations.add(t);
         //operations.add(rt);
+        operations.add(rOverTheta);
+        //operations.add(tOverR);
+        //operations.add(r2sqrt);
+        //operations.add(r2T2Sqrt);
 
 /*        Guess guess2 = guessR(examples, operations, widthIn, heightIn, false, Guess.GuessOperator.SQUARE);
         System.out.println(guess2);
@@ -171,27 +173,24 @@ public class InductiveSynthesizerNew {
 
         System.exit(0);
 */
-        //operations.add(rOverTheta);
-        //operations.add(tOverR);
-        //operations.add(r2sqrt);
-        //operations.add(r2T2Sqrt);
+
 
         Guess bestGuessR = null;
         Guess bestGuessT = null;
 
-        List<Guess.GuessOperator> guessOperators = Arrays.asList(Guess.GuessOperator.values());
+        List<OperandDecorator> operandDecorators = Arrays.asList(OperandDecorator.values());
 
         GuessesValidationServiceNew gvs = new GuessesValidationServiceNew(
                 getTestCases(examples, null), widthIn, heightIn, true, null
         );//now using same gvs for all guesses, reducing thread creations and making guesses stop if it goes below current best
 
-        for (Guess.GuessOperator gops : guessOperators) {
-            logger.info("Trying Guess operator : {}", gops);
+        for (OperandDecorator operandDecorator : operandDecorators) {
+            logger.info("Trying Guess operator : {}", operandDecorator);
             for (int i = 1; i <= operations.size(); i++) {
                 List<List<Operation>> combination = Combinations.combination(operations, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operation> ops = combination.get(j);
-                    guessR(examples, ops, false, gops, gvs);
+                    guessR(examples, ops, false, operandDecorator, gvs);
                     logger.info("Current max voters : {}", gvs.getMaxVoters());
                     /*if (guess.getVotes() > maxVotes) {
                         bestGuessR = guess;
@@ -222,17 +221,18 @@ public class InductiveSynthesizerNew {
         logger.info("R BEST Guess : {}", bestGuessR);
         logger.info("R code : {}", bestGuessR.getGeneratedCode());
 
+        //System.exit(0);
 
         gvs = new GuessesValidationServiceNew(
                 getTestCases(examples, null), widthIn, heightIn, false, bestGuessR
         );
 
-        for (Guess.GuessOperator gops : guessOperators) {
+        for (OperandDecorator operandDecorator : operandDecorators) {
             for (int i = 1; i <= operations.size(); i++) {
                 List<List<Operation>> combination = Combinations.combination(operations, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operation> ops = combination.get(j);
-                    guessTheta(examples, ops, gops, gvs);
+                    guessTheta(examples, ops, false, operandDecorator, gvs);
                     logger.info("Current max voters : {}", gvs.getMaxVoters());
                    /* if (guess.getVotes() > maxVotes) {
                         bestGuessT = guess;
@@ -255,20 +255,28 @@ public class InductiveSynthesizerNew {
         System.out.println(bestGuessR.getGeneratedCode());
         System.out.println(bestGuessT.getGeneratedCode());
         System.out.println("\n#####");
+
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        HalideGenerator halideGenerator = new HalideGenerator(bestGuessR, bestGuessT);
+        halideGenerator.generate();
     }
 
     /**
      * Returns the current best guess
      */
     private void guessR(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples,
-                        List<Operation> variableCombinationR, boolean constantR,
-                        Guess.GuessOperator guessOperator, GuessesValidationServiceNew gvs) {
+                        List<Operation> variableCombinationR, boolean constant,
+                        OperandDecorator guessOperator, GuessesValidationServiceNew gvs) {
         List<Statistics> statisticsR = new ArrayList<>();
         for (Operation oR : variableCombinationR) {
             statisticsR.add(new Statistics(oR));
         }
-        if (constantR) {//todo move this to upper part
-            statisticsR.add(new Statistics(new ConstantOperation("constant")));
+        if (constant) {//todo move this to upper part
+            statisticsR.add(0, new Statistics(new ConstantOperation("constant")));
         }
         int window = 64;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {
@@ -294,7 +302,7 @@ public class InductiveSynthesizerNew {
             }
             try {
                 ComplexSynthesizer complexSynthesizer = new ComplexSynthesizer();
-                boolean noRIntercept = !constantR;
+                boolean noRIntercept = !constant;
 
                 double[] synthesizeR = complexSynthesizer.synthesize(yR, xR, noRIntercept, true);
                 //System.out.println(synthesizeR[0]);
@@ -310,14 +318,13 @@ public class InductiveSynthesizerNew {
         }
 
         /*Approximating R coefficients*/
-        for (Statistics sR : statisticsR) {
-            logger.debug(sR.toString());
-        }
+        logger.debug(statisticsR);
 
         GuessesGenerator guessesGeneratorR = new GuessesGenerator(statisticsR);
         guessesGeneratorR.setGuessOperator(guessOperator);
-        logger.debug("Total iterations : {}", guessesGeneratorR.getTotalIterations());
-        if (guessesGeneratorR.getTotalIterations().longValue() > 1000000 || guessesGeneratorR.getTotalIterations().longValue() < 0) {
+        BigInteger totalIterations = guessesGeneratorR.getTotalIterations();
+        logger.debug("Total iterations : {}", totalIterations);
+        if (guessesGeneratorR.getTotalIterations().compareTo(BigInteger.valueOf(100000)) > 0 || totalIterations.compareTo(BigInteger.ZERO) <= 0) {
             logger.info("Too much iterations. Skipping.");
             //return new Guess();
         } else {
@@ -329,13 +336,16 @@ public class InductiveSynthesizerNew {
         return approximateR;*/
     }
 
-    private void guessTheta(List<Pair<CartesianCoordinate,
-            CartesianCoordinate>> examples,
-                            List<Operation> variableCombinationT,
-                            Guess.GuessOperator guessOperator, GuessesValidationServiceNew gvs) {
+    //todo tow seperate methods for guessR and guessT, since some times they are evaluated differently. (ie : Math.PI adjustment)
+    private void guessTheta(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples,
+                            List<Operation> variableCombinationT, boolean constant,
+                            OperandDecorator guessOperator, GuessesValidationServiceNew gvs) {
         List<Statistics> statisticsT = new ArrayList<>();
         for (Operation oT : variableCombinationT) {
             statisticsT.add(new Statistics(oT));
+        }
+        if (constant) {//todo move this to upper part
+            statisticsT.add(0, new Statistics(new ConstantOperation("constant")));
         }
         int window = 64;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {
@@ -390,10 +400,13 @@ public class InductiveSynthesizerNew {
             }
         }
 
+        logger.debug(statisticsT);
+
         GuessesGenerator guessesGeneratorT = new GuessesGenerator(statisticsT);
         guessesGeneratorT.setGuessOperator(guessOperator);
-        logger.debug("Total iterations : {}", guessesGeneratorT.getTotalIterations());
-        if (guessesGeneratorT.getTotalIterations().longValue() > 1000000 || guessesGeneratorT.getTotalIterations().longValue() < 0) {
+        BigInteger totalIterations = guessesGeneratorT.getTotalIterations();
+        logger.debug("Total iterations : {}", totalIterations);
+        if (guessesGeneratorT.getTotalIterations().compareTo(BigInteger.valueOf(100000)) > 0 || totalIterations.compareTo(BigInteger.ZERO) <= 0) {
             logger.info("Too much iterations. Skipping.");
             //return new Guess();
         } else {

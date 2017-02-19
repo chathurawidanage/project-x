@@ -28,7 +28,7 @@ public class Parameterization {
         outer:
         for (int i = 0; i < guess.getGuesses().size(); i++) {
             ArrayList<ParameterGuess> parameterGuesses = new ArrayList<>();
-            Pair<Operation, Double> gs = guess.getGuesses().get(i);
+            Pair<Operand, Double> gs = guess.getGuesses().get(i);
             for (int neumeratorCoefs = 1; neumeratorCoefs <= attributes.size(); neumeratorCoefs++) {
                 List<List<Attribute>> combinationNum = Combinations.combination(attributes, neumeratorCoefs);
                 for (List<Attribute> num : combinationNum) {

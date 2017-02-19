@@ -37,7 +37,9 @@ public class HalideGenerator {
             "\tExpr theta_in = atan2(x_in, y_in);\n" +
             "\n" +
             "\tExpr r_out=%s;\n" +
+            "\t//Expr r_out=%s;\n" +
             "\tExpr theta_out=%s;\n" +
+            "\t//Expr theta_out=%s;\n" +
             "\t\n" +
             "\tExpr newX = (r_out*cos(theta_out))+(width/2);\n" +
             "\tExpr newY = (r_out*sin(theta_out))+(height/2);\n" +
@@ -60,7 +62,9 @@ public class HalideGenerator {
 
     public void generate() {
         String generated = String.format(this.halideBase,
-                rGuess.getGeneratedCode(), tGuess.getGeneratedCode(), System.currentTimeMillis() + "");
+                rGuess.getGeneratedCode(true), rGuess.getGeneratedCode(),
+                tGuess.getGeneratedCode(true), tGuess.getGeneratedCode(),
+                System.currentTimeMillis() + "");
         System.out.println("\n\n\n\n\n\n\n");
         System.out.println(generated);
         System.out.println("\n\n\n\n\n\n\n");

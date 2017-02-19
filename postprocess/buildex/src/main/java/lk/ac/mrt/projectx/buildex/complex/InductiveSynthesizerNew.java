@@ -52,62 +52,62 @@ public class InductiveSynthesizerNew {
             pairsR.add(e);
         }*/
 
-        Operation r = new Operation("R", "r_in") {
+        Operand r = new Operand("R", "r_in") {
             @Override
             public double operate(double r, double theta) {
                 return r;
             }
         };
-        Operation r2 = new Operation("R2", "pow(r_in,2)") {
+        Operand r2 = new Operand("R2", "pow(r_in,2)") {
             @Override
             public double operate(double r, double theta) {
                 return r * r;
             }
         };
 
-        Operation r2sqrt = new Operation("r2sqrt", "(r_in+(1-sqrt(1-(pow(r_in,2)))))") {
+        Operand r2sqrt = new Operand("r2sqrt", "(r_in+(1-sqrt(1-(pow(r_in,2)))))") {
             @Override
             public double operate(double r, double theta) {
                 return (r + (1 - (Math.sqrt(1 - r * r))));
             }
         };
 
-        Operation rt = new Operation("RT", "(r_in*theta_in)") {
+        Operand rt = new Operand("RT", "(r_in*theta_in)") {
             @Override
             public double operate(double r, double theta) {
                 return theta * r;
             }
         };
 
-        Operation t = new Operation("T", "theta_in") {
+        Operand t = new Operand("T", "theta_in") {
             @Override
             public double operate(double r, double theta) {
                 return theta;
             }
         };
 
-        Operation t2 = new Operation("T2", "pow(theta_in,2)") {
+        Operand t2 = new Operand("T2", "pow(theta_in,2)") {
             @Override
             public double operate(double r, double theta) {
                 return theta * theta;
             }
         };
 
-        Operation r2T2Sqrt = new Operation("R2T2Sqrt", "hypot(r_in,theta_in)") {
+        Operand r2T2Sqrt = new Operand("R2T2Sqrt", "hypot(r_in,theta_in)") {
             @Override
             public double operate(double r, double theta) {
                 return Math.hypot(r, theta);
             }
         };
 
-        Operation rOverTheta = new Operation("R/T", "(r_in/theta_in)") {
+        Operand rOverTheta = new Operand("R/T", "(r_in/theta_in)") {
             @Override
             public double operate(double r, double theta) {
                 return r / theta;
             }
         };
 
-        Operation tOverR = new Operation("T/R", "(theta_in/r_in)") {
+        Operand tOverR = new Operand("T/R", "(theta_in/r_in)") {
             @Override
             public double operate(double r, double theta) {
                 return theta / r;
@@ -118,13 +118,13 @@ public class InductiveSynthesizerNew {
         //System.exit(0);
 
 
-        List<Operation> operations = new ArrayList<>();
-        operations.add(r);
-        //operations.add(r2);
-        //operations.add(t2);
-        operations.add(t);
-        //operations.add(rt);
-        //operations.add(rOverTheta);
+        List<Operand> operands = new ArrayList<>();
+        operands.add(r);
+        operands.add(r2);
+        operands.add(t2);
+        operands.add(t);
+        operands.add(rt);
+        operands.add(rOverTheta);
         //operations.add(tOverR);
         //operations.add(r2sqrt);
         //operations.add(r2T2Sqrt);
@@ -160,10 +160,10 @@ public class InductiveSynthesizerNew {
 
         for (OperandDecorator operandDecorator : operandDecorators) {
             logger.info("Trying Guess operator : {}", operandDecorator);
-            for (int i = 1; i <= operations.size(); i++) {
-                List<List<Operation>> combination = Combinations.combination(operations, i);
+            for (int i = 1; i <= operands.size(); i++) {
+                List<List<Operand>> combination = Combinations.combination(operands, i);
                 for (int j = 0; j < combination.size(); j++) {
-                    List<Operation> ops = combination.get(j);
+                    List<Operand> ops = combination.get(j);
                     guessR(examples, ops, false, operandDecorator, gvs);
                     logger.info("Current max voters : {}", gvs.getMaxVoters());
                     /*if (guess.getVotes() > maxVotes) {
@@ -204,10 +204,10 @@ public class InductiveSynthesizerNew {
         );
 
         for (OperandDecorator operandDecorator : operandDecorators) {
-            for (int i = 1; i <= operations.size(); i++) {
-                List<List<Operation>> combination = Combinations.combination(operations, i);
+            for (int i = 1; i <= operands.size(); i++) {
+                List<List<Operand>> combination = Combinations.combination(operands, i);
                 for (int j = 0; j < combination.size(); j++) {
-                    List<Operation> ops = combination.get(j);
+                    List<Operand> ops = combination.get(j);
                     guessTheta(examples, ops, false, operandDecorator, gvs);
                     logger.info("Current max voters : {}", gvs.getMaxVoters());
                    /* if (guess.getVotes() > maxVotes) {
@@ -247,14 +247,14 @@ public class InductiveSynthesizerNew {
      * Returns the current best guess
      */
     private void guessR(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples,
-                        List<Operation> variableCombinationR, boolean constant,
+                        List<Operand> variableCombinationR, boolean constant,
                         OperandDecorator guessOperator, GuessesValidationServiceNew gvs) {
         List<Statistics> statisticsR = new ArrayList<>();
-        for (Operation oR : variableCombinationR) {
+        for (Operand oR : variableCombinationR) {
             statisticsR.add(new Statistics(oR));
         }
         if (constant) {//todo move this to upper part
-            statisticsR.add(0, new Statistics(new ConstantOperation("constant")));
+            statisticsR.add(0, new Statistics(new ConstantOperand("constant")));
         }
         int window = 64;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {
@@ -316,14 +316,14 @@ public class InductiveSynthesizerNew {
 
     //todo tow seperate methods for guessR and guessT, since some times they are evaluated differently. (ie : Math.PI adjustment)
     private void guessTheta(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples,
-                            List<Operation> variableCombinationT, boolean constant,
+                            List<Operand> variableCombinationT, boolean constant,
                             OperandDecorator guessOperator, GuessesValidationServiceNew gvs) {
         List<Statistics> statisticsT = new ArrayList<>();
-        for (Operation oT : variableCombinationT) {
+        for (Operand oT : variableCombinationT) {
             statisticsT.add(new Statistics(oT));
         }
         if (constant) {//todo move this to upper part
-            statisticsT.add(0, new Statistics(new ConstantOperation("constant")));
+            statisticsT.add(0, new Statistics(new ConstantOperand("constant")));
         }
         int window = 64;//(int) Math.sqrt(width * height);
         for (int i = 0; i < examples.size() - window; i += window) {

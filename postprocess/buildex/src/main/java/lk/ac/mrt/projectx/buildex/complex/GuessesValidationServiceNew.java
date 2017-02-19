@@ -99,7 +99,7 @@ public class GuessesValidationServiceNew {
     }
 
     public void submit(Guess guess) throws InterruptedException {
-        if(guess==null){
+        if (guess == null) {
             return;
         }
         //lock.lock();
@@ -112,8 +112,8 @@ public class GuessesValidationServiceNew {
     }
 
     public List<Guess> awaitTermination() throws InterruptedException {
-        while (guesses.peek()!=null) {
-
+        while (guesses.peek() != null) {
+            Thread.sleep(10000);//allow 10secs before recheck
         }
         running = false;
         executorService.shutdown();

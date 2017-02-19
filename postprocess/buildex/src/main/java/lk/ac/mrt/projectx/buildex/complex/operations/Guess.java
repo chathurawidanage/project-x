@@ -9,7 +9,7 @@ import java.util.List;
  * @author Chathura Widanage
  */
 public class Guess {
-    private List<Pair<Operation, Double>> guesses = new ArrayList<>();
+    private List<Pair<Operand, Double>> guesses = new ArrayList<>();
     private List<ParameterGuess> guessesParams = new ArrayList<>();
 
     private long votes;
@@ -36,13 +36,13 @@ public class Guess {
         votes++;
     }
 
-    public void addGuess(Pair<Operation, Double> guess) {
+    public void addGuess(Pair<Operand, Double> guess) {
         guesses.add(guess);
     }
 
     public double getProcessedValue(double r, double theta) {
         double sum = 0;
-        for (Pair<Operation, Double> guess : guesses) {
+        for (Pair<Operand, Double> guess : guesses) {
             sum += (guess.first.operate(r, theta) * guess.second);
         }
         return sum;
@@ -55,7 +55,7 @@ public class Guess {
     public String getGeneratedCode(boolean withParams) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < guesses.size(); i++) {
-            Pair<Operation, Double> p = guesses.get(i);
+            Pair<Operand, Double> p = guesses.get(i);
             stringBuilder.append("(");
 
             if (guessesParams.get(i) == null || !withParams) {
@@ -78,7 +78,7 @@ public class Guess {
         return stringBuilder.toString();
     }
 
-    public List<Pair<Operation, Double>> getGuesses() {
+    public List<Pair<Operand, Double>> getGuesses() {
         return guesses;
     }
 

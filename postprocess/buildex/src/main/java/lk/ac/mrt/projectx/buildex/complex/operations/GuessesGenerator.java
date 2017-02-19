@@ -43,7 +43,7 @@ public class GuessesGenerator {
         }
 
         for (int i = 0; i < statisticsList.size(); i++) {
-            guess.addGuess(new Pair<>(statisticsList.get(i).getOperation(),
+            guess.addGuess(new Pair<>(statisticsList.get(i).getOperand(),
                     currentValues.get(i) * 1.0d / 1000d));//todo make 1000 a parameter
         }
         hasNext = false;

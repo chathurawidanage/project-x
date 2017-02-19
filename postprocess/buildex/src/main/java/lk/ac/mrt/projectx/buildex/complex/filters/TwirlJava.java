@@ -20,8 +20,8 @@ public class TwirlJava {
 
 
 
-                double thetaNew = (((1f)/(width))*polarCoordinate.getR())+(1.248f*polarCoordinate.getTheta());
-                double rNew = ((1)*polarCoordinate.getR());
+                double thetaNew = (0.012f*polarCoordinate.getR())+(1f*polarCoordinate.getTheta());
+                double rNew = ((1)*polarCoordinate.getR());//+(((1f)/(width))*Math.pow(polarCoordinate.getR(),2));
                 //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 
@@ -44,7 +44,7 @@ public class TwirlJava {
                 double dx = sx - x0;
                 double dy = sy - y0;
                 double r = Math.sqrt(dx * dx + dy * dy);
-                double angle = Math.PI / 256 * r;
+                double angle = (Math.PI / 256) * r;
                 int tx = (int) (+dx * Math.cos(angle) - dy * Math.sin(angle) + x0);
                 int ty = (int) (+dx * Math.sin(angle) + dy * Math.cos(angle) + y0);
 

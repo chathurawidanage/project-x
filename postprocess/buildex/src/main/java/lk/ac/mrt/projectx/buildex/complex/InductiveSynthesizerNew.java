@@ -119,66 +119,40 @@ public class InductiveSynthesizerNew {
 
 
         List<Operation> operations = new ArrayList<>();
-        //operations.add(r);
-        operations.add(r2);
-        operations.add(t2);
-        //operations.add(t);
+        operations.add(r);
+        //operations.add(r2);
+        //operations.add(t2);
+        operations.add(t);
         //operations.add(rt);
-        operations.add(rOverTheta);
+        //operations.add(rOverTheta);
         //operations.add(tOverR);
         //operations.add(r2sqrt);
         //operations.add(r2T2Sqrt);
 
-/*        Guess guess2 = guessR(examples, operations, widthIn, heightIn, false, Guess.GuessOperator.SQUARE);
-        System.out.println(guess2);
-
-        Attribute one = new Attribute("one", "1", 1);
+        Attribute one = new Attribute("one", "1f", 1);
+        Attribute negOne = new Attribute("negative_one", "(-1f)", -1);
         Attribute width = new Attribute("width", "width", widthIn);
         Attribute height = new Attribute("height", "height", heightIn);
         Attribute maxR = new Attribute("maxR", "(Math.hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
-        Attribute pi4 = new Attribute("maxR", "(Math.PI*4)", Math.PI * 4);
+        Attribute pi = new Attribute("maxR", "(Math.PI)", Math.PI);
+        Attribute userAttr = new Attribute("attribute1", "(256)", 256);
 
 
         List<Attribute> attributes = new ArrayList<>();
         attributes.add(one);
+        attributes.add(negOne);
         attributes.add(width);
         attributes.add(height);
         attributes.add(maxR);
-        attributes.add(pi4);
+        attributes.add(pi);
+        attributes.add(userAttr);
 
-        List<Pair<Operation, Double>> guesses = guess2.getGuesses();
-        List<Guess.GuessOperator> goops = Arrays.asList(Guess.GuessOperator.values());
-        outer:
-        for (Pair<Operation, Double> gs : guesses) {
-            for (int neumeratorCoefs = 1; neumeratorCoefs <= attributes.size(); neumeratorCoefs++) {
-                List<List<Attribute>> combinationNum = Combinations.combination(attributes, neumeratorCoefs);
-                for (List<Attribute> num : combinationNum) {
-                    for (int denominatorCoefs = 1; denominatorCoefs <= attributes.size(); denominatorCoefs++) {
-                        List<List<Attribute>> combinationDenum = Combinations.combination(attributes, denominatorCoefs);
-                        for (List<Attribute> den : combinationDenum) {
-                            for (Guess.GuessOperator g : goops) {
-                                double numMul = mul(num);
-                                double denMul = mul(den);
-                                //System.out.println(gs.second+":"+(numMul / denMul));
-                                if (round(g.operate(gs.second)) == round(numMul / denMul)) {
-                                    System.out.println(gs.second + "=" + String.format(g.toString(), codeGen(num) + "/" + codeGen(den)));
-                                    continue outer;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        List<OperandDecorator> operandDecorators = Arrays.asList(OperandDecorator.values());
 
-        System.exit(0);
-*/
-
+        Parameterization parameterization = new Parameterization(attributes, operandDecorators);
 
         Guess bestGuessR = null;
         Guess bestGuessT = null;
-
-        List<OperandDecorator> operandDecorators = Arrays.asList(OperandDecorator.values());
 
         GuessesValidationServiceNew gvs = new GuessesValidationServiceNew(
                 getTestCases(examples, null), widthIn, heightIn, true, null
@@ -219,8 +193,10 @@ public class InductiveSynthesizerNew {
         }
 
         logger.info("R BEST Guess : {}", bestGuessR);
-        logger.info("R code : {}", bestGuessR.getGeneratedCode());
+        parameterization.parameterize(bestGuessR);
 
+        logger.info("R code : {}", bestGuessR.getGeneratedCode());
+        //logger.info(Math.sqrt(examples.size()));
         //System.exit(0);
 
         gvs = new GuessesValidationServiceNew(
@@ -248,6 +224,8 @@ public class InductiveSynthesizerNew {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        parameterization.parameterize(bestGuessT);
 
         logger.info("T BEST Guess : {}", bestGuessT);
 
@@ -452,10 +430,10 @@ public class InductiveSynthesizerNew {
             limit = size / 4;
         }
         List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases = new ArrayList<>();
-        testCases.addAll(q1.subList(0, Math.min(limit, q1.size())));
-        testCases.addAll(q2.subList(0, Math.min(limit, q1.size())));
-        testCases.addAll(q3.subList(0, Math.min(limit, q1.size())));
-        testCases.addAll(q4.subList(0, Math.min(limit, q1.size())));
+        testCases.addAll(q1.subList(0, Math.min(limit, q1.size() - 1)));
+        testCases.addAll(q2.subList(0, Math.min(limit, q2.size() - 1)));
+        testCases.addAll(q3.subList(0, Math.min(limit, q3.size() - 1)));
+        testCases.addAll(q4.subList(0, Math.min(limit, q4.size() - 1)));
 
         return testCases;
     }
@@ -468,28 +446,6 @@ public class InductiveSynthesizerNew {
         return (double) Math.round(value * 1000d) / 1000d;
     }
 
-    private double round(double value, int zeros) {
-        double mul = Math.pow(10, zeros);
-        return (double) Math.round(value * mul) / mul;
-    }
 
-    public double mul(List<Attribute> atts) {
-        double val = 1;
-        for (Attribute a : atts) {
-            val *= a.getValue();
-        }
-        return val;
-    }
-
-    public String codeGen(List<Attribute> atts) {
-        StringBuilder sb = new StringBuilder("(");
-        for (int i = 0; i < atts.size(); i++) {
-            sb.append(atts.get(i).getCode());
-            if (i != atts.size() - 1) {
-                sb.append("*");
-            }
-        }
-        return sb.append(")").toString();
-    }
 }
 

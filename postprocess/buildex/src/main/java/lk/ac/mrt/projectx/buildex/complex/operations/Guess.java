@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class Guess {
     private List<Pair<Operation, Double>> guesses = new ArrayList<>();
+    private List<ParameterGuess> guessesParams = new ArrayList<>();
 
     private long votes;
 
@@ -17,6 +18,10 @@ public class Guess {
 
     public OperandDecorator getGuessOperator() {
         return guessOperator;
+    }
+
+    public List<ParameterGuess> getGuessesParams() {
+        return guessesParams;
     }
 
     public void setGuessOperator(OperandDecorator guessOperator) {
@@ -44,12 +49,21 @@ public class Guess {
     }
 
     public String getGeneratedCode() {
+        return getGeneratedCode(false);
+    }
+
+    public String getGeneratedCode(boolean withParams) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < guesses.size(); i++) {
             Pair<Operation, Double> p = guesses.get(i);
-            stringBuilder.append("(")
-                    .append(p.second)
-                    .append("*")
+            stringBuilder.append("(");
+
+            if (guessesParams.get(i) == null || !withParams) {
+                stringBuilder.append(p.second).append("f");
+            } else {
+                stringBuilder.append(guessesParams.get(i).generateCode());
+            }
+            stringBuilder.append("*")
                     .append(p.first.getCode())
                     .append(")");
             if (i != guesses.size() - 1) {

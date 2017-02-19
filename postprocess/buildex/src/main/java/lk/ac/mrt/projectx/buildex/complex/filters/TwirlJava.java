@@ -20,14 +20,14 @@ public class TwirlJava {
 
 
 
-                double thetaNew = 0.012*polarCoordinate.getR()+1.014*polarCoordinate.getTheta();
-                double rNew = 1.007*polarCoordinate.getR()+0.0*Math.pow(polarCoordinate.getR(),2)+-0.003*(polarCoordinate.getR()*polarCoordinate.getTheta());
+                double thetaNew = (((1f)/(width))*polarCoordinate.getR())+(1.248f*polarCoordinate.getTheta());
+                double rNew = ((1)*polarCoordinate.getR());
                 //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 
                 CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian(width, height, newPola);
                 if (clampPass(width, height, newCartCord))
-                    out.setRGB(i, j, in.getRGB((int)newCartCord.getX(), (int)newCartCord.getY()));
+                    out.setRGB(i, j, in.getRGB((int) newCartCord.getX(), (int) newCartCord.getY()));
             }
         }
     }
@@ -35,9 +35,8 @@ public class TwirlJava {
     public void filterCartesian(BufferedImage in, BufferedImage out) {
         int width = in.getWidth();
         int height = in.getHeight();
-        double x0 = 0.5 * (width - 1);
-        double y0 = 0.5 * (height - 1);
-
+        double x0 = 0.5 * (width);
+        double y0 = 0.5 * (height);
 
         // swirl
         for (int sx = 0; sx < width; sx++) {

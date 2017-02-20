@@ -27,14 +27,14 @@ public class TestSolver {
     public static void main(String[] args) throws Exception {
         int x = 800;
         int y = 600;
-        BufferedImage in = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
-        BufferedImage out = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
+        //BufferedImage in = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
+        //BufferedImage out = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
         InductiveSynthesizerNew inductiveSynthesizer = new InductiveSynthesizerNew();
 //        inductiveSynthesizer.solve(new TwirlGenerator().generate(x, x), inImg, outImg);
 
         /*Images*/
-        //BufferedImage in = ImageIO.read(new File("D:\\test\\rgb.bmp"));
-        //BufferedImage out = ImageIO.read(new File("D:\\test\\rgb-polar-gen.bmp"));
+        BufferedImage in = ImageIO.read(new File("D:\\test\\rgb.bmp"));
+        BufferedImage out = ImageIO.read(new File("D:\\test\\rgb-twirl-out.bmp"));
 
         SourceDestinationSeeker eg = new SourceDestinationSeeker();
         //eg.generate(in,out);
@@ -43,14 +43,14 @@ public class TestSolver {
         try {
             Pair<Guess, Guess> solve = inductiveSynthesizer.solve(new PolarGenerator().generate(x, y)/*eg.generate(in,out)*/, in, out);
 
-            logger.debug("Solve {}", solve);
+           /* logger.debug("Solve {}", solve);
             x = 600;
             y = 800;
             in = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
             out = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
             inductiveSynthesizer = new InductiveSynthesizerNew();
-            Pair<Guess, Guess> solve2 = inductiveSynthesizer.solve(new PolarGenerator().generate(x, y)/*eg.generate(in,out)*/, in, out);
-            logger.debug("solve 2 {}",solve2);
+            Pair<Guess, Guess> solve2 = inductiveSynthesizer.solve(new PolarGenerator().generate(x, y)*//*eg.generate(in,out)*//*, in, out);
+            logger.debug("solve 2 {}",solve2);*/
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -17,7 +17,7 @@ public class SourceDestinationSeeker {
     private final Logger logger = LogManager.getLogger(SourceDestinationSeeker.class);
 
     public List<Pair<CartesianCoordinate, CartesianCoordinate>> generate(BufferedImage sourceImg, BufferedImage filteredImage) throws Exception {
-        Map<Integer, List<CartesianCoordinate>> colorLocationDirectory = new HashMap<>();
+        Map<Integer, CartesianCoordinate> colorLocationDirectory = new HashMap<>();
         List<Pair<CartesianCoordinate, CartesianCoordinate>> mappings = new ArrayList<>();
         int height = sourceImg.getHeight();
         int width = sourceImg.getWidth();
@@ -27,46 +27,41 @@ public class SourceDestinationSeeker {
         }
 
         /*Scanning filtered image instead of the original image*/
-        logger.info("Scanning output image");
+        logger.info("Scanning input image");
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int color = sourceImg.getRGB(x, y);
+
+                // we assumed that all pixels are different
+                colorLocationDirectory.put(color,new CartesianCoordinate(x,y));
+            }
+        }
+
+
+        logger.info("Generating examples");
         int black = new Color(0, 0, 0).getRGB();
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                int color = filteredImage.getRGB(j, i);
+        /*Check from this pixels comes from in the original image*/
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int color = filteredImage.getRGB(x, y);
                 if (color == black) {//skip black since it is every where
                     continue;
                 }
-                if (!colorLocationDirectory.containsKey(color)) {
-                    colorLocationDirectory.put(color, new ArrayList<CartesianCoordinate>());
-                }
-                colorLocationDirectory.get(color).add(new CartesianCoordinate(j, i));
+
+                // this color pixel must be the in the source image
+                CartesianCoordinate c = colorLocationDirectory.get(color);
+                mappings.add(new Pair<>(new CartesianCoordinate(x, y), c));
+                //System.out.println(x+","+y+","+c.getX()+","+c.getY());
             }
         }
 
-        //System.exit(0);
-
-        logger.info("Generating examples");
-        /*Check from this pixels comes from in the original image*/
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                int color = sourceImg.getRGB(j, i);
-                List<CartesianCoordinate> cartesianCoordinates = colorLocationDirectory.get(color);
-                if (cartesianCoordinates != null) {
-                    for (CartesianCoordinate c : cartesianCoordinates) {
-                        mappings.add(new Pair(c, new CartesianCoordinate(j, i)));
-                    }
-                }
-            }
-        }
 
         //todo should add failing conditions
-        Collections.sort(mappings, new Comparator<Pair<CartesianCoordinate, CartesianCoordinate>>() {
-            @Override
-            public int compare(Pair<CartesianCoordinate, CartesianCoordinate> o1, Pair<CartesianCoordinate, CartesianCoordinate> o2) {
-                return o1.first.compareTo(o2.first);
-            }
-        });
         return mappings;
     }
+
 
 }

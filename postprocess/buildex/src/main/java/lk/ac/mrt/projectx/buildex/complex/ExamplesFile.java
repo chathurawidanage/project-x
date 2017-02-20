@@ -22,7 +22,7 @@ public class ExamplesFile {
 
         List<Pair<CartesianCoordinate, CartesianCoordinate>> examples = new ArrayList<>();
 
-        Scanner input = new Scanner(new File(fileName));
+        Scanner input = new Scanner(new File("examples",fileName));
 
         input.nextLine();
 
@@ -40,7 +40,7 @@ public class ExamplesFile {
 
     public void write(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples ) throws IOException {
 
-        String fileName = "examples_"+System.currentTimeMillis();
+        String fileName = "examples_"+System.currentTimeMillis()+".csv";
 
         OutputFile out = new OutputFile(fileName);
         out.append("Size = "+examples.size());
@@ -65,7 +65,7 @@ public class ExamplesFile {
         private BufferedWriter bufferedWriter;
 
         public OutputFile(String pathName) throws IOException {
-            this.file = new File(pathName);
+            this.file = new File("examples",pathName);
             if (file.exists()) {
                 file.delete();
                 file.createNewFile();

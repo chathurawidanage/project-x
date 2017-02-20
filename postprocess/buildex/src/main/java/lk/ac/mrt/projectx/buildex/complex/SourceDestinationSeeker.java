@@ -5,16 +5,32 @@ import lk.ac.mrt.projectx.buildex.models.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
 /**
  * @author Yasiru Kassapa
+ * @author Lasantha Ekanayake
  */
 public class SourceDestinationSeeker {
     private final Logger logger = LogManager.getLogger(SourceDestinationSeeker.class);
+
+    public static void main(String[] args) throws Exception {
+        SourceDestinationSeeker seeker = new SourceDestinationSeeker();
+        BufferedImage sourceImage, filteredImage;
+        sourceImage = ImageIO.read(new File("E:\\FYP\\AtanGenerator\\rgb.bmp"));
+        filteredImage = ImageIO.read(new File("E:\\FYP\\AtanGenerator\\input-polar.bmp"));
+
+        List<Pair<CartesianCoordinate, CartesianCoordinate>> examples = seeker.generate(sourceImage, filteredImage);
+
+        ExamplesFile examplesFile = new ExamplesFile();
+        examplesFile.write(examples);
+    }
 
     public List<Pair<CartesianCoordinate, CartesianCoordinate>> generate(BufferedImage sourceImg, BufferedImage filteredImage) throws Exception {
         Map<Integer, CartesianCoordinate> colorLocationDirectory = new HashMap<>();

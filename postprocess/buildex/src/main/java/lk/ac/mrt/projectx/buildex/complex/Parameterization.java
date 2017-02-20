@@ -39,12 +39,12 @@ public class Parameterization {
                                 double numMul = mul(num);
                                 double denMul = mul(den);
                                 //System.out.println(decorator.operate(gs.second)+":"+(numMul / denMul)+"    "+decorator.toString());
-                                if (Math.abs((decorator.operate(gs.second)) - (numMul / denMul)) < 0.01) {
+                                if (Math.abs(((gs.second)) - decorator.operateInv(numMul / denMul)) < 0.1) {
                                     ParameterGuess parameterGuess = new ParameterGuess();
                                     parameterGuess.setNumberator(num);
                                     parameterGuess.setDenominator(den);
                                     parameterGuess.setDecorator(decorator);
-                                    parameterGuess.setError(Math.abs((decorator.operate(gs.second)) - (numMul / denMul)));
+                                    parameterGuess.setError(Math.abs((gs.second) - decorator.operateInv(numMul / denMul)));
                                     parameterGuesses.add(parameterGuess);
                                 }
                             }
@@ -55,16 +55,18 @@ public class Parameterization {
             if (parameterGuesses.isEmpty()) {
                 guessesParams.add(null);
             } else {
-                //logger.info("Before sort : {}",parameterGuesses);
+                //logger.info("Before sort : {}", parameterGuesses);
+
                 Collections.sort(parameterGuesses);
-                //logger.info("After sort : {}",parameterGuesses);
+                //logger.info("After sort : {}", parameterGuesses.subList(0, 10));
                 ParameterGuess parameterGuess = parameterGuesses.get(0);
                 System.out.println(gs.second + "=" + String.format(parameterGuess.getDecorator().toString(),
-                        codeGen(parameterGuess.getNumerator()) + "/" + codeGen(parameterGuess.getDenominator())));
+                        codeGen(parameterGuess.getNumerator()) + "/" + codeGen(parameterGuess.getDenominator())) + " : " + (mul(parameterGuess.getNumerator()) / mul(parameterGuess.getDenominator())));
                 guessesParams.add(parameterGuess);
             }
         }
     }
+
 
     private double round(double value) {
         return (double) Math.round(value * 100d) / 100d;

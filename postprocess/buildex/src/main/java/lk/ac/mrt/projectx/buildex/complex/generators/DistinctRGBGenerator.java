@@ -17,10 +17,11 @@ public class DistinctRGBGenerator {
         int total = in.getHeight() * in.getWidth();
         System.out.println(total);
         int count = 0;
+        Color black = new Color(0, 0, 0);
         for (int i = 0; i < in.getWidth(); i++) {
             for (int j = 0; j < in.getHeight(); j++) {
                 Color c = new Color(in.getRGB(i, j));
-                if (usedColors.contains(c.getRGB())) {
+                if (black.equals(c) || usedColors.contains(c.getRGB())) {
                     c = getNextColor(c);
                 }
                 out.setRGB(i, j, c.getRGB());

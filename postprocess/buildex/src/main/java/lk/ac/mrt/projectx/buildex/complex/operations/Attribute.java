@@ -46,8 +46,6 @@ public class Attribute implements Comparable<Attribute> {
     public String toString() {
         return "Attribute{" +
                 "name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", value=" + value +
                 '}';
     }
 

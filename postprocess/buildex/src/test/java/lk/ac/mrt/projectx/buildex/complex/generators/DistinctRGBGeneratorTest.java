@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class DistinctRGBGeneratorTest {
     @Test
     public void generate() throws Exception {
-        BufferedImage read = ImageIO.read(new File("D:\\test\\in.png"));
+        BufferedImage read = ImageIO.read(new File("D:\\test\\in.jpg"));
         DistinctRGBGenerator distinctRGBGenerator = new DistinctRGBGenerator();
         BufferedImage out = distinctRGBGenerator.generate(read);
         ImageIO.write(out, "BMP", new File("D:\\test\\rgb.bmp"));

@@ -67,10 +67,10 @@ public class ParameterGuess implements Comparable<ParameterGuess> {
 
     @Override
     public int compareTo(ParameterGuess o) {
-        //if (this.error.compareTo(o.error) == 0) {
-        return -(o.numberator.size() + o.denominator.size()) + (this.numberator.size() + this.denominator.size());
-        //}
-        //return this.error.compareTo(o.error);
+        if (this.error.compareTo(o.error) == 0) {
+            return -(o.numberator.size() + o.denominator.size()) + (this.numberator.size() + this.denominator.size());
+        }
+        return this.error.compareTo(o.error);
     }
 
     @Override

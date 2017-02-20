@@ -1,5 +1,9 @@
 package lk.ac.mrt.projectx.buildex.complex;
 
+import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
+import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
+import org.apache.commons.math3.util.FastMath;
+import org.apache.commons.math3.util.MathUtils;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -60,7 +64,9 @@ public class FormalVerifier extends ApplicationFrame {
     /**
      * A constant for the number of items in the sample dataset.
      */
-    private static final int COUNT = 500000;
+    private static final int width = 200;
+    private static final int height = 200;
+    private static final int COUNT = width * height;
 
     /**
      * The data.
@@ -117,10 +123,28 @@ public class FormalVerifier extends ApplicationFrame {
      */
     private void populateData() {
 
-        for (int i = 0 ; i < this.data[ 0 ].length ; i++) {
-            final float x = (float) i + 100000;
-            this.data[ 0 ][ i ] = x;
-            this.data[ 1 ][ i ] = 100000 + (float) Math.random() * COUNT;
+
+        for (int i = 0 ; i < width ; i++) {
+            for (int j = 0 ; j < height ; j++) {
+                CartesianCoordinate cartesianCoordinate = new CartesianCoordinate( i, j );
+                PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar( width, height, cartesianCoordinate );
+
+
+                double thetaNew = Math.atan( 0.0188 * (polarCoordinate.getR() / polarCoordinate.getTheta()) );
+                double rNew = Math.sqrt( 1.439 * Math.pow( polarCoordinate.getR(), 2 ) + 4052.847 * Math.pow( polarCoordinate.getTheta(), 2 ) );
+
+                thetaNew = MathUtils.normalizeAngle( thetaNew, FastMath.PI );
+                PolarCoordinate newPola = new PolarCoordinate( thetaNew, rNew );
+
+                CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian( width, height, newPola );
+                //   if (clampPass(width, height, newCartCord)) {
+                //  out.setRGB(i, j, in.getRGB((int) newCartCord.getX(), (int) newCartCord.getY()));
+                if (i * width + j < width * height) {
+                    this.data[ 0 ][ i * width + j ] = (float) newPola.getTheta();
+                    this.data[ 1 ][ i * width + j ] = (float) polarCoordinate.getR();
+                }
+                //    }
+            }
         }
 
     }
@@ -137,6 +161,14 @@ public class FormalVerifier extends ApplicationFrame {
         RefineryUtilities.centerFrameOnScreen( demo );
         demo.setVisible( true );
 
+    }
+
+    private boolean clampPass(int width, int height, CartesianCoordinate cartesianCoordinate) {
+        int x = (int) Math.round( cartesianCoordinate.getX() );
+
+        int y = (int) Math.round( cartesianCoordinate.getY() );
+
+        return x >= 0 && x <= width - 1 && y >= 0 && y <= height - 1;
     }
 
 }

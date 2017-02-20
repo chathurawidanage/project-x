@@ -38,24 +38,6 @@ public class StaticInfo {
      */
     private int exampleLine;
 
-    public StaticInfo getStaticInfo(List<StaticInfo> instruction, long programCounter) {
-        for (StaticInfo staticInfo :
-                instruction) {
-            if (staticInfo.pc == programCounter)
-                return  staticInfo;
-        }
-        return null;
-    }
-
-    public StaticInfo getStaticInfo(List<StaticInfo> instruction, JumpInfo jumpInfo) {
-        for (StaticInfo staticInfo :
-                instruction) {
-            if (staticInfo.pc == jumpInfo.jump_pc)
-                return  staticInfo;
-        }
-        return null;
-    }
-
     public long getModule_no() {
         return module_no;
     }

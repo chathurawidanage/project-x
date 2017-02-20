@@ -53,13 +53,19 @@ public class SourceDestinationSeeker {
                 List<CartesianCoordinate> cartesianCoordinates = colorLocationDirectory.get(color);
                 if (cartesianCoordinates != null) {
                     for (CartesianCoordinate c : cartesianCoordinates) {
-                        mappings.add(new Pair(new CartesianCoordinate(j, i), c));
+                        mappings.add(new Pair(c, new CartesianCoordinate(j, i)));
                     }
                 }
             }
         }
 
         //todo should add failing conditions
+        Collections.sort(mappings, new Comparator<Pair<CartesianCoordinate, CartesianCoordinate>>() {
+            @Override
+            public int compare(Pair<CartesianCoordinate, CartesianCoordinate> o1, Pair<CartesianCoordinate, CartesianCoordinate> o2) {
+                return o1.first.compareTo(o2.first);
+            }
+        });
         return mappings;
     }
 

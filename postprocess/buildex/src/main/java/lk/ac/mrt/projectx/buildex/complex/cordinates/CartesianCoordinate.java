@@ -3,7 +3,7 @@ package lk.ac.mrt.projectx.buildex.complex.cordinates;
 /**
  * @author Chathura Widanage
  */
-public class CartesianCoordinate {
+public class CartesianCoordinate implements Comparable<CartesianCoordinate> {
     private double x;
     private double y;
 
@@ -53,5 +53,14 @@ public class CartesianCoordinate {
         temp = Double.doubleToLongBits(getY());
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
+    }
+
+    @Override
+    public int compareTo(CartesianCoordinate o) {
+        if (o.getY() != this.getY()) {
+            return (int) (this.getY() - o.getY());
+        } else {
+            return (int) (this.getX() - o.getX());
+        }
     }
 }

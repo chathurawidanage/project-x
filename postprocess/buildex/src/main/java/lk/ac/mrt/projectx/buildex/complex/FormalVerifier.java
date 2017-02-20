@@ -2,8 +2,6 @@ package lk.ac.mrt.projectx.buildex.complex;
 
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
-import org.apache.commons.math3.util.FastMath;
-import org.apache.commons.math3.util.MathUtils;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -64,8 +62,8 @@ public class FormalVerifier extends ApplicationFrame {
     /**
      * A constant for the number of items in the sample dataset.
      */
-    private static final int width = 200;
-    private static final int height = 200;
+    private static final int width = 100;
+    private static final int height = 100;
     private static final int COUNT = width * height;
 
     /**
@@ -78,13 +76,13 @@ public class FormalVerifier extends ApplicationFrame {
      *
      * @param title the frame title.
      */
-    public FormalVerifier(final String title) {
+    public FormalVerifier(final String title, final String lblx, final String lbly) {
 
         super( title );
         populateData();
-        final NumberAxis domainAxis = new NumberAxis( "X" );
+        final NumberAxis domainAxis = new NumberAxis( lblx );
         domainAxis.setAutoRangeIncludesZero( false );
-        final NumberAxis rangeAxis = new NumberAxis( "Y" );
+        final NumberAxis rangeAxis = new NumberAxis( lbly );
         rangeAxis.setAutoRangeIncludesZero( false );
         final FastScatterPlot plot = new FastScatterPlot( this.data, domainAxis, rangeAxis );
         final JFreeChart chart = new JFreeChart( "Fast Scatter Plot", plot );
@@ -122,44 +120,27 @@ public class FormalVerifier extends ApplicationFrame {
      * Populates the data array with random values.
      */
     private void populateData() {
-
+        double maxR = Math.hypot( width / 2, height / 2 );
 
         for (int i = 0 ; i < width ; i++) {
             for (int j = 0 ; j < height ; j++) {
                 CartesianCoordinate cartesianCoordinate = new CartesianCoordinate( i, j );
                 PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar( width, height, cartesianCoordinate );
 
+                double thetaNew = 1.0 * polarCoordinate.getTheta() + 0.0 * (polarCoordinate.getR() / polarCoordinate.getTheta()) + -0.027 * (polarCoordinate.getTheta() / polarCoordinate.getTheta());
 
-                double thetaNew = Math.atan( 0.0188 * (polarCoordinate.getR() / polarCoordinate.getTheta()) );
-                double rNew = Math.sqrt( 1.439 * Math.pow( polarCoordinate.getR(), 2 ) + 4052.847 * Math.pow( polarCoordinate.getTheta(), 2 ) );
-
-                thetaNew = MathUtils.normalizeAngle( thetaNew, FastMath.PI );
+                double rNew = 0.472 * polarCoordinate.getR() + 0.001 * Math.pow( polarCoordinate.getR(), 2 ) + 0.002 * (polarCoordinate.getR() * polarCoordinate.getTheta());
+                //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate( thetaNew, rNew );
 
                 CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian( width, height, newPola );
-                //   if (clampPass(width, height, newCartCord)) {
-                //  out.setRGB(i, j, in.getRGB((int) newCartCord.getX(), (int) newCartCord.getY()));
-                if (i * width + j < width * height) {
-                    this.data[ 0 ][ i * width + j ] = (float) newPola.getTheta();
-                    this.data[ 1 ][ i * width + j ] = (float) polarCoordinate.getR();
+                if (clampPass( width, height, newCartCord )) {
+                    //  out.setRGB(i, j, in.getRGB((int) newCartCord.getX(), (int) newCartCord.getY()));
+                    this.data[ 0 ][ i + j * width ] = (float) thetaNew;
+                    this.data[ 1 ][ i + j * width ] = (float) rNew;
                 }
-                //    }
             }
         }
-
-    }
-
-    /**
-     * Starting point for the demonstration application.
-     *
-     * @param args ignored.
-     */
-    public static void main(final String[] args) {
-
-        final FormalVerifier demo = new FormalVerifier( "Fast Scatter Plot Demo" );
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen( demo );
-        demo.setVisible( true );
 
     }
 
@@ -169,6 +150,20 @@ public class FormalVerifier extends ApplicationFrame {
         int y = (int) Math.round( cartesianCoordinate.getY() );
 
         return x >= 0 && x <= width - 1 && y >= 0 && y <= height - 1;
+    }
+
+    /**
+     * Starting point for the demonstration application.
+     *
+     * @param args ignored.
+     */
+    public static void main(final String[] args) {
+
+        final FormalVerifier demo = new FormalVerifier( "Fast Scatter Plot Demo", "thetaNew", "rNew" );
+        demo.pack();
+        RefineryUtilities.centerFrameOnScreen( demo );
+        demo.setVisible( true );
+
     }
 
 }

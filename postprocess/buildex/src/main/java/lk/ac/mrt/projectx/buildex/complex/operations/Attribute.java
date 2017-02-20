@@ -7,11 +7,23 @@ public class Attribute implements Comparable<Attribute> {
     private String name;
     private String code;
     private double value;
+    private boolean arguement;
 
     public Attribute(String name, String code, double value) {
         this.name = name;
         this.code = code;
         this.value = value;
+    }
+
+    public Attribute(String name, String code, double value, boolean arguement) {
+        this.name = name;
+        this.code = code;
+        this.value = value;
+        this.arguement = arguement;
+    }
+
+    public boolean isArguement() {
+        return arguement;
     }
 
     public String getCode() {

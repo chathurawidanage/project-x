@@ -58,7 +58,6 @@ public class SourceDestinationSeeker {
             }
         }
 
-
         //todo should add failing conditions
         return mappings;
     }

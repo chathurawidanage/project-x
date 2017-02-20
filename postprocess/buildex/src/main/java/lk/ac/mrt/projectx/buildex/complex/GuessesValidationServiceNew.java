@@ -54,7 +54,7 @@ public class GuessesValidationServiceNew {
         this.isR = isR;
         this.rGuess = rGuess;
 
-        executorService = Executors.newFixedThreadPool(threads);
+        executorService = Executors.newFixedThreadPool(threads*2);
 
         for (int i = 0; i < threads; i++) {
             spawnNewThread();
@@ -115,10 +115,10 @@ public class GuessesValidationServiceNew {
     public List<Guess> awaitTermination() throws InterruptedException {
         int spawned = -1;
         while (guesses.peek() != null) {
-            if (spawned++ < 4) {
+            if (spawned++ < threads) {
                 spawnNewThread();
             } else {
-                break;
+                //break;
             }
             Thread.sleep(10000);//allow 10secs before recheck
         }

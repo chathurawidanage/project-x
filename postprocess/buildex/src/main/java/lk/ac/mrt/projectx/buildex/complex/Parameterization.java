@@ -46,13 +46,6 @@ public class Parameterization {
                                     parameterGuess.setDecorator(decorator);
                                     parameterGuess.setError(Math.abs((decorator.operate(gs.second)) - (numMul / denMul)));
                                     parameterGuesses.add(parameterGuess);
-                                    /*System.out.println();
-                                    System.out.println(round(decorator.operate(gs.second)) + "," + round(numMul / denMul));
-                                    System.out.println((decorator.operate(gs.second)) + "," + (numMul / denMul));
-                                    System.out.println();*/
-                                    //guessesParams.add(new Pair<>(num, den))
-                                    //System.out.println(gs.second + "=" + String.format(decorator.toString(), codeGen(num) + "/" + codeGen(den)));
-                                    //continue outer;
                                 }
                             }
                         }

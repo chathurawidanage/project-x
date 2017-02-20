@@ -1,11 +1,14 @@
 package lk.ac.mrt.projectx.buildex.complex;
 
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
+import lk.ac.mrt.projectx.buildex.complex.generators.CylinderGenerator;
+import lk.ac.mrt.projectx.buildex.complex.generators.PolarGenerator;
 import lk.ac.mrt.projectx.buildex.complex.generators.TwirlGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +22,7 @@ import java.util.Random;
 public class TestSolver {
     private final static Logger logger = LogManager.getLogger(TestSolver.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         int x = 800;
         int y = 600;
         BufferedImage inImg = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
@@ -29,14 +32,16 @@ public class TestSolver {
 
         /*Images*/
         BufferedImage in = ImageIO.read(new File("D:\\test\\rgb.bmp"));
-        BufferedImage out = ImageIO.read(new File("D:\\test\\rgb-out.bmp"));
+        BufferedImage out = ImageIO.read(new File("D:\\test\\polar-cart-fb.bmp"));
 
         SourceDestinationSeeker eg = new SourceDestinationSeeker();
+        //eg.generate(in,out);
+
 
 
         long startT = System.currentTimeMillis() / (1000 * 60);
         try {
-            inductiveSynthesizer.solve(new TwirlGenerator().generate(x,y)/*eg.generate(in,out)*/, in, out);
+            inductiveSynthesizer.solve(new PolarGenerator().generate(x,y)/*eg.generate(in,out)*/, in, out);
         } catch (Exception e) {
             e.printStackTrace();
         }

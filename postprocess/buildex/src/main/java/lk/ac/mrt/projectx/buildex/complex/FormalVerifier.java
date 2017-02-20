@@ -10,6 +10,7 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Created by krv on 2/19/17.
@@ -76,7 +77,7 @@ public class FormalVerifier extends ApplicationFrame {
      *
      * @param title the frame title.
      */
-    public FormalVerifier(final String title, final String lblx, final String lbly) {
+    public FormalVerifier(final String title, final String lblx, final String lbly) throws IOException {
 
         super( title );
         populateData();
@@ -85,7 +86,7 @@ public class FormalVerifier extends ApplicationFrame {
         final NumberAxis rangeAxis = new NumberAxis( lbly );
         rangeAxis.setAutoRangeIncludesZero( false );
         final FastScatterPlot plot = new FastScatterPlot( this.data, domainAxis, rangeAxis );
-        final JFreeChart chart = new JFreeChart( "Fast Scatter Plot", plot );
+        final JFreeChart chart = new JFreeChart( title, plot );
 //        chart.setLegend(null);
 
         // force aliasing of the rendered content..
@@ -102,6 +103,8 @@ public class FormalVerifier extends ApplicationFrame {
         panel.setMaximumDrawWidth( 2000 );
 
         setContentPane( panel );
+        //TODO : Print
+        //ChartUtilities.saveChartAsJPEG( new File("/home/krv/Projects/FYP/graphs/FishEye.jpg"),chart,800,600 );
 
     }
 
@@ -136,8 +139,9 @@ public class FormalVerifier extends ApplicationFrame {
                 CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian( width, height, newPola );
                 if (clampPass( width, height, newCartCord )) {
                     //  out.setRGB(i, j, in.getRGB((int) newCartCord.getX(), (int) newCartCord.getY()));
-                    this.data[ 0 ][ i + j * width ] = (float) thetaNew;
-                    this.data[ 1 ][ i + j * width ] = (float) rNew;
+                    //TODO : Add data 0 - X axis , 1 - Y Axis
+                    this.data[ 0 ][ i + j * width ] = (float) polarCoordinate.getTheta();
+                    this.data[ 1 ][ i + j * width ] = (float) newPola.getTheta();
                 }
             }
         }
@@ -157,9 +161,10 @@ public class FormalVerifier extends ApplicationFrame {
      *
      * @param args ignored.
      */
-    public static void main(final String[] args) {
+    public static void main(final String[] args) throws IOException {
 
-        final FormalVerifier demo = new FormalVerifier( "Fast Scatter Plot Demo", "thetaNew", "rNew" );
+        //TODO : Add labels
+        final FormalVerifier demo = new FormalVerifier( "Fish Eye Filter", "Old Theta", "New Theta" );
         demo.pack();
         RefineryUtilities.centerFrameOnScreen( demo );
         demo.setVisible( true );

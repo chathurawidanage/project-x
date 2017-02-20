@@ -28,7 +28,7 @@ public class PolarJava {
                 double thetaNew = Math.atan(0.0188*(polarCoordinate.getR()/polarCoordinate.getTheta()));
                 double rNew = Math.sqrt(1.439*Math.pow(polarCoordinate.getR(),2)+4052.847*Math.pow(polarCoordinate.getTheta(),2));
 
-                thetaNew = MathUtils.normalizeAngle(thetaNew, FastMath.PI);
+                //thetaNew = MathUtils.normalizeAngle(thetaNew, FastMath.PI);
                 PolarCoordinate newPola = new PolarCoordinate(thetaNew, rNew);
 
                 CartesianCoordinate newCartCord = CoordinateTransformer.polar2Cartesian(width, height, newPola);

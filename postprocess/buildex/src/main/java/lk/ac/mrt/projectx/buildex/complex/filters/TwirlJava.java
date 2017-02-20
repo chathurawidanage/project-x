@@ -18,8 +18,6 @@ public class TwirlJava {
                 CartesianCoordinate cartesianCoordinate = new CartesianCoordinate(i, j);
                 PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(width, height, cartesianCoordinate);
 
-
-
                 double thetaNew = (0.012f*polarCoordinate.getR())+(1f*polarCoordinate.getTheta());
                 double rNew = ((1)*polarCoordinate.getR());//+(((1f)/(width))*Math.pow(polarCoordinate.getR(),2));
                 //thetaNew= MathUtils.normalizeAngle(thetaNew, FastMath.PI);

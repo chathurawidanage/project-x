@@ -27,31 +27,6 @@ public class InductiveSynthesizerNew {
 
         CoordinateTransformer.cartesianToCenter(widthIn, heightIn, examples);//making all points center originated
 
-        /*Filtering good pairs*/
-       /* List<Pair<CartesianCoordinate, CartesianCoordinate>> goodExamples = new ArrayList<>();
-        Map<Double, List<Pair<CartesianCoordinate, CartesianCoordinate>>> thetaExamples = new HashMap<>();
-        Map<Double, List<Pair<CartesianCoordinate, CartesianCoordinate>>> rExamples = new HashMap<>();
-        for (Pair<CartesianCoordinate, CartesianCoordinate> e : examples) {
-
-            PolarCoordinate polarCoordinate = CoordinateTransformer.cartesian2Polar(e.first);
-            double theta = round(polarCoordinate.getTheta(), 1);
-            double r = Math.round(polarCoordinate.getR());
-            List<Pair<CartesianCoordinate, CartesianCoordinate>> pairsTheta = thetaExamples.get(theta);
-            List<Pair<CartesianCoordinate, CartesianCoordinate>> pairsR = rExamples.get(r);
-
-            if (pairsTheta == null) {
-                pairsTheta = new ArrayList<>();
-                thetaExamples.put(theta, pairsTheta);
-            }
-            pairsTheta.add(e);
-
-            if (pairsR == null) {
-                pairsR = new ArrayList<>();
-                rExamples.put(r, pairsR);
-            }
-            pairsR.add(e);
-        }*/
-
         Operand r = new Operand("R", "r_in") {
             @Override
             public double operate(double r, double theta) {
@@ -79,7 +54,7 @@ public class InductiveSynthesizerNew {
             }
         };
 
-        Operand t = new Operand("T", "theta_in") {
+        final Operand t = new Operand("T", "theta_in") {
             @Override
             public double operate(double r, double theta) {
                 return theta;
@@ -114,28 +89,61 @@ public class InductiveSynthesizerNew {
             }
         };
 
+        Operand widthOp = new Operand("width", "(width/2)") {
+            @Override
+            public double operate(double r, double theta) {
+                return widthIn / 2;
+            }
+        };
+
+
+        Operand widthOpSqr = new Operand("width", "(pow(width/2),2)") {
+            @Override
+            public double operate(double r, double theta) {
+                return Math.pow(widthIn / 2, 2);
+            }
+        };
+
+        Operand widthTheta = new Operand("widthTheta", "(width*theta_in/2)") {
+            @Override
+            public double operate(double r, double theta) {
+                return theta * (widthIn / 2);
+            }
+        };
+
+        Operand widthThetaSqr = new Operand("widthTheta", "(pow(width*theta_in/2,2))") {
+            @Override
+            public double operate(double r, double theta) {
+                return Math.pow(theta * (widthIn / 2), 2);
+            }
+        };
+
         //System.out.println(heightIn * (Math.PI * 4) / (R * widthIn));
         //System.exit(0);
 
 
         List<Operand> operands = new ArrayList<>();
-        operands.add(r);
+        //operands.add(r);
         operands.add(r2);
         operands.add(t2);
-        operands.add(t);
-        operands.add(rt);
+        //operands.add(t);
+        //operands.add(rt);
         operands.add(rOverTheta);
         //operations.add(tOverR);
         //operations.add(r2sqrt);
         //operations.add(r2T2Sqrt);
+        //operands.add(widthOp);
+        //operands.add(widthOpSqr);
+        //operands.add(widthTheta);
+        //operands.add(widthThetaSqr);
 
         Attribute one = new Attribute("one", "1f", 1);
         Attribute negOne = new Attribute("negative_one", "(-1f)", -1);
         Attribute width = new Attribute("width", "width", widthIn);
         Attribute height = new Attribute("height", "height", heightIn);
-        Attribute maxR = new Attribute("maxR", "(Math.hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
-        Attribute pi = new Attribute("maxR", "(Math.PI)", Math.PI);
-        Attribute userAttr = new Attribute("attribute1", "(256)", 256);
+        Attribute maxR = new Attribute("maxR", "(hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
+        Attribute pi = new Attribute("maxR", "(M_PI)", Math.PI);
+        Attribute userAttr = new Attribute("attribute1", "(4)", 4);
 
 
         List<Attribute> attributes = new ArrayList<>();
@@ -147,7 +155,60 @@ public class InductiveSynthesizerNew {
         attributes.add(pi);
         attributes.add(userAttr);
 
-        List<OperandDecorator> operandDecorators = Arrays.asList(OperandDecorator.values());
+        List<OperandDecorator> operandDecorators = new ArrayList<>();
+
+        OperandDecorator none = new OperandDecorator("%s") {
+            @Override
+            public double operate(double val) {
+                return val;
+            }
+
+            @Override
+            public double operateInv(double val) {
+                return val;
+            }
+        };
+
+        OperandDecorator sqr = new OperandDecorator("sqrt(%s)") {
+            @Override
+            public double operate(double val) {
+                return Math.pow(val, 2);
+            }
+
+            @Override
+            public double operateInv(double val) {
+                return Math.sqrt(val);
+            }
+        };
+
+        OperandDecorator sqrt = new OperandDecorator("pow(%s,2)") {
+            @Override
+            public double operate(double val) {
+                return Math.sqrt(val);
+            }
+
+            @Override
+            public double operateInv(double val) {
+                return Math.pow(val, 2);
+            }
+        };
+
+        OperandDecorator tan = new OperandDecorator("atan(%s)") {
+            @Override
+            public double operate(double val) {
+                return Math.tan(val);
+            }
+
+            @Override
+            public double operateInv(double val) {
+                return Math.atan(val);
+            }
+        };
+
+        operandDecorators.add(none);
+        operandDecorators.add(sqr);
+        operandDecorators.add(sqrt);
+        operandDecorators.add(tan);
 
         Parameterization parameterization = new Parameterization(attributes, operandDecorators);
 
@@ -301,7 +362,7 @@ public class InductiveSynthesizerNew {
         GuessesGenerator guessesGeneratorR = new GuessesGenerator(statisticsR);
         guessesGeneratorR.setGuessOperator(guessOperator);
         BigInteger totalIterations = guessesGeneratorR.getTotalIterations();
-        logger.debug("Total iterations : {}", totalIterations);
+        logger.info("Total iterations : {}", totalIterations);
         if (guessesGeneratorR.getTotalIterations().compareTo(BigInteger.valueOf(100000)) > 0 || totalIterations.compareTo(BigInteger.ZERO) <= 0) {
             logger.info("Too much iterations. Skipping.");
             //return new Guess();
@@ -425,15 +486,22 @@ public class InductiveSynthesizerNew {
 
         int limit;
         if (size == null) {
-            limit = (int) (Math.sqrt(pairs.size()) / 4);
+            limit = (int) (Math.sqrt(pairs.size() * 2) / 4);
         } else {
             limit = size / 4;
         }
         List<Pair<CartesianCoordinate, CartesianCoordinate>> testCases = new ArrayList<>();
-        testCases.addAll(q1.subList(0, Math.min(limit, q1.size() - 1)));
-        testCases.addAll(q2.subList(0, Math.min(limit, q2.size() - 1)));
-        testCases.addAll(q3.subList(0, Math.min(limit, q3.size() - 1)));
-        testCases.addAll(q4.subList(0, Math.min(limit, q4.size() - 1)));
+        if (!q1.isEmpty())
+            testCases.addAll(q1.subList(0, Math.min(limit, q1.size() - 1)));
+
+        if (!q2.isEmpty())
+            testCases.addAll(q2.subList(0, Math.min(limit, q2.size() - 1)));
+
+        if (!q3.isEmpty())
+            testCases.addAll(q3.subList(0, Math.min(limit, q3.size() - 1)));
+
+        if (!q4.isEmpty())
+            testCases.addAll(q4.subList(0, Math.min(limit, q4.size() - 1)));
 
         return testCases;
     }

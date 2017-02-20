@@ -71,7 +71,7 @@ public class Guess {
             }
         }
         if (this.guessOperator != null) {
-            return String.format(this.guessOperator.operation, stringBuilder.toString());
+            return String.format(this.guessOperator.getCode(), stringBuilder.toString());
         }
         stringBuilder.append(";");
 

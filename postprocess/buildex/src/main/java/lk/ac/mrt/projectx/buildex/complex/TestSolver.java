@@ -27,8 +27,8 @@ public class TestSolver {
     public static void main(String[] args) throws Exception {
         int x = 800;
         int y = 600;
-        //BufferedImage in = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
-        //BufferedImage out = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage in = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
+        BufferedImage out = new BufferedImage(x, y, BufferedImage.TYPE_3BYTE_BGR);
         InductiveSynthesizerNew inductiveSynthesizer = new InductiveSynthesizerNew();
 
         ExamplesFile examplesFile = new ExamplesFile();
@@ -39,8 +39,8 @@ public class TestSolver {
 //        inductiveSynthesizer.solve(new TwirlGenerator().generate(x, x), inImg, outImg);
 
         /*Images*/
-        BufferedImage in = ImageIO.read(new File("D:\\test\\rgb.bmp"));
-        BufferedImage out = ImageIO.read(new File("D:\\test\\rgb-twirl-out.bmp"));
+//        BufferedImage in = ImageIO.read(new File("D:\\test\\rgb.bmp"));
+//        BufferedImage out = ImageIO.read(new File("D:\\test\\rgb-twirl-out.bmp"));
 
         //SourceDestinationSeeker eg = new SourceDestinationSeeker();
         //eg.generate(in,out);

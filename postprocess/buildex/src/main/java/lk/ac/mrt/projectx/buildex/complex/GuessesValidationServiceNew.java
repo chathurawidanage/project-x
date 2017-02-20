@@ -30,7 +30,7 @@ public class GuessesValidationServiceNew {
     private AtomicLong itCount = new AtomicLong();
 
     Semaphore maxVoteAccessSem = new Semaphore(1);
-    Semaphore taskSubmitSem = new Semaphore(1000);
+    Semaphore taskSubmitSem = new Semaphore(10000);
     //Lock lock = new ReentrantLock();
     private long maxVotes = 0;
     private List<Guess> maxVoters = new ArrayList<>();
@@ -67,7 +67,7 @@ public class GuessesValidationServiceNew {
                     if (itCount.get() != 0)
                         System.out.print("\r" + itCount.incrementAndGet());
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -103,16 +103,23 @@ public class GuessesValidationServiceNew {
             return;
         }
         //lock.lock();
-        if (guesses.size() < 5000) {
+        taskSubmitSem.acquire();//control memory usage by trying to keep queue size at a constant
+        guesses.add(guess);
+      /*  if (guesses.size() < 5000) {
             guesses.add(guess);
         } else {
-            taskSubmitSem.acquire();//control memory usage by trying to keep queue size at a constant
-            guesses.add(guess);
-        }
+
+        }*/
     }
 
     public List<Guess> awaitTermination() throws InterruptedException {
+        int spawned = -1;
         while (guesses.peek() != null) {
+            if (spawned++ < 4) {
+                spawnNewThread();
+            } else {
+                break;
+            }
             Thread.sleep(10000);//allow 10secs before recheck
         }
         running = false;

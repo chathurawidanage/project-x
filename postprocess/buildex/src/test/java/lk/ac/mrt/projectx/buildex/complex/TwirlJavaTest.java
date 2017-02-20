@@ -18,7 +18,7 @@ public class TwirlJavaTest {
         BufferedImage out=new BufferedImage(read.getWidth(),read.getHeight(),read.getType());
         TwirlJava twirlJava=new TwirlJava();
         twirlJava.filterCartesian(read,out);
-        ImageIO.write(out,"BMP",new File("D:\\test\\rgb-out.bmp"));
+        ImageIO.write(out,"BMP",new File("D:\\test\\rgb-twirl-out.bmp"));
     }
 
     @Test

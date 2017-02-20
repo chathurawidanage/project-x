@@ -20,7 +20,7 @@ public class InductiveSynthesizerNew {
     private final static Logger logger = LogManager.getLogger(InductiveSynthesizerNew.class);
 
     public Pair<Guess, Guess> solve(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, BufferedImage imageIn, BufferedImage imageOut) {
-        logger.debug("Synthesizing using {} examples", examples.size());
+        logger.info("Synthesizing using {} examples", examples.size());
         final int widthIn = imageIn.getWidth();
         int heightIn = imageIn.getHeight();
 

@@ -3,6 +3,7 @@ package lk.ac.mrt.projectx.buildex.complex;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.CartesianCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.cordinates.PolarCoordinate;
 import lk.ac.mrt.projectx.buildex.complex.langs.HalideGenerator;
+import lk.ac.mrt.projectx.buildex.complex.langs.JavaGenerator;
 import lk.ac.mrt.projectx.buildex.complex.operations.*;
 import lk.ac.mrt.projectx.buildex.models.Pair;
 import org.apache.logging.log4j.LogManager;
@@ -18,12 +19,10 @@ import java.util.*;
 public class InductiveSynthesizerNew {
     private final static Logger logger = LogManager.getLogger(InductiveSynthesizerNew.class);
 
-    public void solve(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, BufferedImage imageIn, BufferedImage imageOut) {
+    public Pair<Guess, Guess> solve(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, BufferedImage imageIn, BufferedImage imageOut) {
         logger.debug("Synthesizing using {} examples", examples.size());
         final int widthIn = imageIn.getWidth();
         int heightIn = imageIn.getHeight();
-        int widthOut = imageOut.getWidth();
-        int heightOut = imageOut.getHeight();
 
         CoordinateTransformer.cartesianToCenter(widthIn, heightIn, examples);//making all points center originated
 
@@ -97,7 +96,7 @@ public class InductiveSynthesizerNew {
         };
 
 
-        Operand widthOpSqr = new Operand("width", "(pow(width/2),2)") {
+        Operand widthOpSqr = new Operand("width", "(Math.pow(width/2),2)") {
             @Override
             public double operate(double r, double theta) {
                 return Math.pow(widthIn / 2, 2);
@@ -300,8 +299,14 @@ public class InductiveSynthesizerNew {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
         HalideGenerator halideGenerator = new HalideGenerator(bestGuessR, bestGuessT);
         halideGenerator.generate();
+
+        return new Pair<>(bestGuessR, bestGuessT);
+        /*JavaGenerator javaGenerator=new JavaGenerator(bestGuessR,bestGuessT);
+        javaGenerator.generate();*/
     }
 
     /**

@@ -34,14 +34,14 @@ public class TestSolver {
 
         /*Images*/
         BufferedImage in = ImageIO.read(new File("D:\\test\\rgb.bmp"));
-        BufferedImage out = ImageIO.read(new File("D:\\test\\rgb-twirl-out.bmp"));
+        BufferedImage out = ImageIO.read(new File("D:\\test\\polar-cart.bmp"));
 
         SourceDestinationSeeker eg = new SourceDestinationSeeker();
         //eg.generate(in,out);
 
         long startT = System.currentTimeMillis() / (1000 * 60);
         try {
-            Pair<Guess, Guess> solve = inductiveSynthesizer.solve(new PolarGenerator().generate(x, y)/*eg.generate(in,out)*/, in, out);
+            Pair<Guess, Guess> solve = inductiveSynthesizer.solve(new TwirlGenerator().generate(x, y)/*eg.generate(in,out)*/, in, out);
 
            /* logger.debug("Solve {}", solve);
             x = 600;

@@ -122,27 +122,22 @@ public class InductiveSynthesizerNew {
 
 
         List<Operand> operands = new ArrayList<>();
-        //operands.add(r);
-        operands.add(r2);
-        operands.add(t2);
-        //operands.add(t);
+        operands.add(r);
+        //operands.add(r2);
+        //operands.add(t2);
+        operands.add(t);
         //operands.add(rt);
-        operands.add(rOverTheta);
-        //operations.add(tOverR);
-        //operations.add(r2sqrt);
-        //operations.add(r2T2Sqrt);
-        //operands.add(widthOp);
-        //operands.add(widthOpSqr);
-        //operands.add(widthTheta);
-        //operands.add(widthThetaSqr);
+        //operands.add(rOverTheta);
+        //operands.add(tOverR);
 
-        Attribute one = new Attribute("one", "1f", 1);
-        Attribute negOne = new Attribute("negative_one", "(-1f)", -1);
+        Attribute one = new Attribute("one", "1.0f", 1);
+        Attribute negOne = new Attribute("negative_one", "(-1.0f)", -1);
         Attribute width = new Attribute("width", "width", widthIn);
         Attribute height = new Attribute("height", "height", heightIn);
         Attribute maxR = new Attribute("maxR", "(hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
         Attribute pi = new Attribute("maxR", "(M_PI)", Math.PI);
-        Attribute userAttr = new Attribute("attribute1", "(4)", 4);
+        Attribute userAttr = new Attribute("attribute1", "(4)", 4, true);
+        Attribute userAttr2 = new Attribute("attribute1", "(256)", 256, true);
 
 
         List<Attribute> attributes = new ArrayList<>();
@@ -152,7 +147,8 @@ public class InductiveSynthesizerNew {
         attributes.add(height);
         attributes.add(maxR);
         attributes.add(pi);
-        attributes.add(userAttr);
+        //attributes.add(userAttr);
+        attributes.add(userAttr2);
 
         List<OperandDecorator> operandDecorators = new ArrayList<>();
 
@@ -304,9 +300,11 @@ public class InductiveSynthesizerNew {
         HalideGenerator halideGenerator = new HalideGenerator(bestGuessR, bestGuessT);
         halideGenerator.generate();
 
-        return new Pair<>(bestGuessR, bestGuessT);
-        /*JavaGenerator javaGenerator=new JavaGenerator(bestGuessR,bestGuessT);
+       /* JavaGenerator javaGenerator = new JavaGenerator(bestGuessR, bestGuessT);
         javaGenerator.generate();*/
+
+        return new Pair<>(bestGuessR, bestGuessT);
+
     }
 
     /**

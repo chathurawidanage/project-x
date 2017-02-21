@@ -26,13 +26,13 @@ public class InductiveSynthesizerNew {
 
         CoordinateTransformer.cartesianToCenter(widthIn, heightIn, examples);//making all points center originated
 
-        Operand r = new Operand("R", "r_in") {
+        Operand r = new Operand("R", "r_in", 1) {
             @Override
             public double operate(double r, double theta) {
                 return r;
             }
         };
-        Operand r2 = new Operand("R2", "pow(r_in,2)") {
+        Operand r2 = new Operand("R2", "pow(r_in,2)", 1) {
             @Override
             public double operate(double r, double theta) {
                 return r * r;
@@ -53,14 +53,14 @@ public class InductiveSynthesizerNew {
             }
         };
 
-        final Operand t = new Operand("T", "theta_in") {
+        final Operand t = new Operand("T", "theta_in", 2) {
             @Override
             public double operate(double r, double theta) {
                 return theta;
             }
         };
 
-        Operand t2 = new Operand("T2", "pow(theta_in,2)") {
+        Operand t2 = new Operand("T2", "pow(theta_in,2)", 2) {
             @Override
             public double operate(double r, double theta) {
                 return theta * theta;
@@ -123,11 +123,11 @@ public class InductiveSynthesizerNew {
 
         List<Operand> operands = new ArrayList<>();
         operands.add(r);
-        //operands.add(r2);
-        //operands.add(t2);
+        operands.add(r2);
+        operands.add(t2);
         operands.add(t);
         //operands.add(rt);
-        //operands.add(rOverTheta);
+        operands.add(rOverTheta);
         //operands.add(tOverR);
 
         Attribute one = new Attribute("one", "1.0f", 1);
@@ -137,7 +137,7 @@ public class InductiveSynthesizerNew {
         Attribute maxR = new Attribute("maxR", "(hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
         Attribute pi = new Attribute("maxR", "(M_PI)", Math.PI);
         Attribute userAttr = new Attribute("attribute1", "(4)", 4, true);
-        Attribute userAttr2 = new Attribute("attribute1", "(256)", 256, true);
+        //Attribute userAttr2 = new Attribute("attribute1", "(256)", 256, true);
 
 
         List<Attribute> attributes = new ArrayList<>();
@@ -147,8 +147,8 @@ public class InductiveSynthesizerNew {
         attributes.add(height);
         attributes.add(maxR);
         attributes.add(pi);
-        //attributes.add(userAttr);
-        attributes.add(userAttr2);
+        attributes.add(userAttr);
+        //attributes.add(userAttr2);
 
         List<OperandDecorator> operandDecorators = new ArrayList<>();
 
@@ -220,6 +220,9 @@ public class InductiveSynthesizerNew {
                 List<List<Operand>> combination = Combinations.combination(operands, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operand> ops = combination.get(j);
+                    if(sameFamily(ops)){
+                        continue;
+                    }
                     guessR(examples, ops, false, operandDecorator, gvs);
                     logger.info("Current max voters : {}", gvs.getMaxVoters());
                     /*if (guess.getVotes() > maxVotes) {
@@ -264,6 +267,9 @@ public class InductiveSynthesizerNew {
                 List<List<Operand>> combination = Combinations.combination(operands, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operand> ops = combination.get(j);
+                    if(sameFamily(ops)){
+                        continue;
+                    }
                     guessTheta(examples, ops, false, operandDecorator, gvs);
                     logger.info("Current max voters : {}", gvs.getMaxVoters());
                    /* if (guess.getVotes() > maxVotes) {
@@ -507,6 +513,18 @@ public class InductiveSynthesizerNew {
             testCases.addAll(q4.subList(0, Math.min(limit, q4.size() - 1)));
 
         return testCases;
+    }
+
+    private boolean sameFamily(List<Operand> ops) {
+        Set<Integer> families = new HashSet<>();
+        for (Operand o : ops) {
+            if (o.getFamily() > 0 && families.contains(o.getFamily())) {
+                return true;
+            } else if (o.getFamily() > 0 && !families.contains(o.getFamily())) {
+                families.add(o.getFamily());
+            }
+        }
+        return false;
     }
 
     private int loopBound(double value) {

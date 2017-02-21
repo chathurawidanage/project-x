@@ -4,3 +4,4 @@
 **/target/*
 **/log/helium.log
 **/preprocess/code_diff/log/helium.log
+generated/*

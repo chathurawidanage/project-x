@@ -2,6 +2,10 @@ package lk.ac.mrt.projectx.buildex.complex.langs;
 
 import lk.ac.mrt.projectx.buildex.complex.operations.Guess;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * @author Chathura Widanage
  */
@@ -67,5 +71,14 @@ public class JavaGenerator {
         System.out.println("\n\n\n\n\n\n\n");
         System.out.println(generated);
         System.out.println("\n\n\n\n\n\n\n");
+
+        try {
+            FileWriter fileWriter = new FileWriter(new File("generated", "JavaGen.java"));
+            fileWriter.write(generated);
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

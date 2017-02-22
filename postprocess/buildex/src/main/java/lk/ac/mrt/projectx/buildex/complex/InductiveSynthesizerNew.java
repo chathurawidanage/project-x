@@ -135,7 +135,7 @@ public class InductiveSynthesizerNew {
         Attribute width = new Attribute("width", "width", widthIn);
         Attribute height = new Attribute("height", "height", heightIn);
         Attribute maxR = new Attribute("maxR", "(hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
-        Attribute pi = new Attribute("maxR", "(M_PI)", Math.PI);
+        Attribute pi = new Attribute("PI", "(M_PI)", Math.PI);
         Attribute userAttr = new Attribute("attribute1", "(4)", 4, true);
         //Attribute userAttr2 = new Attribute("attribute1", "(256)", 256, true);
 

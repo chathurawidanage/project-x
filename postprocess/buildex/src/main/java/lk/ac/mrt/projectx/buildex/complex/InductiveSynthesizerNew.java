@@ -19,7 +19,7 @@ import java.util.*;
 public class InductiveSynthesizerNew {
     private final static Logger logger = LogManager.getLogger(InductiveSynthesizerNew.class);
 
-    public Pair<Guess, Guess> solve(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, BufferedImage imageIn, BufferedImage imageOut) {
+    public Pair<Guess, Guess> solve(List<Pair<CartesianCoordinate, CartesianCoordinate>> examples, BufferedImage imageIn, BufferedImage imageOut, List<Attribute> userAttributes) {
         logger.info("Synthesizing using {} examples", examples.size());
         final int widthIn = imageIn.getWidth();
         int heightIn = imageIn.getHeight();
@@ -136,8 +136,8 @@ public class InductiveSynthesizerNew {
         Attribute height = new Attribute("height", "height", heightIn);
         Attribute maxR = new Attribute("maxR", "(hypot(width/2,height/2))", Math.hypot(widthIn / 2, heightIn / 2));
         Attribute pi = new Attribute("PI", "(M_PI)", Math.PI);
-        Attribute userAttr = new Attribute("attribute1", "(4)", 4, true);
-        //Attribute userAttr2 = new Attribute("attribute1", "(256)", 256, true);
+        //Attribute userAttr = new Attribute("attribute1", "(4)", 4, true);
+        Attribute userAttr2 = new Attribute("attribute1", "(256)", 256, true);
 
 
         List<Attribute> attributes = new ArrayList<>();
@@ -147,8 +147,8 @@ public class InductiveSynthesizerNew {
         attributes.add(height);
         attributes.add(maxR);
         attributes.add(pi);
-        attributes.add(userAttr);
         //attributes.add(userAttr2);
+        attributes.addAll(userAttributes);
 
         List<OperandDecorator> operandDecorators = new ArrayList<>();
 
@@ -213,18 +213,18 @@ public class InductiveSynthesizerNew {
         GuessesValidationServiceNew gvs = new GuessesValidationServiceNew(
                 getTestCases(examples, null), widthIn, heightIn, true, null
         );//now using same gvs for all guesses, reducing thread creations and making guesses stop if it goes below current best
-
+        logger.info("Using {} test cases", gvs.getTestsSize());
         for (OperandDecorator operandDecorator : operandDecorators) {
             logger.info("Trying Guess operator : {}", operandDecorator);
             for (int i = 1; i <= operands.size(); i++) {
                 List<List<Operand>> combination = Combinations.combination(operands, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operand> ops = combination.get(j);
-                    if(sameFamily(ops)){
+                    if (sameFamily(ops)) {
                         continue;
                     }
                     guessR(examples, ops, false, operandDecorator, gvs);
-                    logger.info("Current max voters : {}", gvs.getMaxVoters());
+                    logger.info("Current max voters : {} | First of array {}", gvs.getMaxVoters().size(), gvs.getMaxVoters().size() > 0 ? gvs.getMaxVoters().get(0) : "");
                     /*if (guess.getVotes() > maxVotes) {
                         bestGuessR = guess;
                         maxVotes = guess.getVotes();
@@ -267,11 +267,11 @@ public class InductiveSynthesizerNew {
                 List<List<Operand>> combination = Combinations.combination(operands, i);
                 for (int j = 0; j < combination.size(); j++) {
                     List<Operand> ops = combination.get(j);
-                    if(sameFamily(ops)){
+                    if (sameFamily(ops)) {
                         continue;
                     }
                     guessTheta(examples, ops, false, operandDecorator, gvs);
-                    logger.info("Current max voters : {}", gvs.getMaxVoters());
+                    logger.info("Current max voters : {} | First of array {}", gvs.getMaxVoters().size(), gvs.getMaxVoters().size() > 0 ? gvs.getMaxVoters().get(0) : "");
                    /* if (guess.getVotes() > maxVotes) {
                         bestGuessT = guess;
                         maxVotes = guess.getVotes();
@@ -295,12 +295,6 @@ public class InductiveSynthesizerNew {
         System.out.println(bestGuessR.getGeneratedCode());
         System.out.println(bestGuessT.getGeneratedCode());
         System.out.println("\n#####");
-
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
 
         HalideGenerator halideGenerator = new HalideGenerator(bestGuessR, bestGuessT);

@@ -18,11 +18,11 @@ public class ExamplesFile {
     public ExamplesFile() {
     }
 
-    public List<Pair<CartesianCoordinate, CartesianCoordinate>> read(String fileName) throws FileNotFoundException {
+    public List<Pair<CartesianCoordinate, CartesianCoordinate>> read(String path,String fileName) throws FileNotFoundException {
 
         List<Pair<CartesianCoordinate, CartesianCoordinate>> examples = new ArrayList<>();
 
-        Scanner input = new Scanner(new File(fileName));
+        Scanner input = new Scanner(new File(path,fileName));
 
         input.nextLine();
 
